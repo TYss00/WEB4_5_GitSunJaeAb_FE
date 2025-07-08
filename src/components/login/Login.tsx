@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import Input from '../ui/Input';
+import Link from 'next/link';
 
 export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -16,7 +17,7 @@ export default function Login() {
         MAPICK
       </h1>
 
-      {/* 폼 전체 */}
+      {/* 로그인 */}
       <div className="flex flex-col gap-6 w-full max-w-lg mx-auto">
         {/* 이메일 */}
         <Input label="이메일" type="email" placeholder="이메일을 입력하세요" />
@@ -52,9 +53,12 @@ export default function Login() {
         {/* 회원가입 안내 */}
         <p className="text-sm text-center text-black">
           계정이 없으신가요?{' '}
-          <span className="text-[#005C54] font-semibold cursor-pointer hover:underline">
+          <Link
+            href="/register"
+            className="text-[#005C54] font-semibold cursor-pointer hover:underline"
+          >
             회원가입하기
-          </span>
+          </Link>
         </p>
       </div>
     </div>
