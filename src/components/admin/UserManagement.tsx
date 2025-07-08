@@ -20,7 +20,7 @@ export default function UserManagement() {
   };
 
   return (
-    <div className="w-[350px] h-[310px] bg-white rounded-lg shadow-sm p-4 flex flex-col justify-start border border-[#F1F1F1]">
+    <div className="w-[350px] h-[310px] bg-white rounded-lg p-4 flex flex-col justify-start border border-[#E4E4E4]">
       <div className="flex items-center gap-2 text-[#005C54] font-semibold text-[18px] mb-[16px]">
         <UserCog size={20} className="mr-1" />
         사용자 관리
@@ -38,14 +38,14 @@ export default function UserManagement() {
             >
               <span>{item}</span>
               {openItem === item ? (
-                <ChevronUp size={16} />
+                <ChevronUp size={18} />
               ) : (
-                <ChevronDown size={16} />
+                <ChevronDown size={18} />
               )}
             </div>
 
             {openItem === item && item === "블랙 리스트" && (
-              <div className="bg-[#F7F7F7] rounded px-3 py-[6px] text-[13px] space-y-[2px]">
+              <div className="bg-[#F5F5F5] px-[8px] py-[6px] text-[13px] space-y-[2px]">
                 {dummyEmails.map(({ name, email }) => (
                   <div key={email}>
                     <span className="text-[15px] text-[#333] mr-1">{name}</span>
@@ -55,13 +55,13 @@ export default function UserManagement() {
                 <div className="flex justify-center gap-2 mt-[10px]">
                   <Button
                     buttonStyle="smGreen"
-                    className="w-[100px] h-[28px] text-[14px]"
+                    className="w-[100px] h-[28px] text-[15px]"
                   >
                     추가하기
                   </Button>
                   <Button
                     buttonStyle="white"
-                    className="w-[100px] h-[28px] text-[14px]"
+                    className="w-[100px] h-[28px] text-[15px]"
                   >
                     수정하기
                   </Button>

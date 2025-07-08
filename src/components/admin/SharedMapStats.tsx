@@ -10,7 +10,7 @@ export default function SharedMapStats() {
 
   return (
     <div className="w-[350px] h-[178px] bg-white rounded-xl p-4 space-y-4 border border-[#E4E4E4]">
-      <div className="flex items-center text-[16px] text-[#006C64] font-semibold">
+      <div className="flex items-center text-[16px] text-[#005C54] font-semibold">
         <ChartBar size={20} className="mr-1" />
         공유지도 참여율
       </div>
@@ -21,9 +21,9 @@ export default function SharedMapStats() {
             <span>{label}</span>
             <span>{percentage}%</span>
           </div>
-          <div className="w-full h-2 bg-[#EDEDED] rounded-full">
+          <div className="w-full h-2 bg-[#EFEFEF] rounded-full">
             <div
-              className="h-full bg-[#006C64] rounded-full"
+              className="h-full bg-[#005C54] rounded-full"
               style={{ width: `${percentage}%` }}
             />
           </div>

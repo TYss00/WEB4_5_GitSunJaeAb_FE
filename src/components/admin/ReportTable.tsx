@@ -4,7 +4,7 @@ import { Siren } from "lucide-react";
 
 export default function ReportTable() {
   return (
-    <section className="w-[732px] h-[542px] bg-white rounded-lg p-6 shadow-sm flex-1">
+    <section className="w-[732px] h-[542px] bg-white rounded-[10px] p-6 border border-[#E4E4E4] flex-1">
       <div className="flex items-center gap-[16px] font-semibold text-[#005C54] mb-[24px]">
         <Siren className="w-[20px] h-[20px]" />
         <span className="text-[18px]">신고 내역</span>
@@ -22,8 +22,8 @@ export default function ReportTable() {
         <table className="w-full text-[14px]">
           <thead>
             <tr className="text-[#222222] border-b border-[#E4E4E4]">
-              <th className="text-left py-2">신고자</th>
               <th className="text-left py-2">피신고자</th>
+              <th className="text-left py-2">신고자</th>
               <th className="text-left py-2">유형</th>
               <th className="text-left py-2">날짜</th>
               <th className="text-left py-2">상태</th>
@@ -32,13 +32,13 @@ export default function ReportTable() {
           </thead>
           <tbody>
             {[...Array(8)].map((_, i) => (
-              <tr key={i} className="border-b border-[#F0F0F0]">
+              <tr key={i} className="border-b border-[#E4E4E4]">
                 <td className="py-2">홍길동</td>
                 <td>지지</td>
                 <td>허위 게시글</td>
                 <td>2025.07.07</td>
                 <td className="text-left align-middle pr-[12px]">
-                  <span className="inline-block bg-[#FFEFEF] text-[#F44336] px-[10px] py-[2px] rounded-full text-[13px] font-semibold">
+                  <span className="inline-block bg-[#FFEFEF] text-[#F44336] px-[10px] py-[2px] rounded-full text-[13px]">
                     대기
                   </span>
                 </td>
@@ -58,7 +58,7 @@ export default function ReportTable() {
               <td>허위 게시글</td>
               <td>2025.07.07</td>
               <td className="text-left align-middle pr-[12px]">
-                <span className="inline-block bg-[#F4FFF4] text-[#1ABC9C] px-[10px] py-[2px] rounded-full text-[13px] font-semibold">
+                <span className="inline-block bg-[#F4FFF4] text-[#1ABC9C] px-[10px] py-[2px] rounded-full text-[13px]">
                   완료
                 </span>
               </td>
