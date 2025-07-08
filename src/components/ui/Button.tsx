@@ -18,7 +18,7 @@ export default function Button({
   type = "button",
 }: ButtonProps) {
   const baseStyle =
-    "inline-flex items-center justify-center font-medium transition-all gap-2";
+    "inline-flex items-center justify-center font-medium text-[15px] transition-all px-[10px] py-[5px]";
 
   const styleByType =
     buttonStyle === "green"
