@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Input from '../ui/Input';
 import Link from 'next/link';
+import Button from '../ui/Button';
 
 export default function Register() {
   const [agree, setAgree] = useState(false);
@@ -54,12 +55,13 @@ export default function Register() {
         </label>
 
         {/* 회원가입 버튼 */}
-        <button
-          className="w-full h-[45px] bg-[#005C54] text-white py-2 rounded-lg text-sm"
-          disabled={!agree}
+        <Button
+          buttonStyle="green"
+          fullWidth
+          className="h-[45px] py-2 rounded-lg text-sm"
         >
           회원가입
-        </button>
+        </Button>
 
         {/* 회원가입 안내 */}
         <p className="text-sm text-center text-black">

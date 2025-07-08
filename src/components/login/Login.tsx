@@ -5,6 +5,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import Input from '../ui/Input';
 import Link from 'next/link';
+import Button from '../ui/Button';
 
 export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -40,15 +41,30 @@ export default function Login() {
         </div>
 
         {/* 로그인 버튼 */}
-        <button className="w-full h-[45px] bg-[#005C54] text-white py-2 rounded-lg text-sm">
+        <Button
+          buttonStyle="green"
+          fullWidth
+          className="h-[45px] py-2 rounded-lg text-sm"
+        >
           로그인
-        </button>
+        </Button>
 
         {/* 구글 로그인 버튼 */}
-        <button className="w-full h-[45px] border border-gray-300 py-2 rounded-lg text-sm flex items-center justify-center gap-2">
-          <Image src="/assets/google.svg" alt="Google" width={18} height={18} />
+        <Button
+          buttonStyle="withIcon"
+          fullWidth
+          className="h-[45px] py-2 rounded-lg text-sm gap-2"
+          icon={
+            <Image
+              src="/assets/google.svg"
+              alt="Google"
+              width={18}
+              height={18}
+            />
+          }
+        >
           구글 계정으로 로그인
-        </button>
+        </Button>
 
         {/* 회원가입 안내 */}
         <p className="text-sm text-center text-black">
