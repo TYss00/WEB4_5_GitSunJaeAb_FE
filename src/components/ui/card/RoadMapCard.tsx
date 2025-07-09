@@ -1,10 +1,12 @@
 'use client'
 
 import { RoadMapCardProps } from '@/types/type'
+import { truncateText } from '@/utils/truncateText'
 import { Heart, Eye, Share2 } from 'lucide-react'
 import { useState } from 'react'
 
 export default function RoadMapCard({
+  category,
   mapImageUrl,
   title,
   description,
@@ -18,6 +20,8 @@ export default function RoadMapCard({
   const likeHandler = () => {
     setIsLiked((prev) => !prev)
   }
+  const truncatedTitle = truncateText(title, 16)
+  const truncatedDescription = truncateText(description, 22)
   return (
     <>
       <div
@@ -25,12 +29,16 @@ export default function RoadMapCard({
              hover:shadow-lg hover:-translate-y-1"
       >
         <div
-          className="w-full h-[132px] "
+          className="w-full h-[132px] p-[10px]"
           style={{ backgroundImage: `url(${mapImageUrl})` }}
-        ></div>
+        >
+          <span className="bg-[var(--primary-300)] rounded-[10px] px-[10px] py-[5px] text-[11px] text-[var(--white)] font-semibold">
+            {category}
+          </span>
+        </div>
         <div className="flex flex-col gap-[5px] justify-center w-full h-[146px] px-[15px] py-[5px] bg-white">
           <div className="flex justify-between w-full">
-            <span className="text-[20px] font-semibold">{title}</span>
+            <span className="text-[20px] font-semibold">{truncatedTitle}</span>
             <button onClick={likeHandler}>
               <Heart
                 size={20}
@@ -40,9 +48,9 @@ export default function RoadMapCard({
               />
             </button>
           </div>
-          <span className="text-[16px]">{description}</span>
+          <span className="text-[16px]">{truncatedDescription}</span>
           <div className="flex gap-[10px] flex-wrap">
-            {hashtags.map((tag, idx) => (
+            {hashtags.slice(0, 3).map((tag, idx) => (
               <span
                 key={idx}
                 className="text-[11px] text-[#005C54] font-semibold"

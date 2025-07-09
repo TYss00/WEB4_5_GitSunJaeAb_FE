@@ -1,4 +1,5 @@
 export type RoadMapCardProps = {
+  category: string
   mapImageUrl: string
   title: string
   description: string
@@ -10,6 +11,7 @@ export type RoadMapCardProps = {
 }
 
 export type QuestCardProps = {
+  isInProgress?: boolean
   mapImageUrl: string
   title: string
   description: string
