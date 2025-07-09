@@ -25,7 +25,7 @@ export default function RoadMapCard({
   return (
     <>
       <div
-        className="flex flex-col w-[350px] h-[278px] border border-[#d9d9d9] rounded-[10px] overflow-hidden cursor-pointer vtransition-all duration-300 ease-in-out 
+        className="flex flex-col w-[350px] h-[278px] border border-[var(--gray-100)] rounded-[10px] overflow-hidden cursor-pointer vtransition-all duration-300 ease-in-out 
              hover:shadow-lg hover:-translate-y-1"
       >
         <div
@@ -53,7 +53,7 @@ export default function RoadMapCard({
             {hashtags.slice(0, 3).map((tag, idx) => (
               <span
                 key={idx}
-                className="text-[11px] text-[#005C54] font-semibold"
+                className="text-[11px] text-[var(--primary-300)] font-semibold"
               >
                 #{tag}
               </span>
@@ -65,14 +65,16 @@ export default function RoadMapCard({
                 className="size-[20px] rounded-full"
                 style={{ backgroundImage: `url(${profileImgUrl})` }}
               />
-              <span className="text-[10px] text-[#9F9F9F]">{author}</span>
+              <span className="text-[10px] text-[var(--gray-200)]">
+                {author}
+              </span>
             </div>
             <div className="flex gap-[10px]">
-              <span className="flex text-[10px] text-[#9F9F9F] gap-[5px]">
-                <Eye size={15} color="#9F9F9F" /> {viewCount}
+              <span className="flex text-[10px] text-[var(--gray-200)] gap-[5px]">
+                <Eye size={15} color="var(--gray-200)" /> {viewCount}
               </span>
-              <span className="flex text-[10px] text-[#9F9F9F] gap-[5px]">
-                <Share2 size={15} color="#9F9F9F" /> {shareCount}
+              <span className="flex text-[10px] text-[var(--gray-200)] gap-[5px]">
+                <Share2 size={15} color="var(--gray-200)" /> {shareCount}
               </span>
             </div>
           </div>

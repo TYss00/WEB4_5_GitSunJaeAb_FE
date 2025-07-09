@@ -7,11 +7,11 @@ export default function ShareMapCard({
   participants,
 }: ShareMapCardProps) {
   const labelText = isEvent ? 'Event' : 'User'
-  const labelColor = isEvent ? '#74B9FF' : '#005C54'
+  const labelColor = isEvent ? 'var(--blue)' : 'var(--primary-300)'
   return (
     <>
       <div
-        className="flex flex-col w-[252px] h-[350px] border border-[#d9d9d9] rounded-[10px] overflow-hidden cursor-pointer transition-all duration-300 ease-in-out 
+        className="flex flex-col w-[252px] h-[350px] border border-[var(--gray-100)] rounded-[10px] overflow-hidden cursor-pointer transition-all duration-300 ease-in-out 
              hover:shadow-lg hover:-translate-y-1"
       >
         <div className="flex flex-col gap-[20px] justify-start m-[20px] bg-white">

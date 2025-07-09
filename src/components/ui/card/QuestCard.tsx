@@ -20,14 +20,14 @@ export default function QuestCard({
     setIsLiked((prev) => !prev)
   }
   const labelText = isInProgress ? '진행중' : '마감'
-  const labelColor = isInProgress ? '#005C54' : '#9F9F9F'
+  const labelColor = isInProgress ? 'var(--primary-300)' : 'var(--gray-200)'
 
   const truncatedTitle = truncateText(title, 16)
   const truncatedDescription = truncateText(description, 22)
   return (
     <>
       <div
-        className="relative flex flex-col w-[350px] h-[278px] border border-[#d9d9d9] rounded-[10px] overflow-hidden cursor-pointer transition-all duration-300 ease-in-out 
+        className="relative flex flex-col w-[350px] h-[278px] border border-[var(--gray-100)] rounded-[10px] overflow-hidden cursor-pointer transition-all duration-300 ease-in-out 
              hover:shadow-lg hover:-translate-y-1"
         style={{
           backgroundImage: `url(${mapImageUrl})`,
@@ -63,7 +63,7 @@ export default function QuestCard({
             {hashtags.slice(0, 3).map((tag, idx) => (
               <span
                 key={idx}
-                className="text-[11px] text-[#005C54] font-semibold"
+                className="text-[11px] text-[var(--primary-300)] font-semibold"
               >
                 #{tag}
               </span>
@@ -75,11 +75,13 @@ export default function QuestCard({
                 className="size-[20px] rounded-full"
                 style={{ backgroundImage: `url(${profileImgUrl})` }}
               />
-              <span className="text-[10px] text-[#9F9F9F]">{author}</span>
+              <span className="text-[10px] text-[var(--gray-200)]">
+                {author}
+              </span>
             </div>
             <div className="flex gap-[10px]">
-              <span className="flex text-[10px] text-[#9F9F9F] gap-[5px]">
-                <CalendarDays size={15} color="#9F9F9F" /> {deadLine}
+              <span className="flex text-[10px] text-[var(--gray-200)] gap-[5px]">
+                <CalendarDays size={15} color="var(--gray-200)" /> {deadLine}
               </span>
             </div>
           </div>
