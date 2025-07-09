@@ -18,7 +18,7 @@ export default function Header() {
       <nav>
         <ul className="flex items-center gap-[130px] text-lg text-[var(--black)]">
           <li className="hover:text-[#005C54] transition cursor-pointer">
-            로드맵
+            <Link href="/dashbord/load">로드맵</Link>
           </li>
           <li className="hover:text-[#005C54] transition cursor-pointer">
             공유지도
