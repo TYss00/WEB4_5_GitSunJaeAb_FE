@@ -5,8 +5,8 @@ import Button from '../ui/Button';
 
 export default function ExplorebyTheme() {
   return (
-    <section className="flex flex-row items-center gap-x-60 pb-20">
-      <div className="max-w-3xl py-8 pl-43">
+    <section className="max-w-screen-2xl mx-auto flex flex-row items-center pb-20">
+      <div className="max-w-lg ml-45 2xl:ml-55">
         <h2 className="text-[#005C54] text-3xl font-semibold mb-2">
           Explore by Theme
         </h2>
@@ -28,7 +28,7 @@ export default function ExplorebyTheme() {
         </Button>
       </div>
 
-      <div className="w-[500px] h-[300px] relative overflow-hidden">
+      <div className="w-[500px] h-[300px] ml-60 relative overflow-hidden">
         <Image
           src="/assets/maindashbord.svg"
           alt="masked"

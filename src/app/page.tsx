@@ -8,8 +8,12 @@ export default async function page() {
           <button>로그인</button>
         </Link>
 
-        <Link href="/inputtest">
-          <button>인풋테스트</button>
+        <Link href="/categories">
+          <button>카테고리</button>
+        </Link>
+
+        <Link href="/dashbord/main">
+          <button>메인대시보드</button>
         </Link>
       </div>
       <h1>홈화면입니다.</h1>
