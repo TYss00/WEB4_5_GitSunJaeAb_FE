@@ -5,7 +5,7 @@ import Button from '../ui/Button';
 
 export default function ExplorebyTheme() {
   return (
-    <section className="max-w-screen-2xl mx-auto flex flex-row items-center pb-20">
+    <section className="max-w-screen-2xl mx-auto flex flex-row items-center py-20">
       <div className="max-w-lg ml-45 2xl:ml-55">
         <h2 className="text-[#005C54] text-3xl font-semibold mb-2">
           Explore by Theme
