@@ -4,11 +4,13 @@
   --white: #ffffff;
   --primary-300: #005c54;
   --primary-200: #1abc9c;
+  --primary-100: #48847f;
   --black: #222;
   --gray-300: #606060;
   --gray-200: #9f9f9f;
   --gray-100: #d9d9d9;
   --gray-50: #e4e4e4;
+  --gray-40: #f6f6f6;
   --blue: #74b9ff;
   --red: #ee0707;
 }

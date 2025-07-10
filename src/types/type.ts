@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 export type RoadMapCardProps = {
   category: string;
   mapImageUrl: string;
@@ -41,4 +43,29 @@ export type ButtonProps = {
   className?: string;
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
+};
+
+export type MarkerEditProps = {
+  isTextArea?: boolean;
+  onDelete: () => void;
+};
+
+export type MarkerDetailProps = {
+  isTextArea?: boolean;
+};
+
+export type LayerEditProps = {
+  title: string;
+  isTextArea?: boolean;
+  defaultOpen?: boolean;
+};
+export type LayerDetailProps = {
+  title: string;
+  children: ReactNode;
+  defaultOpen?: boolean;
+};
+
+export type ToggleProps = {
+  label: '공개' | '경로' | '애니메이션';
+  onChange?: (isActive: boolean) => void;
 };

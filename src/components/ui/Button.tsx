@@ -1,4 +1,5 @@
 import { ButtonProps } from '@/types/type';
+import { twMerge } from 'tailwind-merge';
 
 export default function Button({
   children,
@@ -29,9 +30,9 @@ export default function Button({
     <button
       type={type}
       onClick={onClick}
-      className={`${baseStyle} ${styleByType} ${fullWidthStyle} ${
-        className ?? ''
-      }`}
+      className={twMerge(
+        `${baseStyle} ${styleByType} ${fullWidthStyle} ${className}`
+      )}
     >
       {icon && <span>{icon}</span>}
       {children}
