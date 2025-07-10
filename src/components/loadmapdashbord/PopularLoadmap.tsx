@@ -1,6 +1,7 @@
 'use client';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import RoadMapCard from '../ui/card/RoadMapCard';
 
 export default function PopularLoadmap() {
   return (
@@ -14,38 +15,35 @@ export default function PopularLoadmap() {
         <div className="relative flex-1 pl-8">
           <div className="absolute 2xl:w-[1650px] w-[1200px] h-[430px] bg-[#005C54] rounded-tl-[200px] translate-x-[calc(100vw-100%)] -z-10" />
 
-          <div className="relative flex gap-6 overflow-x-auto mt-[40px] pl-20 pr-4 items-end">
-            <div className="absolute top-2 left-[505px] flex gap-2">
-              <button className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center text-white">
-                <ChevronLeft size={16} strokeWidth={3} />
-              </button>
-              <button className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center text-white">
-                <ChevronRight size={16} strokeWidth={3} />
-              </button>
-            </div>
-
-            {/* 카드파트 공용컴포넌트추가시 수정부분 */}
+          <div className="absolute top-20 left-[540px] flex gap-2">
+            <button className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center text-white">
+              <ChevronLeft size={16} strokeWidth={3} />
+            </button>
+            <button className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center text-white">
+              <ChevronRight size={16} strokeWidth={3} />
+            </button>
+          </div>
+          <div className="relative flex gap-6 overflow-x-auto mt-[70px] pl-20 pr-4 items-end">
             {Array(5)
               .fill(null)
               .map((_, idx) => (
-                <div
+                <RoadMapCard
                   key={idx}
-                  className={`${
+                  category="여행"
+                  mapImageUrl="/map.png"
+                  title={`서울 투어 ${idx + 1}`}
+                  description="서울 명소를 여행하는 로드맵입니다."
+                  hashtags={['서울', '여행', '명소']}
+                  profileImgUrl="/assets/google.svg"
+                  author="지지지"
+                  viewCount={100}
+                  shareCount={10}
+                  className={
                     idx === 0
                       ? 'w-[400px] h-[336px]'
                       : 'w-[300px] h-[278px] self-end'
-                  } bg-white rounded-xl shadow-md shrink-0`}
-                >
-                  <div className="w-full h-[140px] bg-gray-300 rounded-t-xl" />
-                  <div className="p-4 text-sm text-gray-800">
-                    <p className="font-semibold mb-1">로드맵 이름</p>
-                    <p className="text-sm text-gray-500 mb-2">내용~..</p>
-                    <div className="text-xs text-[#007B7B] space-x-2">
-                      <span>#해시태그</span>
-                      <span>#해시태그</span>
-                    </div>
-                  </div>
-                </div>
+                  }
+                />
               ))}
           </div>
         </div>

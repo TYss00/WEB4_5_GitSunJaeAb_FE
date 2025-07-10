@@ -10,8 +10,8 @@ export default async function page() {
         title="공유지도"
         subtitle="여러 유저들과 협업하여 지도를 만들어요"
       />
-      <EventBox />
-      <CardList />
+      <EventBox type="sharemap" />
+      <CardList type="sharemap" />
       <WriteButton />
     </>
   );
