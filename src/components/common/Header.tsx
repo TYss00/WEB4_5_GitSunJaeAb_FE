@@ -18,13 +18,13 @@ export default function Header() {
       <nav>
         <ul className="flex items-center gap-[130px] text-lg text-[var(--black)]">
           <li className="hover:text-[#005C54] transition cursor-pointer">
-            <Link href="/dashbord/load">로드맵</Link>
+            <Link href="/dashbord/load/main">로드맵</Link>
           </li>
           <li className="hover:text-[#005C54] transition cursor-pointer">
-            공유지도
+            <Link href="/dashbord/sharedmap/main">공유지도</Link>
           </li>
           <li className="hover:text-[#005C54] transition cursor-pointer">
-            퀘스트
+            <Link href="/dashbord/quest/main">퀘스트</Link>
           </li>
         </ul>
       </nav>
@@ -41,11 +41,13 @@ export default function Header() {
           strokeWidth={1.7}
           className="cursor-pointer hover:text-[#005C54]"
         />
-        <CircleUserRound
-          size={25}
-          strokeWidth={1.7}
-          className="cursor-pointer hover:text-[#005C54]"
-        />
+        <Link href="/mypage">
+          <CircleUserRound
+            size={25}
+            strokeWidth={1.7}
+            className="cursor-pointer hover:text-[#005C54]"
+          />
+        </Link>
       </div>
     </header>
   );
