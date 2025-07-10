@@ -13,13 +13,13 @@ export default function NotFound() {
     <div className="flex items-center justify-center min-h-screen px-6 py-10">
       <div className="flex flex-col md:flex-row items-center justify-between max-w-[960px] w-full gap-[60px]">
         <div className="flex flex-col items-start">
-          <span className="text-[16px] text-[#005C54] mb-[16px]">
+          <span className="text-[16px] text-[var(--primary-300)] mb-[16px]">
             404 error
           </span>
-          <h1 className="text-[36px] font-bold text-[#222222] mb-[16px]">
+          <h1 className="text-[36px] font-bold text-[var(--black)] mb-[16px]">
             페이지를 찾을 수 없어요.
           </h1>
-          <p className="text-[#222222] text-[24px] mb-[50px] leading-relaxed">
+          <p className="text-[var(--black)] text-[24px] mb-[50px] leading-relaxed">
             요청하신 페이지는 존재하지 않거나 <br />
             다른 위치로 옮겨졌습니다.
           </p>
@@ -34,7 +34,7 @@ export default function NotFound() {
             </Button>
             <span
               onClick={() => router.back()}
-              className="text-[18px] text-[#222222]"
+              className="text-[18px] text-[var(--black)]"
             >
               이전 페이지로 이동
             </span>
