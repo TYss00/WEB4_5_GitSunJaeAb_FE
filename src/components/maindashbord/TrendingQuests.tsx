@@ -7,7 +7,7 @@ import Button from '../ui/Button';
 export default function TrendingQuests() {
   return (
     <section className="py-10 px-43 h-[259px] pt-10">
-      <div className="max-w-screen-xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div className="max-w-screen-xl mx-auto flex flex-row items-center gap-15 2xl:pl-22">
         <div className="flex flex-col items-start mr-5">
           <h3 className="text-3xl font-semibold text-[#005C54] mb-2">
             Trending Quests?
@@ -26,7 +26,7 @@ export default function TrendingQuests() {
         </div>
 
         {/* 퀘스트 카드 */}
-        <div className="bg-[#E9F2F2] flex items-center rounded-lg p-5 gap-6 w-[753px] h-[159px]">
+        <div className="bg-[#E9F2F2] flex items-center rounded-lg p-5 gap-6 w-[753px] h-[159px] ml-auto 2xl:ml-0">
           <div className="flex-1 ml-3">
             <div className="flex items-center gap-4 text-sm text-[#222222] mb-3">
               <p className="text-base">지은지은</p>

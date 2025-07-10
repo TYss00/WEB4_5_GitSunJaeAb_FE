@@ -37,7 +37,7 @@ export default function CategoriesSetting() {
   };
 
   return (
-    <div className="flex flex-col items-center px-4 py-8">
+    <div className="flex flex-col items-center px-4 py-8 pt-30">
       <h1 className="text-[#005C54] text-4xl font-bold mb-10">
         관심 분야를 설정해주세요.
       </h1>
