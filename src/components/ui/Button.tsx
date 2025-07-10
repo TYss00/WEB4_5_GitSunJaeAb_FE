@@ -24,13 +24,13 @@ export default function Button({
 
   const styleByType =
     buttonStyle === 'green'
-      ? 'bg-[#005C54] text-[#FFFFFF] rounded-[8px]'
+      ? 'bg-[var(--primary-300)] text-[var(--white)] rounded-[8px]'
       : buttonStyle === 'white'
-      ? 'border border-[#005C54] text-[#005C54] bg-[#FFFFFF] rounded-[4px]'
+      ? 'border border-[var(--primary-300)] text-[var(--primary-300)] bg-[var(--white)] rounded-[4px]'
       : buttonStyle === 'smGreen'
-      ? 'border border-[#005C54] text-[#FFFFFF] bg-[#005C54] rounded-[4px]'
+      ? 'border border-[var(--primary-300)] text-[var(--white)] bg-[var(--primary-300)] rounded-[4px]'
       : buttonStyle === 'withIcon'
-      ? 'border border-[#9F9F9F] text-[#000000] bg-[#FFFFFF] rounded-[8px]'
+      ? 'border border-[var(--gray-200)] text-[#000000] bg-[var(--white)] rounded-[8px]'
       : '';
 
   const fullWidthStyle = fullWidth ? 'w-full' : '';
