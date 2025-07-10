@@ -22,7 +22,7 @@ export default function ExplorebyTheme() {
         </p>
         <Button
           buttonStyle="green"
-          className="w-[124px] h-[34px] px-4 py-2 text-sm"
+          className="w-[130px] h-[34px] px-4 py-2 text-sm"
         >
           Start Exploring
         </Button>
