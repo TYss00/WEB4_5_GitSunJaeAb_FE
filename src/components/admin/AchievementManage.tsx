@@ -39,7 +39,7 @@ export default function AchievementManage() {
         </Button>
       </div>
 
-      <div className="flex flex-col text-[#333] text-[15px]">
+      <div className="flex flex-col text-[#000000] text-[15px]">
         {ACHIEVEMENTS.map(({ name, icon }) => (
           <div
             key={name}
