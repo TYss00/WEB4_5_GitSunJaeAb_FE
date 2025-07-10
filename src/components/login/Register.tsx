@@ -11,12 +11,15 @@ export default function Register() {
   return (
     <div className="min-h-screen w-full px-6 flex flex-col justify-center">
       {/* 로고 */}
-      <h1 className="text-6xl font-bold text-[#005C54] mb-12 text-center">
+      <h1 className="text-6xl font-[vitro-core] text-[var(--primary-300)] mb-12 text-center">
         MAPICK
       </h1>
 
       {/* 회원가입 */}
       <div className="flex flex-col gap-6 w-full max-w-lg mx-auto">
+        {/* 이름 */}
+        <Input label="이름" type="text" placeholder="이름을 입력하세요" />
+
         {/* 닉네임 */}
         <Input label="닉네임" type="text" placeholder="닉네임을 입력하세요" />
 
@@ -44,7 +47,7 @@ export default function Register() {
         </div>
 
         {/* 이용약관 동의 */}
-        <label className="text-sm text-black flex items-center gap-2">
+        <label className="text-sm text-[var(--black)] flex items-center gap-2">
           <input
             type="checkbox"
             checked={agree}
@@ -64,11 +67,11 @@ export default function Register() {
         </Button>
 
         {/* 회원가입 안내 */}
-        <p className="text-sm text-center text-black">
+        <p className="text-sm text-center text-[var(--black)]">
           이미 계정이 있으신가요?{' '}
           <Link
             href="/login"
-            className="text-[#005C54] font-semibold cursor-pointer hover:underline"
+            className="text-[var(--primary-300)] font-semibold cursor-pointer hover:underline"
           >
             로그인하러가기
           </Link>

@@ -1,14 +1,5 @@
+import { ButtonProps } from '@/types/type';
 import { twMerge } from 'tailwind-merge';
-
-type ButtonProps = {
-  children: React.ReactNode;
-  buttonStyle?: 'green' | 'white' | 'withIcon' | 'smGreen';
-  fullWidth?: boolean;
-  icon?: React.ReactNode;
-  className?: string;
-  onClick?: () => void;
-  type?: 'button' | 'submit' | 'reset';
-};
 
 export default function Button({
   children,
@@ -24,13 +15,13 @@ export default function Button({
 
   const styleByType =
     buttonStyle === 'green'
-      ? 'bg-[var(--primary-300)] text-[var(--white)] rounded-[8px]'
+      ? 'bg-[var(--primary-300)] text-[var(--white)] rounded-lg cursor-pointer'
       : buttonStyle === 'white'
-      ? 'border border-[var(--primary-300)] text-[var(--primary-300)] bg-[var(--white)] rounded-[4px]'
+      ? 'border border-[var(--primary-300)] text-[var(--primary-300)] bg-[var(--white)] rounded cursor-pointer'
       : buttonStyle === 'smGreen'
-      ? 'border border-[var(--primary-300)] text-[var(--white)] bg-[var(--primary-300)] rounded-[4px]'
+      ? 'border border-[var(--primary-300)] text-[var(--white)] bg-[var(--primary-300)] rounded cursor-pointer'
       : buttonStyle === 'withIcon'
-      ? 'border border-[var(--gray-200)] text-[#000000] bg-[var(--white)] rounded-[8px]'
+      ? 'border border-[var(--gray-200)] text-[var(--black)] bg-[var(--white)] rounded-lg cursor-pointer'
       : '';
 
   const fullWidthStyle = fullWidth ? 'w-full' : '';

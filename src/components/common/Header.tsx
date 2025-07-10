@@ -1,15 +1,15 @@
 'use client';
 
-import { Bell, CircleUserRound, Search } from 'lucide-react'; // 아이콘 라이브러리
+import { Bell, CircleUserRound, Search } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Header() {
   return (
-    <header className="w-full h-20 px-11 flex items-center justify-between bg-white">
+    <header className="w-full h-20 px-11 flex items-center justify-between bg-[var(--white)]">
       {/* 로고 */}
       <Link
         href="/"
-        className="text-3xl font-bold text-[var(--primary-300)] font-[vitro-core]"
+        className="text-3xl text-[var(--primary-300)] font-[vitro-core]"
       >
         MAPICK
       </Link>
@@ -17,13 +17,13 @@ export default function Header() {
       {/* 메뉴들 */}
       <nav>
         <ul className="flex items-center gap-[130px] text-lg text-[var(--black)]">
-          <li className="hover:text-[#005C54] transition cursor-pointer">
+          <li className="hover:text-[var(--primary-300)] transition cursor-pointer">
             <Link href="/dashbord/load/main">로드맵</Link>
           </li>
-          <li className="hover:text-[#005C54] transition cursor-pointer">
+          <li className="hover:text-[var(--primary-300)] transition cursor-pointer">
             <Link href="/dashbord/sharedmap/main">공유지도</Link>
           </li>
-          <li className="hover:text-[#005C54] transition cursor-pointer">
+          <li className="hover:text-[var(--primary-300)] transition cursor-pointer">
             <Link href="/dashbord/quest/main">퀘스트</Link>
           </li>
         </ul>
@@ -34,18 +34,18 @@ export default function Header() {
         <Bell
           size={25}
           strokeWidth={1.7}
-          className="cursor-pointer hover:text-[#005C54]"
+          className="cursor-pointer hover:text-[var(--primary-300)]"
         />
         <Search
           size={25}
           strokeWidth={1.7}
-          className="cursor-pointer hover:text-[#005C54]"
+          className="cursor-pointer hover:text-[var(--primary-300)]"
         />
         <Link href="/mypage">
           <CircleUserRound
             size={25}
             strokeWidth={1.7}
-            className="cursor-pointer hover:text-[#005C54]"
+            className="cursor-pointer hover:text-[var(--primary-300)]"
           />
         </Link>
       </div>

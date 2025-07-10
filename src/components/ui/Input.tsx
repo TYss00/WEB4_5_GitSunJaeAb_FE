@@ -10,10 +10,10 @@ export default function Input({ label, className = '', ...props }: InputProps) {
   return (
     <div className="flex flex-col gap-1 w-full">
       {label && (
-        <label className="block text-base text-[#222222]">{label}</label>
+        <label className="block text-base text-[var(--black)]">{label}</label>
       )}
       <input
-        className={`border border-[#9F9F9F] px-3 py-2 rounded-lg outline-none focus:border-[#005C54] focus:ring-1 focus:ring-[#005C54] placeholder:text-sm placeholder:text-[#9F9F9F] ${className}`}
+        className={`border border-[var(--gray-200)] px-3 py-2 rounded-lg outline-none focus:border-[var(--primary-300)] focus:ring-1 focus:ring-[var(--primary-300)] placeholder:text-sm placeholder:text-[var(--gray-200)] ${className}`}
         {...props}
       />
     </div>

@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { ShareMapCardProps } from '@/types/type'
+import { ShareMapCardProps } from '@/types/type';
 
 export default function ShareMapCard({
   isEvent = false,
@@ -8,15 +8,15 @@ export default function ShareMapCard({
   mapImageUrl,
   participants,
 }: ShareMapCardProps) {
-  const labelText = isEvent ? 'Event' : 'User'
-  const labelColor = isEvent ? 'var(--blue)' : 'var(--primary-300)'
+  const labelText = isEvent ? 'Event' : 'User';
+  const labelColor = isEvent ? 'var(--blue)' : 'var(--primary-300)';
   return (
     <>
       <div
         className="flex flex-col w-[252px] h-[350px] border border-[var(--gray-100)] rounded-[10px] overflow-hidden cursor-pointer transition-all duration-300 ease-in-out 
-             hover:shadow-lg hover:-translate-y-1"
+             hover:shadow-lg hover:-translate-y-1 bg-white"
       >
-        <div className="flex flex-col gap-[20px] justify-start m-[20px] bg-white">
+        <div className="flex flex-col gap-[20px] justify-start m-[20px]">
           <span
             className="text-[14px] font-semibold"
             style={{ color: labelColor }}
@@ -42,5 +42,5 @@ export default function ShareMapCard({
         </div>
       </div>
     </>
-  )
+  );
 }
