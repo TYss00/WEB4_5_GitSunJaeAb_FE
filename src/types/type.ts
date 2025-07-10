@@ -27,3 +27,14 @@ export type ShareMapCardProps = {
   mapImageUrl: string
   participants: number
 }
+
+export type MarkerEditProps = {
+  isTextArea?: boolean
+  onDelete: () => void
+}
+
+export type LayerEditProps = {
+  title: string
+  isTextArea?: boolean
+  defaultOpen?: boolean
+}
