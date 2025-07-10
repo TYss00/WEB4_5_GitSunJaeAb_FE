@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { ChevronDown, ChevronUp, UserCog } from "lucide-react";
-import Button from "@/components/ui/Button";
+import { useState } from 'react';
+import { ChevronDown, ChevronUp, UserCog } from 'lucide-react';
+import Button from '@/components/ui/Button';
 
-const DROPDOWN_ITEMS = ["전체 사용자", "관리자", "블랙 리스트"];
+const DROPDOWN_ITEMS = ['전체 사용자', '관리자', '블랙 리스트'];
 
 const dummyEmails = [
-  { name: "지지", email: "jiji@naver.com" },
-  { name: "은은", email: "ee@naver.com" },
-  { name: "관리자1", email: "admin@admin.com" },
+  { name: '지지', email: 'jiji@naver.com' },
+  { name: '은은', email: 'ee@naver.com' },
+  { name: '관리자1', email: 'admin@admin.com' },
 ];
 
 export default function UserManagement() {
@@ -20,8 +20,8 @@ export default function UserManagement() {
   };
 
   return (
-    <div className="w-[350px] h-[310px] bg-white rounded-lg p-4 flex flex-col justify-start border border-[#E4E4E4]">
-      <div className="flex items-center gap-2 text-[#005C54] font-semibold text-[18px] mb-[16px]">
+    <div className="w-[350px] h-[310px] bg-[var(--white)] rounded-lg p-4 flex flex-col justify-start border border-[var(--gray-50)]">
+      <div className="flex items-center gap-2 text-[var(--primary-300)] font-semibold text-[18px] mb-[16px]">
         <UserCog size={20} className="mr-1" />
         사용자 관리
       </div>
@@ -30,7 +30,7 @@ export default function UserManagement() {
         {DROPDOWN_ITEMS.map((item) => (
           <div
             key={item}
-            className="border-t border-[#E4E4E4] first:border-t-1 last:border-b border-b-[#E4E4E4]"
+            className="border-t border-[var(--gray-50)] first:border-t-1 last:border-b border-b-[var(--gray-50)]"
           >
             <div
               className="flex items-center justify-between cursor-pointer py-2"
@@ -44,12 +44,16 @@ export default function UserManagement() {
               )}
             </div>
 
-            {openItem === item && item === "블랙 리스트" && (
+            {openItem === item && item === '블랙 리스트' && (
               <div className="bg-[#F5F5F5] px-[8px] py-[6px] text-[13px] space-y-[2px]">
                 {dummyEmails.map(({ name, email }) => (
                   <div key={email}>
-                    <span className="text-[15px] text-[#333] mr-1">{name}</span>
-                    <span className="text-[#7F7F7F] text-[13px]">{email}</span>
+                    <span className="text-[15px] text-[var(--black)] mr-1">
+                      {name}
+                    </span>
+                    <span className="text-[var(--gray-300)] text-[13px]">
+                      {email}
+                    </span>
                   </div>
                 ))}
                 <div className="flex justify-center gap-2 mt-[10px]">

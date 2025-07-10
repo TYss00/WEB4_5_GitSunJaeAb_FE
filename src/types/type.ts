@@ -48,4 +48,8 @@ export type LayerDetailProps = {
   title: string
   children: ReactNode
   defaultOpen?: boolean
+  
+export type ToggleProps = {
+  label: '공개' | '경로' | '애니메이션'
+  onChange?: (isActive: boolean) => void
 }
