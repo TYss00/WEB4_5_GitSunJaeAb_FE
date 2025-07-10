@@ -27,3 +27,8 @@ export type ShareMapCardProps = {
   mapImageUrl: string
   participants: number
 }
+
+export type ToggleProps = {
+  label: '공개' | '경로' | '애니메이션'
+  onChange?: (isActive: boolean) => void
+}

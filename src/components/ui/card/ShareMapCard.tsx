@@ -1,3 +1,5 @@
+'use client'
+
 import { ShareMapCardProps } from '@/types/type'
 
 export default function ShareMapCard({
