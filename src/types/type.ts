@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 export type RoadMapCardProps = {
   category: string
   mapImageUrl: string
@@ -33,8 +35,17 @@ export type MarkerEditProps = {
   onDelete: () => void
 }
 
+export type MarkerDetailProps = {
+  isTextArea?: boolean
+}
+
 export type LayerEditProps = {
   title: string
   isTextArea?: boolean
+  defaultOpen?: boolean
+}
+export type LayerDetailProps = {
+  title: string
+  children: ReactNode
   defaultOpen?: boolean
 }
