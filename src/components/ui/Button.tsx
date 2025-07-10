@@ -1,3 +1,5 @@
+import { twMerge } from 'tailwind-merge';
+
 type ButtonProps = {
   children: React.ReactNode;
   buttonStyle?: 'green' | 'white' | 'withIcon' | 'smGreen';
@@ -37,9 +39,9 @@ export default function Button({
     <button
       type={type}
       onClick={onClick}
-      className={`${baseStyle} ${styleByType} ${fullWidthStyle} ${
-        className ?? ''
-      }`}
+      className={twMerge(
+        `${baseStyle} ${styleByType} ${fullWidthStyle} ${className}`
+      )}
     >
       {icon && <span>{icon}</span>}
       {children}
