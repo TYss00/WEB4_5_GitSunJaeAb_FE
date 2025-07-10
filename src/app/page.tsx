@@ -1,4 +1,3 @@
-import LayerEdit from '@/components/ui/layer/LayerEdit'
 import Link from 'next/link'
 
 export default async function page() {
@@ -18,9 +17,6 @@ export default async function page() {
         </Link>
       </div>
       <h1>홈화면입니다.</h1>
-      <LayerEdit title="레이어1" />
-
-      <LayerEdit title="레이어2" isTextArea />
     </>
   )
 }
