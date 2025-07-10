@@ -41,11 +41,13 @@ export default function Header() {
           strokeWidth={1.7}
           className="cursor-pointer hover:text-[#005C54]"
         />
-        <CircleUserRound
-          size={25}
-          strokeWidth={1.7}
-          className="cursor-pointer hover:text-[#005C54]"
-        />
+        <Link href="/mypage">
+          <CircleUserRound
+            size={25}
+            strokeWidth={1.7}
+            className="cursor-pointer hover:text-[#005C54]"
+          />
+        </Link>
       </div>
     </header>
   );
