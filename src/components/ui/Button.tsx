@@ -22,13 +22,13 @@ export default function Button({
 
   const styleByType =
     buttonStyle === 'green'
-      ? 'bg-[#005C54] text-[#FFFFFF] rounded-[8px]'
+      ? 'bg-[#005C54] text-[#FFFFFF] rounded-[8px] cursor-pointer'
       : buttonStyle === 'white'
-      ? 'border border-[#005C54] text-[#005C54] bg-[#FFFFFF] rounded-[4px]'
+      ? 'border border-[#005C54] text-[#005C54] bg-[#FFFFFF] rounded-[4px] cursor-pointer'
       : buttonStyle === 'smGreen'
-      ? 'border border-[#005C54] text-[#FFFFFF] bg-[#005C54] rounded-[4px]'
+      ? 'border border-[#005C54] text-[#FFFFFF] bg-[#005C54] rounded-[4px] cursor-pointer'
       : buttonStyle === 'withIcon'
-      ? 'border border-[#9F9F9F] text-[#000000] bg-[#FFFFFF] rounded-[8px]'
+      ? 'border border-[#9F9F9F] text-[#000000] bg-[#FFFFFF] rounded-[8px] cursor-pointer'
       : '';
 
   const fullWidthStyle = fullWidth ? 'w-full' : '';
