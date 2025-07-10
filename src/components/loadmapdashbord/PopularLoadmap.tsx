@@ -12,7 +12,7 @@ export default function PopularLoadmap() {
         </div>
 
         <div className="relative flex-1 pl-8">
-          <div className="absolute w-[1200px] h-[430px] bg-[#005C54] rounded-tl-[200px] translate-x-[calc(100vw-100%)] -z-10" />
+          <div className="absolute 2xl:w-[1650px] w-[1200px] h-[430px] bg-[#005C54] rounded-tl-[200px] translate-x-[calc(100vw-100%)] -z-10" />
 
           <div className="relative flex gap-6 overflow-x-auto mt-[40px] pl-20 pr-4 items-end">
             <div className="absolute top-2 left-[505px] flex gap-2">
