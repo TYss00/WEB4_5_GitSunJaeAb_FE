@@ -14,7 +14,7 @@ export default function Login() {
   return (
     <div className="min-h-screen w-full px-6 py-16 flex flex-col justify-center">
       {/* 로고 */}
-      <h1 className="text-6xl font-bold text-[#005C54] mb-12 text-center">
+      <h1 className="text-6xl text-[var(--primary-300)] font-[vitro-core] mb-12 text-center">
         MAPICK
       </h1>
 

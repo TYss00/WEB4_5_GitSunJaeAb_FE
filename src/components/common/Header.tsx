@@ -1,6 +1,6 @@
 'use client';
 
-import { Bell, CircleUserRound, Search } from 'lucide-react'; // 아이콘 라이브러리
+import { Bell, CircleUserRound, Search } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Header() {
@@ -9,7 +9,7 @@ export default function Header() {
       {/* 로고 */}
       <Link
         href="/"
-        className="text-3xl font-bold text-[var(--primary-300)] font-[vitro-core]"
+        className="text-3xl text-[var(--primary-300)] font-[vitro-core]"
       >
         MAPICK
       </Link>
