@@ -13,7 +13,7 @@ export default async function QuestDetailPage({ params }: Props) {
     <>
       {/* 퀘스트 정보 */}
       <QuestDetailHeader />
-      <div className="mt-[30px] mx-auto w-[1100px]">
+      <div className="mt-[30px] mx-auto w-[1100px] pb-[50px]">
         <div className="flex gap-5">
           {/* 댓글 */}
           <Comment postId={questId} variant="quest" />

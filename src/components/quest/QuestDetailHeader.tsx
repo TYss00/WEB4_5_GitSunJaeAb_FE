@@ -1,8 +1,18 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { ChevronLeft, Heart, Eye, MoreVertical } from 'lucide-react';
+import {
+  ChevronLeft,
+  Heart,
+  Eye,
+  MoreVertical,
+  X,
+  Lightbulb,
+} from 'lucide-react';
+import { useState } from 'react';
 export default function QuestDetailHeader() {
   const router = useRouter();
+  const [isHintOpen, setIsHintOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   return (
     <div className="w-[1100px] m-auto">
       {/* 뒤로가기 */}
@@ -57,7 +67,42 @@ export default function QuestDetailHeader() {
       </div>
 
       {/* 퀘스트 이미지 */}
-      <div className="mt-4 bg-gray-400 w-[1100px] h-[500px] rounded-[10px]"></div>
+      <div
+        className="mt-4 bg-gray-400 w-[1100px] h-[500px] rounded-[10px] relative"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        {/* 힌트 */}
+        {(isHovered || isHintOpen) && (
+          <button
+            onClick={() => setIsHintOpen((prev) => !prev)}
+            className={`absolute top-4 right-4 flex items-center gap-2 px-4 py-2 
+              rounded-[6px] text-[16px] font-medium transition bg-[var(--white)]/60 cursor-pointer
+            ${
+              isHintOpen ? ' text-[var(--red)]' : ' text-[var(--primary-300)]'
+            }`}
+          >
+            {isHintOpen ? (
+              <>
+                <X size={20} />
+                힌트 닫기
+              </>
+            ) : (
+              <>
+                <Lightbulb size={20} />
+                힌트 보기
+              </>
+            )}
+          </button>
+        )}
+      </div>
+      {/* 힌트 내용 */}
+      {isHintOpen && (
+        <div className="mt-3 bg-[var(--gray-40)]/80 border-l-2 border-[var(--primary-300)] p-3 text-sm text-[var(--gray-700)]">
+          이곳은 바닷가 근처에 있는 오래된 등대가 있는 곳이에요. <br />
+          낮에는 관광객이 많고, 밤에는 조명이 아름다워요!
+        </div>
+      )}
     </div>
   );
 }

@@ -1,7 +1,8 @@
 'use client';
-
 import { useState } from 'react';
-import Button from '../ui/Button';
+import QuestPlayList from './QuestPlayList';
+import QuestPlayView from './QuestPlayView';
+import QuestPlayForm from './QuestPlayForm';
 
 type Answer = {
   id: number;
@@ -9,70 +10,61 @@ type Answer = {
   user: string;
   date: string;
   type: '정답' | '오답' | '참여';
+  content: string;
+  profileImage?: string;
 };
 
 // 임시 더미데이터
 const dummyAnswers: Answer[] = [
-  { id: 1, title: '여기잖아', user: '지지', date: '2025.07.07', type: '정답' },
-  { id: 2, title: '여기 아님', user: '코코', date: '2025.07.08', type: '오답' },
-  { id: 3, title: '확실해', user: '루비', date: '2025.07.09', type: '참여' },
+  {
+    id: 1,
+    title: '여기잖아',
+    user: '지지',
+    date: '2025.07.07',
+    type: '정답',
+    content: '여기에서 발견했어요. 확실해요!',
+  },
+  {
+    id: 2,
+    title: '여기 아님',
+    user: '코코',
+    date: '2025.07.08',
+    type: '오답',
+    content: '여기 아닌 것 같아요. 위치가 다릅니다.',
+  },
+  {
+    id: 3,
+    title: '확실해',
+    user: '루비',
+    date: '2025.07.09',
+    type: '참여',
+    content: '저는 여기인 것 같아서 찍어봤어요.',
+  },
 ];
 
 export default function QuestDetailPlay() {
-  const [activeTab, setActiveTab] = useState('전체');
-  const tabs = ['전체', '정답', '오답'];
+  // 퀘스트리스트 -> 상세
+  const [selectedAnswer, setSelectedAnswer] = useState<Answer | null>(null);
 
-  const filtered =
-    activeTab === '전체'
-      ? dummyAnswers
-      : dummyAnswers.filter((item) => item.type === activeTab);
+  // 참여하기폼열기
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   return (
-    <div className="w-[428px] border border-[var(--gray-200)] rounded-[10px] p-4">
-      {/* 탭메뉴 */}
-      <ul className="flex gap-4 mb-4">
-        {tabs.map((tab) => (
-          <li
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-1 cursor-pointer transition-all ${
-              activeTab === tab
-                ? 'text-[var(--primary-300)] font-semibold'
-                : 'text-[var(--gray-300)]'
-            }`}
-          >
-            {tab}
-          </li>
-        ))}
-      </ul>
-      {/* 리스트 */}
-      {filtered.map((item) => (
-        <div key={item.id} className="flex gap-3 mb-4">
-          <div className="bg-gray-600 relative w-[160px] h-[100px] rounded-[10px]">
-            <span
-              className={`absolute bottom-1.5 left-1.5 text-white rounded-[10px] ${
-                item.type === '정답'
-                  ? 'bg-[var(--primary-200)] px-2.5 py-1'
-                  : item.type === '오답'
-                  ? 'bg-[var(--red)] px-2.5 py-1'
-                  : 'hidden'
-              }`}
-            >
-              {item.type}
-            </span>
-          </div>
-          <div className="py-2.5 flex flex-col justify-between">
-            <h4 className="text-[18px] font-medium">{item.title}</h4>
-            <div>
-              <p className="font-medium text-sm">{item.user}</p>
-              <p className="text-[13px] text-[var(--gray-200)]">{item.date}</p>
-            </div>
-          </div>
-        </div>
-      ))}
-      <Button buttonStyle="green" className="w-full text-[15px] h-[38px]">
-        참여하기
-      </Button>
-    </div>
+    <>
+      {selectedAnswer ? (
+        <QuestPlayView
+          answer={selectedAnswer}
+          onBack={() => setSelectedAnswer(null)}
+        />
+      ) : isFormOpen ? (
+        <QuestPlayForm onBack={() => setIsFormOpen(false)} />
+      ) : (
+        <QuestPlayList
+          answers={dummyAnswers}
+          onSelect={(answer) => setSelectedAnswer(answer)}
+          onFormOpen={() => setIsFormOpen(true)}
+        />
+      )}
+    </>
   );
 }
