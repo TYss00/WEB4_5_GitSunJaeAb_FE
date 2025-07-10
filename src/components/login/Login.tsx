@@ -34,7 +34,7 @@ export default function Login() {
           <button
             type="button"
             onClick={togglePassword}
-            className="absolute right-3 bottom-3 text-[#005C54]"
+            className="absolute right-3 bottom-3 text-[var(--primary-300)]"
           >
             {passwordVisible ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
@@ -67,11 +67,11 @@ export default function Login() {
         </Button>
 
         {/* 회원가입 안내 */}
-        <p className="text-sm text-center text-black">
+        <p className="text-sm text-center text-[var(--black)]">
           계정이 없으신가요?{' '}
           <Link
             href="/register"
-            className="text-[#005C54] font-semibold cursor-pointer hover:underline"
+            className="text-[var(--primary-300)] font-semibold cursor-pointer hover:underline"
           >
             회원가입하기
           </Link>
