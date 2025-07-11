@@ -46,6 +46,7 @@ export default function NotFound() {
             src="/assets/404.svg"
             alt="404"
             fill
+            priority
             className="object-contain z-0"
           />
 

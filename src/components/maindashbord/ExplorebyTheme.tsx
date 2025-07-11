@@ -33,6 +33,7 @@ export default function ExplorebyTheme() {
           src="/assets/maindashbord.svg"
           alt="masked"
           fill
+          priority
           className="object-cover"
         />
       </div>
