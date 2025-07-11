@@ -18,12 +18,12 @@ export default function LayerEdit({
   }
   return (
     <>
-      <div className="w-[490px]">
+      <div className="w-full">
         <div
           className={`flex justify-between px-[15px] h-[55px]  cursor-pointer transition-colors ${
             isOpen
               ? 'bg-[#EBF2F2] rounded-t-[5px]'
-              : 'bg-[var(--gray-30)] rounded-[5px]'
+              : 'bg-[var(--gray-40)] rounded-[5px]'
           }`}
           onClick={() => setIsOpen((prev) => !prev)}
         >
@@ -64,7 +64,7 @@ export default function LayerEdit({
             ))}
             <div
               onClick={addMarker}
-              className="w-[470px] h-[44px] flex justify-center items-center rounded-[5px] bg-[var(--primary-100)] cursor-pointer"
+              className="w-full h-[44px] flex justify-center items-center rounded-[5px] bg-[var(--primary-100)] cursor-pointer"
             >
               <Plus size={24} color="white" />
             </div>
