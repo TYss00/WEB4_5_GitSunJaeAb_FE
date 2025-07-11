@@ -1,9 +1,9 @@
-import Loadmapwrite from '@/components/loadmap/Loadmapwrite';
+import LoadMapWrite from '@/components/loadmap/LoadMapWrite';
 
 export default async function page() {
   return (
     <>
-      <Loadmapwrite />
+      <LoadMapWrite />
     </>
   );
 }

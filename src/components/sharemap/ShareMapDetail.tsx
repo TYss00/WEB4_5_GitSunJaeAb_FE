@@ -1,17 +1,18 @@
-'use client'
+'use client';
 
-import Image from 'next/image'
-import { useState } from 'react'
-import Button from '@/components/ui/Button'
-import { Calendar, ChevronLeft, Eye, Heart, MapPin, Siren } from 'lucide-react'
-import HistoryModal from './HistoryModal'
-import ReportModal from '../common/modal/ReportModal'
-import Comment from '../comment/Comment'
+import Image from 'next/image';
+import { useState } from 'react';
+import Button from '@/components/ui/Button';
+import { Calendar, ChevronLeft, Eye, Heart, MapPin, Siren } from 'lucide-react';
+import HistoryModal from './HistoryModal';
+import ReportModal from '../common/modal/ReportModal';
+import Comment from '../comment/Comment';
+import Link from 'next/link';
 
 export default function ShareMapDetail() {
-  const [showAllParticipants, setShowAllParticipants] = useState(false)
-  const [showHistoryModal, setShowHistoryModal] = useState(false)
-  const [isReportOpen, setIsReportOpen] = useState(false)
+  const [showAllParticipants, setShowAllParticipants] = useState(false);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
 
   return (
     <>
@@ -71,15 +72,17 @@ export default function ShareMapDetail() {
           <HistoryModal onClose={() => setShowHistoryModal(false)} />
         )}
 
-        <div className="w-full h-[500px] bg-[var(--gray-200)] rounded-[10px] overflow-hidden mb-[30px] relative">
-          <Image
-            src="/assets/sampleMap.png"
-            alt="지도 이미지"
-            fill
-            priority
-            className="object-cover"
-          />
-        </div>
+        <Link href="/sharemap/shareclickdetail">
+          <div className="w-full h-[500px] bg-[var(--gray-200)] rounded-[10px] overflow-hidden mb-[30px] relative">
+            <Image
+              src="/assets/sampleMap.png"
+              alt="지도 이미지"
+              fill
+              priority
+              className="object-cover"
+            />
+          </div>
+        </Link>
 
         <div className="flex gap-6">
           <section className="flex-1">
@@ -93,7 +96,7 @@ export default function ShareMapDetail() {
             <div className="space-y-[16px]">
               {Array.from({ length: 10 }, (_, i) => `짱아${i + 1}`).map(
                 (name, idx) => {
-                  if (!showAllParticipants && idx >= 4) return null
+                  if (!showAllParticipants && idx >= 4) return null;
                   return (
                     <div key={idx} className="flex items-center gap-2 mb-4">
                       <Image
@@ -107,7 +110,7 @@ export default function ShareMapDetail() {
                         {name}
                       </span>
                     </div>
-                  )
+                  );
                 }
               )}
             </div>
@@ -124,5 +127,5 @@ export default function ShareMapDetail() {
       </main>
       {isReportOpen && <ReportModal onClose={() => setIsReportOpen(false)} />}
     </>
-  )
+  );
 }

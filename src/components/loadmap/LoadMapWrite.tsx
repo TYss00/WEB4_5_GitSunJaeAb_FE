@@ -1,12 +1,12 @@
-'use client'
+'use client';
 
-import { ChevronDown, Plus } from 'lucide-react'
-import Button from '../ui/Button'
-import Input from '../ui/Input'
-import Toggle from '../ui/Toggle'
-import LayerEdit from '../ui/layer/LayerEdit'
+import { ChevronDown, Plus } from 'lucide-react';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
+import Toggle from '../ui/Toggle';
+import LayerEdit from '../ui/layer/LayerEdit';
 
-export default function Loadmapwrite() {
+export default function LoadMapWrite() {
   return (
     <section className="flex min-h-screen">
       {/* 왼쪽 지도 */}
@@ -151,5 +151,5 @@ export default function Loadmapwrite() {
         </div>
       </div>
     </section>
-  )
+  );
 }

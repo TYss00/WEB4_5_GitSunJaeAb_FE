@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
 import {
   Heart,
   Siren,
@@ -9,16 +9,16 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronsRight,
-} from 'lucide-react'
-import Button from '../ui/Button'
-import ReportModal from '../common/modal/ReportModal'
-import Comment from '../comment/Comment'
-import Toggle from '../ui/Toggle'
-import LayerDetail from '../ui/layer/LayerDetail'
-import MarkerDetail from '../ui/layer/MarkerDetail'
+} from 'lucide-react';
+import Button from '../ui/Button';
+import ReportModal from '../common/modal/ReportModal';
+import Comment from '../comment/Comment';
+import Toggle from '../ui/Toggle';
+import LayerDetail from '../ui/layer/LayerDetail';
+import MarkerDetail from '../ui/layer/MarkerDetail';
 
 export default function Loadmapdetail() {
-  const [isReportOpen, setIsReportOpen] = useState(false)
+  const [isReportOpen, setIsReportOpen] = useState(false);
 
   return (
     <>
@@ -140,5 +140,5 @@ export default function Loadmapdetail() {
       </section>
       {isReportOpen && <ReportModal onClose={() => setIsReportOpen(false)} />}
     </>
-  )
+  );
 }

@@ -60,7 +60,7 @@ export default function CardList({ type }: CardListProps) {
                 description="서울 명소를 여행하는 로드맵입니다."
                 hashtags={['서울', '여행', '명소']}
                 mapImageUrl="/map.png"
-                profileImgUrl="/profile.jpg"
+                profileImgUrl="/assets/google.svg"
                 author="지지지"
                 viewCount={100}
                 shareCount={10}
@@ -85,7 +85,7 @@ export default function CardList({ type }: CardListProps) {
                 title={'서울 퀘스트'}
                 description="광화문 근처의 포인트를 클리어해보세요."
                 hashtags={['광화문', '퀘스트', '도전']}
-                profileImgUrl="/profile.jpg"
+                profileImgUrl="/assets/google.svg"
                 author="지지지"
                 deadLine="2025-07-20"
               />
