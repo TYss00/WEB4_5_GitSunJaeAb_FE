@@ -9,7 +9,7 @@ export default async function page() {
       <Banner title="로드맵" subtitle="로드맵 설명글" />
       <PopularLoadmap />
       <CardList type="roadmap" />
-      <WriteButton />
+      <WriteButton type="roadmap" />
     </>
   );
 }

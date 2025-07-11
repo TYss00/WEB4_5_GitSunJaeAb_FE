@@ -12,7 +12,7 @@ import {
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 
-export default function Loadmapwrite() {
+export default function LoadMapWrite() {
   const [routeEnabled, setRouteEnabled] = useState(true);
 
   return (

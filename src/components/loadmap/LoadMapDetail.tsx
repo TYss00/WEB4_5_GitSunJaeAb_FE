@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
 import {
   Heart,
   Siren,
@@ -13,14 +13,14 @@ import {
   Route,
   ChevronLeft,
   ChevronsRight,
-} from 'lucide-react'
-import Button from '../ui/Button'
-import ReportModal from '../common/modal/ReportModal'
+} from 'lucide-react';
+import Button from '../ui/Button';
+import ReportModal from '../common/modal/ReportModal';
 
-export default function Loadmapdetail() {
-  const [routeEnabled, setRouteEnabled] = useState(true)
-  const [animationEnabled, setAnimationEnabled] = useState(true)
-  const [isReportOpen, setIsReportOpen] = useState(false)
+export default function LoadMapDetail() {
+  const [routeEnabled, setRouteEnabled] = useState(true);
+  const [animationEnabled, setAnimationEnabled] = useState(true);
+  const [isReportOpen, setIsReportOpen] = useState(false);
 
   return (
     <>
@@ -201,5 +201,5 @@ export default function Loadmapdetail() {
       </section>
       {isReportOpen && <ReportModal onClose={() => setIsReportOpen(false)} />}
     </>
-  )
+  );
 }

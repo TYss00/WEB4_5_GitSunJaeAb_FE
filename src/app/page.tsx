@@ -28,11 +28,14 @@ export default async function page() {
           <button>공유지도 디테일</button>
         </Link>
 
+        <Link href="/dashbord/quest/main/1">
+          <button>퀘스트 디테일</button>
+        </Link>
+
         <Link href="/admin">
           <button>관리자페이지</button>
         </Link>
       </div>
-      <h1>홈화면입니다.</h1>
     </>
   );
 }
