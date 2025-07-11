@@ -9,6 +9,7 @@ export default function MypageCard({
   date,
   type,
   mapImageUrl,
+  author,
   isLiked = false,
   onToggleLike,
 }: MypageCardProps & { onToggleLike?: () => void }) {
@@ -44,12 +45,10 @@ export default function MypageCard({
         </span>
       </div>
 
-      {/* 텍스트, 제목,날짜,하트 */}
+      {/* 텍스트 제목,날짜,하트 */}
       <div className="p-3 pl-4 2xl:p-5 flex flex-col h-1/3">
-        <p className="text-base text-[var(--black)] pt-1">{title}</p>
-
-        <div className="flex items-center justify-between pt-1 pb-2">
-          <p className="text-sm text-[var(--gray-200)]">{date}</p>
+        <div className="flex items-start justify-between">
+          <p className="text-base text-[var(--black)] pt-1">{title}</p>
           <button
             onClick={onToggleLike}
             className="w-6 h-6 flex items-center justify-center text-[var(--gray-200)]"
@@ -57,12 +56,25 @@ export default function MypageCard({
             <Heart
               size={16}
               strokeWidth={3}
-              fill={isLiked ? '#f87171' : 'none'}
+              fill={isLiked ? 'var(--red)' : 'none'}
               className={`transition-colors ${
                 isLiked ? 'text-[var(--red)]' : 'text-[var(--gray-200)]'
               }`}
             />
           </button>
+        </div>
+
+        <div className="pt-1 flex justify-between items-center">
+          {author ? (
+            <>
+              <p className="text-sm text-[var(--gray-200)]">{author}</p>
+              <p className="text-sm text-[var(--gray-200)] pr-1">{date}</p>
+            </>
+          ) : (
+            <p className="text-sm text-[var(--gray-200)] pr-1 ml-auto">
+              {date}
+            </p>
+          )}
         </div>
       </div>
     </div>
