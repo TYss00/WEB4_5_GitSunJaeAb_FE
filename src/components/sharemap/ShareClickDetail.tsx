@@ -13,13 +13,17 @@ import {
   ChevronRight,
   ChevronLeft,
   Navigation,
+  MapPin,
+  Calendar,
 } from 'lucide-react';
 import Button from '../ui/Button';
+import ReportModal from '../common/modal/ReportModal';
 
 export default function ShareClickDetail() {
   const [routeEnabled, setRouteEnabled] = useState(true);
   const [animationEnabled, setAnimationEnabled] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isReportOpen, setIsReportOpen] = useState(false);
 
   return (
     <section className="relative w-full h-screen overflow-hidden">
@@ -84,22 +88,34 @@ export default function ShareClickDetail() {
         </div>
 
         <div className="flex items-center justify-between mb-3">
-          {/* 카테고리 */}
-          <span className="bg-[#005C54] text-white text-sm px-3 py-1 rounded-2xl">
-            게임
-          </span>
+          {/* 위치/날짜/좋아요/조회수/신고 */}
+          <div className="flex items-center gap-[12px] text-[13px] text-[var(--gray-200)]">
+            <div className="flex items-center gap-[4px]">
+              <MapPin size={16} />
+              <span>Seoul</span>
+            </div>
+            <div className="flex items-center gap-[4px]">
+              <Calendar size={16} />
+              <span>2025.07.14</span>
+            </div>
+          </div>
 
-          {/* 좋아요/조회수/신고 */}
-          <div className="flex gap-4 text-gray-700 text-sm items-center">
-            <span className="flex items-center gap-1">
-              <Heart size={16} strokeWidth={3} /> 4
-            </span>
-            <span className="flex items-center gap-1">
-              <Eye size={16} strokeWidth={3} /> 22
-            </span>
-            <span className="flex items-center gap-1">
-              <Siren size={16} strokeWidth={3} />
-            </span>
+          <div className="flex items-center gap-4 text-[15px] text-[var(--black)]">
+            <div className="flex items-center gap-1">
+              <Heart size={18} />
+              <span>4</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Eye size={18} />
+              <span>22</span>
+            </div>
+            <button>
+              <Siren
+                size={18}
+                className="cursor-pointer"
+                onClick={() => setIsReportOpen(true)}
+              />
+            </button>
           </div>
         </div>
 
@@ -197,6 +213,7 @@ export default function ShareClickDetail() {
           </Button>
         </div>
       </div>
+      {isReportOpen && <ReportModal onClose={() => setIsReportOpen(false)} />}
     </section>
   );
 }
