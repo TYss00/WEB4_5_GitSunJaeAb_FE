@@ -5,6 +5,7 @@ import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import { Calendar, ChevronLeft, Eye, Heart, MapPin, Siren } from 'lucide-react';
 import HistoryModal from './HistoryModal';
+import Link from 'next/link';
 
 export default function ShareMapDetail() {
   const [showAllParticipants, setShowAllParticipants] = useState(false);
@@ -65,15 +66,17 @@ export default function ShareMapDetail() {
         <HistoryModal onClose={() => setShowHistoryModal(false)} />
       )}
 
-      <div className="w-full h-[500px] bg-[var(--gray-200)] rounded-[10px] overflow-hidden mb-[30px] relative">
-        <Image
-          src="/assets/sampleMap.png"
-          alt="지도 이미지"
-          fill
-          priority
-          className="object-cover"
-        />
-      </div>
+      <Link href="/sharemap/shareclickdetail">
+        <div className="w-full h-[500px] bg-[var(--gray-200)] rounded-[10px] overflow-hidden mb-[30px] relative">
+          <Image
+            src="/assets/sampleMap.png"
+            alt="지도 이미지"
+            fill
+            priority
+            className="object-cover"
+          />
+        </div>
+      </Link>
 
       <div className="flex gap-6">
         <section className="flex-1">
