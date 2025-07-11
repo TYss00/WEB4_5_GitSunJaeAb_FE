@@ -28,6 +28,10 @@ export default async function page() {
           <button>공유지도 디테일</button>
         </Link>
 
+        <Link href="/sharemap/shareclickdetail">
+          <button>공유지도 보여주기</button>
+        </Link>
+
         <Link href="/dashbord/quest/main/1">
           <button>퀘스트 디테일</button>
         </Link>
