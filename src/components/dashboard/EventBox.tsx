@@ -30,7 +30,7 @@ export default function EventBox({ type }: CardListProps) {
                 title={`서울 퀘스트 ${i + 1}`}
                 description="광화문 근처의 포인트를 클리어해보세요."
                 hashtags={['광화문', '퀘스트', '도전']}
-                profileImgUrl="/profile.jpg"
+                profileImgUrl="/assets/google.svg"
                 author="지지지"
                 deadLine="2025-07-20"
               />
