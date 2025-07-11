@@ -48,11 +48,11 @@ export default function LayerEdit({
         <div
           className={`transition-all duration-300 overflow-hidden ${
             isOpen
-              ? 'max-h-[500px] bg-[#EBF2F2] opacity-100'
+              ? 'max-h-[633px] bg-[#EBF2F2] opacity-100'
               : 'max-h-0 opacity-0'
           }`}
         >
-          <div className="p-[10px]  rounded-b-[5px] flex flex-col gap-[15px]">
+          <div className="p-[10px] max-h-[633px] overflow-y-auto rounded-b-[5px] flex flex-col gap-[15px]">
             {markers.map((marker) => (
               <MarkerEdit
                 key={marker.id}
@@ -64,7 +64,7 @@ export default function LayerEdit({
             ))}
             <div
               onClick={addMarker}
-              className="w-full h-[44px] flex justify-center items-center rounded-[5px] bg-[var(--primary-100)] cursor-pointer"
+              className="w-full min-h-[44px] flex justify-center items-center rounded-[5px] bg-[var(--primary-100)] cursor-pointer"
             >
               <Plus size={24} color="white" />
             </div>
