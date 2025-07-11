@@ -8,12 +8,12 @@ export default function CommentItem() {
   const [isReportOpen, setIsReportOpen] = useState(false)
   return (
     <>
-      <li className="pb-4">
+      <li className="flex flex-col gap-2 py-2">
         <div className="flex items-center gap-2">
           {/* 프로필이미지 */}
           <div className="size-[34px] bg-gray-500 rounded-full"></div>
           {/* 작성자 + 작성일 */}
-          <div>
+          <div className="w-full">
             <div className="flex w-full justify-between">
               <h4 className="text-[15px] font-medium">짱아</h4>
               <Siren

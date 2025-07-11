@@ -30,7 +30,7 @@ export default function MarkerEdit({ isTextArea, onDelete }: MarkerEditProps) {
   }
   return (
     <>
-      <div className="flex flex-col justify-between px-[15px] py-[13px] w-[470px] rounded-[5px] border border-[var(--primary-100)] bg-[var(--white)]">
+      <div className="flex flex-col justify-between px-[15px] py-[13px] w-full rounded-[5px] border border-[var(--primary-100)] bg-[var(--white)]">
         <div className="flex justify-between items-center mb-[3px]">
           <div className="flex gap-[10px] items-center">
             <MapPin size={24} color="var(--primary-100)" />

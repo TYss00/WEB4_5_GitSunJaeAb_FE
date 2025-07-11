@@ -1,20 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import {
-  Eye,
-  Layers,
-  ChevronDown,
-  ChevronUp,
-  Trash2,
-  Plus,
-} from 'lucide-react';
+import { ChevronDown, Plus } from 'lucide-react';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
+import Toggle from '../ui/Toggle';
+import LayerEdit from '../ui/layer/LayerEdit';
 
 export default function LoadMapWrite() {
-  const [routeEnabled, setRouteEnabled] = useState(true);
-
   return (
     <section className="flex min-h-screen">
       {/* 왼쪽 지도 */}
@@ -101,25 +93,7 @@ export default function LoadMapWrite() {
           </div>
         </div>
 
-        {/* 공개토글 (공용 컴포넌트로 교체예정) */}
-        <div className="flex items-center justify-between mt-4">
-          <div className="flex items-center gap-2 text-sm text-black">
-            <Eye size={16} />
-            공개(공용 컴포넌트로 교체예정)
-          </div>
-          <button
-            onClick={() => setRouteEnabled(!routeEnabled)}
-            className={`w-10 h-5 flex items-center rounded-full p-1 transition-colors duration-300 ${
-              routeEnabled ? 'bg-[#005C54]' : 'bg-gray-300'
-            }`}
-          >
-            <div
-              className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
-                routeEnabled ? 'translate-x-5' : ''
-              }`}
-            />
-          </button>
-        </div>
+        <Toggle label="공개" />
 
         {/* 레이어 (공용 컴포넌트로 교체예정) */}
         <div className="border-t border-gray-300 pt-6">
@@ -161,47 +135,18 @@ export default function LoadMapWrite() {
           </div>
 
           <div className="space-y-3">
-            {[1, 1, 3].map((num, idx) => (
-              <div
-                key={idx}
-                className={`border rounded-lg p-3 ${
-                  num === 3 ? 'bg-[#E7F0EF] border-[#CCE6E2]' : 'bg-white'
-                }`}
-              >
-                <div className="flex justify-between items-center">
-                  <span className="flex items-center gap-1 text-sm">
-                    <Layers size={16} />
-                    레이어{num}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <Trash2
-                      size={16}
-                      className="cursor-pointer text-[#EE0707]"
-                    />
-                    <ChevronUp size={16} />
-                  </div>
-                </div>
-              </div>
-            ))}
+            <LayerEdit title="레이어1" isTextArea />
+            <LayerEdit title="레이어1" isTextArea />
+            <LayerEdit title="레이어1" isTextArea />
           </div>
 
-          {/* 레이어 상세 (공용 컴포넌트로 교체예정) */}
-          <div className="mt-8">
-            <div className="h-[200px] border border-dashed rounded-lg flex items-center justify-center text-gray-400 text-sm">
-              레이어 상세 영역 (컴포넌트 삽입 예정)
-            </div>
-
-            <div className="flex justify-end mt-4 gap-2">
-              <Button buttonStyle="white" className="text-sm w-[60px] h-[35px]">
-                취소
-              </Button>
-              <Button
-                buttonStyle="smGreen"
-                className="text-sm w-[60px] h-[35px]"
-              >
-                완료
-              </Button>
-            </div>
+          <div className="flex justify-end mt-4 gap-2">
+            <Button buttonStyle="white" className="text-sm w-[60px] h-[35px]">
+              취소
+            </Button>
+            <Button buttonStyle="smGreen" className="text-sm w-[60px] h-[35px]">
+              완료
+            </Button>
           </div>
         </div>
       </div>

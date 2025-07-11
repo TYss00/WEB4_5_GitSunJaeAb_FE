@@ -13,12 +13,12 @@ export default function LayerDetail({
 
   return (
     <>
-      <div className="w-[490px]">
+      <div className="w-full">
         <div
           className={`flex justify-between px-[15px] h-[55px]  cursor-pointer transition-colors ${
             isOpen
               ? 'bg-[#EBF2F2] rounded-t-[5px]'
-              : 'bg-[var(--gray-30)] rounded-[5px]'
+              : 'bg-[var(--gray-40)] rounded-[5px]'
           }`}
           onClick={() => setIsOpen((prev) => !prev)}
         >
@@ -43,11 +43,11 @@ export default function LayerDetail({
         <div
           className={`transition-all duration-300 overflow-hidden ${
             isOpen
-              ? 'max-h-[500px] bg-[#EBF2F2] opacity-100'
+              ? 'max-h-[633px] bg-[#EBF2F2] opacity-100'
               : 'max-h-0 opacity-0'
           }`}
         >
-          <div className="p-[10px]  rounded-b-[5px] flex flex-col gap-[15px]">
+          <div className="p-[10px] rounded-b-[5px] flex flex-col gap-[15px] max-h-[633px] overflow-y-auto">
             {children}
           </div>
         </div>
