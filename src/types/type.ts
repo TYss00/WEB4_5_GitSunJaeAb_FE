@@ -29,6 +29,7 @@ export type ShareMapCardProps = {
   title: string;
   mapImageUrl: string;
   participants: number;
+  className?: string;
 };
 
 export type CardListProps = {
