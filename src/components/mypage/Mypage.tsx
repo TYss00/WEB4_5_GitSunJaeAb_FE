@@ -44,7 +44,7 @@ export default function Mypage() {
       </div>
 
       {/* 카드 or 테이블 */}
-      <div className="overflow-x-auto mt-4">
+      <div className="overflow-hidden mt-4">
         {activeTab === '레이어' ? <MypageLayer /> : <MypagePost />}
       </div>
     </section>

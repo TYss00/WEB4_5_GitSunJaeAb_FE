@@ -1,27 +1,50 @@
+'use client';
+
+import { useState } from 'react';
+import MypageCard from '../ui/card/MypageCard';
+
 export default function MypagePost() {
+  const [cards, setCards] = useState(
+    Array(8)
+      .fill(null)
+      .map((_, idx) => ({
+        id: idx,
+        title: '서울 야경 따라',
+        date: '2025.07.07',
+        type:
+          idx % 4 === 0
+            ? '공개'
+            : idx % 4 === 1
+            ? '비공개'
+            : idx % 4 === 2
+            ? '퀘스트'
+            : '공유',
+        imageUrl: '/map.png',
+        isLiked: idx % 3 === 0,
+      }))
+  );
+
+  const toggleLike = (id: number) => {
+    setCards((prev) =>
+      prev.map((card) =>
+        card.id === id ? { ...card, isLiked: !card.isLiked } : card
+      )
+    );
+  };
+
   return (
-    // 공용컴포넌트 만들어지면 채워야할곳
     <div className="grid grid-cols-4 gap-6">
-      {Array(8)
-        .fill(null)
-        .map((_, idx) => (
-          <div
-            key={idx}
-            className="rounded-lg overflow-hidden bg-white shadow-sm"
-          >
-            <div className="relative w-full h-[150px] bg-gray-200">
-              <span className="absolute top-2 right-2 text-xs bg-green-200 text-green-800 px-2 py-1 rounded">
-                공개
-              </span>
-            </div>
-            <div className="p-4">
-              <p className="text-base font-semibold text-[#222222] mb-1">
-                서울 야경 따라
-              </p>
-              <p className="text-sm text-[#9F9F9F]">2025.07.07</p>
-            </div>
-          </div>
-        ))}
+      {cards.map((card) => (
+        <MypageCard
+          key={card.id}
+          title={card.title}
+          date={card.date}
+          type={card.type as '공개' | '비공개' | '퀘스트' | '공유'}
+          mapImageUrl={card.imageUrl}
+          isLiked={card.isLiked}
+          onToggleLike={() => toggleLike(card.id)}
+        />
+      ))}
     </div>
   );
 }

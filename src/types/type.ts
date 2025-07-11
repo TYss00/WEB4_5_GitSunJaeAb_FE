@@ -32,6 +32,14 @@ export type ShareMapCardProps = {
   className?: string;
 };
 
+export type MypageCardProps = {
+  title: string;
+  date: string;
+  type: '공개' | '비공개' | '퀘스트' | '공유';
+  mapImageUrl: string;
+  isLiked?: boolean;
+};
+
 export type CardListProps = {
   type?: 'roadmap' | 'sharemap' | 'quest';
 };
