@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button'
 import { Calendar, ChevronLeft, Eye, Heart, MapPin, Siren } from 'lucide-react'
 import HistoryModal from './HistoryModal'
 import ReportModal from '../common/modal/ReportModal'
+import Comment from '../comment/Comment'
 
 export default function ShareMapDetail() {
   const [showAllParticipants, setShowAllParticipants] = useState(false)
@@ -40,13 +41,11 @@ export default function ShareMapDetail() {
               <Eye size={18} />
               <span>22</span>
             </div>
-            <button>
-              <Siren
-                size={18}
-                className="cursor-pointer"
-                onClick={() => setIsReportOpen(true)}
-              />
-            </button>
+            <Siren
+              size={18}
+              className="cursor-pointer"
+              onClick={() => setIsReportOpen(true)}
+            />
           </div>
         </div>
 
@@ -84,8 +83,8 @@ export default function ShareMapDetail() {
 
         <div className="flex gap-6">
           <section className="flex-1">
-            <div className="w-full h-[200px] bg-[var(--gray-100)] border border-dashed border-[#CCC] rounded-md flex items-center justify-center text-[#999]">
-              댓글 컴포넌트
+            <div className="w-full h-[360px] py-4 rounded-md flex items-center justify-center">
+              <Comment postId="adf" />
             </div>
           </section>
 
