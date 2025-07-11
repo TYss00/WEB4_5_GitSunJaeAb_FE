@@ -1,9 +1,9 @@
-import Loadmapdetail from '@/components/loadmap/Loadmapdetail';
+import LoadMapDetail from '@/components/loadmap/LoadMapDetail';
 
 export default async function page() {
   return (
     <>
-      <Loadmapdetail />
+      <LoadMapDetail />
     </>
   );
 }
