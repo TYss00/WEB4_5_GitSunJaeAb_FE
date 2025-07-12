@@ -1,55 +1,66 @@
-import { ReactNode } from 'react'
+import { ReactNode } from 'react';
 
 export type RoadMapCardProps = {
-  category: string
-  mapImageUrl: string
-  title: string
-  description: string
-  hashtags: string[]
-  profileImgUrl: string
-  author: string
-  viewCount: number
-  shareCount: number
-}
+  category: string;
+  mapImageUrl: string;
+  title: string;
+  description: string;
+  hashtags: string[];
+  profileImgUrl: string;
+  author: string;
+  viewCount: number;
+  shareCount: number;
+};
 
 export type QuestCardProps = {
-  isInProgress?: boolean
-  mapImageUrl: string
-  title: string
-  description: string
-  hashtags: string[]
-  profileImgUrl: string
-  author: string
-  deadLine: string
-}
+  isInProgress?: boolean;
+  mapImageUrl: string;
+  title: string;
+  description: string;
+  hashtags: string[];
+  profileImgUrl: string;
+  author: string;
+  deadLine: string;
+};
 
 export type ShareMapCardProps = {
-  isEvent?: boolean
-  title: string
-  mapImageUrl: string
-  participants: number
-}
+  isEvent?: boolean;
+  title: string;
+  mapImageUrl: string;
+  participants: number;
+};
 
 export type MarkerEditProps = {
-  isTextArea?: boolean
-  onDelete: () => void
-}
+  isTextArea?: boolean;
+  onDelete: () => void;
+};
 
 export type MarkerDetailProps = {
-  isTextArea?: boolean
-}
+  isTextArea?: boolean;
+};
 
 export type LayerEditProps = {
-  title: string
-  isTextArea?: boolean
-  defaultOpen?: boolean
-}
+  title: string;
+  isTextArea?: boolean;
+  defaultOpen?: boolean;
+};
 export type LayerDetailProps = {
-  title: string
-  children: ReactNode
-  defaultOpen?: boolean
-  
+  title: string;
+  children: ReactNode;
+  defaultOpen?: boolean;
+};
 export type ToggleProps = {
-  label: '공개' | '경로' | '애니메이션'
-  onChange?: (isActive: boolean) => void
-}
+  label: '공개' | '경로' | '애니메이션';
+  onChange?: (isActive: boolean) => void;
+};
+
+export type SearchItemProps = {
+  term: string;
+  date: string;
+  onRemove: () => void;
+};
+
+export type SearchRecord = {
+  term: string;
+  date: string;
+};
