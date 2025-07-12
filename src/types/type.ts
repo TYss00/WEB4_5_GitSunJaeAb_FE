@@ -10,10 +10,7 @@ export type RoadMapCardProps = {
   author: string;
   viewCount: number;
   shareCount: number;
-<<<<<<< HEAD
-=======
   className?: string;
->>>>>>> main
 };
 
 export type QuestCardProps = {
