@@ -172,7 +172,7 @@ export default function ShareMapJoin() {
             <LayerEdit title="레이어1" isTextArea />
           </div>
 
-          <div className="flex justify-end mt-4 gap-2">
+          <div className="flex justify-end mt-4 gap-5">
             <Button
               buttonStyle="white"
               className="text-[18px] w-[80px] h-[40px] text-[var(--black)] font-semibold"
