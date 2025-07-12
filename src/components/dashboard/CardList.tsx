@@ -1,9 +1,13 @@
 'use client';
 
+import { CardListProps } from '@/types/type';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
+import RoadMapCard from '../ui/card/RoadMapCard';
+import ShareMapCard from '../ui/card/ShareMapCard';
+import QuestCard from '../ui/card/QuestCard';
 
-export default function CardList() {
+export default function CardList({ type }: CardListProps) {
   const [sort, setSort] = useState<'recent' | 'popular'>('recent');
 
   return (
@@ -41,13 +45,53 @@ export default function CardList() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-[31px]">
-        {[...Array(8)].map((_, i) => (
-          <div
-            key={i}
-            className="w-[250px] h-[350px] bg-gray-100 rounded-[10px] shadow"
-          />
-        ))}
+      <div
+        className={`grid ${
+          type === 'sharemap' ? 'grid-cols-4' : 'grid-cols-3'
+        } gap-[31px]`}
+      >
+        {[...Array(type === 'sharemap' ? 12 : 9)].map((_, i) => {
+          if (type === 'roadmap') {
+            return (
+              <RoadMapCard
+                key={i}
+                category="여행"
+                title={`서울 투어 ${i + 1}`}
+                description="서울 명소를 여행하는 로드맵입니다."
+                hashtags={['서울', '여행', '명소']}
+                mapImageUrl="/map.png"
+                profileImgUrl="/assets/google.svg"
+                author="지지지"
+                viewCount={100}
+                shareCount={10}
+              />
+            );
+          } else if (type === 'sharemap') {
+            return (
+              <ShareMapCard
+                key={i}
+                title={`공유 지도 ${i + 1}`}
+                mapImageUrl="/map.png"
+                participants={50}
+                isEvent={i % 2 === 0}
+              />
+            );
+          } else if (type === 'quest') {
+            return (
+              <QuestCard
+                key={i}
+                isInProgress={i % 2 === 0}
+                mapImageUrl="/map.png"
+                title={'서울 퀘스트'}
+                description="광화문 근처의 포인트를 클리어해보세요."
+                hashtags={['광화문', '퀘스트', '도전']}
+                profileImgUrl="/assets/google.svg"
+                author="지지지"
+                deadLine="2025-07-20"
+              />
+            );
+          }
+        })}
       </div>
     </section>
   );

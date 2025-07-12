@@ -7,9 +7,9 @@ export default async function page() {
   return (
     <>
       <Banner title="QUESTS" subtitle="당신만의 퀘스트를 만들어보세요" />
-      <EventBox />
-      <CardList />
-      <WriteButton />
+      <EventBox type="quest" />
+      <CardList type="quest" />
+      <WriteButton type="quest" />
     </>
   );
 }

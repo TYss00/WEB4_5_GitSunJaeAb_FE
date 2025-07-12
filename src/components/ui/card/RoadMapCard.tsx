@@ -1,9 +1,9 @@
-'use client'
+'use client';
 
-import { RoadMapCardProps } from '@/types/type'
-import { truncateText } from '@/utils/truncateText'
-import { Heart, Eye, Share2 } from 'lucide-react'
-import { useState } from 'react'
+import { RoadMapCardProps } from '@/types/type';
+import { truncateText } from '@/utils/truncateText';
+import { Heart, Eye, Share2 } from 'lucide-react';
+import { useState } from 'react';
 
 export default function RoadMapCard({
   category,
@@ -15,28 +15,29 @@ export default function RoadMapCard({
   author,
   viewCount,
   shareCount,
+  className,
 }: RoadMapCardProps) {
-  const [isLiked, setIsLiked] = useState(false)
+  const [isLiked, setIsLiked] = useState(false);
   const likeHandler = () => {
-    setIsLiked((prev) => !prev)
-  }
-  const truncatedTitle = truncateText(title, 16)
-  const truncatedDescription = truncateText(description, 22)
+    setIsLiked((prev) => !prev);
+  };
+  const truncatedTitle = truncateText(title, 16);
+  const truncatedDescription = truncateText(description, 22);
   return (
     <>
       <div
-        className="flex flex-col w-[350px] h-[278px] border border-[var(--gray-100)] rounded-[10px] overflow-hidden cursor-pointer vtransition-all duration-300 ease-in-out 
-             hover:shadow-lg hover:-translate-y-1"
+        className={`flex flex-col w-[330px] h-[278px] border border-[var(--gray-100)] rounded-[10px] overflow-hidden cursor-pointer vtransition-all duration-300 ease-in-out 
+             hover:shadow-lg hover:-translate-y-1 ${className}`}
       >
         <div
-          className="w-full h-[132px] p-[10px]"
+          className="w-full h-19/40 p-[10px]"
           style={{ backgroundImage: `url(${mapImageUrl})` }}
         >
           <span className="bg-[var(--primary-300)] rounded-[10px] px-[10px] py-[5px] text-[11px] text-[var(--white)] font-semibold">
             {category}
           </span>
         </div>
-        <div className="flex flex-col gap-[5px] justify-center w-full h-[146px] px-[15px] py-[5px] bg-white">
+        <div className="flex flex-col gap-[5px] justify-center w-full h-21/40 px-[15px] py-[5px] bg-white">
           <div className="flex justify-between w-full">
             <span className="text-[20px] font-semibold">{truncatedTitle}</span>
             <button onClick={likeHandler}>
@@ -81,5 +82,5 @@ export default function RoadMapCard({
         </div>
       </div>
     </>
-  )
+  );
 }

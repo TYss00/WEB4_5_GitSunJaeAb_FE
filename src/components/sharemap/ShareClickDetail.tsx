@@ -10,20 +10,26 @@ import {
   ChevronDown,
   ChevronUp,
   PlayCircle,
-  Route,
   ChevronRight,
   ChevronLeft,
+  Navigation,
+  MapPin,
+  Calendar,
 } from 'lucide-react';
 import Button from '../ui/Button';
+import ReportModal from '../common/modal/ReportModal';
 
-export default function Loadmapdetail() {
+export default function ShareClickDetail() {
   const [routeEnabled, setRouteEnabled] = useState(true);
   const [animationEnabled, setAnimationEnabled] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isReportOpen, setIsReportOpen] = useState(false);
 
   return (
-    <section className="flex min-h-screen">
-      {/* 왼쪽 지도 */}
-      <div className="w-4/6 bg-gray-200 relative">
+    <section className="relative w-full h-screen overflow-hidden">
+      {/* 지도 영역 */}
+      <div className="absolute inset-0 bg-gray-200 z-0">
+        {/* 왼쪽 상단 버튼 */}
         <div className="absolute top-4 left-8 flex items-center gap-3 px-4 py-2 z-10">
           <Button
             buttonStyle="white"
@@ -54,30 +60,62 @@ export default function Loadmapdetail() {
         </div>
       </div>
 
-      {/* 오른쪽 */}
-      <div className="w-2/6 px-6 py-8 space-y-6 bg-white">
-        <div className="flex items-center mb-5 space-x-[-16px]">
+      {/* 닫힌 상태에서 보이는 열기 버튼 */}
+      {!sidebarOpen && (
+        <button
+          onClick={() => setSidebarOpen(true)}
+          className="absolute top-4 right-4 z-20 bg-[var(--white)] rounded-[10px] p-[10px]"
+        >
+          <div className="flex items-center space-x-[-16px]">
+            <ChevronLeft size={25} />
+            <ChevronLeft size={25} />
+          </div>
+        </button>
+      )}
+
+      {/* 사이드바 */}
+      <div
+        className={`absolute top-0 right-0 h-full w-[590px] bg-[var(--white)] z-10 px-6 py-8 transition-transform duration-300 ${
+          sidebarOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        <div
+          className="flex items-center mb-5 space-x-[-16px] cursor-pointer"
+          onClick={() => setSidebarOpen(false)}
+        >
           <ChevronRight size={25} />
           <ChevronRight size={25} />
         </div>
 
         <div className="flex items-center justify-between mb-3">
-          {/* 카테고리 */}
-          <span className="bg-[#005C54] text-white text-sm px-3 py-1 rounded-2xl">
-            게임
-          </span>
+          {/* 위치/날짜/좋아요/조회수/신고 */}
+          <div className="flex items-center gap-[12px] text-[13px] text-[var(--gray-200)]">
+            <div className="flex items-center gap-[4px]">
+              <MapPin size={16} />
+              <span>Seoul</span>
+            </div>
+            <div className="flex items-center gap-[4px]">
+              <Calendar size={16} />
+              <span>2025.07.14</span>
+            </div>
+          </div>
 
-          {/* 좋아요,조회수,신고 */}
-          <div className="flex gap-4 text-gray-700 text-sm items-center">
-            <span className="flex items-center gap-1">
-              <Heart size={16} strokeWidth={3} /> 4
-            </span>
-            <span className="flex items-center gap-1">
-              <Eye size={16} strokeWidth={3} /> 22
-            </span>
-            <span className="flex items-center gap-1">
-              <Siren size={16} strokeWidth={3} />
-            </span>
+          <div className="flex items-center gap-4 text-[15px] text-[var(--black)]">
+            <div className="flex items-center gap-1">
+              <Heart size={18} />
+              <span>4</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Eye size={18} />
+              <span>22</span>
+            </div>
+            <button>
+              <Siren
+                size={18}
+                className="cursor-pointer"
+                onClick={() => setIsReportOpen(true)}
+              />
+            </button>
           </div>
         </div>
 
@@ -95,10 +133,10 @@ export default function Loadmapdetail() {
         </div>
 
         {/* 공통 컴포넌트 토글 */}
-        <div className="space-y-3">
+        <div className="space-y-3 mt-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm">
-              <Route size={18} />
+              <Navigation size={18} />
               경로 (컴포넌트 삽입 예정)
             </div>
             <button
@@ -114,6 +152,7 @@ export default function Loadmapdetail() {
               />
             </button>
           </div>
+
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm">
               <PlayCircle size={18} />
@@ -135,8 +174,8 @@ export default function Loadmapdetail() {
         </div>
 
         {/* 레이어 - 공통컴포넌트로 수정 */}
-        <div className="border-t border-gray-300">
-          <div className="flex items-center justify-between mt-6 mb-3 mr-3">
+        <div className="border-t border-gray-300 mt-6 pt-4">
+          <div className="flex items-center justify-between mb-3 mr-3">
             <h3 className="text-xl text-black">레이어 및 마커 관리</h3>
             <Download size={18} className="cursor-pointer text-gray-600" />
           </div>
@@ -164,33 +203,17 @@ export default function Loadmapdetail() {
           </div>
         </div>
 
-        {/* 공용 컴포넌트 댓글 */}
-        <div className="mt-8">
-          <div className="h-[200px] border border-dashed rounded-lg flex items-center justify-center text-gray-400 text-sm">
-            레이어 상세 영역 (컴포넌트 삽입 예정)
-          </div>
-
-          <div className="mt-8 border-t pt-4">
-            <h4 className="font-semibold text-sm mb-2">댓글</h4>
-            <div className="h-[150px] border border-dashed rounded-lg flex items-center justify-center text-gray-400 text-sm">
-              댓글 목록 영역 (컴포넌트 삽입 예정)
-            </div>
-            <div className="flex mt-4 gap-2">
-              <input
-                type="text"
-                placeholder="댓글을 입력해주세요."
-                className="flex-1 border rounded px-3 py-2 text-sm"
-              />
-              <Button
-                buttonStyle="smGreen"
-                className="text-sm px-4 py-2 w-[60px] h-[35px]"
-              >
-                등록
-              </Button>
-            </div>
-          </div>
+        {/* 참여하기 버튼 */}
+        <div className="flex justify-end pt-6">
+          <Button
+            buttonStyle="smGreen"
+            className="w-[114px] h-[40px] text-[18px] font-semibold"
+          >
+            참여하기
+          </Button>
         </div>
       </div>
+      {isReportOpen && <ReportModal onClose={() => setIsReportOpen(false)} />}
     </section>
   );
 }

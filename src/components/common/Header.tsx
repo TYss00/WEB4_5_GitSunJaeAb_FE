@@ -1,6 +1,6 @@
 'use client';
 
-import { Bell, CircleUserRound, Search, X } from 'lucide-react'; // 아이콘 라이브러리
+import { Bell, CircleUserRound, Search, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import SearchModal from './search/SearchModal';
@@ -19,11 +19,11 @@ export default function Header() {
   };
 
   return (
-    <header className="w-full h-20 px-11 flex items-center justify-between bg-white relative">
+    <header className="w-full h-20 px-11 flex items-center justify-between bg-[var(--white)] relative">
       {/* 로고 */}
       <Link
         href="/"
-        className="text-3xl font-bold text-[var(--primary-300)] font-[vitro-core]"
+        className="text-3xl text-[var(--primary-300)] font-[vitro-core]"
       >
         MAPICK
       </Link>
@@ -46,6 +46,11 @@ export default function Header() {
       {/* 아이콘들 */}
       <div className="flex items-center gap-6 text-[var(--black)]">
         <Bell
+          size={25}
+          strokeWidth={1.7}
+          className="cursor-pointer hover:text-[var(--primary-300)]"
+        />
+        <Search
           size={25}
           strokeWidth={1.7}
           className="cursor-pointer hover:text-[var(--primary-300)]"

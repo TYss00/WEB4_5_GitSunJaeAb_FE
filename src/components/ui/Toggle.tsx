@@ -57,7 +57,7 @@ export default function Toggle({ label, onChange }: ToggleProps) {
 
   return (
     <>
-      <div className="w-[490px] flex justify-between">
+      <div className="w-full flex justify-between">
         <div className="flex items-center gap-[10px] text-[18px]">
           <div className="relative w-[25px] h-[25px]">
             <div

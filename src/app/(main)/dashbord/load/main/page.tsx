@@ -8,8 +8,8 @@ export default async function page() {
     <>
       <Banner title="로드맵" subtitle="로드맵 설명글" />
       <PopularLoadmap />
-      <CardList />
-      <WriteButton />
+      <CardList type="roadmap" />
+      <WriteButton type="roadmap" />
     </>
   );
 }
