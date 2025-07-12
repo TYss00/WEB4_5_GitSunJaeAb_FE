@@ -12,7 +12,7 @@ export default async function page() {
       />
       <EventBox type="sharemap" />
       <CardList type="sharemap" />
-      <WriteButton />
+      <WriteButton type="sharemap" />
     </>
   );
 }

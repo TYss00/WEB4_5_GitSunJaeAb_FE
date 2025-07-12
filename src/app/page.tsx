@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
 export default async function page() {
   return (
@@ -17,14 +17,29 @@ export default async function page() {
         </Link>
 
         <Link href="/loadmap/detail/1">
-          <button>공유지도 디테일</button>
+          <button>로드맵 디테일</button>
         </Link>
 
         <Link href="/loadmap/write">
-          <button>공유지도 작성페이지</button>
+          <button>로드맵 작성페이지</button>
+        </Link>
+
+        <Link href="/sharemap">
+          <button>공유지도 디테일</button>
+        </Link>
+
+        <Link href="/sharemap/shareclickdetail">
+          <button>공유지도 보여주기</button>
+        </Link>
+
+        <Link href="/dashbord/quest/main/1">
+          <button>퀘스트 디테일</button>
+        </Link>
+
+        <Link href="/admin">
+          <button>관리자페이지</button>
         </Link>
       </div>
-      <h1>홈화면입니다.</h1>
     </>
-  )
+  );
 }
