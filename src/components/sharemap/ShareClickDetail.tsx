@@ -5,10 +5,8 @@ import {
   Heart,
   Siren,
   Eye,
-  Layers,
   Download,
   ChevronDown,
-  ChevronUp,
   PlayCircle,
   ChevronsRight,
   ChevronsLeft,
@@ -21,6 +19,8 @@ import Button from '../ui/Button';
 import ReportModal from '../common/modal/ReportModal';
 import useSidebar from '@/utils/useSidebar';
 import Link from 'next/link';
+import LayerDetail from '../ui/layer/LayerDetail';
+import MarkerDetail from '../ui/layer/MarkerDetail';
 
 export default function ShareClickDetail() {
   const [routeEnabled, setRouteEnabled] = useState(true);
@@ -67,10 +67,10 @@ export default function ShareClickDetail() {
       {!isOpen && (
         <button
           onClick={toggle}
-          className="absolute top-4 right-4 z-20 bg-[var(--white)] rounded-[10px] p-[10px]"
+          className="absolute top-7 right-12 z-20 bg-[var(--white)] rounded-[10px] p-[10px]"
         >
           <div className="flex items-center space-x-[-16px]">
-            <ChevronsLeft size={25} />
+            <ChevronsLeft size={35} />
           </div>
         </button>
       )}
@@ -86,7 +86,7 @@ export default function ShareClickDetail() {
           className="flex items-center mb-5 space-x-[-16px] cursor-pointer"
           onClick={close}
         >
-          <ChevronsRight size={25} />
+          <ChevronsRight size={35} />
         </div>
 
         {/* 위치/날짜/좋아요/조회수/신고 */}
@@ -129,10 +129,6 @@ export default function ShareClickDetail() {
           <p className="text-sm text-black mb-2">
             나 송지은인데 디자인 그만하고 대학로 갈거니까 맛집 알아와라
           </p>
-          <div className="flex gap-2 text-sm text-[#005C54]">
-            <span>#태그1</span>
-            <span>#태그2</span>
-          </div>
         </div>
 
         {/* 토글 스위치 */}
@@ -140,7 +136,7 @@ export default function ShareClickDetail() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm">
               <Navigation size={18} />
-              경로 (컴포넌트 삽입 예정)
+              경로
             </div>
             <button
               onClick={() => setRouteEnabled(!routeEnabled)}
@@ -159,7 +155,7 @@ export default function ShareClickDetail() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm">
               <PlayCircle size={18} />
-              애니메이션 (컴포넌트 삽입 예정)
+              애니메이션
             </div>
             <button
               onClick={() => setAnimationEnabled(!animationEnabled)}
@@ -177,33 +173,23 @@ export default function ShareClickDetail() {
         </div>
 
         {/* 레이어 목록 */}
-        <div className="border-t border-gray-300 mt-6 pt-4">
-          <div className="flex items-center justify-between mb-3 mr-3">
-            <h3 className="text-xl text-black">레이어 및 마커 관리</h3>
-            <Download size={18} className="cursor-pointer text-gray-600" />
+        <div className="border-t border-[var(--gray-50)] space-y-[15px] mt-4">
+          <div className="flex items-center justify-between mt-4 mb-4 mr-3">
+            <h3 className="text-xl text-black">레이어 및 마커</h3>
+            <Download size={20} className="cursor-pointer text-[#000]" />
           </div>
-
-          <div className="space-y-3">
-            {[1, 1, 3].map((num, idx) => (
-              <div
-                key={idx}
-                className={`border rounded-lg p-3 ${
-                  num === 3 ? 'bg-[#E7F0EF] border-[#CCE6E2]' : 'bg-white'
-                }`}
-              >
-                <div className="flex justify-between items-center">
-                  <span className="flex items-center gap-1 text-sm">
-                    <Layers size={16} />
-                    레이어{num}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <Download size={16} className="cursor-pointer" />
-                    <ChevronUp size={16} />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <LayerDetail title="레이어1">
+            <MarkerDetail isTextArea />
+          </LayerDetail>
+          <LayerDetail title="레이어2">
+            <MarkerDetail isTextArea />
+            <MarkerDetail isTextArea />
+            <MarkerDetail isTextArea />
+          </LayerDetail>
+          <LayerDetail title="레이어3">
+            <MarkerDetail isTextArea />
+            <MarkerDetail isTextArea />
+          </LayerDetail>
         </div>
 
         {/* 참여하기 버튼 */}
