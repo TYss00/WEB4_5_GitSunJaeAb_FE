@@ -7,10 +7,8 @@ import {
   Eye,
   Download,
   ChevronDown,
-  PlayCircle,
   ChevronsRight,
   ChevronsLeft,
-  Navigation,
   MapPin,
   Calendar,
   ChevronLeft,
@@ -21,10 +19,9 @@ import useSidebar from '@/utils/useSidebar';
 import Link from 'next/link';
 import LayerDetail from '../ui/layer/LayerDetail';
 import MarkerDetail from '../ui/layer/MarkerDetail';
+import Toggle from '../ui/Toggle';
 
 export default function ShareClickDetail() {
-  const [routeEnabled, setRouteEnabled] = useState(true);
-  const [animationEnabled, setAnimationEnabled] = useState(true);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const { isOpen, toggle, close } = useSidebar();
 
@@ -132,44 +129,9 @@ export default function ShareClickDetail() {
         </div>
 
         {/* 토글 스위치 */}
-        <div className="space-y-3 mt-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm">
-              <Navigation size={18} />
-              경로
-            </div>
-            <button
-              onClick={() => setRouteEnabled(!routeEnabled)}
-              className={`w-10 h-5 flex items-center rounded-full p-1 transition-colors duration-300 ${
-                routeEnabled ? 'bg-[#005C54]' : 'bg-gray-300'
-              }`}
-            >
-              <div
-                className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
-                  routeEnabled ? 'translate-x-5' : ''
-                }`}
-              />
-            </button>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-sm">
-              <PlayCircle size={18} />
-              애니메이션
-            </div>
-            <button
-              onClick={() => setAnimationEnabled(!animationEnabled)}
-              className={`w-10 h-5 flex items-center rounded-full p-1 transition-colors duration-300 ${
-                animationEnabled ? 'bg-[#005C54]' : 'bg-gray-300'
-              }`}
-            >
-              <div
-                className={`w-4 h-4 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
-                  animationEnabled ? 'translate-x-5' : ''
-                }`}
-              />
-            </button>
-          </div>
+        <div className="space-y-3">
+          <Toggle label="경로" />
+          <Toggle label="애니메이션" />
         </div>
 
         {/* 레이어 목록 */}
