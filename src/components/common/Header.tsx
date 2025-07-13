@@ -6,8 +6,17 @@ import { useRef, useState } from 'react';
 import SearchModal from '../search/SearchModal';
 import { useClickOut } from '@/hooks/useClickOut';
 import Notification from '../notification/Notification';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
+  const pathname = usePathname();
+
+  const navItems = [
+    { name: '로드맵', href: '/dashbord/roadmap' },
+    { name: '공유지도', href: '/dashbord/sharemap' },
+    { name: '퀘스트', href: '/dashbord/quest' },
+  ];
+
   // 검색 아이콘 클릭 시 검색 모달 보여지도록
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -41,15 +50,22 @@ export default function Header() {
       {/* 메뉴들 */}
       <nav>
         <ul className="flex items-center gap-[130px] text-lg text-[var(--black)]">
-          <li className="hover:text-[var(--primary-300)] transition cursor-pointer">
-            <Link href="/dashbord/load/main">로드맵</Link>
-          </li>
-          <li className="hover:text-[var(--primary-300)] transition cursor-pointer">
-            <Link href="/dashbord/sharedmap/main">공유지도</Link>
-          </li>
-          <li className="hover:text-[var(--primary-300)] transition cursor-pointer">
-            <Link href="/dashbord/quest/main">퀘스트</Link>
-          </li>
+          {navItems.map(({ name, href }) => {
+            const isActive = pathname.startsWith(href);
+
+            return (
+              <li
+                key={href}
+                className={`transition cursor-pointer ${
+                  isActive
+                    ? 'text-[var(--primary-300)]'
+                    : 'hover:text-[var(--primary-300)]'
+                }`}
+              >
+                <Link href={href}>{name}</Link>
+              </li>
+            );
+          })}
         </ul>
       </nav>
 
@@ -81,7 +97,9 @@ export default function Header() {
           <CircleUserRound
             size={25}
             strokeWidth={1.7}
-            className="cursor-pointer hover:text-[var(--primary-300)]"
+            className={`cursor-pointer hover:text-[var(--primary-300)] ${
+              pathname.startsWith('/mypage') ? 'text-[var(--primary-300)]' : ''
+            }`}
           />
         </Link>
       </div>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { CardListProps } from '@/types/type';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
@@ -9,6 +10,16 @@ import QuestCard from '../ui/card/QuestCard';
 
 export default function CardList({ type }: CardListProps) {
   const [sort, setSort] = useState<'recent' | 'popular'>('recent');
+  const router = useRouter();
+
+  const handleCardClick = (id: number) => {
+    let basePath = '';
+    if (type === 'roadmap') basePath = '/dashbord/roadmap/detail';
+    else if (type === 'sharemap') basePath = '/dashbord/sharemap/detail';
+    else if (type === 'quest') basePath = '/dashbord/quest/detail';
+
+    router.push(`${basePath}/${id}`);
+  };
 
   return (
     <section className="w-full max-w-[1100px] mx-auto mt-[146px] px-4 pb-[186px]">
@@ -51,44 +62,61 @@ export default function CardList({ type }: CardListProps) {
         } gap-[31px]`}
       >
         {[...Array(type === 'sharemap' ? 12 : 9)].map((_, i) => {
+          const fakeId = i + 1;
+
           if (type === 'roadmap') {
             return (
-              <RoadMapCard
+              <div
                 key={i}
-                category="여행"
-                title={`서울 투어 ${i + 1}`}
-                description="서울 명소를 여행하는 로드맵입니다."
-                hashtags={['서울', '여행', '명소']}
-                mapImageUrl="/map.png"
-                profileImgUrl="/assets/google.svg"
-                author="지지지"
-                viewCount={100}
-                shareCount={10}
-              />
+                onClick={() => handleCardClick(fakeId)}
+                className="cursor-pointer"
+              >
+                <RoadMapCard
+                  category="여행"
+                  title={`서울 투어 ${i + 1}`}
+                  description="서울 명소를 여행하는 로드맵입니다."
+                  hashtags={['서울', '여행', '명소']}
+                  mapImageUrl="/map.png"
+                  profileImgUrl="/assets/google.svg"
+                  author="지지지"
+                  viewCount={100}
+                  shareCount={10}
+                />
+              </div>
             );
           } else if (type === 'sharemap') {
             return (
-              <ShareMapCard
+              <div
                 key={i}
-                title={`공유 지도 ${i + 1}`}
-                mapImageUrl="/map.png"
-                participants={50}
-                isEvent={i % 2 === 0}
-              />
+                onClick={() => handleCardClick(fakeId)}
+                className="cursor-pointer"
+              >
+                <ShareMapCard
+                  title={`공유 지도 ${i + 1}`}
+                  mapImageUrl="/map.png"
+                  participants={50}
+                  isEvent={i % 2 === 0}
+                />
+              </div>
             );
           } else if (type === 'quest') {
             return (
-              <QuestCard
+              <div
                 key={i}
-                isInProgress={i % 2 === 0}
-                mapImageUrl="/map.png"
-                title={'서울 퀘스트'}
-                description="광화문 근처의 포인트를 클리어해보세요."
-                hashtags={['광화문', '퀘스트', '도전']}
-                profileImgUrl="/assets/google.svg"
-                author="지지지"
-                deadLine="2025-07-20"
-              />
+                onClick={() => handleCardClick(fakeId)}
+                className="cursor-pointer"
+              >
+                <QuestCard
+                  isInProgress={i % 2 === 0}
+                  mapImageUrl="/map.png"
+                  title={'서울 퀘스트'}
+                  description="광화문 근처의 포인트를 클리어해보세요."
+                  hashtags={['광화문', '퀘스트', '도전']}
+                  profileImgUrl="/assets/google.svg"
+                  author="지지지"
+                  deadLine="2025-07-20"
+                />
+              </div>
             );
           }
         })}

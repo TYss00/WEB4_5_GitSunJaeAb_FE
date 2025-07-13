@@ -72,7 +72,7 @@ export default function ShareMapDetail() {
           <HistoryModal onClose={() => setShowHistoryModal(false)} />
         )}
 
-        <Link href="/sharemap/shareclickdetail">
+        <Link href="/dashbord/sharemap/detail/1/preview">
           <div className="w-full h-[500px] bg-[var(--gray-200)] rounded-[10px] overflow-hidden mb-[30px] relative">
             <Image
               src="/assets/sampleMap.png"
@@ -114,7 +114,7 @@ export default function ShareMapDetail() {
                 }
               )}
             </div>
-            <Link href="/sharemap/sharemapjoin">
+            <Link href="/dashbord/sharemap/detail/1/preview/mapjoin">
               <Button className="w-full h-[38px] mb-[16px]">참여하기</Button>
             </Link>
             <Button
