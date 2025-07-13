@@ -46,7 +46,32 @@ const dummyRoadmaps: RoadMapCardProps[] = [
 ];
 
 // 데이터 없을 경우 테스트
-const dummySharemaps: ShareMapCardProps[] = [];
+const dummySharemaps: ShareMapCardProps[] = [
+  {
+    isEvent: true,
+    title: '서울 도보 여행 코스 공유',
+    mapImageUrl: '/maps/seoul-walk.png',
+    participants: 128,
+  },
+  {
+    isEvent: false,
+    title: '전국 야경 명소 지도',
+    mapImageUrl: '/maps/nightview-map.png',
+    participants: 85,
+  },
+  {
+    isEvent: true,
+    title: '부산 해변 카페 투어',
+    mapImageUrl: '/maps/busan-cafe-map.png',
+    participants: 210,
+  },
+  {
+    isEvent: true,
+    title: '부산 해변 카페 투어',
+    mapImageUrl: '/maps/busan-cafe-map.png',
+    participants: 210,
+  },
+];
 const dummyQuests: QuestCardProps[] = [
   {
     isInProgress: true,
@@ -78,6 +103,16 @@ const dummyQuests: QuestCardProps[] = [
     author: '카페in부산',
     deadLine: '2025.08.05',
   },
+  {
+    isInProgress: true,
+    mapImageUrl: '/maps/cafe-hopping.png',
+    title: '부산 카페 투어 챌린지',
+    description: '부산 해운대 인근 감성 카페 6곳을 탐방하는 미션!',
+    hashtags: ['#부산카페', '#카페투어', '#감성여행'],
+    profileImgUrl: '/profiles/user6.jpg',
+    author: '카페in부산',
+    deadLine: '2025.08.05',
+  },
 ];
 
 export default function SearchResultSection() {
@@ -89,7 +124,7 @@ export default function SearchResultSection() {
     dummySharemaps.length > 0;
 
   return (
-    <div className="w-[1100px] m-auto pt-10">
+    <div className="w-[1100px] m-auto pt-13">
       {hasResults ? (
         <>
           {dummyRoadmaps.length > 0 && (

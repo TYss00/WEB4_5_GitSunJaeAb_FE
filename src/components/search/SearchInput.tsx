@@ -10,11 +10,13 @@ import { useClickOut } from '@/hooks/useClickOut';
 type SearchInputProps = {
   onClose?: () => void;
   searchValue?: string;
+  onSearchComplete?: () => void;
 };
 
 export default function SearchInput({
   onClose,
   searchValue = '',
+  onSearchComplete,
 }: SearchInputProps) {
   const [search, setSearch] = useState(searchValue);
   const [showRecent, setShowRecent] = useState(false);
@@ -39,8 +41,12 @@ export default function SearchInput({
     // 이동
     router.push(`/search?q=${encodeURIComponent(search.trim())}`);
 
+    setShowRecent(false);
+
     // 모달 닫기
     onClose?.();
+
+    onSearchComplete?.();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -57,6 +63,12 @@ export default function SearchInput({
     onClose?.();
   };
 
+  const handleSearchFocus = () => {
+    if (search.trim() !== '') {
+      setShowRecent(true);
+    }
+  };
+
   return (
     <div ref={containerRef} className="relative w-[700px] m-auto">
       <input
@@ -67,7 +79,7 @@ export default function SearchInput({
           setShowRecent(true);
         }}
         onKeyDown={handleKeyDown}
-        onFocus={() => setShowRecent(true)}
+        onFocus={handleSearchFocus}
         className="w-full px-2 py-2 border-b border-b-[var(--gray-100)] 
          focus:outline-none focus:border-b-[var(--primary-300)] "
       ></input>

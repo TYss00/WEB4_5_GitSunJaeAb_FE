@@ -29,15 +29,15 @@ export default function SearchCategoryGroup({
         </button> */}
       </div>
 
-      <div className="flex gap-2 flex-wrap">
+      <div className="flex justify-between flex-wrap gap-y-4">
         {items.map((item, idx) => {
           switch (cardType) {
+            case 'roadmap':
+              return <RoadMapCard key={idx} {...(item as RoadMapCardProps)} />;
             case 'sharemap':
               return (
                 <ShareMapCard key={idx} {...(item as ShareMapCardProps)} />
               );
-            case 'roadmap':
-              return <RoadMapCard key={idx} {...(item as RoadMapCardProps)} />;
             case 'quest':
               return <QuestCard key={idx} {...(item as QuestCardProps)} />;
             default:
