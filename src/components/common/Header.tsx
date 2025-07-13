@@ -3,7 +3,7 @@
 import { Bell, CircleUserRound, Search, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
-import SearchModal from './search/SearchModal';
+import SearchModal from '../search/SearchModal';
 import { useClickOut } from '@/hooks/useClickOut';
 
 export default function Header() {

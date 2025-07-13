@@ -15,7 +15,7 @@ export function useClickOut<T extends HTMLElement>(
       if (
         ref.current &&
         !ref.current.contains(target) &&
-        !target.closest('.recent-search-remove')
+        !target.closest('.recent-search-item')
       ) {
         onClickOutside();
       }
