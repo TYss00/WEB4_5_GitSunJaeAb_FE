@@ -84,3 +84,14 @@ export type ToggleProps = {
   label: '공개' | '경로' | '애니메이션';
   onChange?: (isActive: boolean) => void;
 };
+
+export type SearchItemProps = {
+  term: string;
+  date: string;
+  onRemove: () => void;
+};
+
+export type SearchRecord = {
+  term: string;
+  date: string;
+};
