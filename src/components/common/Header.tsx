@@ -88,7 +88,7 @@ export default function Header() {
 
       {/* 알림 모달 추가 */}
       {isNotiOpen && (
-        <div ref={notiRef} className="absolute top-[80px] right-[80px] z-50">
+        <div ref={notiRef} className="absolute top-[78px] right-[80px] z-50">
           <Notification onClose={() => setIsNotiOpen(false)} />
         </div>
       )}
