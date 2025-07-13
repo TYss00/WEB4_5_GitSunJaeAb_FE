@@ -1,9 +1,9 @@
-'use client'
+'use client';
 
-import { InputHTMLAttributes } from 'react'
+import { InputHTMLAttributes } from 'react';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label?: string
+  label?: string;
 }
 
 export default function Input({ label, className = '', ...props }: InputProps) {
@@ -17,5 +17,5 @@ export default function Input({ label, className = '', ...props }: InputProps) {
         {...props}
       />
     </div>
-  )
+  );
 }
