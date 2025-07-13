@@ -20,6 +20,7 @@ import useSidebar from '@/utils/useSidebar';
 import Input from '../ui/Input';
 import LayerEdit from '../ui/layer/LayerEdit';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function ShareMapJoin() {
   const router = useRouter();
@@ -177,18 +178,22 @@ export default function ShareMapJoin() {
             </div>
 
             <div className="flex justify-end mt-4 gap-5">
-              <Button
-                buttonStyle="white"
-                className="text-[18px] w-[80px] h-[40px] text-[var(--black)] font-semibold"
-              >
-                취소
-              </Button>
-              <Button
-                buttonStyle="smGreen"
-                className="text-[18px] w-[80px] h-[40px]"
-              >
-                완료
-              </Button>
+              <Link href="/sharemap/shareclickdetail">
+                <Button
+                  buttonStyle="white"
+                  className="text-[18px] w-[80px] h-[40px] text-[var(--black)] font-semibold"
+                >
+                  취소
+                </Button>
+              </Link>
+              <Link href="/sharemap">
+                <Button
+                  buttonStyle="smGreen"
+                  className="text-[18px] w-[80px] h-[40px]"
+                >
+                  완료
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
