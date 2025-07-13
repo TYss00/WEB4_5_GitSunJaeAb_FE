@@ -1,10 +1,18 @@
 'use client';
 import { useEffect, useState } from 'react';
 import RecentSearchItem from './RecentSearchItem';
-import { clearSearchHistory, getRecentSearches } from '@/utils/searchHistory';
+import {
+  clearSearchHistory,
+  getRecentSearches,
+  removeSearchTerm,
+} from '@/utils/searchHistory';
 import { SearchRecord } from '@/types/type';
 
-export default function RecentSearchList() {
+export default function RecentSearchList({
+  onSelect,
+}: {
+  onSelect?: (term: string) => void;
+}) {
   const [searches, setSearches] = useState<SearchRecord[]>([]);
 
   useEffect(() => {
@@ -35,17 +43,14 @@ export default function RecentSearchList() {
         {searches.length > 0 ? (
           searches.map((item) => (
             <RecentSearchItem
-              key={`${item.term}-${item.date}`}
+              key={item.term}
               term={item.term}
               date={item.date}
               onRemove={() => {
-                const filtered = searches.filter((t) => t.term !== item.term);
-                localStorage.setItem(
-                  'recentSearches',
-                  JSON.stringify(filtered)
-                );
-                setSearches(filtered);
+                removeSearchTerm(item.term);
+                setSearches((prev) => prev.filter((t) => t.term !== item.term));
               }}
+              onSelect={onSelect}
             />
           ))
         ) : (

@@ -6,7 +6,17 @@ export function useClickOut<T extends HTMLElement>(
 ) {
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
+      // if (ref.current && !ref.current.contains(e.target as Node)) {
+      //   onClickOutside();
+      // }
+      const target = e.target as HTMLElement;
+
+      // 삭제 버튼은 외부 클릭으로 간주하지 않음
+      if (
+        ref.current &&
+        !ref.current.contains(target) &&
+        !target.closest('.recent-search-remove')
+      ) {
         onClickOutside();
       }
     };

@@ -50,11 +50,6 @@ export default function Header() {
           strokeWidth={1.7}
           className="cursor-pointer hover:text-[var(--primary-300)]"
         />
-        <Search
-          size={25}
-          strokeWidth={1.7}
-          className="cursor-pointer hover:text-[var(--primary-300)]"
-        />
         {/* 검색 아이콘 / 닫기 아이콘 */}
         {isSearchOpen ? (
           <X
@@ -84,7 +79,7 @@ export default function Header() {
       {isSearchOpen && (
         <div
           ref={modalRef}
-          className="absolute top-[80px] left-0 w-full bg-white shadow-md z-50"
+          className="absolute top-[80px] left-0 w-full bg-[var(--white)] shadow-md z-50"
         >
           <SearchModal onClose={() => setIsSearchOpen(false)} />
         </div>
