@@ -6,6 +6,8 @@ import {
   RoadMapCardProps,
   ShareMapCardProps,
 } from '@/types/type';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 type SearchCategoryGroupProps = {
   title: string;
@@ -17,6 +19,9 @@ export default function SearchCategoryGroup({
   cardType,
   items,
 }: SearchCategoryGroupProps) {
+  const searchParams = useSearchParams();
+  const query = searchParams.get('q') || '';
+
   // 결과 없으면 렌더링x
   if (items.length === 0) return null;
 
@@ -24,9 +29,12 @@ export default function SearchCategoryGroup({
     <section className="mb-[30px] group">
       <div className="flex justify-between items-center mb-2.5">
         <h2 className="text-lg font-medium">{title}</h2>
-        {/* <button className="opacity-0 group-hover:opacity-100 transition text-sm text-[var(--gray-300)] cursor-pointer">
+        <Link
+          href={`/search?q=${encodeURIComponent(query)}&category=${cardType}`}
+          className="opacity-0 group-hover:opacity-100 transition text-sm text-[var(--gray-300)] cursor-pointer"
+        >
           전체보기
-        </button> */}
+        </Link>
       </div>
 
       <div className="flex justify-between flex-wrap gap-y-4">
