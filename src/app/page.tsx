@@ -1,10 +1,10 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
 export default async function page() {
   return (
     <>
       <div className="flex gap-4">
-        <Link href="/landingpage">
+        <Link href="/landing">
           <button>랜딩페이지</button>
         </Link>
 
@@ -16,30 +16,18 @@ export default async function page() {
           <button>카테고리</button>
         </Link>
 
-        <Link href="/dashbord/main">
+        <Link href="/dashbord">
           <button>메인대시보드</button>
-        </Link>
-
-        <Link href="/loadmap/detail/1">
-          <button>로드맵 디테일</button>
-        </Link>
-
-        <Link href="/sharemap">
-          <button>공유지도 디테일</button>
-        </Link>
-
-        <Link href="/dashbord/quest/main/1">
-          <button>퀘스트 디테일</button>
         </Link>
 
         <Link href="/admin">
           <button>관리자페이지</button>
         </Link>
 
-        <Link href="/mypage">
-          <button>마이페이지</button>
+        <Link href="/123">
+          <button>404페이지</button>
         </Link>
       </div>
     </>
-  )
+  );
 }

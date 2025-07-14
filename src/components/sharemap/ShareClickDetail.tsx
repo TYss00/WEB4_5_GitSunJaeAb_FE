@@ -20,6 +20,7 @@ import Link from 'next/link';
 import LayerDetail from '../ui/layer/LayerDetail';
 import MarkerDetail from '../ui/layer/MarkerDetail';
 import Toggle from '../ui/Toggle';
+
 import { useRouter } from 'next/navigation';
 
 export default function ShareClickDetail() {
@@ -132,6 +133,7 @@ export default function ShareClickDetail() {
             </p>
           </div>
 
+
           {/* 토글 스위치 */}
           <div className="space-y-3 mt-4">
             <Toggle label="경로" />
@@ -157,6 +159,7 @@ export default function ShareClickDetail() {
               <MarkerDetail isTextArea />
             </LayerDetail>
           </div>
+
 
           {/* 참여하기 버튼 */}
           <Link href="/sharemap/sharemapjoin">

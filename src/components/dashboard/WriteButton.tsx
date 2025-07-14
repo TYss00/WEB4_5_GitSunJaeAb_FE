@@ -11,9 +11,9 @@ export default function WriteButton({ type }: CardListProps) {
     if (type === 'quest') {
       router.push('/dashbord/quest/write');
     } else if (type === 'roadmap') {
-      router.push('/loadmap/write');
+      router.push('/dashbord/roadmap/write');
     } else if (type === 'sharemap') {
-      router.push('/sharemap/shareadd');
+      router.push('/dashbord/sharemap/write');
     }
   };
 
