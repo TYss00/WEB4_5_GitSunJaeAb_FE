@@ -83,11 +83,13 @@ export default function ShareMapJoin() {
       >
         <div className="h-full px-5 py-4 overflow-y-auto scrollbar-none">
           {/* 닫기 버튼 */}
-          <div
-            className="flex items-center mb-4 space-x-[-16px] cursor-pointer"
-            onClick={close}
-          >
-            <ChevronsRight size={35} />
+          <div className="flex items-center mb-5 gap-[10px]">
+            <ChevronsRight
+              size={35}
+              onClick={close}
+              className="cursor-pointer"
+            />
+            <h1 className="font-semibold text-xl">공유지도 수정하기</h1>
           </div>
 
           {/* 위치/날짜/좋아요/조회수/신고 */}
@@ -127,9 +129,17 @@ export default function ShareMapJoin() {
             <h2 className="text-2xl font-semibold mb-4">
               서울 대학로 맛집 추천좀
             </h2>
-            <p className="text-sm text-black mb-4">
+            <p className="text-[16px] text-black mb-2">
               나 송지은인데 디자인 그만하고 대학로 갈거니까 맛집 알아와라
             </p>
+            <div className="flex gap-2 text-sm text-[#005C54] mb-2">
+              <span>#태그1</span>
+              <span>#태그2</span>
+            </div>
+            <div className="flex gap-[5px] items-center mb-5">
+              <div className="rounded-full bg-amber-950 size-[25px]"></div>
+              <span className="text-sm">작성자 닉네임</span>
+            </div>
           </div>
 
           {/* 레이어 목록 */}
