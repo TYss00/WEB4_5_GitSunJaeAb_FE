@@ -1,5 +1,14 @@
 import { ReactNode } from 'react';
 
+export type HeaderProps = {
+  isAdmin?: boolean;
+};
+
+export type CategoryAddCardProps = {
+  type?: 'category' | 'marker';
+  onClick?: () => void;
+};
+
 export type RoadMapCardProps = {
   category: string;
   mapImageUrl: string;

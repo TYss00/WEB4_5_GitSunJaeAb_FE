@@ -7,35 +7,37 @@ import SearchModal from '../search/SearchModal';
 import { useClickOut } from '@/hooks/useClickOut';
 import Notification from '../notification/Notification';
 import { usePathname } from 'next/navigation';
+import { HeaderProps } from '@/types/type';
 
-export default function Header() {
+export default function Header({ isAdmin = false }: HeaderProps) {
   const pathname = usePathname();
 
-  const navItems = [
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+
+  const [isNotiOpen, setIsNotiOpen] = useState(false);
+  const notiRef = useRef<HTMLDivElement>(null);
+
+  useClickOut(searchRef, () => setIsSearchOpen(false));
+  useClickOut(notiRef, () => setIsNotiOpen(false));
+
+  const handleSearch = () => setIsSearchOpen((prev) => !prev);
+  const handleNoti = () => setIsNotiOpen((prev) => !prev);
+
+  const userNavItems = [
     { name: '로드맵', href: '/dashbord/roadmap' },
     { name: '공유지도', href: '/dashbord/sharemap' },
     { name: '퀘스트', href: '/dashbord/quest' },
   ];
 
-  // 검색 아이콘 클릭 시 검색 모달 보여지도록
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
+  const adminNavItems = [
+    { name: '신고 내역', href: '/admin/report' },
+    { name: '사용자 관리', href: '/admin/users' },
+    { name: '기타 관리', href: '/admin/manage' },
+    { name: '공유지도', href: '/admin/sharemap' },
+  ];
 
-  // 알림 아이콘 클릭 시 알림 모달 보여지게
-  const [isNotiOpen, setIsNotiOpen] = useState(false);
-  const notiRef = useRef<HTMLDivElement>(null);
-
-  // 외부 클릭 감지
-  useClickOut(searchRef, () => setIsSearchOpen(false));
-  useClickOut(notiRef, () => setIsNotiOpen(false));
-
-  const handleSearch = () => {
-    setIsSearchOpen((prev) => !prev);
-  };
-
-  const handleNoti = () => {
-    setIsNotiOpen((prev) => !prev);
-  };
+  const navItems = isAdmin ? adminNavItems : userNavItems;
 
   return (
     <header className="w-full h-20 px-11 flex items-center justify-between bg-[var(--white)] relative">
@@ -47,12 +49,11 @@ export default function Header() {
         MAPICK
       </Link>
 
-      {/* 메뉴들 */}
+      {/* 네비게이션 메뉴 */}
       <nav>
-        <ul className="flex items-center gap-[130px] text-lg text-[var(--black)]">
+        <ul className="flex items-center gap-[60px] text-lg text-[var(--black)]">
           {navItems.map(({ name, href }) => {
             const isActive = pathname.startsWith(href);
-
             return (
               <li
                 key={href}
@@ -69,30 +70,37 @@ export default function Header() {
         </ul>
       </nav>
 
-      {/* 아이콘들 */}
+      {/* 우측 아이콘 */}
       <div className="flex items-center gap-6 text-[var(--black)]">
+        {/* 알림 아이콘 */}
         <Bell
           size={25}
           strokeWidth={1.7}
           className="cursor-pointer hover:text-[var(--primary-300)]"
           onClick={handleNoti}
         />
-        {/* 검색 아이콘 / 닫기 아이콘 */}
-        {isSearchOpen ? (
-          <X
-            size={25}
-            strokeWidth={1.7}
-            className="cursor-pointer hover:text-[var(--primary-300)]"
-            onClick={() => setIsSearchOpen(false)}
-          />
-        ) : (
-          <Search
-            size={25}
-            strokeWidth={1.7}
-            className="cursor-pointer hover:text-[var(--primary-300)]"
-            onClick={handleSearch}
-          />
+        {!isAdmin && (
+          <>
+            {/* 검색 아이콘 or 닫기 아이콘 */}
+            {isSearchOpen ? (
+              <X
+                size={25}
+                strokeWidth={1.7}
+                className="cursor-pointer hover:text-[var(--primary-300)]"
+                onClick={() => setIsSearchOpen(false)}
+              />
+            ) : (
+              <Search
+                size={25}
+                strokeWidth={1.7}
+                className="cursor-pointer hover:text-[var(--primary-300)]"
+                onClick={handleSearch}
+              />
+            )}
+          </>
         )}
+
+        {/* 공통: 마이페이지 아이콘 */}
         <Link href="/mypage">
           <CircleUserRound
             size={25}
@@ -104,15 +112,15 @@ export default function Header() {
         </Link>
       </div>
 
-      {/* 알림 모달 추가 */}
+      {/* 알림 모달 */}
       {isNotiOpen && (
         <div ref={notiRef} className="absolute top-[78px] right-[80px] z-50">
           <Notification onClose={() => setIsNotiOpen(false)} />
         </div>
       )}
 
-      {/* 검색 모달 추가 */}
-      {isSearchOpen && (
+      {/* 검색 모달 */}
+      {!isAdmin && isSearchOpen && (
         <div
           ref={searchRef}
           className="absolute top-[80px] left-0 w-full bg-[var(--white)] shadow-md z-50"
