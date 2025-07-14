@@ -9,12 +9,12 @@ export default function MypageLabel() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   return (
     <>
-      <div className="flex items-center gap-6 h-[150px] px-48 mb-10">
+      <div className="flex items-center gap-6 h-[150px] px-48 mb-5">
         {/* 프로필 */}
-        <div className="relative -top-13 w-[120px] h-[120px] rounded-full overflow-hidden bg-gray-200" />
-        <div className="flex justify-between items-start flex-1">
+        <div className="relative -top-13 w-[140px] h-[140px] rounded-full overflow-hidden bg-gray-200" />
+        <div className="flex justify-between items-start flex-1 mt-[-40px]">
           <div>
-            <div className="flex items-center gap-2 text-xl font-semibold">
+            <div className="flex items-center gap-2 text-2xl font-semibold">
               지지지{' '}
               <span>
                 <Medal size={20} className="text-[#D5A208]" />
@@ -37,7 +37,7 @@ export default function MypageLabel() {
 
           <Button
             buttonStyle="green"
-            className="w-[180px] h-[38px] px-6"
+            className="w-[180px] h-[38px] px-6 mt-1"
             onClick={() => setIsEditOpen(true)}
           >
             프로필 수정

@@ -1,16 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import Input from '../ui/Input';
 import Link from 'next/link';
 import Button from '../ui/Button';
+import PasswordInput from '../ui/PasswrodInput';
 
 export default function Login() {
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const togglePassword = () => setPasswordVisible((prev) => !prev);
-
   return (
     <div className="min-h-screen w-full px-6 py-16 flex flex-col justify-center">
       {/* 로고 */}
@@ -25,19 +21,7 @@ export default function Login() {
 
         {/* 비밀번호 */}
         <div className="relative">
-          <Input
-            label="비밀번호"
-            type={passwordVisible ? 'text' : 'password'}
-            placeholder="비밀번호를 입력하세요"
-            className="pr-10"
-          />
-          <button
-            type="button"
-            onClick={togglePassword}
-            className="absolute right-3 bottom-3 text-[var(--primary-300)]"
-          >
-            {passwordVisible ? <EyeOff size={20} /> : <Eye size={20} />}
-          </button>
+          <PasswordInput />
         </div>
 
         {/* 로그인 버튼 */}

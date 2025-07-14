@@ -1,33 +1,33 @@
-'use client'
+'use client';
 
-import { PencilLine, X } from 'lucide-react'
-import Input from '../ui/Input'
-import Button from '../ui/Button'
-import { useRef, useState } from 'react'
-import Image from 'next/image'
+import { ImagePlus, PencilLine, X } from 'lucide-react';
+import Button from '../ui/Button';
+import { useRef, useState } from 'react';
+import Image from 'next/image';
+import PasswordInput from '../ui/PasswrodInput';
 
 export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
-  const fileInputRef = useRef<HTMLInputElement | null>(null)
-  const [imageSrc, setImageSrc] = useState<string | null>(null)
-  const [username, setUsername] = useState('사용자 이름')
-  const [isEditingName, setIsEditingName] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [username, setUsername] = useState('사용자 이름');
+  const [isEditingName, setIsEditingName] = useState(false);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setImageSrc(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+        setImageSrc(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      setIsEditingName(false)
+      setIsEditingName(false);
     }
-  }
+  };
   return (
     <>
       <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
@@ -37,7 +37,10 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
           </div>
           <div className="flex flex-col gap-[10px] items-center">
             {/* 프로필 이미지 영역 */}
-            <div className="rounded-full size-[140px] bg-[var(--gray-200)] overflow-hidden relative">
+            <div
+              className="rounded-full size-[140px] bg-[var(--gray-200)] overflow-hidden relative cursor-pointer"
+              onClick={() => fileInputRef.current?.click()}
+            >
               {imageSrc ? (
                 <Image
                   src={imageSrc}
@@ -46,7 +49,9 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
                   className="object-cover rounded-full"
                   style={{ objectFit: 'cover' }}
                 />
-              ) : null}
+              ) : (
+                <ImagePlus className="text-[var(--gray-300)] absolute left-1/2 top-1/2 -translate-1/2" />
+              )}
             </div>
             <span
               className="text-[13px] text-[var(--primary-300)] cursor-pointer"
@@ -85,16 +90,22 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
             )}
           </div>
           <div className="w-full">
-            <span>현재 비밀번호</span>
-            <Input />
+            <PasswordInput
+              label="현재 비밀번호"
+              placeholder="비밀번호를 입력하세요"
+            />
           </div>
           <div className="w-full">
-            <span>새 비밀번호</span>
-            <Input />
+            <PasswordInput
+              label="새 비밀번호"
+              placeholder="새 비밀번호를 입력하세요"
+            />
           </div>
           <div className="w-full">
-            <span>새 비밀번호 확인</span>
-            <Input />
+            <PasswordInput
+              label="새 비밀번호 확인"
+              placeholder="새 비밀번호를 다시 입력하세요"
+            />
           </div>
           <Button
             buttonStyle="green"
@@ -106,5 +117,5 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
         </div>
       </div>
     </>
-  )
+  );
 }
