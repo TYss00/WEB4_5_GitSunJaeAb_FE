@@ -178,7 +178,7 @@ export default function ShareMapJoin() {
             </div>
 
             <div className="flex justify-end mt-4 gap-5">
-              <Link href="/sharemap/shareclickdetail">
+              <Link href="/dashbord/sharemap/detail/1/preview">
                 <Button
                   buttonStyle="white"
                   className="text-[18px] w-[80px] h-[40px] text-[var(--black)] font-semibold"
@@ -186,7 +186,7 @@ export default function ShareMapJoin() {
                   취소
                 </Button>
               </Link>
-              <Link href="/sharemap">
+              <Link href="/dashbord/sharemap/detail/1">
                 <Button
                   buttonStyle="smGreen"
                   className="text-[18px] w-[80px] h-[40px]"
