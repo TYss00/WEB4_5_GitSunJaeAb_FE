@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
+import { useState } from 'react'
 import {
   Heart,
   Siren,
@@ -9,20 +9,20 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronsRight,
-} from 'lucide-react';
-import Button from '../ui/Button';
-import ReportModal from '../common/modal/ReportModal';
-import Comment from '../comment/Comment';
-import Toggle from '../ui/Toggle';
-import LayerDetail from '../ui/layer/LayerDetail';
-import MarkerDetail from '../ui/layer/MarkerDetail';
+} from 'lucide-react'
+import Button from '../ui/Button'
+import ReportModal from '../common/modal/ReportModal'
+import Comment from '../comment/Comment'
+import Toggle from '../ui/Toggle'
+import LayerDetail from '../ui/layer/LayerDetail'
+import MarkerDetail from '../ui/layer/MarkerDetail'
 
 export default function Loadmapdetail() {
-  const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false)
 
   return (
     <>
-      <section className="flex min-h-screen">
+      <section className="flex w-full h-screen overflow-hidden">
         {/* 왼쪽 지도 */}
         <div className="w-4/6 bg-gray-200 relative">
           <div className="absolute top-4 left-8 flex items-center gap-3 px-4 py-2 z-10">
@@ -55,10 +55,12 @@ export default function Loadmapdetail() {
           </div>
         </div>
 
-        {/* 오른쪽 */}
-        <div className="w-2/6 px-6 py-8 space-y-6 bg-white">
-          <div className="flex items-center mb-5 space-x-[-16px]">
+        {/* 사이드바 */}
+        <div className="w-2/6 h-full px-6 py-8 space-y-6 bg-white overflow-y-auto scrollbar-none">
+          <div className="flex items-center mb-5 w-full gap-[10px]">
             <ChevronsRight size={25} />
+            {/* 화면 위치 */}
+            <h1 className="font-semibold text-xl">로드맵 상세보기</h1>
           </div>
 
           <div className="flex items-center justify-between mb-3">
@@ -90,7 +92,7 @@ export default function Loadmapdetail() {
             <h2 className="text-2xl font-semibold mb-2">
               서울 대학로 맛집 추천좀
             </h2>
-            <p className="text-sm text-black mb-2">
+            <p className="text-[16px] text-black mb-2">
               나 송지은인데 디자인 그만하고 대학로 갈거니까 맛집 알아와라
             </p>
             <div className="flex gap-2 text-sm text-[#005C54]">
@@ -98,9 +100,13 @@ export default function Loadmapdetail() {
               <span>#태그2</span>
             </div>
           </div>
+          <div className="flex gap-[5px] items-center">
+            <div className="rounded-full bg-amber-950 size-[30px]"></div>
+            <span className="text-sm">작성자 닉네임</span>
+          </div>
 
           {/* 공통 컴포넌트 토글 */}
-          <div className="space-y-3">
+          <div className="space-y-3 border-t border-gray-300 pt-6">
             <Toggle label="경로" />
             <Toggle label="애니메이션" />
           </div>
@@ -140,5 +146,5 @@ export default function Loadmapdetail() {
       </section>
       {isReportOpen && <ReportModal onClose={() => setIsReportOpen(false)} />}
     </>
-  );
+  )
 }
