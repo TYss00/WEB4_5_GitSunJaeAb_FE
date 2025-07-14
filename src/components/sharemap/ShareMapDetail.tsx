@@ -8,9 +8,10 @@ import HistoryModal from './HistoryModal';
 import ReportModal from '../common/modal/ReportModal';
 import Comment from '../comment/Comment';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function ShareMapDetail() {
-  const [showAllParticipants, setShowAllParticipants] = useState(false);
+  const router = useRouter();
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [isReportOpen, setIsReportOpen] = useState(false);
 
@@ -19,7 +20,7 @@ export default function ShareMapDetail() {
       <main className="max-w-[1100px] mx-auto mt-[24px] mb-[85px]">
         <div className="flex items-center text-[14px] text-[var(--primary-300)] cursor-pointer mb-[22px]">
           <ChevronLeft size={18} />
-          <span>뒤로가기</span>
+          <span onClick={() => router.back()}>뒤로가기</span>
         </div>
 
         <div className="flex items-center justify-between text-[13px] text-[var(--gray-200)] mb-1">
@@ -72,8 +73,10 @@ export default function ShareMapDetail() {
           <HistoryModal onClose={() => setShowHistoryModal(false)} />
         )}
 
-        <Link href="/dashbord/sharemap/detail/1/preview">
-          <div className="w-full h-[500px] bg-[var(--gray-200)] rounded-[10px] overflow-hidden mb-[30px] relative">
+
+        <Link href="/sharemap/shareclickdetail">
+          <div className="w-full h-[500px] bg-[var(--gray-200)] rounded-[10px] overflow-hidden mb-[30px] relative transition duration-300 hover:brightness-90">
+
             <Image
               src="/assets/sampleMap.png"
               alt="지도 이미지"
@@ -91,39 +94,32 @@ export default function ShareMapDetail() {
             </div>
           </section>
 
-          <section className="w-[428px] h-[360px] border border-[var(--gray-50)] rounded-md p-4">
+          <section className="w-[428px] border border-[var(--gray-50)] rounded-md p-4">
             <h2 className="text-[15px] font-semibold mb-4">참여자 10</h2>
-            <div className="space-y-[16px]">
+
+            {/* 스크롤 가능한 참여자 리스트 */}
+            <div className="space-y-[16px] max-h-[240px] overflow-y-auto pr-1">
               {Array.from({ length: 10 }, (_, i) => `짱아${i + 1}`).map(
-                (name, idx) => {
-                  if (!showAllParticipants && idx >= 4) return null;
-                  return (
-                    <div key={idx} className="flex items-center gap-2 mb-4">
-                      <Image
-                        src="/assets/userProfile.png"
-                        alt={name}
-                        width={34}
-                        height={34}
-                        className="w-[34px] h-[34px] rounded-full"
-                      />
-                      <span className="text-[15px] text-[var(--black)]">
-                        {name}
-                      </span>
-                    </div>
-                  );
-                }
+                (name, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <Image
+                      src="/assets/userProfile.png"
+                      alt={name}
+                      width={34}
+                      height={34}
+                      className="w-[34px] h-[34px] rounded-full"
+                    />
+                    <span className="text-[15px] text-[var(--black)]">
+                      {name}
+                    </span>
+                  </div>
+                )
               )}
             </div>
-            <Link href="/dashbord/sharemap/detail/1/preview/mapjoin">
-              <Button className="w-full h-[38px] mb-[16px]">참여하기</Button>
+            <Link href="/sharemap/sharemapjoin">
+              <Button className="w-full h-[38px] mt-4">참여하기</Button>
+
             </Link>
-            <Button
-              buttonStyle="white"
-              className="w-full h-[38px]"
-              onClick={() => setShowAllParticipants((prev) => !prev)}
-            >
-              {showAllParticipants ? '접기' : '전체 참여자 보기'}
-            </Button>
           </section>
         </div>
       </main>

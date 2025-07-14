@@ -1,4 +1,4 @@
-import { ChevronDown, Plus } from 'lucide-react';
+import { ChevronDown, ChevronLeft, Plus } from 'lucide-react';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import LayerEdit from '../ui/layer/LayerEdit';
@@ -10,6 +10,14 @@ export default function ShareMapAdd() {
       <div className="w-4/6 bg-gray-200 relative">
         <div className="absolute top-4 left-8 flex items-center gap-3 px-4 py-2 z-10">
           {/* 레이어 선택 */}
+          <Button
+            buttonStyle="white"
+            icon={<ChevronLeft size={18} />}
+            className="text-sm"
+          >
+            뒤로가기
+          </Button>
+
           <div className="relative w-[140px]">
             <select
               className="w-full h-[34px] text-sm bg-white border-none rounded pl-3 appearance-none"
