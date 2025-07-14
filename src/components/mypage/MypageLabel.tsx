@@ -1,12 +1,12 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Button from '../ui/Button'
-import { CircleAlert, Medal } from 'lucide-react'
-import ProfileEditModal from './ProfileEditModal'
+import { useState } from 'react';
+import Button from '../ui/Button';
+import { CircleAlert, Medal } from 'lucide-react';
+import ProfileEditModal from './ProfileEditModal';
 
-export default function Mypagelabel() {
-  const [isEditOpen, setIsEditOpen] = useState(false)
+export default function MypageLabel() {
+  const [isEditOpen, setIsEditOpen] = useState(false);
   return (
     <>
       <div className="flex items-center gap-6 h-[150px] px-48 mb-10">
@@ -46,5 +46,5 @@ export default function Mypagelabel() {
       </div>
       {isEditOpen && <ProfileEditModal onClose={() => setIsEditOpen(false)} />}
     </>
-  )
+  );
 }
