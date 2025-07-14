@@ -5,7 +5,7 @@ import LayerEdit from '../ui/layer/LayerEdit';
 
 export default function ShareMapAdd() {
   return (
-    <section className="flex min-h-screen">
+    <section className="flex h-screen overflow-hidden">
       {/* 왼쪽 지도 */}
       <div className="w-4/6 bg-gray-200 relative">
         <div className="absolute top-4 left-8 flex items-center gap-3 px-4 py-2 z-10">
@@ -38,7 +38,7 @@ export default function ShareMapAdd() {
         </div>
       </div>
 
-      <div className="w-2/6 px-6 py-8 space-y-6 bg-white">
+      <div className="w-2/6 px-6 py-8 space-y-6 bg-white overflow-y-auto scrollbar-none">
         {/* 제목 */}
         <div className="space-y-2">
           <label className="text-lg text-black">제목</label>
