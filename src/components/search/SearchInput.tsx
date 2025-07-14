@@ -64,9 +64,10 @@ export default function SearchInput({
   };
 
   const handleSearchFocus = () => {
-    if (search.trim() !== '') {
-      setShowRecent(true);
-    }
+    // if (search.trim() !== '') {
+    //   setShowRecent(true);
+    // }
+    setShowRecent(true);
   };
 
   return (
