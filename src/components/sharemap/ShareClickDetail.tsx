@@ -133,7 +133,6 @@ export default function ShareClickDetail() {
             </p>
           </div>
 
-
           {/* 토글 스위치 */}
           <div className="space-y-3 mt-4">
             <Toggle label="경로" />
@@ -160,9 +159,8 @@ export default function ShareClickDetail() {
             </LayerDetail>
           </div>
 
-
           {/* 참여하기 버튼 */}
-          <Link href="/sharemap/sharemapjoin">
+          <Link href="/dashbord/sharemap/detail/1/preview/mapjoin">
             <div className="flex justify-end pt-6">
               <Button
                 buttonStyle="smGreen"
