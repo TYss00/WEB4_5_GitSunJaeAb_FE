@@ -20,5 +20,6 @@ export const loginUser = async (email: string, password: string) => {
     email,
     password,
   });
+  console.log(data);
   return data;
 };

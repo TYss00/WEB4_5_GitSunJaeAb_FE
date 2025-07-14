@@ -29,16 +29,16 @@ export default function Login() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await loginUser(form.email, form.password);
-      const token = Cookies.get('accessToken');
-      if (token) {
-        console.log('로그인 성공 . 쿠키 토큰 : ', token);
+      const response = await loginUser(form.email, form.password);
+      console.log('로그인 응답:', response);
+      const accessToken = response.token?.accessToken;
+      if (accessToken) {
+        Cookies.set('accessToken', accessToken); // 또는 localStorage.setItem('accessToken', accessToken);
+        console.log('로그인 성공. accessToken 저장됨:', accessToken);
+        router.push('/');
       } else {
-        console.log('로그인 성공했지만 쿠키 없어');
+        console.log('accessToken이 응답에 없음. 로그인 실패 처리 필요');
       }
-
-      // alert('로그인 성공!');
-      router.push('/'); // 로그인 후 이동
     } catch (err) {
       const error = err as AxiosError<{ message?: string }>;
       alert(error.response?.data?.message || '로그인 실패');
