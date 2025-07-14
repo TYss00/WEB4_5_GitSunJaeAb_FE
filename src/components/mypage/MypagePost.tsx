@@ -12,6 +12,7 @@ export default function MypagePost({ activeTab }: MypagePostProps) {
       title: '서울 야경 따라',
       date: '2025.07.07',
       author: activeTab === '작성글' ? undefined : '닉네임',
+      profileImgUrl: activeTab === '작성글' ? undefined : '/assets/google.svg',
       type:
         idx % 4 === 0
           ? '공개'
@@ -35,6 +36,8 @@ export default function MypagePost({ activeTab }: MypagePostProps) {
       cards.map((card) => ({
         ...card,
         author: activeTab === '작성글' ? undefined : '닉네임',
+        profileImgUrl:
+          activeTab === '작성글' ? undefined : '/assets/google.svg',
       }))
     );
   }
@@ -55,6 +58,7 @@ export default function MypagePost({ activeTab }: MypagePostProps) {
           title={card.title}
           date={card.date}
           {...(card.author ? { author: card.author } : {})}
+          {...(card.profileImgUrl ? { profileImgUrl: card.profileImgUrl } : {})}
           type={card.type as '공개' | '비공개' | '퀘스트' | '공유'}
           mapImageUrl={card.imageUrl}
           isLiked={card.isLiked}

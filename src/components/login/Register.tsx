@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Input from '../ui/Input';
 import Link from 'next/link';
 import Button from '../ui/Button';
+import PasswordInput from '../ui/PasswrodInput';
 
 export default function Register() {
   const [agree, setAgree] = useState(false);
@@ -38,12 +39,7 @@ export default function Register() {
 
         {/* 비밀번호 확인 */}
         <div className="relative">
-          <Input
-            label="비밀번호 확인"
-            type="password"
-            placeholder="비밀번호를 다시 입력하세요"
-            className="pr-10"
-          />
+          <PasswordInput placeholder="비밀번호를 다시 입력하세요" />
         </div>
 
         {/* 이용약관 동의 */}

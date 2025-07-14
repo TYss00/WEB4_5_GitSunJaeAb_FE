@@ -36,6 +36,7 @@ export type MypageCardProps = {
   title: string;
   date: string;
   author?: string;
+  profileImgUrl?: string;
   type: '공개' | '비공개' | '퀘스트' | '공유';
   mapImageUrl: string;
   isLiked?: boolean;
@@ -51,6 +52,7 @@ export type MypagePostProps = {
 
 export type ButtonProps = {
   children: React.ReactNode;
+  style?: string | undefined;
   buttonStyle?: 'green' | 'white' | 'withIcon' | 'smGreen';
   fullWidth?: boolean;
   icon?: React.ReactNode;
