@@ -79,6 +79,32 @@ export default function ShareMapAdd() {
           />
         </div>
 
+        {/* 해시태그 */}
+        <div className="space-y-2">
+          <label className="text-lg text-black">해시태그</label>
+          <div className="flex gap-2">
+            <Input
+              type="text"
+              placeholder="해시태그 추가"
+              className="h-[40px] border-[#E4E4E4] rounded-md"
+            />
+            <Button
+              buttonStyle="smGreen"
+              className="w-[80px] h-[40px] text-3xl font-medium"
+            >
+              <Plus size={25} />
+            </Button>
+          </div>
+          <div className="flex gap-2 text-sm text-[#005C54] mt-1">
+            <span>
+              #태그1 <button className="ml-1 text-black">×</button>
+            </span>
+            <span>
+              #태그2 <button className="ml-1 text-black">×</button>
+            </span>
+          </div>
+        </div>
+
         {/* 레이어 */}
         <div className="border-t border-gray-300 pt-6">
           <div className="flex items-center justify-between mb-3">
