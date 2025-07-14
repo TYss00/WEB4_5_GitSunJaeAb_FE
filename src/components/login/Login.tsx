@@ -6,10 +6,44 @@ import Image from 'next/image';
 import Input from '../ui/Input';
 import Link from 'next/link';
 import Button from '../ui/Button';
+import { useRouter } from 'next/navigation';
+import { loginUser } from '@/libs/auth';
+import { AxiosError } from 'axios';
+import Cookies from 'js-cookie';
 
 export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const togglePassword = () => setPasswordVisible((prev) => !prev);
+
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const router = useRouter();
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await loginUser(form.email, form.password);
+      const token = Cookies.get('accessToken');
+      if (token) {
+        console.log('로그인 성공 . 쿠키 토큰 : ', token);
+      } else {
+        console.log('로그인 성공했지만 쿠키 없어');
+      }
+
+      // alert('로그인 성공!');
+      router.push('/'); // 로그인 후 이동
+    } catch (err) {
+      const error = err as AxiosError<{ message?: string }>;
+      alert(error.response?.data?.message || '로그인 실패');
+    }
+  };
 
   return (
     <div className="min-h-screen w-full px-6 py-16 flex flex-col justify-center">
@@ -19,9 +53,19 @@ export default function Login() {
       </h1>
 
       {/* 로그인 */}
-      <div className="flex flex-col gap-6 w-full max-w-lg mx-auto">
+      <form
+        className="flex flex-col gap-6 w-full max-w-lg mx-auto"
+        onSubmit={handleLogin}
+      >
         {/* 이메일 */}
-        <Input label="이메일" type="email" placeholder="이메일을 입력하세요" />
+        <Input
+          label="이메일"
+          type="email"
+          placeholder="이메일을 입력하세요"
+          name="email"
+          value={form.email}
+          onChange={handleChange}
+        />
 
         {/* 비밀번호 */}
         <div className="relative">
@@ -30,6 +74,9 @@ export default function Login() {
             type={passwordVisible ? 'text' : 'password'}
             placeholder="비밀번호를 입력하세요"
             className="pr-10"
+            name="password"
+            value={form.password}
+            onChange={handleChange}
           />
           <button
             type="button"
@@ -45,6 +92,7 @@ export default function Login() {
           buttonStyle="green"
           fullWidth
           className="h-[45px] py-2 rounded-lg text-sm"
+          type="submit"
         >
           로그인
         </Button>
@@ -76,7 +124,7 @@ export default function Login() {
             회원가입하기
           </Link>
         </p>
-      </div>
+      </form>
     </div>
   );
 }
