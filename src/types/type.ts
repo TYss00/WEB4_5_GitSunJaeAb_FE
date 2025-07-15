@@ -106,3 +106,17 @@ export type SearchRecord = {
   term: string;
   date: string;
 };
+
+export type User = {
+  id: string;
+  nickname: string;
+  profileImage: string;
+};
+
+export type AuthState = {
+  user: User | null;
+  isLoggedIn: boolean;
+  // accessToken: string | null;
+  setUser: (user: User) => void;
+  logout: () => void;
+};

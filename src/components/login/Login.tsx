@@ -9,12 +9,15 @@ import { loginUser } from '@/libs/auth';
 import { AxiosError } from 'axios';
 import PasswordInput from '../ui/PasswrodInput';
 import { useState } from 'react';
+// import { useAuthStore } from '@/store/useAuthStore';
 
 export default function Login() {
   const [form, setForm] = useState({
     email: '',
     password: '',
   });
+
+  // const { setUser } = useAuthStore();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -24,22 +27,18 @@ export default function Login() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
       const response = await loginUser(form.email, form.password);
 
       console.log('로그인 응답 전체:', response);
       const accessToken = response.token?.accessToken;
+      if (!accessToken) throw new Error('AccessToken 없음');
 
-      if (accessToken) {
-        localStorage.setItem('accessToken', accessToken);
-        // console.log(
-        //   '로그인 성공. accessToken localStorage에 저장됨:',
-        //   accessToken
-        // );
-        router.push('/');
-      } else {
-        console.warn('accessToken이 응답에 없음. 로그인 실패 처리 필요');
-      }
+      // const user = await getProfile(); // 토큰으로 서버에서 유저 정보 요청
+      // setUser(user); // 전역 상태 저장 (user + isLoggedIn: true)
+
+      router.push('/');
     } catch (err) {
       const error = err as AxiosError<{ message?: string }>;
       console.error('로그인 에러:', error);

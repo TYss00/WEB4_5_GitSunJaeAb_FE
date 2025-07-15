@@ -21,13 +21,12 @@ export const loginUser = async (email: string, password: string) => {
     password,
   });
   if (data.token?.accessToken && data.token?.refreshToken) {
-    // localStorage 또는 js-cookie로 저장
     localStorage.setItem('accessToken', data.token.accessToken);
-    localStorage.setItem('refreshToken', data.token.refreshToken);
-
-    // 또는 쿠키로 저장하고 싶다면:
-    // Cookies.set('accessToken', data.token.accessToken);
-    // Cookies.set('refreshToken', data.token.refreshToken);
   }
   return data;
+};
+
+export const getProfile = async () => {
+  const { data } = await axiosInstance.get('/members/profile');
+  return data.member;
 };
