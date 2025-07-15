@@ -55,15 +55,17 @@ export default function Header({ isAdmin = false }: HeaderProps) {
           {navItems.map(({ name, href }) => {
             const isActive = pathname.startsWith(href);
             return (
-              <li
-                key={href}
-                className={`transition cursor-pointer ${
-                  isActive
-                    ? 'text-[var(--primary-300)]'
-                    : 'hover:text-[var(--primary-300)]'
-                }`}
-              >
-                <Link href={href}>{name}</Link>
+              <li key={href}>
+                <Link
+                  href={href}
+                  className={`transition cursor-pointer pb-1 ${
+                    isActive
+                      ? 'text-[var(--primary-300)] border-b-2 border-[var(--primary-300)]'
+                      : 'text-[var(--black)]'
+                  }`}
+                >
+                  {name}
+                </Link>
               </li>
             );
           })}
