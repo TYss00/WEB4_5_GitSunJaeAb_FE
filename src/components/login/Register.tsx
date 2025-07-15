@@ -28,6 +28,17 @@ export default function Register() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (
+      !form.name ||
+      !form.nickname ||
+      !form.email ||
+      !form.password ||
+      !form.confirmPassword
+    ) {
+      return alert('모든 항목을 입력해주세요.');
+    }
+
     if (!agree) return alert('이용약관에 동의해주세요.');
     if (form.password !== form.confirmPassword)
       return alert('비밀번호가 일치하지 않습니다.');
@@ -38,6 +49,7 @@ export default function Register() {
       router.push('/login');
     } catch (err: unknown) {
       const error = err as AxiosError<{ message?: string }>;
+      console.error('회원가입 실패:', error.response?.data);
       alert(error.response?.data?.message || '회원가입 실패');
     }
   };
@@ -86,21 +98,21 @@ export default function Register() {
 
         {/* 비밀번호 */}
         <div className="relative">
-          {/* <Input
-            label="비밀번호"
-            type="password"
-            placeholder="비밀번호를 입력하세요"
-            className="pr-10"
+          <PasswordInput
+            name="password"
             value={form.password}
             onChange={handleChange}
-            name="password"
-          /> */}
-          <PasswordInput value={form.password} onChange={handleChange} />
+          />
         </div>
 
         {/* 비밀번호 확인 */}
         <div className="relative">
-          <PasswordInput placeholder="비밀번호를 다시 입력하세요" />
+          <PasswordInput
+            placeholder="비밀번호를 다시 입력하세요"
+            value={form.confirmPassword}
+            onChange={handleChange}
+            name="confirmPassword"
+          />
         </div>
 
         {/* 이용약관 동의 */}

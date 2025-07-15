@@ -9,12 +9,8 @@ import { loginUser } from '@/libs/auth';
 import { AxiosError } from 'axios';
 import PasswordInput from '../ui/PasswrodInput';
 import { useState } from 'react';
-// import Cookies from 'js-cookie';
 
 export default function Login() {
-  // const [passwordVisible, setPasswordVisible] = useState(false);
-  // const togglePassword = () => setPasswordVisible((prev) => !prev);
-
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -36,13 +32,13 @@ export default function Login() {
 
       if (accessToken) {
         localStorage.setItem('accessToken', accessToken);
-        console.log(
-          '✅ 로그인 성공. accessToken localStorage에 저장됨:',
-          accessToken
-        );
+        // console.log(
+        //   '로그인 성공. accessToken localStorage에 저장됨:',
+        //   accessToken
+        // );
         router.push('/');
       } else {
-        console.warn('⚠️ accessToken이 응답에 없음. 로그인 실패 처리 필요');
+        console.warn('accessToken이 응답에 없음. 로그인 실패 처리 필요');
       }
     } catch (err) {
       const error = err as AxiosError<{ message?: string }>;
@@ -75,7 +71,11 @@ export default function Login() {
 
         {/* 비밀번호 */}
         <div className="relative">
-          <PasswordInput value={form.password} onChange={handleChange} />
+          <PasswordInput
+            value={form.password}
+            onChange={handleChange}
+            name="password"
+          />
         </div>
 
         {/* 로그인 버튼 */}

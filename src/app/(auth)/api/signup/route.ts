@@ -3,9 +3,8 @@ import axios, { AxiosError } from 'axios';
 import { APIUrl } from '@/libs/api';
 
 export async function POST(req: NextRequest) {
-  const body = await req.json();
-
   try {
+    const body = await req.json();
     const response = await axios.post(`${APIUrl}/auth/signup`, body, {
       headers: {
         'Content-Type': 'application/json',
