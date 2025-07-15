@@ -1,6 +1,6 @@
 'use client';
 
-export default function Mypageimg() {
+export default function MypageImg() {
   return (
     <>
       {/* 나중에 이미지 어울리는거 넣기 */}

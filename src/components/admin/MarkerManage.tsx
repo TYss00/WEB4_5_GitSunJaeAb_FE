@@ -6,12 +6,12 @@ import CategoryAddCard from '@/components/admin/CategoryAddCard';
 
 const categories = ['음식', '등산', '레트로', '서울', '역사', '인천'];
 
-export default function CategoryManage() {
+export default function MarkerManage() {
   return (
     <div className="w-[732px] mx-auto border border-[var(--gray-50)] rounded-[10px] px-[16px] py-[16px]">
       <h2 className="text-lg font-semibold text-[var(--primary-300)] mb-[16px] flex items-center gap-2">
         <Folder size={24} className="text-[var(--primary-300)]" />
-        카테고리 관리
+        커스텀 마커 관리
       </h2>
 
       <div className="flex flex-wrap gap-[16px]">
@@ -33,9 +33,9 @@ export default function CategoryManage() {
 
         <div className="basis-full h-0" />
         <CategoryAddCard
-          type="category"
+          type="marker"
           onClick={() => {
-            alert('카테고리 추가 클릭!');
+            alert('마커 추가 클릭!');
           }}
         />
       </div>

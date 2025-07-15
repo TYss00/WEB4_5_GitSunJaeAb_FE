@@ -20,7 +20,7 @@ export default async function page() {
           <button>메인대시보드</button>
         </Link>
 
-        <Link href="/admin">
+        <Link href="/admin/report">
           <button>관리자페이지</button>
         </Link>
 

@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import { ChevronDown, Plus } from 'lucide-react';
-import Button from '../ui/Button';
-import Input from '../ui/Input';
-import Toggle from '../ui/Toggle';
-import LayerEdit from '../ui/layer/LayerEdit';
+import { ChevronDown, Plus } from 'lucide-react'
+import Button from '../ui/Button'
+import Input from '../ui/Input'
+import Toggle from '../ui/Toggle'
+import LayerEdit from '../ui/layer/LayerEdit'
 
 export default function LoadMapWrite() {
   return (
-    <section className="flex min-h-screen">
+    <section className="flex w-full h-screen overflow-hidden">
       {/* 왼쪽 지도 */}
       <div className="w-4/6 bg-gray-200 relative">
         <div className="absolute top-4 left-8 flex items-center gap-3 px-4 py-2 z-10">
@@ -33,7 +33,10 @@ export default function LoadMapWrite() {
         </div>
       </div>
 
-      <div className="w-2/6 px-6 py-8 space-y-6 bg-white">
+      {/* 사이드 바 */}
+      <div className="w-2/6 px-6 py-8 space-y-6 bg-white h-full overflow-y-auto scrollbar-none">
+        {/* 화면 위치 */}
+        <h1 className="font-semibold text-2xl">로드맵 작성하기</h1>
         {/* 카테고리 */}
         <div className="space-y-2">
           <label className="text-lg text-black">카테고리</label>
@@ -64,6 +67,15 @@ export default function LoadMapWrite() {
             type="text"
             placeholder="제목을 입력해주세요."
             className="h-[40px] border-[#E4E4E4] rounded-md"
+          />
+        </div>
+
+        {/* 내용 */}
+        <div className="space-y-2">
+          <label className="text-lg text-black">내용</label>
+          <textarea
+            placeholder="내용을 입력해주세요."
+            className="h-[100px] w-full rounded-md border border-[var(--gray-50)] px-3 py-2 outline-none focus:border-[var(--primary-300)] focus:ring-1 focus:ring-[var(--primary-300)] placeholder:text-sm placeholder:text-[var(--gray-200)]"
           />
         </div>
 
@@ -151,5 +163,5 @@ export default function LoadMapWrite() {
         </div>
       </div>
     </section>
-  );
+  )
 }

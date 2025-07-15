@@ -31,3 +31,5 @@ export async function api<T>(
 
   return res.json();
 }
+
+export const APIUrl = 'http://34.47.121.164:80';
