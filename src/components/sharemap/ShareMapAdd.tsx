@@ -5,7 +5,7 @@ import LayerEdit from '../ui/layer/LayerEdit';
 
 export default function ShareMapAdd() {
   return (
-    <section className="flex min-h-screen">
+    <section className="flex h-screen overflow-hidden">
       {/* 왼쪽 지도 */}
       <div className="w-4/6 bg-gray-200 relative">
         <div className="absolute top-4 left-8 flex items-center gap-3 px-4 py-2 z-10">
@@ -38,7 +38,7 @@ export default function ShareMapAdd() {
         </div>
       </div>
 
-      <div className="w-2/6 px-6 py-8 space-y-6 bg-white">
+      <div className="w-2/6 px-6 py-8 space-y-6 bg-white overflow-y-auto scrollbar-none">
         {/* 제목 */}
         <div className="space-y-2">
           <label className="text-lg text-black">제목</label>
@@ -77,6 +77,32 @@ export default function ShareMapAdd() {
             placeholder="기간을 입력해주세요."
             className="h-[40px] border-[#E4E4E4] rounded-md"
           />
+        </div>
+
+        {/* 해시태그 */}
+        <div className="space-y-2">
+          <label className="text-lg text-black">해시태그</label>
+          <div className="flex gap-2">
+            <Input
+              type="text"
+              placeholder="해시태그 추가"
+              className="h-[40px] border-[#E4E4E4] rounded-md"
+            />
+            <Button
+              buttonStyle="smGreen"
+              className="w-[80px] h-[40px] text-3xl font-medium"
+            >
+              <Plus size={25} />
+            </Button>
+          </div>
+          <div className="flex gap-2 text-sm text-[#005C54] mt-1">
+            <span>
+              #태그1 <button className="ml-1 text-black">×</button>
+            </span>
+            <span>
+              #태그2 <button className="ml-1 text-black">×</button>
+            </span>
+          </div>
         </div>
 
         {/* 레이어 */}

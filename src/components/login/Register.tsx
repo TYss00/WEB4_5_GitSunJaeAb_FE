@@ -7,6 +7,8 @@ import Button from '../ui/Button';
 import { useRouter } from 'next/navigation';
 import { signupUser } from '@/libs/auth';
 import { AxiosError } from 'axios';
+import PasswordInput from '../ui/PasswrodInput';
+// import PasswordInput from '../ui/PasswrodInput';
 
 export default function Register() {
   const router = useRouter();
@@ -84,7 +86,7 @@ export default function Register() {
 
         {/* 비밀번호 */}
         <div className="relative">
-          <Input
+          {/* <Input
             label="비밀번호"
             type="password"
             placeholder="비밀번호를 입력하세요"
@@ -92,20 +94,13 @@ export default function Register() {
             value={form.password}
             onChange={handleChange}
             name="password"
-          />
+          /> */}
+          <PasswordInput value={form.password} onChange={handleChange} />
         </div>
 
         {/* 비밀번호 확인 */}
         <div className="relative">
-          <Input
-            label="비밀번호 확인"
-            type="password"
-            placeholder="비밀번호를 다시 입력하세요"
-            className="pr-10"
-            value={form.confirmPassword}
-            onChange={handleChange}
-            name="confirmPassword"
-          />
+          <PasswordInput placeholder="비밀번호를 다시 입력하세요" />
         </div>
 
         {/* 이용약관 동의 */}
