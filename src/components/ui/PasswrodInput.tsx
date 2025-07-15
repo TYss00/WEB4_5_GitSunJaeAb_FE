@@ -8,12 +8,18 @@ type Props = {
   label?: string;
   placeholder?: string;
   className?: string;
+  name?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export default function PasswordInput({
   label = '비밀번호',
   placeholder = '비밀번호를 입력하세요',
   className = '',
+  name = 'password',
+  value,
+  onChange,
 }: Props) {
   const [visible, setVisible] = useState(false);
   const toggle = () => setVisible((prev) => !prev);
@@ -25,6 +31,9 @@ export default function PasswordInput({
         type={visible ? 'text' : 'password'}
         placeholder={placeholder}
         className={`pr-10 ${className}`}
+        name={name}
+        value={value}
+        onChange={onChange}
       />
       <button
         type="button"
