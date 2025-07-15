@@ -9,7 +9,7 @@ import Button from '../ui/Button';
 import { useRouter } from 'next/navigation';
 import { loginUser } from '@/libs/auth';
 import { AxiosError } from 'axios';
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 
 export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -30,17 +30,23 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await loginUser(form.email, form.password);
-      console.log('로그인 응답:', response);
+
+      console.log('로그인 응답 전체:', response);
       const accessToken = response.token?.accessToken;
+
       if (accessToken) {
-        Cookies.set('accessToken', accessToken); // 또는 localStorage.setItem('accessToken', accessToken);
-        console.log('로그인 성공. accessToken 저장됨:', accessToken);
+        // localStorage.setItem('accessToken', accessToken);
+        // console.log(
+        //   '로그인 성공. accessToken localStorage에 저장됨:',
+        //   accessToken
+        // );
         router.push('/');
       } else {
-        console.log('accessToken이 응답에 없음. 로그인 실패 처리 필요');
+        console.warn('accessToken이 응답에 없음. 로그인 실패 처리 필요');
       }
     } catch (err) {
       const error = err as AxiosError<{ message?: string }>;
+      console.error('로그인 에러:', error);
       alert(error.response?.data?.message || '로그인 실패');
     }
   };

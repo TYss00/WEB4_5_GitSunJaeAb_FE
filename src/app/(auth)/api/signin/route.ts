@@ -12,17 +12,18 @@ export async function POST(req: NextRequest) {
 
     const { accessToken, refreshToken } = response.data.token;
 
-    const res = NextResponse.json({ message: '로그인 성공' });
+    // const res = NextResponse.json({ message: '로그인 성공' });
 
-    res.cookies.set('accessToken', accessToken, {
-      httpOnly: true,
-      path: '/',
-      sameSite: 'lax',
-      secure: process.env.NODE_ENV === 'production',
+    const res = NextResponse.json({
+      message: '로그인 성공',
+      token: {
+        accessToken,
+        refreshToken,
+      },
     });
 
     res.cookies.set('refreshToken', refreshToken, {
-      httpOnly: true,
+      httpOnly: true, // 보안상 refreshToken은 HttpOnly로 두는 것이 일반적
       path: '/',
       sameSite: 'lax',
       secure: process.env.NODE_ENV === 'production',
