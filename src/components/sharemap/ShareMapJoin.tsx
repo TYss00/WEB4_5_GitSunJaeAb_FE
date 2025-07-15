@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Heart,
   Siren,
@@ -16,23 +16,68 @@ import {
 import Button from '../ui/Button';
 import ReportModal from '../common/modal/ReportModal';
 import useSidebar from '@/utils/useSidebar';
-
 import Input from '../ui/Input';
 import LayerEdit from '../ui/layer/LayerEdit';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import useStore from '@/store/useStore';
 
 export default function ShareMapJoin() {
   const router = useRouter();
   const [isReportOpen, setIsReportOpen] = useState(false);
   const { isOpen, toggle, close } = useSidebar();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { markers, addMarker } = useStore();
+
+  const enterRoom = useStore((state) => state.liveblocks.enterRoom);
+  const leaveRoom = useStore((state) => state.liveblocks.leaveRoom);
+
+  useEffect(() => {
+    enterRoom('collab-map-room');
+    return () => {
+      leaveRoom();
+    };
+  }, [enterRoom, leaveRoom]);
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+
+    console.log('클릭 위치: ', { clientX: e.clientX, clientY: e.clientY });
+    console.log('지도 영역: ', {
+      left: rect.left,
+      top: rect.top,
+      width: rect.width,
+      height: rect.height,
+    });
+    console.log('계산된 마커 좌표 (비율): ', { x, y });
+    addMarker({ x, y });
+  };
 
   return (
     <section className="relative w-full h-screen overflow-hidden">
       {/* 지도 영역 */}
-      <div className="absolute inset-0 bg-gray-200 z-0">
+      <div
+        ref={containerRef}
+        onClick={handleClick}
+        className="absolute inset-0 bg-gray-200 z-0"
+      >
+        {Object.entries(markers).map(([id, marker]) => (
+          <div
+            key={id}
+            className="absolute w-4 h-4 bg-red-500 rounded-full z-10"
+            style={{
+              left: `${marker.x * 100}%`,
+              top: `${marker.y * 100}%`,
+              transform: 'translate(-50%, -50%)',
+            }}
+          />
+        ))}
         {/* 왼쪽 상단 버튼 */}
-        <div className="absolute top-4 left-8 flex items-center gap-3 px-4 py-2 z-10">
+        <div className="absolute top-4 left-8 flex items-center gap-3 px-4 py-2 z-20">
           <Button
             buttonStyle="white"
             onClick={() => router.back()}
