@@ -95,7 +95,7 @@ export default function ReportTable() {
     <section className="w-[1000px] bg-[var(--white)] rounded-[10px] p-4 border border-[var(--gray-50)] ">
       <div className="flex items-center gap-[16px] font-semibold text-[var(--primary-300)] mb-[24px]">
         <Siren className="w-[20px] h-[20px]" />
-        <span className="text-[18px]">신고 내역</span>
+        <span className="text-lg">신고 내역</span>
       </div>
 
       <div className="flex gap-[26px] mb-4 text-[15px] font-medium">
