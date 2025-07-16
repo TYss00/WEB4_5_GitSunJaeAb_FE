@@ -1,97 +1,144 @@
-import { ReactNode } from 'react';
+import { ReactNode } from 'react'
 
 export type RoadMapCardProps = {
-  category: string;
-  mapImageUrl: string;
-  title: string;
-  description: string;
-  hashtags: string[];
-  profileImgUrl: string;
-  author: string;
-  viewCount: number;
-  shareCount: number;
-  className?: string;
-};
+  category: string
+  mapImageUrl: string
+  title: string
+  description: string
+  hashtags: string[]
+  profileImgUrl: string
+  author: string
+  viewCount: number
+  shareCount: number
+  className?: string
+}
 
 export type QuestCardProps = {
-  isInProgress?: boolean;
-  mapImageUrl: string;
-  title: string;
-  description: string;
-  hashtags: string[];
-  profileImgUrl: string;
-  author: string;
-  deadLine: string;
-};
+  isInProgress?: boolean
+  mapImageUrl: string
+  title: string
+  description: string
+  hashtags: string[]
+  profileImgUrl: string
+  author: string
+  deadLine: string
+}
 
 export type ShareMapCardProps = {
-  isEvent?: boolean;
-  title: string;
-  mapImageUrl: string;
-  participants: number;
-  className?: string;
-};
+  isEvent?: boolean
+  title: string
+  mapImageUrl: string
+  participants: number
+  className?: string
+}
 
 export type MypageCardProps = {
-  title: string;
-  date: string;
-  author?: string;
-  type: '공개' | '비공개' | '퀘스트' | '공유';
-  mapImageUrl: string;
-  isLiked?: boolean;
-};
+  title: string
+  date: string
+  author?: string
+  type: '공개' | '비공개' | '퀘스트' | '공유'
+  mapImageUrl: string
+  isLiked?: boolean
+}
 
 export type CardListProps = {
-  type?: 'roadmap' | 'sharemap' | 'quest';
-};
+  type?: 'roadmap' | 'sharemap' | 'quest'
+}
 
 export type MypagePostProps = {
-  activeTab: '작성글' | '참여글' | '좋아요글';
-};
+  activeTab: '작성글' | '참여글' | '좋아요글'
+}
 
 export type ButtonProps = {
-  children: React.ReactNode;
-  buttonStyle?: 'green' | 'white' | 'withIcon' | 'smGreen';
-  fullWidth?: boolean;
-  icon?: React.ReactNode;
-  className?: string;
-  onClick?: () => void;
-  disabled?: boolean;
-  type?: 'button' | 'submit' | 'reset';
-};
+  children: React.ReactNode
+  buttonStyle?: 'green' | 'white' | 'withIcon' | 'smGreen'
+  fullWidth?: boolean
+  icon?: React.ReactNode
+  className?: string
+  onClick?: () => void
+  disabled?: boolean
+  type?: 'button' | 'submit' | 'reset'
+}
 
 export type MarkerEditProps = {
-  isTextArea?: boolean;
-  onDelete: () => void;
-};
+  isTextArea?: boolean
+  onDelete: () => void
+}
 
 export type MarkerDetailProps = {
-  isTextArea?: boolean;
-};
+  isTextArea?: boolean
+}
 
 export type LayerEditProps = {
-  title: string;
-  isTextArea?: boolean;
-  defaultOpen?: boolean;
-};
+  title: string
+  isTextArea?: boolean
+  defaultOpen?: boolean
+}
 export type LayerDetailProps = {
-  title: string;
-  children: ReactNode;
-  defaultOpen?: boolean;
-};
+  title: string
+  children: ReactNode
+  defaultOpen?: boolean
+}
 
 export type ToggleProps = {
-  label: '공개' | '경로' | '애니메이션';
-  onChange?: (isActive: boolean) => void;
-};
+  label: '공개' | '경로' | '애니메이션'
+  onChange?: (isActive: boolean) => void
+}
 
 export type SearchItemProps = {
-  term: string;
-  date: string;
-  onRemove: () => void;
-};
+  term: string
+  date: string
+  onRemove: () => void
+}
 
-export type SearchRecord = {
-  term: string;
-  date: string;
-};
+export type HashtagProps = {
+  id: number
+  name: string
+  createdAt: string | null
+}
+
+export type Member = {
+  id: number
+  name: string
+  nickname: string
+  email: string
+  profileImage: string | null
+}
+
+export type RoadmapInfo = {
+  title: string
+  category: { id: number; name: string }
+  description: string
+  thumbnail: null
+  member: Member
+  hashtags: HashtagProps[]
+  likeCount: number
+  viewCount: number
+  isPublic: boolean
+  isAnimated: boolean
+}
+
+export type LayerInfo = {
+  id: number
+  name: string
+  description: string | null
+  layerSeq: number
+  layerTime: string
+  createdAt: string
+  member: Member
+  roadmap: number
+}
+
+export type CommentInfo = {
+  id: number
+  content: string
+  roadmapId: number
+  member: Member
+  questId: number | null
+}
+
+export type RoadmapProps = {
+  roadMapInfo: RoadmapInfo
+  layerInfo: LayerInfo[]
+  commentsInfo: CommentInfo[]
+}
