@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '../ui/Button';
+import { useAuthStore } from '@/store/useAuthStore';
 
 const categories = [
   '프론트엔드',
@@ -35,6 +36,14 @@ export default function CategoriesSetting() {
         : [...prev, category]
     );
   };
+
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn());
+
+  useEffect(() => {
+    console.log(
+      isLoggedIn ? '로그인된 사용자입니다.' : '로그인되지 않았습니다.'
+    );
+  }, [isLoggedIn]);
 
   return (
     <div className="flex flex-col items-center px-4 py-8 pt-30 2xl:pt-50">

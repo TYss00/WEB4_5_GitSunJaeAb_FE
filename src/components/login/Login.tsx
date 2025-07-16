@@ -9,41 +9,51 @@ import { loginUser } from '@/libs/auth';
 import { AxiosError } from 'axios';
 import PasswordInput from '../ui/PasswrodInput';
 import { useState } from 'react';
-// import { useAuthStore } from '@/store/useAuthStore';
+import { useMutation } from '@tanstack/react-query';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function Login() {
+  const router = useRouter();
+
   const [form, setForm] = useState({
     email: '',
     password: '',
   });
 
-  // const { setUser } = useAuthStore();
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const router = useRouter();
+  const { mutate: loginMutate, isPending } = useMutation({
+    mutationFn: loginUser,
+    onSuccess: async (data) => {
+      const accessToken = data.token?.accessToken;
+      if (!accessToken) {
+        alert('AccessToken 없음');
+        return;
+      }
 
-  const handleLogin = async (e: React.FormEvent) => {
+      // Zustand 상태 초기화
+      const { initUser } = useAuthStore.getState();
+      await initUser();
+
+      alert('로그인 성공');
+      router.push('/');
+    },
+    onError: (error: unknown) => {
+      const err = error as AxiosError<{ message?: string }>;
+      alert(err.response?.data?.message || '로그인 실패');
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const response = await loginUser(form.email, form.password);
-
-      console.log('로그인 응답 전체:', response);
-      const accessToken = response.token?.accessToken;
-      if (!accessToken) throw new Error('AccessToken 없음');
-
-      // const user = await getProfile(); // 토큰으로 서버에서 유저 정보 요청
-      // setUser(user); // 전역 상태 저장 (user + isLoggedIn: true)
-
-      router.push('/');
-    } catch (err) {
-      const error = err as AxiosError<{ message?: string }>;
-      console.error('로그인 에러:', error);
-      alert(error.response?.data?.message || '로그인 실패');
+    if (!form.email || !form.password) {
+      return alert('이메일과 비밀번호를 입력해주세요.');
     }
+
+    loginMutate(form);
   };
 
   return (
@@ -56,7 +66,7 @@ export default function Login() {
       {/* 로그인 */}
       <form
         className="flex flex-col gap-6 w-full max-w-lg mx-auto"
-        onSubmit={handleLogin}
+        onSubmit={handleSubmit}
       >
         {/* 이메일 */}
         <Input
@@ -83,6 +93,7 @@ export default function Login() {
           fullWidth
           className="h-[45px] py-2 rounded-lg text-sm"
           type="submit"
+          disabled={isPending}
         >
           로그인
         </Button>
@@ -111,7 +122,7 @@ export default function Login() {
             href="/register"
             className="text-[var(--primary-300)] font-semibold cursor-pointer hover:underline"
           >
-            회원가입하기
+            회원가입
           </Link>
         </p>
       </form>
