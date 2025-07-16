@@ -9,6 +9,7 @@ export default function LayerEdit({
   title,
   isTextArea,
   defaultOpen = false,
+  onDelete,
 }: LayerEditProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen)
   const [markers, setMarkers] = useState([{ id: 1, isTextArea }])
@@ -41,7 +42,7 @@ export default function LayerEdit({
             </span>
           </div>
           <div className="flex gap-[10px] items-center">
-            <Trash2 size={18} color="red" />
+            <Trash2 size={18} color="red" onClick={onDelete} />
             {isOpen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
           </div>
         </div>

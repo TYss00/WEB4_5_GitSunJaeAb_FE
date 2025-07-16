@@ -1,22 +1,29 @@
+export const dynamic = 'force-dynamic'
 import Loadmapdetail from '@/components/loadmap/LoadMapDetail'
 
-export default async function page({ params }: { params: { id: number } }) {
+export default async function page({ params }: { params: { id: string } }) {
   const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL
-  const res1 = await fetch(`${baseURL}/roadmaps/${params.id}`, {
-    next: { revalidate: 60 }, // ISR
-  })
-  const res2 = await fetch(`${baseURL}/layers/roadmap?roadmapId=${params.id}`, {
-    next: { revalidate: 60 }, // ISR
-  })
-  const res3 = await fetch(
-    `${baseURL}/comments/roadmaps?roadmapId=${params.id}`,
-    {
-      next: { revalidate: 60 }, // ISR
-    }
-  )
-  const roadmapData = await res1.json()
-  const layersData = await res2.json()
-  const commentsData = await res3.json()
+  const roadmapId = params.id
+
+  const [res1, res2, res3] = await Promise.all([
+    fetch(`${baseURL}/roadmaps/${roadmapId}`, { next: { revalidate: 60 } }),
+    fetch(`${baseURL}/layers/roadmap?roadmapId=${roadmapId}`, {
+      next: { revalidate: 60 },
+    }),
+    fetch(`${baseURL}/comments/roadmaps?roadmapId=${roadmapId}`, {
+      next: { revalidate: 60 },
+    }),
+  ])
+
+  if (!res1.ok || !res2.ok || !res3.ok) {
+    throw new Error('데이터를 불러오지 못했습니다')
+  }
+
+  const [roadmapData, layersData, commentsData] = await Promise.all([
+    res1.json(),
+    res2.json(),
+    res3.json(),
+  ])
 
   console.log('roadMapInfo:', roadmapData.roadmap)
   console.log('layerInfo:', layersData.layers)

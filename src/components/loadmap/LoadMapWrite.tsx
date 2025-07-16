@@ -5,13 +5,24 @@ import Button from '../ui/Button'
 import Input from '../ui/Input'
 import Toggle from '../ui/Toggle'
 import LayerEdit from '../ui/layer/LayerEdit'
+import Map from './Map'
+import useLayerAdd from '@/hooks/useLayerAdd'
 
 export default function LoadMapWrite() {
+  const {
+    layers,
+    newLayerName,
+    setNewLayerName,
+    handleAddLayer,
+    handleDeleteLayer,
+  } = useLayerAdd()
+
   return (
     <section className="flex w-full h-screen overflow-hidden">
       {/* 왼쪽 지도 */}
       <div className="w-4/6 bg-gray-200 relative">
-        <div className="absolute top-4 left-8 flex items-center gap-3 px-4 py-2 z-10">
+        <Map />
+        <div className="absolute top-4 right-8 flex items-center gap-3 px-4 py-2 z-10">
           {/* 레이어 선택 */}
           <div className="relative w-[140px]">
             <select
@@ -107,7 +118,7 @@ export default function LoadMapWrite() {
 
         <Toggle label="공개" />
 
-        {/* 레이어 (공용 컴포넌트로 교체예정) */}
+        {/* 레이어  */}
         <div className="border-t border-gray-300 pt-6">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-xl text-black">레이어 및 마커 관리</h3>
@@ -118,10 +129,13 @@ export default function LoadMapWrite() {
               type="text"
               placeholder="새 레이어 추가"
               className="h-[40px] border-[#E4E4E4] rounded-md"
+              value={newLayerName}
+              onChange={(e) => setNewLayerName(e.target.value)}
             />
             <Button
               buttonStyle="smGreen"
               className="w-[80px] h-[40px] text-3xl font-medium"
+              onClick={handleAddLayer}
             >
               <Plus size={25} />
             </Button>
@@ -147,9 +161,14 @@ export default function LoadMapWrite() {
           </div>
 
           <div className="space-y-3">
-            <LayerEdit title="레이어1" isTextArea />
-            <LayerEdit title="레이어1" isTextArea />
-            <LayerEdit title="레이어1" isTextArea />
+            {layers.map((layerName, index) => (
+              <LayerEdit
+                key={index}
+                title={layerName}
+                onDelete={() => handleDeleteLayer(index)}
+                isTextArea
+              />
+            ))}
           </div>
 
           <div className="flex justify-end mt-4 gap-2">

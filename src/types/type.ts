@@ -73,6 +73,7 @@ export type LayerEditProps = {
   title: string
   isTextArea?: boolean
   defaultOpen?: boolean
+  onDelete:()=> void
 }
 export type LayerDetailProps = {
   title: string
