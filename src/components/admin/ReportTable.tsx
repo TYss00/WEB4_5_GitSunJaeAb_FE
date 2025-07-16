@@ -92,8 +92,8 @@ export default function ReportTable() {
   };
 
   return (
-    <section className="w-[1000px] bg-[var(--white)] rounded-[10px] p-2 border border-[var(--gray-50)] ">
-      <div className="flex items-center gap-[16px] font-semibold text-[var(--primary-300)] mb-[24px]">
+    <div className="w-[1000px] bg-[var(--white)] rounded-lg p-4 flex flex-col justify-start border border-[var(--gray-50)]">
+      <div className="flex items-center gap-[16px] font-semibold text-[var(--primary-300)] mb-[20px]">
         <Siren className="w-[20px] h-[20px]" />
         <span className="text-lg">신고 내역</span>
       </div>
@@ -116,16 +116,16 @@ export default function ReportTable() {
 
       {/* 테이블 */}
       <div>
-        <table className="w-full text-[14px]">
+        <table className="w-full text-left text-[14px]">
           <thead>
             <tr className="text-[var(--black)] border-b border-[var(--gray-50)]">
-              <th className="text-left py-2">피신고자</th>
-              <th className="text-left py-2">신고자</th>
-              <th className="text-left py-2">유형</th>
-              <th className="text-left py-2">날짜</th>
-              <th className="text-left py-2 pl-2">상태</th>
-              <th className="text-left py-2 pl-3">조치</th>
-              <th className="text-left py-2">종류</th>
+              <th className="py-2">피신고자</th>
+              <th className="py-2">신고자</th>
+              <th className="py-2">유형</th>
+              <th className="py-2">날짜</th>
+              <th className="py-2 pl-2">상태</th>
+              <th className="py-2 pl-3">조치</th>
+              <th className="py-2">종류</th>
               <th className="text-center py-2">게시글 삭제</th>
             </tr>
           </thead>
@@ -198,6 +198,6 @@ export default function ReportTable() {
           contentType={selectedReport?.contentType ?? null}
         />
       </div>
-    </section>
+    </div>
   );
 }
