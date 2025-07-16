@@ -5,8 +5,8 @@ import type { WithLiveblocks } from '@liveblocks/zustand';
 import { v4 as uuidv4 } from 'uuid';
 
 export type Marker = {
-  x: number;
-  y: number;
+  lat: number;
+  lng: number;
   userId: string;
   name?: string;
 };
