@@ -1,3 +1,11 @@
+export type Roadmap = {
+  id: number;
+  title: string;
+  member: {
+    nickname: string;
+  };
+};
+
 export type ReportModal = {
   isOpen: boolean;
   onClose: () => void;
