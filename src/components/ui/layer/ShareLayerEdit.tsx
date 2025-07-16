@@ -14,7 +14,7 @@ export default function ShareLayerEdit({
   mapRef: React.RefObject<google.maps.Map | null>;
 }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
-  const [markerUIs, setMarkerUIs] = useState([{ id: 1 }]); // UI용 배열만 유지
+  const [markerUIs, setMarkerUIs] = useState([{ id: 1 }]);
 
   const addMarker = () => {
     setMarkerUIs((prev) => [...prev, { id: Date.now() }]); // UI 렌더링만 추가

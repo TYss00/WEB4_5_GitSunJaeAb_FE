@@ -36,10 +36,10 @@ export default function ShareMarkerEdit({
       const coords = await geocodeAddress(fullAddress);
       if (!coords) return;
 
-      // ✅ 지도 중심 이동
+      // 지도 중심 이동
       mapRef.current?.panTo({ lat: coords.lat, lng: coords.lng });
 
-      // ✅ Liveblocks 마커 추가
+      // Liveblocks 마커 추가
       const room = useStore.getState().liveblocks.room;
       if (!room) return;
 
