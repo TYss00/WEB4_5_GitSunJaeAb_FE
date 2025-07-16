@@ -29,11 +29,9 @@ export default function LoadMapWrite() {
               className="w-full h-[34px] text-sm bg-white border-none rounded pl-3 appearance-none"
               defaultValue=""
             >
-              <option value="" disabled hidden>
-                레이어 이름
-              </option>
-              <option>레이어 1</option>
-              <option>레이어 2</option>
+              {layers.map((layer, index) => (
+                <option key={index}>{layer}</option>
+              ))}
             </select>
 
             <ChevronDown
