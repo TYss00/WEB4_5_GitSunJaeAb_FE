@@ -13,7 +13,16 @@ export default function LayerEdit({
   onDelete,
 }: LayerEditProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen)
+  const [manualMarkers, setManualMarkers] = useState<
+    { id: number; address: string }[]
+  >([])
 
+  const addMarker = () => {
+    setManualMarkers((prev) => [
+      ...prev,
+      { id: Date.now(), address: '주소를 입력해주세요.' },
+    ])
+  }
   return (
     <>
       <div className="w-full">
@@ -59,8 +68,21 @@ export default function LayerEdit({
                 onDelete={() => deleteMarker(title, marker.id)}
               />
             ))}
+
+            {manualMarkers.map((marker) => (
+              <MarkerEdit
+                key={marker.id}
+                isTextArea={true}
+                address={marker.address}
+                onDelete={() =>
+                  setManualMarkers((prev) =>
+                    prev.filter((m) => m.id !== marker.id)
+                  )
+                }
+              />
+            ))}
             <div
-              // onClick={addMarker}
+              onClick={addMarker}
               className="w-full min-h-[44px] flex justify-center items-center rounded-[5px] bg-[var(--primary-100)] cursor-pointer"
             >
               <Plus size={24} color="white" />
