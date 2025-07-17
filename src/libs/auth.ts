@@ -32,10 +32,10 @@ export const loginUser = async ({
 };
 
 export const logoutUser = async () => {
-  return await axiosInstance.post('/auth/logout', null, {
-    withCredentials: true,
-  });
-  // return await axiosInstance.post('/auth/logout');
+  // return await axiosInstance.post('/auth/logout', null, {
+  //   withCredentials: true,
+  // });
+  return await axiosInstance.post('/auth/logout');
 };
 
 export const getUser = async (): Promise<User> => {

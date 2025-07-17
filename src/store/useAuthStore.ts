@@ -28,11 +28,23 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (typeof window === 'undefined') return;
 
     const token = localStorage.getItem('accessToken');
+
     if (!token) {
       get().logout();
       return;
-    } else {
-      set({ accessToken: token });
+    }
+
+    set({ accessToken: token });
+
+    try {
+      // accessToken이 유효하면 정상 응답
+      const mod = await import('@/libs/auth');
+      const user = await mod.getUser();
+      set({ user });
+    } catch (error) {
+      // accessToken이 만료되어 있으면 자동 로그아웃 또는 refresh 로직
+      console.warn('initUser 중 getUser 실패:', error);
+      get().logout();
     }
   },
 

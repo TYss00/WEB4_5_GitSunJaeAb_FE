@@ -21,7 +21,11 @@ axiosInstance.interceptors.response.use(
   async (response) => {
     const newAccessToken = response.data?.token?.accessToken;
 
-    if (newAccessToken && typeof window !== 'undefined') {
+    if (
+      newAccessToken &&
+      typeof window !== 'undefined' &&
+      newAccessToken !== ''
+    ) {
       localStorage.setItem('accessToken', newAccessToken);
 
       // Zustand 상태에 반영
