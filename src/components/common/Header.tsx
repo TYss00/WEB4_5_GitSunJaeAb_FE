@@ -8,6 +8,7 @@ import { useClickOut } from '@/hooks/useClickOut';
 import Notification from '../notification/Notification';
 import { usePathname } from 'next/navigation';
 import { HeaderProps } from '@/types/type';
+import UserModal from './modal/UserModal';
 
 export default function Header({ isAdmin = false }: HeaderProps) {
   const pathname = usePathname();
@@ -18,8 +19,12 @@ export default function Header({ isAdmin = false }: HeaderProps) {
   const [isNotiOpen, setIsNotiOpen] = useState(false);
   const notiRef = useRef<HTMLDivElement>(null);
 
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const userRef = useRef<HTMLDivElement>(null);
+
   useClickOut(searchRef, () => setIsSearchOpen(false));
   useClickOut(notiRef, () => setIsNotiOpen(false));
+  useClickOut(userRef, () => setIsUserModalOpen(false));
 
   const handleSearch = () => setIsSearchOpen((prev) => !prev);
   const handleNoti = () => setIsNotiOpen((prev) => !prev);
@@ -102,8 +107,8 @@ export default function Header({ isAdmin = false }: HeaderProps) {
           </>
         )}
 
-        {/* 공통: 마이페이지 아이콘 */}
-        <Link href="/mypage">
+        {/* 공통: 프로필 이미지로 바꿔야함 */}
+        {/* <Link href="/mypage">
           <CircleUserRound
             size={25}
             strokeWidth={1.7}
@@ -111,12 +116,20 @@ export default function Header({ isAdmin = false }: HeaderProps) {
               pathname.startsWith('/mypage') ? 'text-[var(--primary-300)]' : ''
             }`}
           />
-        </Link>
+        </Link> */}
+        <CircleUserRound
+          size={25}
+          strokeWidth={1.7}
+          className={`cursor-pointer hover:text-[var(--primary-300)] ${
+            pathname.startsWith('/mypage') ? 'text-[var(--primary-300)]' : ''
+          }`}
+          onClick={() => setIsUserModalOpen((prev) => !prev)}
+        />
       </div>
 
       {/* 알림 모달 */}
       {isNotiOpen && (
-        <div ref={notiRef} className="absolute top-[78px] right-[80px] z-50">
+        <div ref={notiRef} className="absolute top-[72px] right-[80px] z-50">
           <Notification onClose={() => setIsNotiOpen(false)} />
         </div>
       )}
@@ -128,6 +141,13 @@ export default function Header({ isAdmin = false }: HeaderProps) {
           className="absolute top-[80px] left-0 w-full bg-[var(--white)] shadow-md z-50"
         >
           <SearchModal onClose={() => setIsSearchOpen(false)} />
+        </div>
+      )}
+
+      {/* 유저프로필 모달 */}
+      {isUserModalOpen && (
+        <div ref={userRef} className="absolute top-[72px] right-[38px] z-50">
+          <UserModal onClose={() => setIsUserModalOpen(false)} />
         </div>
       )}
     </header>
