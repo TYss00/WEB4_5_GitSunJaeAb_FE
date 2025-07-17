@@ -1,0 +1,52 @@
+export type ProfileMember = {
+  id: number;
+  nickname: string;
+  profileImage: string | null;
+};
+
+export type useProfileStores = {
+  member: ProfileMember | null;
+  fetchMember: () => Promise<void>;
+};
+
+export type RoadmapResponse = {
+  id: number;
+  title: string;
+  thumbnail: string | null;
+  roadmapType: 'SHARED' | 'PERSONAL';
+  isPublic?: boolean;
+  member?: {
+    nickname: string;
+    profileImage: string | null;
+  };
+  isLiked?: boolean;
+};
+
+export type Layer = {
+  id: number;
+  name: string;
+  title: string;
+  member: {
+    nickname: string;
+  };
+  roadmap: number;
+};
+
+export type LayerWithTitle = Layer & {
+  roadmapTitle?: string;
+};
+
+export type MypageCardProps = {
+  title: string;
+  date: string;
+  author?: string;
+  profileImgUrl?: string;
+  type: '공개' | '비공개' | '퀘스트' | '공유';
+  mapImageUrl: string;
+  isLiked?: boolean;
+};
+
+export type MypagePostProps = {
+  activeTab: '작성글' | '참여글' | '좋아요글';
+  searchKeyword: string;
+};
