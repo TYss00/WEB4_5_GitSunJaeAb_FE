@@ -41,7 +41,6 @@ export default function LoadMapWrite() {
           layerMarkers={layerMarkers}
           onMapClick={addMarkerByLatLng}
           onMarkerDelete={deleteMarker}
-          center={{ lat: 37.5665, lng: 126.978 }} // 서울 좌표
         />
         <div className="absolute top-4 right-8 flex items-center gap-3 px-4 py-2 z-10">
           {/* 레이어 선택 */}
