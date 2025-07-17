@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { signupUser } from '@/libs/auth';
 import PasswordInput from '../ui/PasswrodInput';
 import { useMutation } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 
 export default function Register() {
   const router = useRouter();
@@ -24,9 +25,10 @@ export default function Register() {
       router.push('/login');
     },
     onError: (error) => {
-      const err = error as { code?: string; message?: string };
-
-      switch (err.code) {
+      const err = error as AxiosError<{ code?: string; message?: string }>;
+      const code = err.response?.data?.code;
+      const message = err.response?.data?.message;
+      switch (code) {
         case '4092':
           console.log('이미 가입된 이메일입니다.');
           break;
@@ -37,7 +39,7 @@ export default function Register() {
           console.log('서버 내부 오류입니다.');
           break;
         default:
-          console.log(err.message || '회원가입 실패');
+          console.log(message || '회원가입 실패');
       }
     },
   });

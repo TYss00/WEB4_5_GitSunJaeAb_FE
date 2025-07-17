@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Button from '../ui/Button';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { getUser } from '@/libs/auth';
 import { useAuthStore } from '@/store/useAuthStore';
 
 const categories = [
@@ -37,16 +39,40 @@ export default function CategoriesSetting() {
     );
   };
 
-  const isLoggedIn = useAuthStore((state) => state.isLoggedIn());
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const logout = useAuthStore((state) => state.logout);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    console.log(
-      isLoggedIn ? '로그인된 사용자입니다.' : '로그인되지 않았습니다.'
-    );
-  }, [isLoggedIn]);
+  // 로그인 후에 fetchQuery로 미리 캐시에 넣기 때문에 재요청 X
+  const { data: user } = useQuery({
+    queryKey: ['user'],
+    queryFn: getUser,
+    enabled: !!accessToken,
+  });
+
+  const handleLogout = () => {
+    logout(); // 상태 및 localStorage 초기화
+    queryClient.removeQueries({ queryKey: ['user'] }); // 캐시된 유저 정보 제거
+    alert('로그아웃 되었습니다.');
+  };
 
   return (
     <div className="flex flex-col items-center px-4 py-8 pt-30 2xl:pt-50">
+      {/* test ) 나중에 지울 예정 */}
+      {user ? (
+        <>
+          {' '}
+          <img src={user.profileImage} alt="프로필" />
+          <button
+            onClick={handleLogout}
+            className="text-red-500 underline text-sm mt-4"
+          >
+            로그아웃
+          </button>
+        </>
+      ) : (
+        <div>로그인 필요</div>
+      )}
       <h1 className="text-[#005C54] text-4xl font-bold mb-10">
         관심 분야를 설정해주세요.
       </h1>

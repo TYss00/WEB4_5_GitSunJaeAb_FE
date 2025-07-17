@@ -1,5 +1,6 @@
-import { SignupFormData } from '@/types/authType';
+import { SignupFormData, User } from '@/types/authType';
 import axiosInstance from './axios';
+import { useAuthStore } from '@/store/useAuthStore';
 
 interface CustomError extends Error {
   code?: string;
@@ -27,12 +28,14 @@ export const loginUser = async ({
     email,
     password,
   });
-
-  if (data.token?.accessToken) {
-    localStorage.setItem('accessToken', data.token.accessToken);
-    import('@/store/useAuthStore').then((mod) => {
-      mod.useAuthStore.getState().setAccessToken(data.token.accessToken);
-    });
-  }
   return data;
+};
+
+export const getUser = async (): Promise<User> => {
+  const res = await axiosInstance.get('/members');
+  const user = res.data.member;
+
+  // Zustand 상태에 반영
+  useAuthStore.getState().setUser(user);
+  return user;
 };

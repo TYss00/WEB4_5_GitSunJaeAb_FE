@@ -5,12 +5,13 @@ import Input from '../ui/Input';
 import Link from 'next/link';
 import Button from '../ui/Button';
 import { useRouter } from 'next/navigation';
-import { loginUser } from '@/libs/auth';
+import { getUser, loginUser } from '@/libs/auth';
 import { AxiosError } from 'axios';
 import PasswordInput from '../ui/PasswrodInput';
 import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/useAuthStore';
+import { setAccessTokenToStore } from '@/utils/setAccessTokenToStore';
 
 export default function Login() {
   const router = useRouter();
@@ -24,6 +25,8 @@ export default function Login() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const queryClient = useQueryClient();
+
   const { mutate: loginMutate, isPending } = useMutation({
     mutationFn: loginUser,
     onSuccess: async (data) => {
@@ -33,9 +36,16 @@ export default function Login() {
         return;
       }
 
-      // Zustand 상태 초기화
-      const { initUser } = useAuthStore.getState();
-      await initUser();
+      // 토큰 저장 및 Zustand 동기화
+      await setAccessTokenToStore(accessToken);
+
+      // 사용자 정보 수동 요청 → 캐시에 저장됨
+      const user = await queryClient.fetchQuery({
+        queryKey: ['user'],
+        queryFn: getUser,
+      });
+
+      useAuthStore.getState().setUser(user);
 
       alert('로그인 성공');
       router.push('/');

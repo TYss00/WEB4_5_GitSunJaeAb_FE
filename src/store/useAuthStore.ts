@@ -31,21 +31,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (!token) {
       get().logout();
       return;
-    }
-
-    set({ accessToken: token, loading: true });
-
-    try {
-      const res = await import('@/libs/axios').then((mod) =>
-        mod.default.get('/members')
-      );
-      const user = res.data.member;
-      get().setUser(user);
-    } catch (err) {
-      console.warn('유저 정보 불러오기 실패', err);
-      get().logout();
-    } finally {
-      set({ loading: false });
+    } else {
+      set({ accessToken: token });
     }
   },
 
