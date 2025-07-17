@@ -8,7 +8,7 @@ import LayerEdit from '../ui/layer/LayerEdit'
 import Map from './Map'
 import useLayerAdd from '@/hooks/useLayerAdd'
 import { useEffect } from 'react'
-import useLayerMarkers from '@/hooks/useLayerMarkersAdd'
+import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
 
 export default function LoadMapWrite() {
   const {
@@ -24,7 +24,7 @@ export default function LoadMapWrite() {
     layerMarkers,
     addMarkerByLatLng,
     deleteMarker,
-  } = useLayerMarkers(layers)
+  } = useLayerMarkersAdd(layers)
 
   useEffect(() => {
     if (layers.length > 0 && !selectedLayer) {
