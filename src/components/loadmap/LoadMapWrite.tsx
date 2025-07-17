@@ -7,6 +7,8 @@ import Toggle from '../ui/Toggle'
 import LayerEdit from '../ui/layer/LayerEdit'
 import Map from './Map'
 import useLayerAdd from '@/hooks/useLayerAdd'
+import { useEffect, useState } from 'react'
+import { LayerMarkers } from '@/types/type'
 
 export default function LoadMapWrite() {
   const {
@@ -16,21 +18,36 @@ export default function LoadMapWrite() {
     handleAddLayer,
     handleDeleteLayer,
   } = useLayerAdd()
+  const [selectedLayer, setSelectedLayer] = useState('')
+  const [layerMarkers, setLayerMarkers] = useState<LayerMarkers>({})
+
+  useEffect(() => {
+    if (layers.length > 0 && !selectedLayer) {
+      setSelectedLayer(layers[0]) // 첫 번째 레이어 자동 선택
+    }
+  }, [layers])
 
   return (
     <section className="flex w-full h-screen overflow-hidden">
       {/* 왼쪽 지도 */}
       <div className="w-4/6 bg-gray-200 relative">
-        <Map />
+        <Map
+          selectedLayer={selectedLayer}
+          layerMarkers={layerMarkers}
+          setLayerMarkers={setLayerMarkers}
+        />
         <div className="absolute top-4 right-8 flex items-center gap-3 px-4 py-2 z-10">
           {/* 레이어 선택 */}
           <div className="relative w-[140px]">
             <select
               className="w-full h-[34px] text-sm bg-white border-none rounded pl-3 appearance-none"
-              defaultValue=""
+              value={selectedLayer}
+              onChange={(e) => setSelectedLayer(e.target.value)}
             >
               {layers.map((layer, index) => (
-                <option key={index}>{layer}</option>
+                <option key={index} value={layer}>
+                  {layer}
+                </option>
               ))}
             </select>
 
@@ -163,8 +180,9 @@ export default function LoadMapWrite() {
               <LayerEdit
                 key={index}
                 title={layerName}
+                markers={layerMarkers[layerName] || []}
+                setLayerMarkers={setLayerMarkers}
                 onDelete={() => handleDeleteLayer(index)}
-                isTextArea
               />
             ))}
           </div>

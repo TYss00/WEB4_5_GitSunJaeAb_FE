@@ -10,15 +10,16 @@ export interface AddressData {
   address: string
 }
 
-export default function MarkerEdit({ isTextArea, onDelete }: MarkerEditProps) {
+export default function MarkerEdit({
+  isTextArea,
+  onDelete,
+  address = '주소를 입력해주세요.',
+}: MarkerEditProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [address, setAddress] = useState('주소를 입력해주세요.')
   const [placeName, setPlaceName] = useState('')
   const [isEditingName, setIsEditingName] = useState(false)
 
   const handleComplete = (data: AddressData) => {
-    const fullAddress = data.address
-    setAddress(fullAddress)
     setIsModalOpen(false)
     console.log(data)
   }

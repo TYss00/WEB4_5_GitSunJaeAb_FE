@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 
 export type RoadMapCardProps = {
   category: string
@@ -63,6 +63,7 @@ export type ButtonProps = {
 export type MarkerEditProps = {
   isTextArea?: boolean
   onDelete: () => void
+  address: string
 }
 
 export type MarkerDetailProps = {
@@ -71,9 +72,10 @@ export type MarkerDetailProps = {
 
 export type LayerEditProps = {
   title: string
-  isTextArea?: boolean
   defaultOpen?: boolean
-  onDelete:()=> void
+  markers?: { id: number; lat: number; lng: number; address: string }[]
+  setLayerMarkers: React.Dispatch<React.SetStateAction<LayerMarkers>>
+  onDelete: () => void
 }
 export type LayerDetailProps = {
   title: string
@@ -142,4 +144,14 @@ export type RoadmapProps = {
   roadMapInfo: RoadmapInfo
   layerInfo: LayerInfo[]
   commentsInfo: CommentInfo[]
+}
+
+export type MarkerData = {
+  id: number
+  lat: number
+  lng: number
+  address: string
+}
+export type LayerMarkers = {
+  [layerName: string]: MarkerData[]
 }

@@ -7,15 +7,18 @@ import MarkerEdit from './MarkerEdit'
 
 export default function LayerEdit({
   title,
-  isTextArea,
   defaultOpen = false,
+  markers = [],
+  setLayerMarkers,
   onDelete,
 }: LayerEditProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen)
-  const [markers, setMarkers] = useState([{ id: 1, isTextArea }])
 
-  const addMarker = () => {
-    setMarkers((prev) => [...prev, { id: Date.now(), isTextArea }])
+  const onMarkerDelete = (markerId: number) => {
+    setLayerMarkers((prev) => ({
+      ...prev,
+      [title]: prev[title].filter((m) => m.id !== markerId),
+    }))
   }
   return (
     <>
@@ -54,17 +57,16 @@ export default function LayerEdit({
           }`}
         >
           <div className="p-[10px] max-h-[633px] overflow-y-auto rounded-b-[5px] flex flex-col gap-[15px]">
-            {markers.map((marker) => (
+            {markers.map((marker, idx) => (
               <MarkerEdit
-                key={marker.id}
-                isTextArea={marker.isTextArea}
-                onDelete={() =>
-                  setMarkers((prev) => prev.filter((m) => m.id !== marker.id))
-                }
+                key={idx}
+                isTextArea={true}
+                address={marker.address}
+                onDelete={() => onMarkerDelete(marker.id)}
               />
             ))}
             <div
-              onClick={addMarker}
+              // onClick={addMarker}
               className="w-full min-h-[44px] flex justify-center items-center rounded-[5px] bg-[var(--primary-100)] cursor-pointer"
             >
               <Plus size={24} color="white" />
