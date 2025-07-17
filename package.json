@@ -12,6 +12,10 @@
   "dependencies": {
     "@tanstack/react-query": "^5.83.0",
     "@tanstack/react-query-devtools": "^5.83.0",
+    "@liveblocks/client": "^3.1.2",
+    "@liveblocks/react": "^3.1.2",
+    "@liveblocks/zustand": "^3.1.2",
+    "@react-google-maps/api": "^2.20.7",
     "axios": "^1.10.0",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.525.0",
@@ -22,6 +26,7 @@
     "react-lottie-player": "^2.1.0",
     "react-toastify": "^11.0.5",
     "tailwind-merge": "^3.3.1",
+    "uuid": "^11.1.0",
     "zustand": "^5.0.6"
   },
   "devDependencies": {
