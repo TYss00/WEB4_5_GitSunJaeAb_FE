@@ -55,6 +55,27 @@ export default function MypageLayer({
     fetchLayers();
   }, [API_BASE_URL]);
 
+  const handleDelete = async (layerId: number) => {
+    const confirmed = window.confirm('정말 삭제하시겠습니까?');
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(`${API_BASE_URL}layers/${layerId}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) {
+        throw new Error('레이어 삭제 실패');
+      }
+
+      setLayers((prev) => prev.filter((layer) => layer.id !== layerId));
+      alert('삭제가 완료되었습니다.');
+    } catch (err) {
+      console.error(err);
+      alert('레이어 삭제 중 오류가 발생했습니다.');
+    }
+  };
+
   const filteredLayers = layers.filter((layer) => {
     const keyword = searchKeyword.toLowerCase();
     return (
@@ -90,7 +111,10 @@ export default function MypageLayer({
               </button>
             </td>
             <td className="py-3 px-4">
-              <button className="text-[13px] text-[var(--red)] underline cursor-pointer">
+              <button
+                onClick={() => handleDelete(layer.id)}
+                className="text-[13px] text-[var(--red)] underline cursor-pointer"
+              >
                 삭제
               </button>
             </td>
