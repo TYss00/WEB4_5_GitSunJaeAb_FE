@@ -31,6 +31,13 @@ export const loginUser = async ({
   return data;
 };
 
+export const logoutUser = async () => {
+  return await axiosInstance.post('/auth/logout', null, {
+    withCredentials: true,
+  });
+  // return await axiosInstance.post('/auth/logout');
+};
+
 export const getUser = async (): Promise<User> => {
   const res = await axiosInstance.get('/members');
   const user = res.data.member;

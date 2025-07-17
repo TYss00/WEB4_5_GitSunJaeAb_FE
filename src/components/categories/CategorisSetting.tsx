@@ -3,9 +3,10 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import Button from '../ui/Button';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getUser } from '@/libs/auth';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getUser, logoutUser } from '@/libs/auth';
 import { useAuthStore } from '@/store/useAuthStore';
+import { useRouter } from 'next/navigation';
 
 const categories = [
   '프론트엔드',
@@ -42,18 +43,32 @@ export default function CategoriesSetting() {
   const accessToken = useAuthStore((state) => state.accessToken);
   const logout = useAuthStore((state) => state.logout);
   const queryClient = useQueryClient();
+  const router = useRouter();
 
-  // 로그인 후에 fetchQuery로 미리 캐시에 넣기 때문에 재요청 X
   const { data: user } = useQuery({
     queryKey: ['user'],
     queryFn: getUser,
     enabled: !!accessToken,
   });
 
+  const logoutMutation = useMutation({
+    mutationFn: logoutUser,
+    onSuccess: () => {
+      logout(); // 상태 초기화 (accessToken 제거)
+      queryClient.removeQueries({ queryKey: ['user'] }); // 캐시 제거
+      router.push('/login'); // 로그인 페이지로 이동 - 어떻게 할지 ?
+    },
+    onError: (err) => {
+      console.error('로그아웃 실패 (서버 500):', err);
+
+      logout();
+      queryClient.removeQueries({ queryKey: ['user'] });
+      router.push('/login');
+    },
+  });
+
   const handleLogout = () => {
-    logout(); // 상태 및 localStorage 초기화
-    queryClient.removeQueries({ queryKey: ['user'] }); // 캐시된 유저 정보 제거
-    alert('로그아웃 되었습니다.');
+    logoutMutation.mutate();
   };
 
   return (
