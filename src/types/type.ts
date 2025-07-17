@@ -73,9 +73,9 @@ export type MarkerDetailProps = {
 export type LayerEditProps = {
   title: string
   defaultOpen?: boolean
-  markers?: { id: number; lat: number; lng: number; address: string }[]
-  setLayerMarkers: React.Dispatch<React.SetStateAction<LayerMarkers>>
+  markers?: MarkerData[]
   onDelete: () => void
+  deleteMarker: (layer: string, markerId: number) => void
 }
 export type LayerDetailProps = {
   title: string

@@ -7,8 +7,8 @@ import Toggle from '../ui/Toggle'
 import LayerEdit from '../ui/layer/LayerEdit'
 import Map from './Map'
 import useLayerAdd from '@/hooks/useLayerAdd'
-import { useEffect, useState } from 'react'
-import { LayerMarkers } from '@/types/type'
+import { useEffect } from 'react'
+import useLayerMarkers from '@/hooks/useLayerMarkersAdd'
 
 export default function LoadMapWrite() {
   const {
@@ -18,8 +18,13 @@ export default function LoadMapWrite() {
     handleAddLayer,
     handleDeleteLayer,
   } = useLayerAdd()
-  const [selectedLayer, setSelectedLayer] = useState('')
-  const [layerMarkers, setLayerMarkers] = useState<LayerMarkers>({})
+  const {
+    selectedLayer,
+    setSelectedLayer,
+    layerMarkers,
+    addMarkerByLatLng,
+    deleteMarker,
+  } = useLayerMarkers(layers)
 
   useEffect(() => {
     if (layers.length > 0 && !selectedLayer) {
@@ -34,7 +39,9 @@ export default function LoadMapWrite() {
         <Map
           selectedLayer={selectedLayer}
           layerMarkers={layerMarkers}
-          setLayerMarkers={setLayerMarkers}
+          onMapClick={addMarkerByLatLng}
+          onMarkerDelete={deleteMarker}
+          center={{ lat: 37.5665, lng: 126.978 }} // 서울 좌표
         />
         <div className="absolute top-4 right-8 flex items-center gap-3 px-4 py-2 z-10">
           {/* 레이어 선택 */}
@@ -181,8 +188,8 @@ export default function LoadMapWrite() {
                 key={index}
                 title={layerName}
                 markers={layerMarkers[layerName] || []}
-                setLayerMarkers={setLayerMarkers}
                 onDelete={() => handleDeleteLayer(index)}
+                deleteMarker={deleteMarker}
               />
             ))}
           </div>

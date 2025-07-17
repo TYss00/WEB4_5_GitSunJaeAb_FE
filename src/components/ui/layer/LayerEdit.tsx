@@ -9,17 +9,11 @@ export default function LayerEdit({
   title,
   defaultOpen = false,
   markers = [],
-  setLayerMarkers,
+  deleteMarker,
   onDelete,
 }: LayerEditProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen)
 
-  const onMarkerDelete = (markerId: number) => {
-    setLayerMarkers((prev) => ({
-      ...prev,
-      [title]: prev[title].filter((m) => m.id !== markerId),
-    }))
-  }
   return (
     <>
       <div className="w-full">
@@ -62,7 +56,7 @@ export default function LayerEdit({
                 key={idx}
                 isTextArea={true}
                 address={marker.address}
-                onDelete={() => onMarkerDelete(marker.id)}
+                onDelete={() => deleteMarker(title, marker.id)}
               />
             ))}
             <div
