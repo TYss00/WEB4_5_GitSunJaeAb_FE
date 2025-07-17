@@ -155,3 +155,11 @@ export type MarkerData = {
 export type LayerMarkers = {
   [layerName: string]: MarkerData[]
 }
+
+export type MapProps = {
+  center?: google.maps.LatLngLiteral
+  selectedLayer: string
+  layerMarkers: LayerMarkers
+  onMapClick: (lat: number, lng: number) => void
+  onMarkerDelete: (layer: string, id: number) => void
+}

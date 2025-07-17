@@ -1,6 +1,6 @@
 'use client'
 
-import { LayerMarkers } from '@/types/type'
+import { MapProps } from '@/types/type'
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api'
 
 const containerStyle = {
@@ -17,13 +17,7 @@ export default function Map({
   layerMarkers,
   onMapClick, // 좌표 → addMarkerByLatLng
   onMarkerDelete, // Marker 클릭 시
-}: {
-  center?: google.maps.LatLngLiteral
-  selectedLayer: string
-  layerMarkers: LayerMarkers
-  onMapClick: (lat: number, lng: number) => void
-  onMarkerDelete: (layer: string, id: number) => void
-}) {
+}: MapProps) {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!,
   })
