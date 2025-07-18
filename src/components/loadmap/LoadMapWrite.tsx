@@ -7,9 +7,10 @@ import Toggle from '../ui/Toggle'
 import LayerEdit from '../ui/layer/LayerEdit'
 import Map from './Map'
 import useLayerAdd from '@/hooks/useLayerAdd'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
 import { RoadmapWriteProps } from '@/types/type'
+import useHashtags from '@/hooks/useHashtags'
 
 export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
   const {
@@ -27,27 +28,15 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
     deleteMarker,
     addMarkerByAddress,
   } = useLayerMarkersAdd(layers)
-  const [hashtagInput, setHashtagInput] = useState('')
-  const [hashtags, setHashtags] = useState<string[]>([])
 
-  const handleAddHashtag = () => {
-    const trimmed = hashtagInput.trim()
-    if (trimmed && !hashtags.includes(trimmed)) {
-      setHashtags((prev) => [...prev, trimmed])
-      setHashtagInput('')
-    }
-  }
-
-  const handleRemoveHashtag = (tag: string) => {
-    setHashtags((prev) => prev.filter((t) => t !== tag))
-  }
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      handleAddHashtag()
-    }
-  }
+  const {
+    hashtagInput,
+    setHashtagInput,
+    hashtags,
+    addHashtag,
+    deleteHashtag,
+    handleKeyDown,
+  } = useHashtags()
 
   useEffect(() => {
     if (layers.length > 0 && !selectedLayer) {
@@ -151,7 +140,7 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
             <Button
               buttonStyle="smGreen"
               className="w-[80px] h-[40px] text-3xl font-medium"
-              onClick={handleAddHashtag}
+              onClick={addHashtag}
             >
               <Plus size={25} />
             </Button>
@@ -165,7 +154,7 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
                 #{tag}
                 <button
                   className="ml-1 text-black"
-                  onClick={() => handleRemoveHashtag(tag)}
+                  onClick={() => deleteHashtag(tag)}
                 >
                   ×
                 </button>
@@ -207,6 +196,7 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
               <option value="" disabled hidden>
                 레이어 선택
               </option>
+              {/* 로그인 연결 후 api 연결 예정 */}
               <option>게임</option>
               <option>여행</option>
               <option>맛집</option>
