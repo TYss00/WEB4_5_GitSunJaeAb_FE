@@ -23,7 +23,10 @@ export default function Mypage() {
                   ? 'text-[var(--primary-300)] border-[var(--primary-300)]'
                   : 'text-[var(--gray-300)] border-transparent'
               }`}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => {
+                setActiveTab(tab);
+                setSearchKeyword('');
+              }}
             >
               {tab}
             </li>
