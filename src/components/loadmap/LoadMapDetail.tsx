@@ -19,13 +19,13 @@ import LayerDetail from '../ui/layer/LayerDetail'
 import MarkerDetail from '../ui/layer/MarkerDetail'
 import useSidebar from '@/utils/useSidebar'
 import { useRouter } from 'next/navigation'
-import { HashtagProps, RoadmapProps } from '@/types/type'
+import { HashtagProps, RoadmapDetailProps } from '@/types/type'
 
 export default function Loadmapdetail({
   roadMapInfo,
   layerInfo,
   commentsInfo,
-}: RoadmapProps) {
+}: RoadmapDetailProps) {
   const router = useRouter()
   const [isReportOpen, setIsReportOpen] = useState(false)
   const { isOpen, toggle, close } = useSidebar()

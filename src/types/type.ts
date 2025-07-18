@@ -143,10 +143,22 @@ export type CommentInfo = {
   questId: number | null
 }
 
-export type RoadmapProps = {
+export type CategoryInfo = {
+  id: number
+  name: string
+  categoryImage: null | string
+  description: string
+  createdAt: string
+}
+
+export type RoadmapDetailProps = {
   roadMapInfo: RoadmapInfo
   layerInfo: LayerInfo[]
   commentsInfo: CommentInfo[]
+}
+
+export type RoadmapWriteProps = {
+  categories: CategoryInfo[]
 }
 
 export type MarkerData = {

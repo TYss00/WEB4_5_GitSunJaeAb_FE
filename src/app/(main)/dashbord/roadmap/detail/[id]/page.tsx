@@ -1,5 +1,5 @@
 export const dynamic = 'force-dynamic'
-import Loadmapdetail from '@/components/loadmap/LoadMapDetail'
+import LoadMapDetail from '@/components/loadmap/LoadMapDetail'
 
 export default async function page({ params }: { params: { id: string } }) {
   const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL
@@ -30,7 +30,7 @@ export default async function page({ params }: { params: { id: string } }) {
   console.log('commentsInfo:', commentsData.comments)
   return (
     <>
-      <Loadmapdetail
+      <LoadMapDetail
         roadMapInfo={roadmapData.roadmap}
         layerInfo={layersData.layers}
         commentsInfo={commentsData.comments}

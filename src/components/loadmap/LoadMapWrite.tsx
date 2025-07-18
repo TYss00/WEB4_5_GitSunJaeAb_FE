@@ -9,8 +9,9 @@ import Map from './Map'
 import useLayerAdd from '@/hooks/useLayerAdd'
 import { useEffect, useState } from 'react'
 import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
+import { RoadmapWriteProps } from '@/types/type'
 
-export default function LoadMapWrite() {
+export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
   const {
     layers,
     newLayerName,
@@ -102,9 +103,11 @@ export default function LoadMapWrite() {
               <option value="" disabled hidden>
                 카테고리를 선택해주세요.
               </option>
-              <option>게임</option>
-              <option>여행</option>
-              <option>맛집</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
             </select>
 
             <ChevronDown
