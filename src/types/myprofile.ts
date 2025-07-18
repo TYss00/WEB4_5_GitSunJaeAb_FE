@@ -58,3 +58,21 @@ export type MypagePostProps = {
   activeTab: '작성글' | '참여글' | '좋아요글';
   searchKeyword: string;
 };
+
+export type ProfileEditState = {
+  nickname: string;
+  profileImage: string | null;
+
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+
+  setNickname: (nickname: string) => void;
+  setProfileImage: (image: string | null) => void;
+
+  setCurrentPassword: (v: string) => void;
+  setNewPassword: (v: string) => void;
+  setConfirmPassword: (v: string) => void;
+
+  reset: () => void;
+};

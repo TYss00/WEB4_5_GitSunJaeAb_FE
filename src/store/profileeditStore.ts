@@ -1,22 +1,5 @@
+import { ProfileEditState } from '@/types/myprofile';
 import { create } from 'zustand';
-
-type ProfileEditState = {
-  nickname: string;
-  profileImage: string | null;
-
-  currentPassword: string;
-  newPassword: string;
-  confirmPassword: string;
-
-  setNickname: (nickname: string) => void;
-  setProfileImage: (image: string | null) => void;
-
-  setCurrentPassword: (v: string) => void;
-  setNewPassword: (v: string) => void;
-  setConfirmPassword: (v: string) => void;
-
-  reset: () => void;
-};
 
 export const useProfileEditStore = create<ProfileEditState>((set) => ({
   nickname: '',
