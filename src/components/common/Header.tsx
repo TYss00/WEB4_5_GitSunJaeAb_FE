@@ -102,15 +102,22 @@ export default function Header({ isAdmin = false }: HeaderProps) {
           </>
         )}
 
-        {/* 공통: 마이페이지 아이콘 */}
+        {/* 마이페이지 아이콘 */}
+        {!isAdmin && (
+          <Link href="/mypage">
+            <CircleUserRound
+              size={25}
+              strokeWidth={1.7}
+              className={`cursor-pointer hover:text-[var(--primary-300)] ${
+                pathname.startsWith('/mypage')
+                  ? 'text-[var(--primary-300)]'
+                  : ''
+              }`}
+            />
+          </Link>
+        )}
         <Link href="/mypage">
-          <CircleUserRound
-            size={25}
-            strokeWidth={1.7}
-            className={`cursor-pointer hover:text-[var(--primary-300)] ${
-              pathname.startsWith('/mypage') ? 'text-[var(--primary-300)]' : ''
-            }`}
-          />
+          <div className="text-xl">로그아웃</div>
         </Link>
       </div>
 
