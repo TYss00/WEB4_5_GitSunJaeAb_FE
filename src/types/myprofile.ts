@@ -1,7 +1,15 @@
 export type ProfileMember = {
   id: number;
+  name?: string;
+  email?: string;
+  password?: string;
+  loginType?: string;
+  provider?: string;
+  role?: string;
+  status?: string;
   nickname: string;
   profileImage: string | null;
+  blacklisted?: boolean;
 };
 
 export type useProfileStores = {

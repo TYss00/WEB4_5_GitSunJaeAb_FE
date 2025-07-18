@@ -1,22 +1,37 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { ImagePlus, PencilLine } from 'lucide-react';
-import PasswordInput from '@/components/ui/PasswrodInput';
+import { useProfileStore } from '@/store/profileStore';
+import { useProfileEditStore } from '@/store/profileeditStore';
 
 export default function ProfileTab() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [username, setUsername] = useState('사용자 이름');
+  const { member, fetchMember } = useProfileStore();
+
+  const { nickname, profileImage, setNickname, setProfileImage } =
+    useProfileEditStore();
+
   const [isEditingName, setIsEditingName] = useState(false);
+
+  useEffect(() => {
+    fetchMember();
+  }, [fetchMember]);
+
+  useEffect(() => {
+    if (member) {
+      setNickname(member.nickname ?? '');
+      setProfileImage(member.profileImage ?? null);
+    }
+  }, [member, setNickname, setProfileImage]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImageSrc(reader.result as string);
+        setProfileImage(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -29,28 +44,34 @@ export default function ProfileTab() {
   };
 
   return (
-    <div className="flex flex-col justify-between h-full px-2 pb-6">
-      <div className="flex flex-col items-center gap-6">
-        {/* 프로필 이미지 */}
-        <div className="flex flex-col gap-[10px] items-center">
+    <div className="flex flex-col items-center px-4 py-6">
+      <p className="text-3xl text-[var(--primary-300)] mb-14 font-bold border-b-2 border-[var(--primary-300)]">
+        프로필 변경
+      </p>
+
+      <div className="flex flex-col items-center gap-4">
+        {/* 이미지 */}
+        <div className="flex flex-col items-center group relative">
           <div
-            className="rounded-full size-[140px] bg-[var(--gray-200)] overflow-hidden relative cursor-pointer"
+            className="rounded-full size-[180px] bg-[var(--gray-100)] overflow-hidden relative cursor-pointer group"
             onClick={() => fileInputRef.current?.click()}
           >
-            {imageSrc ? (
+            {profileImage ? (
               <Image
-                src={imageSrc}
+                src={profileImage}
                 alt="profile"
                 fill
-                className="object-cover rounded-full"
-                style={{ objectFit: 'cover' }}
+                className="object-cover rounded-full transition duration-200 group-hover:brightness-75"
               />
             ) : (
               <ImagePlus className="text-[var(--gray-300)] absolute left-1/2 top-1/2 -translate-1/2" />
             )}
+            <div className="absolute inset-0 bg-black/40 flex justify-center items-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <PencilLine size={28} color="white" className="drop-shadow-md" />
+            </div>
           </div>
           <span
-            className="text-[13px] text-[var(--primary-300)] cursor-pointer"
+            className="text-base text-[var(--primary-300)] cursor-pointer mt-2"
             onClick={() => fileInputRef.current?.click()}
           >
             사진 변경
@@ -64,55 +85,32 @@ export default function ProfileTab() {
           />
         </div>
 
-        {/* 이름 */}
-        <div className="flex gap-[5px] items-center">
+        {/* 닉네임 */}
+        <div className="flex gap-2 items-center ml-5 w-[250px] justify-center">
           {isEditingName ? (
-            <input
-              autoFocus
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              onKeyDown={handleNameKeyDown}
-              onBlur={() => setIsEditingName(false)}
-              className="text-[20px] font-semibold border-b border-[var(--gray-100)] outline-none"
-            />
+            <>
+              <input
+                autoFocus
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                onKeyDown={handleNameKeyDown}
+                onBlur={() => setIsEditingName(false)}
+                className="w-full text-3xl font-semibold border-b border-[var(--gray-100)] outline-none text-center"
+              />
+              <div className="w-[22px]" />
+            </>
           ) : (
             <>
-              <span className="text-[20px] font-semibold">{username}</span>
+              <span className="text-3xl font-semibold">{nickname}</span>
               <PencilLine
-                size={18}
-                color="var(--gray-100)"
+                size={22}
+                color="var(--gray-200)"
                 className="cursor-pointer"
                 onClick={() => setIsEditingName(true)}
               />
             </>
           )}
         </div>
-
-        {/* 비밀번호 변경 */}
-        <div className="w-full flex flex-col gap-4 mt-2">
-          <PasswordInput
-            label="현재 비밀번호"
-            placeholder="비밀번호를 입력하세요"
-          />
-          <PasswordInput
-            label="새 비밀번호"
-            placeholder="새 비밀번호를 입력하세요"
-          />
-          <PasswordInput
-            label="새 비밀번호 확인"
-            placeholder="새 비밀번호를 다시 입력하세요"
-          />
-        </div>
-      </div>
-
-      {/* 회원탈퇴 */}
-      <div className="w-full text-center mt-10">
-        <button
-          className="text-sm text-[var(--red)] underline underline-offset-2 cursor-pointer"
-          onClick={() => alert('회원탈퇴 기능은 아직 구현되지 않았습니다.')}
-        >
-          회원탈퇴
-        </button>
       </div>
     </div>
   );
