@@ -2,7 +2,8 @@
 
 import Image from 'next/image';
 import LandingBanner from './LandingBanner';
-import LandingService from './LandingService';
+// import LandingService from './LandingService';
+import LandingScrollSection from './LandingScrollSection';
 
 export default function LandingPage() {
   return (
@@ -10,7 +11,7 @@ export default function LandingPage() {
       {/* 배너 - 애니메이션 */}
       <LandingBanner />
       {/* 서비스 소개 - 스크롤애니메이션 */}
-      <LandingService />
+      <LandingScrollSection />
       <section className="w-full">
         {/* 상단 텍스트 */}
         <div className="text-center mb-[40px] pt-[124px]">
