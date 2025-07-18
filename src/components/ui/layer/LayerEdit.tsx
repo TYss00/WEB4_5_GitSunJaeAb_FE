@@ -66,8 +66,8 @@ export default function LayerEdit({
                 address={marker.address}
                 onDelete={() => deleteMarker(title, marker.id)}
                 onAddByAddress={(address) => {
-                  deleteManualMarker(marker.id) // 수동입력 제거
-                  addMarkerByAddress(title, address) // 지도에 마커 추가
+                  deleteManualMarker(marker.id)
+                  addMarkerByAddress(title, address)
                 }}
               />
             ))}
@@ -80,8 +80,8 @@ export default function LayerEdit({
                   setManualMarkers((prev) => prev.filter((x) => x.id !== m.id))
                 }
                 onAddByAddress={(address) => {
-                  setManualMarkers((prev) => prev.filter((x) => x.id !== m.id)) // 수동 입력된 아이템 제거
-                  addMarkerByAddress(title, address) // 지도에 마커 추가
+                  setManualMarkers((prev) => prev.filter((x) => x.id !== m.id))
+                  addMarkerByAddress(title, address)
                 }}
               />
             ))}

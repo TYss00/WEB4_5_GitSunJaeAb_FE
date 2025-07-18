@@ -7,7 +7,7 @@ import Toggle from '../ui/Toggle'
 import LayerEdit from '../ui/layer/LayerEdit'
 import Map from './Map'
 import useLayerAdd from '@/hooks/useLayerAdd'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
 
 export default function LoadMapWrite() {
@@ -26,6 +26,27 @@ export default function LoadMapWrite() {
     deleteMarker,
     addMarkerByAddress,
   } = useLayerMarkersAdd(layers)
+  const [hashtagInput, setHashtagInput] = useState('')
+  const [hashtags, setHashtags] = useState<string[]>([])
+
+  const handleAddHashtag = () => {
+    const trimmed = hashtagInput.trim()
+    if (trimmed && !hashtags.includes(trimmed)) {
+      setHashtags((prev) => [...prev, trimmed])
+      setHashtagInput('')
+    }
+  }
+
+  const handleRemoveHashtag = (tag: string) => {
+    setHashtags((prev) => prev.filter((t) => t !== tag))
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      handleAddHashtag()
+    }
+  }
 
   useEffect(() => {
     if (layers.length > 0 && !selectedLayer) {
@@ -120,21 +141,33 @@ export default function LoadMapWrite() {
               type="text"
               placeholder="해시태그 추가"
               className="h-[40px] border-[#E4E4E4] rounded-md"
+              value={hashtagInput}
+              onChange={(e) => setHashtagInput(e.target.value)}
+              onKeyDown={handleKeyDown}
             />
             <Button
               buttonStyle="smGreen"
               className="w-[80px] h-[40px] text-3xl font-medium"
+              onClick={handleAddHashtag}
             >
               <Plus size={25} />
             </Button>
           </div>
           <div className="flex gap-2 text-sm text-[#005C54] mt-1">
-            <span>
-              #태그1 <button className="ml-1 text-black">×</button>
-            </span>
-            <span>
-              #태그2 <button className="ml-1 text-black">×</button>
-            </span>
+            {hashtags.map((tag, index) => (
+              <span
+                key={index}
+                className="px-2 py-1 bg-[#e0f0ef] rounded-full flex items-center"
+              >
+                #{tag}
+                <button
+                  className="ml-1 text-black"
+                  onClick={() => handleRemoveHashtag(tag)}
+                >
+                  ×
+                </button>
+              </span>
+            ))}
           </div>
         </div>
 

@@ -15,8 +15,8 @@ export default function Map({
   center = defaultCenter,
   selectedLayer,
   layerMarkers,
-  onMapClick, // 좌표 → addMarkerByLatLng
-  onMarkerDelete, // Marker 클릭 시
+  onMapClick,
+  onMarkerDelete,
 }: MapProps) {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!,
