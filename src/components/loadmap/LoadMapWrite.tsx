@@ -24,6 +24,7 @@ export default function LoadMapWrite() {
     layerMarkers,
     addMarkerByLatLng,
     deleteMarker,
+    addMarkerByAddress,
   } = useLayerMarkersAdd(layers)
 
   useEffect(() => {
@@ -189,6 +190,7 @@ export default function LoadMapWrite() {
                 markers={layerMarkers[layerName] || []}
                 onDelete={() => handleDeleteLayer(index)}
                 deleteMarker={deleteMarker}
+                addMarkerByAddress={addMarkerByAddress}
               />
             ))}
           </div>

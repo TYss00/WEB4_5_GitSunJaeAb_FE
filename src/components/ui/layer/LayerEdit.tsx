@@ -11,17 +11,16 @@ export default function LayerEdit({
   markers = [],
   deleteMarker,
   onDelete,
+  addMarkerByAddress,
 }: LayerEditProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen)
-  const [manualMarkers, setManualMarkers] = useState<
-    { id: number; address: string }[]
-  >([])
+  const [manualMarkers, setManualMarkers] = useState<{ id: number }[]>([])
 
-  const addMarker = () => {
-    setManualMarkers((prev) => [
-      ...prev,
-      { id: Date.now(), address: '주소를 입력해주세요.' },
-    ])
+  const addManualMarker = () => {
+    setManualMarkers((prev) => [...prev, { id: Date.now() }])
+  }
+  const deleteManualMarker = (id: number) => {
+    setManualMarkers((prev) => prev.filter((m) => m.id !== id))
   }
   return (
     <>
@@ -60,29 +59,34 @@ export default function LayerEdit({
           }`}
         >
           <div className="p-[10px] max-h-[633px] overflow-y-auto rounded-b-[5px] flex flex-col gap-[15px]">
-            {markers.map((marker, idx) => (
-              <MarkerEdit
-                key={idx}
-                isTextArea={true}
-                address={marker.address}
-                onDelete={() => deleteMarker(title, marker.id)}
-              />
-            ))}
-
-            {manualMarkers.map((marker) => (
+            {markers.map((marker) => (
               <MarkerEdit
                 key={marker.id}
                 isTextArea={true}
                 address={marker.address}
+                onDelete={() => deleteMarker(title, marker.id)}
+                onAddByAddress={(address) => {
+                  deleteManualMarker(marker.id) // 수동입력 제거
+                  addMarkerByAddress(title, address) // 지도에 마커 추가
+                }}
+              />
+            ))}
+
+            {manualMarkers.map((m) => (
+              <MarkerEdit
+                key={m.id}
+                isTextArea={true}
                 onDelete={() =>
-                  setManualMarkers((prev) =>
-                    prev.filter((m) => m.id !== marker.id)
-                  )
+                  setManualMarkers((prev) => prev.filter((x) => x.id !== m.id))
                 }
+                onAddByAddress={(address) => {
+                  setManualMarkers((prev) => prev.filter((x) => x.id !== m.id)) // 수동 입력된 아이템 제거
+                  addMarkerByAddress(title, address) // 지도에 마커 추가
+                }}
               />
             ))}
             <div
-              onClick={addMarker}
+              onClick={addManualMarker}
               className="w-full min-h-[44px] flex justify-center items-center rounded-[5px] bg-[var(--primary-100)] cursor-pointer"
             >
               <Plus size={24} color="white" />

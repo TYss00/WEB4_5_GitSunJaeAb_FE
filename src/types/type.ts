@@ -63,7 +63,9 @@ export type ButtonProps = {
 export type MarkerEditProps = {
   isTextArea?: boolean
   onDelete: () => void
-  address: string
+  address?: string
+  onAddByAddress?: (address: string) => void
+  addMarkerByAddress?: (layer: string, address: string) => void
 }
 
 export type MarkerDetailProps = {
@@ -76,6 +78,7 @@ export type LayerEditProps = {
   markers?: MarkerData[]
   onDelete: () => void
   deleteMarker: (layer: string, markerId: number) => void
+  addMarkerByAddress: (layer: string, address: string) => void
 }
 export type LayerDetailProps = {
   title: string

@@ -14,14 +14,20 @@ export default function MarkerEdit({
   isTextArea,
   onDelete,
   address = '주소를 입력해주세요.',
+  onAddByAddress,
 }: MarkerEditProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [placeName, setPlaceName] = useState('')
   const [isEditingName, setIsEditingName] = useState(false)
 
   const handleComplete = (data: AddressData) => {
+    const fullAddress = data.address
+    address = fullAddress
     setIsModalOpen(false)
-    console.log(data)
+
+    if (onAddByAddress) {
+      onAddByAddress(fullAddress)
+    }
   }
 
   const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
