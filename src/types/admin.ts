@@ -94,3 +94,12 @@ export type CategoryCardProps = {
   handleEditSubmit: (id: number) => void;
   cancelEdit: () => void;
 };
+
+export type UserActionButton = {
+  user: User;
+  selectedTab: string;
+  loadingUserId: number | null;
+  onToggleBlacklist: (id: number) => void;
+  onToggleAdminRole: (id: number, role: string) => void;
+  onDeleteMember: (id: number) => void;
+};

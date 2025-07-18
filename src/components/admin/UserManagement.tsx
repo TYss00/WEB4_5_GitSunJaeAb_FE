@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { UserCog } from 'lucide-react';
 import { User, UserResponse } from '@/types/admin';
+import UserActionButtons from './UserActionButtons';
 
 const TABS = ['전체 사용자', '관리자', '블랙 리스트'];
 
@@ -33,10 +34,6 @@ export default function UserManagement() {
     return false;
   });
 
-  const renderRole = (role: string) => {
-    return role === 'ROLE_ADMIN' ? '관리자' : '일반';
-  };
-
   // 블랙리스트 토글
   const toggleBlacklist = async (id: number) => {
     setLoadingUserId(id);
@@ -64,7 +61,7 @@ export default function UserManagement() {
       console.error('블랙리스트 업데이트 실패:', err);
       alert('블랙리스트 상태를 변경할 수 없습니다.');
     } finally {
-      setLoadingUserId(null); // 종료 시 초기화
+      setLoadingUserId(null);
     }
   };
 
@@ -184,123 +181,25 @@ export default function UserManagement() {
           </thead>
 
           <tbody>
-            {filteredMembers.length === 0 ? (
-              <tr>
-                <td
-                  colSpan={
-                    selectedTab === '전체 사용자'
-                      ? 9
-                      : selectedTab === '관리자'
-                      ? 5
-                      : 5
-                  }
-                  className="py-6 text-center text-[var(--gray-300)]"
-                >
-                  사용자 목록이 없습니다.
-                </td>
+            {filteredMembers.map((user) => (
+              <tr
+                key={user.id}
+                className="border-t border-[var(--gray-100)] text-[var(--black)]"
+              >
+                <td className="py-2 px-4">{user.name}</td>
+                <td className="py-2 px-4">{user.nickname}</td>
+                <td className="py-2 px-4">{user.email}</td>
+
+                <UserActionButtons
+                  user={user}
+                  selectedTab={selectedTab}
+                  loadingUserId={loadingUserId}
+                  onToggleBlacklist={toggleBlacklist}
+                  onToggleAdminRole={toggleAdminRole}
+                  onDeleteMember={deleteMember}
+                />
               </tr>
-            ) : (
-              filteredMembers.map((user) => (
-                <tr
-                  key={user.id}
-                  className="border-t border-[var(--gray-100)] text-[var(--black)]"
-                >
-                  <td className="py-2 px-4">{user.name}</td>
-                  <td className="py-2 px-4">{user.nickname}</td>
-                  <td className="py-2 px-4">{user.email}</td>
-
-                  {selectedTab === '전체 사용자' && (
-                    <>
-                      <td className="py-2 px-4">{renderRole(user.role)}</td>
-                      <td className="py-2 px-4 text-center">
-                        {user.blacklisted ? 'O' : 'X'}
-                      </td>
-                      <td className="py-2 px-4 text-center">
-                        <button
-                          onClick={() => toggleBlacklist(user.id)}
-                          disabled={loadingUserId === user.id}
-                          className={`text-[13px] underline cursor-pointer ${
-                            user.blacklisted
-                              ? 'text-red-500'
-                              : 'text-[var(--primary-300)]'
-                          }`}
-                        >
-                          {user.blacklisted ? '취소' : '추가'}
-                        </button>
-                      </td>
-                      <td className="py-2 px-4 text-center">
-                        <button
-                          onClick={() => toggleAdminRole(user.id)}
-                          disabled={loadingUserId === user.id}
-                          className={`text-[13px] underline cursor-pointer ${
-                            user.role === 'ROLE_ADMIN'
-                              ? 'text-red-500'
-                              : 'text-[var(--primary-300)]'
-                          }`}
-                        >
-                          {user.role === 'ROLE_ADMIN'
-                            ? '권한 회수'
-                            : '권한 부여'}
-                        </button>
-                      </td>
-                      <td className="py-2 px-4 text-center">
-                        <button
-                          onClick={() => deleteMember(user.id)}
-                          disabled={loadingUserId === user.id}
-                          className="text-[13px] text-red-500 underline cursor-pointer"
-                        >
-                          삭제
-                        </button>
-                      </td>
-                    </>
-                  )}
-
-                  {selectedTab === '관리자' && (
-                    <>
-                      <td className="py-2 px-4 text-center">
-                        <button
-                          onClick={() => toggleAdminRole(user.id)}
-                          disabled={loadingUserId === user.id}
-                          className="text-[13px] text-red-500 underline"
-                        >
-                          회수
-                        </button>
-                      </td>
-                      <td className="py-2 px-4 text-center">
-                        <button
-                          onClick={() => deleteMember(user.id)}
-                          disabled={loadingUserId === user.id}
-                          className="text-[13px] text-red-500 underline"
-                        >
-                          삭제
-                        </button>
-                      </td>
-                    </>
-                  )}
-
-                  {selectedTab === '블랙 리스트' && (
-                    <>
-                      <td className="py-2 px-4 text-center">
-                        <button
-                          onClick={() => toggleBlacklist(user.id)}
-                          className="text-[13px] text-red-500 underline"
-                        >
-                          취소
-                        </button>
-                      </td>
-                      <td className="py-2 px-4 text-center">
-                        <button
-                          onClick={() => deleteMember(user.id)}
-                          className="text-[13px] text-red-500 underline"
-                        >
-                          삭제
-                        </button>
-                      </td>
-                    </>
-                  )}
-                </tr>
-              ))
-            )}
+            ))}
           </tbody>
         </table>
       </div>

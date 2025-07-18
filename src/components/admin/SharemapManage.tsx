@@ -17,6 +17,7 @@ export default function SharemapManage() {
         setRoadmaps(data.roadmaps);
       } catch (err) {
         console.error('공유지도 목록 불러오기 실패:', err);
+        setRoadmaps([]);
       }
     };
     fetchRoadmaps();
@@ -68,31 +69,36 @@ export default function SharemapManage() {
             </tr>
           </thead>
           <tbody>
-            {roadmaps.map((roadmap) => (
-              <tr key={roadmap.id} className="border-b border-[var(--gray-50)]">
-                <td className="py-2 px-3">{roadmap.title}</td>
-                <td className="py-2 px-3">{roadmap.member.nickname}</td>
-                <td className="py-2 px-3 w-[200px]">
-                  <div className="flex justify-between text-[13px] mb-1">
-                    <span>62%</span>
-                  </div>
-                  <div className="w-full h-2 bg-[#EFEFEF] rounded-full">
-                    <div
-                      className="h-full bg-[var(--primary-300)] rounded-full"
-                      style={{ width: '62%' }}
-                    />
-                  </div>
-                </td>
-                <td className="py-2 text-[13px] text-center text-[var(--red)]">
-                  <button
-                    className="underline cursor-pointer"
-                    onClick={() => handleDelete(roadmap.id)}
+            {Array.isArray(roadmaps)
+              ? roadmaps.map((roadmap) => (
+                  <tr
+                    key={roadmap.id}
+                    className="border-b border-[var(--gray-50)]"
                   >
-                    삭제
-                  </button>
-                </td>
-              </tr>
-            ))}
+                    <td className="py-2 px-3">{roadmap.title}</td>
+                    <td className="py-2 px-3">{roadmap.member.nickname}</td>
+                    <td className="py-2 px-3 w-[200px]">
+                      <div className="flex justify-between text-[13px] mb-1">
+                        <span>62%</span>
+                      </div>
+                      <div className="w-full h-2 bg-[#EFEFEF] rounded-full">
+                        <div
+                          className="h-full bg-[var(--primary-300)] rounded-full"
+                          style={{ width: '62%' }}
+                        />
+                      </div>
+                    </td>
+                    <td className="py-2 text-[13px] text-center text-[var(--red)]">
+                      <button
+                        className="underline cursor-pointer"
+                        onClick={() => handleDelete(roadmap.id)}
+                      >
+                        삭제
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              : null}
           </tbody>
         </table>
       </div>
