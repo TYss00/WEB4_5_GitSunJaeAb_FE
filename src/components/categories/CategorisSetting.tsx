@@ -3,9 +3,6 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import Button from '../ui/Button';
-import { useQuery } from '@tanstack/react-query';
-import { getUser } from '@/libs/auth';
-import { useAuthStore } from '@/store/useAuthStore';
 
 const categories = [
   '프론트엔드',
@@ -39,25 +36,8 @@ export default function CategoriesSetting() {
     );
   };
 
-  const accessToken = useAuthStore((state) => state.accessToken);
-
-  const { data: user } = useQuery({
-    queryKey: ['user'],
-    queryFn: getUser,
-    enabled: !!accessToken,
-  });
-
   return (
     <div className="flex flex-col items-center px-4 py-8 pt-30 2xl:pt-50">
-      {/* test ) 나중에 지울 예정 */}
-      {user ? (
-        <>
-          {' '}
-          <img src={user.profileImage} alt="프로필" />
-        </>
-      ) : (
-        <div>로그인 필요</div>
-      )}
       <h1 className="text-[#005C54] text-4xl font-bold mb-10">
         관심 분야를 설정해주세요.
       </h1>

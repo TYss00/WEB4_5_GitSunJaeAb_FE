@@ -32,9 +32,6 @@ export const loginUser = async ({
 };
 
 export const logoutUser = async () => {
-  // return await axiosInstance.post('/auth/logout', null, {
-  //   withCredentials: true,
-  // });
   return await axiosInstance.post('/auth/logout');
 };
 
@@ -45,4 +42,14 @@ export const getUser = async (): Promise<User> => {
   // Zustand 상태에 반영
   useAuthStore.getState().setUser(user);
   return user;
+};
+
+// 소셜 로그인
+export const socialLogin = async (idToken: string) => {
+  const { data } = await axiosInstance.post('/auth/socialLogin', {
+    provider: 'google',
+    token: idToken,
+  });
+  console.log('서버 응답:', data);
+  return data;
 };

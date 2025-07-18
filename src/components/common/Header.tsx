@@ -1,6 +1,6 @@
 'use client';
 
-import { Bell, CircleUserRound, Search, X } from 'lucide-react';
+import { Bell, Search, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import SearchModal from '../search/SearchModal';
@@ -9,6 +9,9 @@ import Notification from '../notification/Notification';
 import { usePathname } from 'next/navigation';
 import { HeaderProps } from '@/types/type';
 import UserModal from './modal/UserModal';
+import { useAuthStore } from '@/store/useAuthStore';
+import defaultProfile from '../../../public/assets/defaultProfile.png';
+import Image from 'next/image';
 
 export default function Header({ isAdmin = false }: HeaderProps) {
   const pathname = usePathname();
@@ -28,6 +31,9 @@ export default function Header({ isAdmin = false }: HeaderProps) {
 
   const handleSearch = () => setIsSearchOpen((prev) => !prev);
   const handleNoti = () => setIsNotiOpen((prev) => !prev);
+
+  const user = useAuthStore((state) => state.user);
+  const profileImage = user?.profileImage;
 
   const userNavItems = [
     { name: '로드맵', href: '/dashbord/roadmap' },
@@ -107,24 +113,22 @@ export default function Header({ isAdmin = false }: HeaderProps) {
           </>
         )}
 
-        {/* 공통: 프로필 이미지로 바꿔야함 */}
-        {/* <Link href="/mypage">
-          <CircleUserRound
-            size={25}
-            strokeWidth={1.7}
-            className={`cursor-pointer hover:text-[var(--primary-300)] ${
-              pathname.startsWith('/mypage') ? 'text-[var(--primary-300)]' : ''
-            }`}
+        {/* 프로필 이미지 이상하면 여기 확인하기 */}
+        {profileImage ? (
+          <Image
+            src={profileImage}
+            alt="User Profile"
+            className="w-[25px] h-[25px] rounded-full object-cover cursor-pointer border border-[var(--gray-100)] hover:ring-2 hover:ring-[var(--primary-300)]"
+            onClick={() => setIsUserModalOpen((prev) => !prev)}
           />
-        </Link> */}
-        <CircleUserRound
-          size={25}
-          strokeWidth={1.7}
-          className={`cursor-pointer hover:text-[var(--primary-300)] ${
-            pathname.startsWith('/mypage') ? 'text-[var(--primary-300)]' : ''
-          }`}
-          onClick={() => setIsUserModalOpen((prev) => !prev)}
-        />
+        ) : (
+          <Image
+            src={defaultProfile}
+            alt="Default Profile"
+            className="w-[25px] h-[25px] rounded-full object-cover cursor-pointer border border-[var(--gray-100)] hover:ring-2 hover:ring-[var(--primary-300)]"
+            onClick={() => setIsUserModalOpen((prev) => !prev)}
+          />
+        )}
       </div>
 
       {/* 알림 모달 */}

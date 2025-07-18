@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+// import Image from 'next/image';
 import Input from '../ui/Input';
 import Link from 'next/link';
 import Button from '../ui/Button';
@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/useAuthStore';
 import { setAccessTokenToStore } from '@/utils/setAccessTokenToStore';
+import Image from 'next/image';
 
 export default function Login() {
   const router = useRouter();
@@ -27,6 +28,7 @@ export default function Login() {
 
   const queryClient = useQueryClient();
 
+  // 일반 로그인
   const { mutate: loginMutate, isPending } = useMutation({
     mutationFn: loginUser,
     onSuccess: async (data) => {
@@ -64,6 +66,27 @@ export default function Login() {
     }
 
     loginMutate(form);
+  };
+
+  // 구글 로그인
+  const handleGoogleRedirectLogin = () => {
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!;
+    const redirectUri = 'https://localhost:3443/auth/google/callback';
+    const scope = 'openid email profile';
+    const responseType = 'id_token';
+    const state = crypto.randomUUID(); // CSRF 방지용 (선택)
+    const nonce = crypto.randomUUID(); // 보안 권장
+
+    const googleUrl =
+      `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${clientId}` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&response_type=${responseType}` +
+      `&scope=${encodeURIComponent(scope)}` +
+      `&nonce=${nonce}` +
+      `&state=${state}`;
+
+    window.location.href = googleUrl;
   };
 
   return (
@@ -113,6 +136,7 @@ export default function Login() {
           buttonStyle="withIcon"
           fullWidth
           className="h-[45px] py-2 rounded-lg text-sm gap-2"
+          onClick={handleGoogleRedirectLogin}
           icon={
             <Image
               src="/assets/google.svg"
