@@ -7,7 +7,7 @@ import Toggle from '../ui/Toggle'
 import LayerEdit from '../ui/layer/LayerEdit'
 import Map from './Map'
 import useLayerAdd from '@/hooks/useLayerAdd'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
 import { RoadmapWriteProps } from '@/types/type'
 import useHashtags from '@/hooks/useHashtags'
@@ -43,6 +43,75 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
       setSelectedLayer(layers[0]) // 첫 번째 레이어 자동 선택
     }
   }, [layers])
+
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [categoryId, setCategoryId] = useState<number | null>(null)
+  const isPublic = true
+
+  const handleSubmit = async () => {
+    const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL
+    try {
+      // 1. 로드맵 생성
+      const roadmapRes = await fetch(`${baseURL}/roadmaps/personal`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          description,
+          categoryId,
+          // hashtags,
+          isPublic,
+        }),
+      })
+      const roadmap = await roadmapRes.json()
+
+      // 2. 레이어 생성
+      const layerIds: Record<string, number> = {}
+      for (const layerTitle of layers) {
+        const layerRes = await fetch(`${baseURL}/layers`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: layerTitle,
+            roadmapId: roadmap.id,
+            layerSeq: 1,
+          }),
+        })
+        const layer = await layerRes.json()
+        layerIds[layerTitle] = layer.id
+      }
+
+      // 3. 마커 생성
+      for (const layerTitle of layers) {
+        const markers = layerMarkers[layerTitle] || []
+        for (const marker of markers) {
+          await fetch(
+            `${baseURL}/markers
+`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                layer: layerIds[layerTitle],
+                lat: marker.lat,
+                lng: marker.lng,
+                name: 'test',
+                description: 'test',
+                color: 'test',
+                imgUrl: 'test',
+                markerSeq: 1,
+              }),
+            }
+          )
+        }
+      }
+      alert('로드맵이 성공적으로 생성되었습니다.')
+    } catch (error) {
+      console.error('로드맵 생성 실패', error)
+      alert('로드맵 생성 중 오류가 발생했습니다.')
+    }
+  }
 
   return (
     <section className="flex w-full h-screen overflow-hidden">
@@ -88,6 +157,8 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
             <select
               className="w-full h-[40px] text-sm border border-[#E4E4E4] rounded px-3 appearance-none"
               defaultValue=""
+              value={categoryId ?? ''}
+              onChange={(e) => setCategoryId(Number(e.target.value))}
             >
               <option value="" disabled hidden>
                 카테고리를 선택해주세요.
@@ -113,6 +184,8 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
             type="text"
             placeholder="제목을 입력해주세요."
             className="h-[40px] border-[#E4E4E4] rounded-md"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
           />
         </div>
 
@@ -122,6 +195,8 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
           <textarea
             placeholder="내용을 입력해주세요."
             className="h-[100px] w-full rounded-md border border-[var(--gray-50)] px-3 py-2 outline-none focus:border-[var(--primary-300)] focus:ring-1 focus:ring-[var(--primary-300)] placeholder:text-sm placeholder:text-[var(--gray-200)]"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
         </div>
 
@@ -225,7 +300,11 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
             <Button buttonStyle="white" className="text-sm w-[60px] h-[35px]">
               취소
             </Button>
-            <Button buttonStyle="smGreen" className="text-sm w-[60px] h-[35px]">
+            <Button
+              onClick={handleSubmit}
+              buttonStyle="smGreen"
+              className="text-sm w-[60px] h-[35px]"
+            >
               완료
             </Button>
           </div>
