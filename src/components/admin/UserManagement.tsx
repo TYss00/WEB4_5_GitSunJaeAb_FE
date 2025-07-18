@@ -9,6 +9,7 @@ const TABS = ['전체 사용자', '관리자', '블랙 리스트'];
 export default function UserManagement() {
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const [selectedTab, setSelectedTab] = useState<string>('전체 사용자');
+  const [loadingUserId, setLoadingUserId] = useState<number | null>(null);
   const [members, setMembers] = useState<User[]>([]);
 
   useEffect(() => {
@@ -38,39 +39,32 @@ export default function UserManagement() {
 
   // 블랙리스트 토글
   const toggleBlacklist = async (id: number) => {
-    console.log('[블랙리스트 토글] ID:', id);
-    const user = members.find((u) => u.id === id);
-    if (!user) return;
-
-    const updated = {
-      ...user,
-      blacklisted: !user.blacklisted,
-    };
-
+    setLoadingUserId(id);
     try {
-      const res = await fetch(`${API_BASE_URL}members/role/${id}`, {
-        method: 'GET',
+      const res = await fetch(`${API_BASE_URL}members/blacklist/${id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
       });
 
-      // 잘되나 체크용
-      if (res.ok) {
-        const result = await res.json();
-        console.log('서버 응답:', result);
-      }
+      const data = await res.json();
 
-      if (!res.ok) throw new Error('블랙리스트 업데이트 실패');
+      if (!res.ok) throw new Error(data.message || '블랙리스트 업데이트 실패');
 
       setMembers((prev) =>
         prev.map((u) =>
-          u.id === id ? { ...u, blacklisted: updated.blacklisted } : u
+          u.id === id ? { ...u, blacklisted: !u.blacklisted } : u
         )
       );
+
+      alert(data.message || '블랙리스트 상태가 변경되었습니다.');
     } catch (err) {
       console.error('블랙리스트 업데이트 실패:', err);
       alert('블랙리스트 상태를 변경할 수 없습니다.');
+    } finally {
+      setLoadingUserId(null); // 종료 시 초기화
     }
   };
 
@@ -79,32 +73,31 @@ export default function UserManagement() {
     const user = members.find((u) => u.id === id);
     if (!user) return;
 
-    const updated = {
-      role: user.role === 'ROLE_ADMIN' ? 'ROLE_USER' : 'ROLE_ADMIN',
-    };
-
+    setLoadingUserId(id);
     try {
-      const res = await fetch(`${API_BASE_URL}members/blacklist/${id}`, {
-        method: 'GET',
+      const res = await fetch(`${API_BASE_URL}members/role/${id}`, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
       });
 
-      // 잘되나 체크용
-      if (res.ok) {
-        const result = await res.json();
-        console.log('서버 응답:', result);
-      }
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || '권한 변경 실패');
 
-      if (!res.ok) throw new Error('권한 변경 실패');
+      const newRole = user.role === 'ROLE_ADMIN' ? 'ROLE_USER' : 'ROLE_ADMIN';
 
       setMembers((prev) =>
-        prev.map((u) => (u.id === id ? { ...u, role: updated.role } : u))
+        prev.map((u) => (u.id === id ? { ...u, role: newRole } : u))
       );
+
+      alert(data.message || '관리자 권한이 변경되었습니다.');
     } catch (err) {
       console.error('권한 변경 실패:', err);
       alert('관리자 권한을 변경할 수 없습니다.');
+    } finally {
+      setLoadingUserId(null);
     }
   };
 
@@ -225,6 +218,7 @@ export default function UserManagement() {
                       <td className="py-2 px-4 text-center">
                         <button
                           onClick={() => toggleBlacklist(user.id)}
+                          disabled={loadingUserId === user.id}
                           className={`text-[13px] underline cursor-pointer ${
                             user.blacklisted
                               ? 'text-red-500'
@@ -237,6 +231,7 @@ export default function UserManagement() {
                       <td className="py-2 px-4 text-center">
                         <button
                           onClick={() => toggleAdminRole(user.id)}
+                          disabled={loadingUserId === user.id}
                           className={`text-[13px] underline cursor-pointer ${
                             user.role === 'ROLE_ADMIN'
                               ? 'text-red-500'
@@ -251,6 +246,7 @@ export default function UserManagement() {
                       <td className="py-2 px-4 text-center">
                         <button
                           onClick={() => deleteMember(user.id)}
+                          disabled={loadingUserId === user.id}
                           className="text-[13px] text-red-500 underline cursor-pointer"
                         >
                           삭제
@@ -264,6 +260,7 @@ export default function UserManagement() {
                       <td className="py-2 px-4 text-center">
                         <button
                           onClick={() => toggleAdminRole(user.id)}
+                          disabled={loadingUserId === user.id}
                           className="text-[13px] text-red-500 underline"
                         >
                           회수
@@ -272,6 +269,7 @@ export default function UserManagement() {
                       <td className="py-2 px-4 text-center">
                         <button
                           onClick={() => deleteMember(user.id)}
+                          disabled={loadingUserId === user.id}
                           className="text-[13px] text-red-500 underline"
                         >
                           삭제
