@@ -62,7 +62,7 @@ export default function Header({ isAdmin = false }: HeaderProps) {
 
       {/* 네비게이션 메뉴 */}
       <nav>
-        <ul className="flex items-center gap-[60px] text-lg text-[var(--black)]">
+        <ul className="flex items-center gap-[60px] text-[21px] text-[var(--black)]">
           {navItems.map(({ name, href }) => {
             const isActive = pathname.startsWith(href);
             return (
@@ -87,7 +87,7 @@ export default function Header({ isAdmin = false }: HeaderProps) {
       <div className="flex items-center gap-6 text-[var(--black)]">
         {/* 알림 아이콘 */}
         <Bell
-          size={25}
+          size={30}
           strokeWidth={1.7}
           className="cursor-pointer hover:text-[var(--primary-300)]"
           onClick={handleNoti}
@@ -97,14 +97,14 @@ export default function Header({ isAdmin = false }: HeaderProps) {
             {/* 검색 아이콘 or 닫기 아이콘 */}
             {isSearchOpen ? (
               <X
-                size={25}
+                size={30}
                 strokeWidth={1.7}
                 className="cursor-pointer hover:text-[var(--primary-300)]"
                 onClick={() => setIsSearchOpen(false)}
               />
             ) : (
               <Search
-                size={25}
+                size={30}
                 strokeWidth={1.7}
                 className="cursor-pointer hover:text-[var(--primary-300)]"
                 onClick={handleSearch}
@@ -118,14 +118,14 @@ export default function Header({ isAdmin = false }: HeaderProps) {
           <Image
             src={profileImage}
             alt="User Profile"
-            className="w-[25px] h-[25px] rounded-full object-cover cursor-pointer border border-[var(--gray-100)] hover:ring-2 hover:ring-[var(--primary-300)]"
+            className="size-[40px] rounded-full object-cover cursor-pointer border border-[var(--gray-100)] hover:ring-2 hover:ring-[var(--primary-300)]"
             onClick={() => setIsUserModalOpen((prev) => !prev)}
           />
         ) : (
           <Image
             src={defaultProfile}
             alt="Default Profile"
-            className="w-[25px] h-[25px] rounded-full object-cover cursor-pointer border border-[var(--gray-100)] hover:ring-2 hover:ring-[var(--primary-300)]"
+            className="size-[40px] rounded-full object-cover cursor-pointer border border-[var(--gray-100)] hover:ring-2 hover:ring-[var(--primary-300)]"
             onClick={() => setIsUserModalOpen((prev) => !prev)}
           />
         )}
