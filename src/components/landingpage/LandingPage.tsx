@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import LandingBanner from './LandingBanner';
-// import LandingService from './LandingService';
 import LandingScrollSection from './LandingScrollSection';
 
 export default function LandingPage() {

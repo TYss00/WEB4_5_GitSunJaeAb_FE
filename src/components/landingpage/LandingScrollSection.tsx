@@ -16,39 +16,74 @@ export default function LandingScrollSection() {
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top top',
-          end: '+=3000',
+          end: '+=5000',
           scrub: 1,
           pin: true,
         },
       });
 
-      tl.to('.step-1 .text', { opacity: 0, duration: 0.3 }, 0)
-        .fromTo(
-          '.step-2 .image',
-          { opacity: 0 },
-          { opacity: 1, duration: 0.3 },
-          0.5
+      // Step 1 → Step 2
+      tl.to('.step-1 .text', { opacity: 0 }, 0)
+        .to(
+          '.step-1 .image-inner',
+          {
+            scale: 0.6,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power2.inOut',
+          },
+          0.2
         )
-        .to('.step-1 .image', { opacity: 0, duration: 0.3 }, 1)
+        .fromTo(
+          '.step-2 .image-inner',
+          { height: '150px', opacity: 0 },
+          {
+            height: '100%',
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power2.out',
+          },
+          0.6
+        )
         .fromTo(
           '.step-2 .text',
           { opacity: 0 },
-          { opacity: 1, duration: 0.3 },
-          1.5
+          { opacity: 1, duration: 0.4 },
+          1.4
         )
-        .to('.step-2 .text', { opacity: 0, duration: 0.3 }, 2)
+
+        // Step 2 → Step 3
+        .to('.step-2 .text', { opacity: 0 }, 2.0)
+        .to(
+          '.step-2 .image-inner',
+          {
+            scale: 0.6,
+            opacity: 0,
+            duration: 0.8,
+            ease: 'power2.inOut',
+          },
+          2.2
+        )
         .fromTo(
-          '.step-3 .image',
-          { opacity: 0 },
-          { opacity: 1, duration: 0.3 },
-          2.5
+          '.step-3 .image-inner',
+          {
+            width: '150px',
+            opacity: 0,
+            transformOrigin: 'center center',
+          },
+          {
+            width: '100%',
+            opacity: 1,
+            duration: 0.8,
+            ease: 'power2.out',
+          },
+          2.6
         )
-        .to('.step-2 .image', { opacity: 0, duration: 0.3 }, 3)
         .fromTo(
           '.step-3 .text',
           { opacity: 0 },
-          { opacity: 1, duration: 0.3 },
-          3.5
+          { opacity: 1, duration: 0.4 },
+          3.4
         );
     }, containerRef);
 

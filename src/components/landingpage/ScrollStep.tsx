@@ -49,14 +49,16 @@ export default function ScrollStep({
         </div>
 
         {/* 이미지 영역 */}
-        <div className="w-1/2 relative h-screen image">
-          <Image
-            src={imageSrc}
-            alt={title}
-            fill
-            className="object-cover w-full"
-            priority
-          />
+        <div className="w-1/2 relative h-screen flex justify-center items-center image overflow-hidden">
+          <div className="image-inner w-full h-full relative origin-center overflow-hidden">
+            <Image
+              src={imageSrc}
+              alt={title}
+              fill
+              className="object-cover"
+              priority
+            />
+          </div>
         </div>
       </div>
     </div>
