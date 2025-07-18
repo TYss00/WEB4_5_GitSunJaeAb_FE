@@ -18,7 +18,7 @@ export default function CategoryCard({
   cancelEdit,
 }: CategoryCardProps) {
   return (
-    <div className="w-[100px] h-[126px] rounded-md overflow-hidden border border-[var(--gray-100)] bg-[var(--white)] relative">
+    <div className="w-[100px] h-[126px] rounded-md overflow-hidden border-1 border-black bg-[var(--white)] relative">
       {isEditing ? (
         <>
           <div className="w-full h-[100px] bg-gray-100 relative">
