@@ -106,3 +106,17 @@ export type SearchRecord = {
   term: string;
   date: string;
 };
+
+export type LandingCategories = {
+  id: number;
+  name: string;
+  description: string;
+  categoryImage: string | null;
+  createdAt: string;
+};
+export type LandingCategoryResponse = {
+  code: string;
+  message: string;
+  timestamp: string;
+  categories: LandingCategories[];
+};
