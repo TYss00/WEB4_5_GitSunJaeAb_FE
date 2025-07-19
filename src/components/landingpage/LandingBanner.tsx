@@ -3,8 +3,8 @@ import animationData from '../../../public/assets/landingBanner.json';
 
 export default function LandingBanner() {
   return (
-    <section className="w-full h-screen pt-[80px] max-h-[1000px]">
-      <div className="w-[950px] mx-auto">
+    <section className="w-full h-screen max-h-[1100px] flex items-center">
+      <div className="w-[950px] m-auto">
         <Lottie
           loop
           play
