@@ -39,25 +39,23 @@ export default function ShareMarkerEdit({
       // 지도 중심 이동
       mapRef.current?.panTo({ lat: coords.lat, lng: coords.lng });
 
-      // Liveblocks 마커 추가
-      const room = useStore.getState().liveblocks.room;
-      if (!room) return;
+      const state = useStore.getState();
+      const selectedLayerId = state.selectedLayerId;
 
-      const storage = await room.getStorage();
-
-      let markers = storage.root.get('markers');
-      if (!markers || !(markers as any).push) {
-        const { LiveList } = await import('@liveblocks/client');
-        markers = new LiveList([]);
-        storage.root.set('markers', markers);
+      if (selectedLayerId === null) {
+        console.warn('선택된 레이어가 없습니다.');
+        return;
       }
 
-      (markers as any).push({
-        id: Date.now(),
+      // NewMarkerInput 형식으로 마커 추가
+      state.addMarker({
+        name: placeName || '이름 없음',
+        description,
         lat: coords.lat,
         lng: coords.lng,
-        name: placeName || '',
-        description,
+        color: '#FF0000', // 기본값 또는 나중에 선택 UI로 확장 가능
+        imageUrl: '', // 추후 이미지 업로드 구현 시 연결
+        layer: selectedLayerId,
       });
     } catch (err) {
       console.error('지오코딩 실패:', err);

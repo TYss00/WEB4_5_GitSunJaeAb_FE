@@ -20,7 +20,10 @@ export default function GoogleMapWrapper() {
   });
 
   const addMarker = useStore((state) => state.addMarker);
-  const markers = useStore((state) => state.markers);
+  const selectedLayerId = useStore((state) => state.selectedLayerId);
+  const getFilteredMarkers = useStore((state) => state.filteredMarkers); // 함수로 가져오기
+
+  const filteredMarkers = getFilteredMarkers(); // 여기서 호출
 
   const mapRef = useRef<google.maps.Map | null>(null);
 
@@ -30,11 +33,17 @@ export default function GoogleMapWrapper() {
       const lat = e.latLng.lat();
       const lng = e.latLng.lng();
 
-      console.log('클릭 위치:', lat, lng);
-
-      addMarker({ lat, lng });
+      addMarker({
+        lat,
+        lng,
+        name: '',
+        description: '',
+        color: '#FF0000',
+        imageUrl: '',
+        layer: selectedLayerId ?? 'unassigned', // ❗ string 타입으로 변경했으므로 string 사용
+      });
     },
-    [addMarker]
+    [addMarker, selectedLayerId]
   );
 
   if (!isLoaded) return <div>지도 불러오는 중...</div>;
@@ -50,8 +59,11 @@ export default function GoogleMapWrapper() {
           mapRef.current = map;
         }}
       >
-        {Object.entries(markers).map(([id, marker]) => (
-          <MarkerF key={id} position={{ lat: marker.lat, lng: marker.lng }} />
+        {filteredMarkers.map((marker) => (
+          <MarkerF
+            key={marker.id}
+            position={{ lat: marker.lat, lng: marker.lng }}
+          />
         ))}
       </GoogleMap>
     </div>

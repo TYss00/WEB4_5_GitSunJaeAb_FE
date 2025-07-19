@@ -2,19 +2,18 @@ import { create } from 'zustand';
 import { createClient } from '@liveblocks/client';
 import { liveblocks } from '@liveblocks/zustand';
 import type { WithLiveblocks } from '@liveblocks/zustand';
-import { v4 as uuidv4 } from 'uuid';
+import type { Marker } from '@/types/type';
 
-export type Marker = {
-  lat: number;
-  lng: number;
-  userId: string;
-  name?: string;
-};
+export type NewMarkerInput = Omit<Marker, 'id' | 'markerSeq' | 'member'>;
 
 type State = {
   markers: Record<string, Marker>;
-  addMarker: (marker: Omit<Marker, 'userId'>) => void;
+  selectedLayerId: string | null;
+  addMarker: (marker: NewMarkerInput) => void;
+  addMarkerDirect: (marker: Marker) => void;
   removeMarker: (id: string) => void;
+  setSelectedLayerId: (layerId: string) => void;
+  filteredMarkers: () => Marker[];
 };
 
 const client = createClient({
@@ -25,21 +24,48 @@ const useStore = create<WithLiveblocks<State>>()(
   liveblocks(
     (set, get) => ({
       markers: {},
+      selectedLayerId: null,
 
-      addMarker: (markerData) => {
-        const id = uuidv4();
-        const marker: Marker = {
-          ...markerData,
-          userId: 'guest', // 로그인 연동 시 교체 예정
-        };
-
-        if (get().markers[id]) return;
-        set({ markers: { ...get().markers, [id]: marker } });
+      setSelectedLayerId: (layerId: string) => {
+        set({ selectedLayerId: layerId });
       },
 
-      removeMarker: (id) => {
-        const { [id]: _, ...rest } = get().markers;
+      addMarker: (markerData) => {
+        const id = `temp-${Date.now()}`;
+        const markerSeq = Object.keys(get().markers).length + 1;
+
+        const marker: Marker = {
+          id,
+          markerSeq,
+          ...markerData,
+        };
+
+        const current = get().markers;
+        if (current[id]) return;
+
+        set({ markers: { ...current, [id]: marker } });
+      },
+
+      addMarkerDirect: (marker) => {
+        const currentMarkers = get().markers;
+        if (currentMarkers[marker.id]) return;
+        set({ markers: { ...currentMarkers, [marker.id]: marker } });
+      },
+
+      removeMarker: (id: string) => {
+        const current = get().markers;
+        const { [id]: _, ...rest } = current;
         set({ markers: rest });
+      },
+
+      filteredMarkers: () => {
+        const { markers, selectedLayerId } = get();
+        if (!selectedLayerId || selectedLayerId === 'all') {
+          return Object.values(markers);
+        }
+        return Object.values(markers).filter(
+          (m) => m.layer === selectedLayerId
+        );
       },
     }),
     {
