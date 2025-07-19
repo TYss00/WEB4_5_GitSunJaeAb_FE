@@ -15,7 +15,12 @@ export default function LandingHeader() {
       </Link>
 
       {/* 로그인 */}
-      <Link href="/login" className="text-[18px]">
+      <Link
+        href="/login"
+        className="text-[18px] font-medium rounded-[20px] px-3.5 py-[5px] 
+        border border-[var(--primary-300)] text-[var(--primary-300)]
+        hover:bg-[var(--primary-300)] hover:text-[var(--white)] transition-all"
+      >
         LOGIN
       </Link>
     </header>

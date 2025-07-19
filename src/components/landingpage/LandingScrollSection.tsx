@@ -87,7 +87,9 @@ export default function LandingScrollSection() {
         );
     }, containerRef);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+    };
   }, []);
 
   return (
@@ -110,9 +112,9 @@ export default function LandingScrollSection() {
       />
       <ScrollStep
         className="step-3"
-        imageSrc="/markermap.jpg"
-        title="여기 어디인지 맞혀볼래요?"
-        description={`여러분의 눈썰미와 추리력을 시험합니다.\n사진 한 장을 단서 삼아 장소를 추리하고,\n정답을 보내 보세요!`}
+        imageSrc="/assets/landingQuestImg.jpg"
+        title="사진 속 장소를 추리해보세요"
+        description={`풍경 속 단서를 찾아보세요.\n여러분의 눈썰미와 감각으로 장소를 추리하는 퀘스트\n지금 바로 퀘스트에 도전해보세요!`}
       />
     </section>
   );

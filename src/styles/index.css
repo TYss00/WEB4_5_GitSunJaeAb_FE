@@ -72,23 +72,3 @@ body {
   -ms-overflow-style: none; /* IE & Edge */
   scrollbar-width: none; /* Firefox */
 }
-
-/* 랜딩페이지 애니메이션 */
-/* .cover-box {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  pointer-events: none;
-}
-.cover-left,
-.cover-right {
-  height: 100%;
-  background-color: black;
-  transition: width 0.4s ease;
-}
-.cover-left {
-  left: 0;
-}
-.cover-right {
-  right: 0;
-} */

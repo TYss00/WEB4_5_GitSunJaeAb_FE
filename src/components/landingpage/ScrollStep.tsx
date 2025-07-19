@@ -1,6 +1,8 @@
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import Button from '../ui/Button';
+import { useRouter } from 'next/navigation';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 type Props = {
   title: string;
@@ -17,6 +19,7 @@ export default function ScrollStep({
   reverse,
   className,
 }: Props) {
+  const router = useRouter();
   return (
     <div
       className={twMerge(
@@ -26,22 +29,26 @@ export default function ScrollStep({
     >
       <div
         className={twMerge(
-          'flex w-full',
+          'flex w-full max-w-screen',
           reverse ? 'flex-row-reverse' : 'flex-row'
         )}
       >
         {/* 텍스트 영역 */}
         <div className="w-1/2 flex flex-col justify-center text">
-          <div className="m-auto">
-            <h2 className="text-[32px] font-bold whitespace-pre-line mb-[30px]">
+          <div className="space-y-6 mx-auto">
+            <h2 className="text-3xl font-bold whitespace-pre-line leading-snug text-[var(--primary-300)]">
               {title}
             </h2>
-            <p className="text-[20px] whitespace-pre-line mb-[30px]">
+            <p className="text-lg whitespace-pre-line leading-relaxed text-[var(--gray-300)]">
               {description}
             </p>
             <Button
               buttonStyle="smGreen"
-              className="w-[170px] h-[50px] rounded-[13px] text-[18px] font-medium"
+              className="w-[160px] h-[50px] rounded-[14px] text-lg font-medium"
+              onClick={() => {
+                ScrollTrigger.getAll().forEach((t) => t.kill());
+                router.push('/login');
+              }}
             >
               Get Start
             </Button>

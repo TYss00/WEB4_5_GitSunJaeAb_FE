@@ -23,7 +23,7 @@ export default function LandingPage() {
         </div>
 
         {/* 4개 컬러 사각형 + 텍스트 */}
-        <div className="flex w-full h-[690px]">
+        <div className="flex w-full h-[600px]">
           <div className="relative flex-1 flex items-end justify-center py-6">
             <Image
               src="/cafe.png"
