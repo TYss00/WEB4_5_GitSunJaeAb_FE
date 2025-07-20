@@ -95,7 +95,7 @@ export default function LandingScrollSection() {
   return (
     <section
       ref={containerRef}
-      className="w-screen h-screen overflow-hidden relative"
+      className="w-full h-screen overflow-hidden relative"
     >
       <ScrollStep
         className="step-1"
