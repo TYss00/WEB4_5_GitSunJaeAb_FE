@@ -45,11 +45,17 @@ export const getUser = async (): Promise<User> => {
 };
 
 // 소셜 로그인
-export const socialLogin = async (idToken: string) => {
+export const socialLogin = async ({
+  provider,
+  token,
+}: {
+  provider: string;
+  token: string;
+}) => {
   const { data } = await axiosInstance.post('/auth/socialLogin', {
-    provider: 'google',
-    token: idToken,
+    provider,
+    token,
   });
-  console.log('서버 응답:', data);
+  console.log('소셜로그인 data : ', data);
   return data;
 };

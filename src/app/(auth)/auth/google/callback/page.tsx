@@ -47,7 +47,7 @@ export default function GoogleCallbackPage() {
     console.log('ID Token:', idToken);
 
     if (idToken) {
-      mutate(idToken);
+      mutate({ provider: 'google', token: idToken });
     } else {
       alert('Google 로그인 토큰 없음');
       router.push('/login');
