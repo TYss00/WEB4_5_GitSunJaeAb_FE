@@ -1,9 +1,11 @@
+// ✅ ShareLayerEdit.tsx (최종 통합 버전)
 'use client';
 
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, Layers, Plus, Trash2 } from 'lucide-react';
 import ShareMarkerEdit from './ShareMarkerEdit';
 import { LayerEditProps } from '@/types/type';
+import useStore from '@/store/useStore';
 
 export default function ShareLayerEdit({
   title = '공유 레이어',
@@ -15,10 +17,17 @@ export default function ShareLayerEdit({
 }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [markerUIs, setMarkerUIs] = useState([{ id: 1 }]);
-
   const addMarker = () => {
-    setMarkerUIs((prev) => [...prev, { id: Date.now() }]); // UI 렌더링만 추가
+    setMarkerUIs((prev) => [...prev, { id: Date.now() }]);
   };
+
+  const removeMarker = useStore((state) => state.removeMarker);
+  const markers = useStore((state) => state.markers);
+  const layerId = title.split(' ')[1];
+
+  const layerMarkers = Object.values(markers).filter(
+    (m) => m.layer === layerId
+  );
 
   return (
     <div className="w-full">
@@ -57,16 +66,27 @@ export default function ShareLayerEdit({
         }`}
       >
         <div className="p-[10px] max-h-[633px] overflow-y-auto rounded-b-[5px] flex flex-col gap-[15px]">
+          {layerMarkers.map((marker) => (
+            <ShareMarkerEdit
+              key={marker.id}
+              isTextArea={isTextArea}
+              mapRef={mapRef}
+              marker={marker}
+              onDelete={() => removeMarker(marker.id)}
+            />
+          ))}
+
           {markerUIs.map((marker) => (
             <ShareMarkerEdit
               key={marker.id}
               isTextArea={isTextArea}
+              mapRef={mapRef}
               onDelete={() =>
                 setMarkerUIs((prev) => prev.filter((m) => m.id !== marker.id))
               }
-              mapRef={mapRef}
             />
           ))}
+
           <div
             onClick={addMarker}
             className="w-full min-h-[44px] flex justify-center items-center rounded-[5px] bg-[var(--primary-100)] cursor-pointer"

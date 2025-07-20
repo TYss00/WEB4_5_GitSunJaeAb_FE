@@ -1,31 +1,39 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MapPin, Trash2 } from 'lucide-react';
 import Button from '../Button';
 import DaumPostcodeEmbed from 'react-daum-postcode';
-import { MarkerEditProps } from '@/types/type';
+import { Marker } from '@/types/type';
 import { geocodeAddress } from '@/libs/geocode';
-import useStore from '@/store/useStore';
 
 export interface AddressData {
   address: string;
 }
 
-interface ShareMarkerEditProps extends MarkerEditProps {
+interface ShareMarkerEditProps {
+  marker?: Marker;
+  isTextArea?: boolean;
+  onDelete: () => void;
   mapRef: React.RefObject<google.maps.Map | null>;
 }
 
 export default function ShareMarkerEdit({
+  marker,
   isTextArea,
   onDelete,
   mapRef,
 }: ShareMarkerEditProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [address, setAddress] = useState('주소를 입력해주세요.');
-  const [placeName, setPlaceName] = useState('');
-  const [description, setDescription] = useState('');
+  const [placeName, setPlaceName] = useState(marker?.name || '이름 없음');
+  const [description, setDescription] = useState(marker?.description || '');
   const [isEditingName, setIsEditingName] = useState(false);
+
+  useEffect(() => {
+    setPlaceName(marker?.name || '이름 없음');
+    setDescription(marker?.description || '');
+  }, [marker]);
 
   const handleComplete = async (data: AddressData) => {
     const fullAddress = data.address;
@@ -39,24 +47,7 @@ export default function ShareMarkerEdit({
       // 지도 중심 이동
       mapRef.current?.panTo({ lat: coords.lat, lng: coords.lng });
 
-      const state = useStore.getState();
-      const selectedLayerId = state.selectedLayerId;
-
-      if (selectedLayerId === null) {
-        console.warn('선택된 레이어가 없습니다.');
-        return;
-      }
-
-      // NewMarkerInput 형식으로 마커 추가
-      state.addMarker({
-        name: placeName || '이름 없음',
-        description,
-        lat: coords.lat,
-        lng: coords.lng,
-        color: '#FF0000', // 기본값 또는 나중에 선택 UI로 확장 가능
-        imageUrl: '', // 추후 이미지 업로드 구현 시 연결
-        layer: selectedLayerId,
-      });
+      // TODO: updateMarker(marker.id, ...) 구현 시 여기에 적용
     } catch (err) {
       console.error('지오코딩 실패:', err);
     }
