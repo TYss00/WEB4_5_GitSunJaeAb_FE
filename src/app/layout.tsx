@@ -1,3 +1,4 @@
+import TanstackProvider from '@/providers/TanstackProvider';
 import '../styles/index.css';
 
 export const metadata = {
@@ -12,7 +13,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body>
+        <TanstackProvider>{children}</TanstackProvider>
+      </body>
     </html>
   );
 }

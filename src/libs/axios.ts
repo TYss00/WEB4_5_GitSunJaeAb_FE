@@ -5,7 +5,7 @@ import axios from 'axios';
 // Next.js API Route를 거쳐 처리
 // 쿠키 요청
 const axiosInstance = axios.create({
-  baseURL: '/api',
+  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
   withCredentials: true,
 });
 
