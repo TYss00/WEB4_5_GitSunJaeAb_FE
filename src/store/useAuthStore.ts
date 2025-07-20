@@ -41,10 +41,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const mod = await import('@/libs/auth');
       const user = await mod.getUser();
       set({ user });
+      return user;
     } catch (error) {
       // accessToken이 만료되어 있으면 자동 로그아웃 또는 refresh 로직
       console.warn('initUser 중 getUser 실패:', error);
       get().logout();
+      return null;
     }
   },
 

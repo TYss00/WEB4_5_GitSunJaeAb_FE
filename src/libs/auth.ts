@@ -37,7 +37,7 @@ export const logoutUser = async () => {
 
 export const getUser = async (): Promise<User> => {
   const res = await axiosInstance.get('/members');
-  const user = res.data.member;
+  const user = res.data.memberDetailDto;
 
   // Zustand 상태에 반영
   useAuthStore.getState().setUser(user);

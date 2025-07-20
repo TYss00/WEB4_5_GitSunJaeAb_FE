@@ -25,6 +25,6 @@ export type AuthState = {
   setAccessToken: (token: string) => void;
   setUser: (user: User) => void;
   logout: () => void;
-  initUser: () => Promise<void>;
+  initUser: () => Promise<User | null | undefined>;
   isLoggedIn: () => boolean;
 };

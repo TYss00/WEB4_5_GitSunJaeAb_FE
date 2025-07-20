@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuthStore } from '@/store/useAuthStore';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 
 export default function InitAuthProvider({
@@ -10,14 +11,18 @@ export default function InitAuthProvider({
 }) {
   const { accessToken, initUser } = useAuthStore();
   const [initialized, setInitialized] = useState(false);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const initialize = async () => {
-      await initUser();
+      const user = await initUser();
+      if (user) {
+        queryClient.setQueryData(['user'], user);
+      }
       setInitialized(true);
     };
     initialize();
-  }, [initUser]);
+  }, [initUser, queryClient]);
 
   useEffect(() => {
     if (initialized) {
