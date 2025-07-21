@@ -1,6 +1,7 @@
 'use client';
 
-import useStore from '@/store/useStore';
+import { reverseGeocode } from '@/libs/geocode';
+import useShareStore from '@/store/useShareStore';
 import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
 import { useCallback, useRef } from 'react';
 
@@ -16,31 +17,66 @@ const center = {
 
 export default function GoogleMapWrapper() {
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!, // .env 설정 필수
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!,
   });
 
-  const addMarker = useStore((state) => state.addMarker);
-  const selectedLayerId = useStore((state) => state.selectedLayerId);
-  const getFilteredMarkers = useStore((state) => state.filteredMarkers); // 함수로 가져오기
+  const addMarker = useShareStore((state) => state.addMarker);
+  const selectedLayerId = useShareStore((state) => state.selectedLayerId);
+  const getFilteredMarkers = useShareStore((state) => state.filteredMarkers); // 함수로 가져오기
 
   const filteredMarkers = getFilteredMarkers(); // 여기서 호출
 
   const mapRef = useRef<google.maps.Map | null>(null);
 
+  // const handleClick = useCallback(
+  //   (e: google.maps.MapMouseEvent) => {
+  //     if (!e.latLng) return;
+  //     const lat = e.latLng.lat();
+  //     const lng = e.latLng.lng();
+
+  //     addMarker({
+  //       lat,
+  //       lng,
+  //       name: '',
+  //       description: '',
+  //       color: '#FF0000',
+  //       imageUrl: '',
+  //       layer: selectedLayerId ?? 'unassigned', // ❗ string 타입으로 변경했으므로 string 사용
+  //     });
+  //   },
+  //   [addMarker, selectedLayerId]
+  // );
   const handleClick = useCallback(
-    (e: google.maps.MapMouseEvent) => {
+    async (e: google.maps.MapMouseEvent) => {
       if (!e.latLng) return;
       const lat = e.latLng.lat();
       const lng = e.latLng.lng();
+
+      if (
+        !selectedLayerId ||
+        selectedLayerId === 'all' ||
+        isNaN(Number(selectedLayerId))
+      ) {
+        alert('마커를 추가하려면 먼저 레이어를 선택하세요.');
+        return;
+      }
+
+      let address = '주소를 불러올 수 없습니다';
+      try {
+        address = await reverseGeocode(lat, lng);
+      } catch (err) {
+        console.error('역지오코딩 실패:', err);
+      }
 
       addMarker({
         lat,
         lng,
         name: '',
         description: '',
+        address,
         color: '#FF0000',
         imageUrl: '',
-        layer: selectedLayerId ?? 'unassigned', // ❗ string 타입으로 변경했으므로 string 사용
+        layer: Number(selectedLayerId),
       });
     },
     [addMarker, selectedLayerId]

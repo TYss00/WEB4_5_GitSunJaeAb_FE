@@ -5,25 +5,36 @@ import { useState } from 'react';
 import { ChevronDown, ChevronUp, Layers, Plus, Trash2 } from 'lucide-react';
 import ShareMarkerEdit from './ShareMarkerEdit';
 import { LayerEditProps } from '@/types/type';
-import useStore from '@/store/useStore';
+import useShareStore, { Layer } from '@/store/useShareStore';
 
 export default function ShareLayerEdit({
-  title = '공유 레이어',
+  layer,
   isTextArea = true,
   defaultOpen = true,
   mapRef,
 }: LayerEditProps & {
   mapRef: React.RefObject<google.maps.Map | null>;
+  layer: Layer;
 }) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [markerUIs, setMarkerUIs] = useState([{ id: 1 }]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState(layer.name);
+
   const addMarker = () => {
     setMarkerUIs((prev) => [...prev, { id: Date.now() }]);
   };
 
-  const removeMarker = useStore((state) => state.removeMarker);
-  const markers = useStore((state) => state.markers);
-  const layerId = title.split(' ')[1];
+  const removeMarker = useShareStore((state) => state.removeMarker);
+  const markers = useShareStore((state) => state.markers);
+  const layerId = layer.id;
+  const removeLayer = useShareStore((state) => state.removeLayer);
+  const renameLayer = useShareStore((state) => state.renameLayer);
+
+  const handleRename = () => {
+    renameLayer(layer.id, name.trim() || '레이어');
+    setIsEditing(false);
+  };
 
   const layerMarkers = Object.values(markers).filter(
     (m) => m.layer === layerId
@@ -49,11 +60,40 @@ export default function ShareLayerEdit({
               isOpen ? 'text-[var(--primary-300)]' : 'text-[var(--black)]'
             }`}
           >
-            {title}
+            {isEditing ? (
+              <input
+                autoFocus
+                className="text-[18px] bg-transparent border-b border-[var(--primary-300)] focus:outline-none"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleRename();
+                }}
+                onBlur={handleRename}
+              />
+            ) : (
+              <span
+                className={`text-[18px] ${
+                  isOpen ? 'text-[var(--primary-300)]' : 'text-[var(--black)]'
+                } cursor-pointer`}
+                onClick={() => setIsEditing(true)}
+              >
+                {layer.name}
+              </span>
+            )}
           </span>
         </div>
         <div className="flex gap-[10px] items-center">
-          <Trash2 size={18} color="red" />
+          <Trash2
+            size={18}
+            color="red"
+            onClick={() => {
+              if (confirm('이 레이어를 삭제하시겠습니까?')) {
+                removeLayer(layerId);
+              }
+            }}
+            className="cursor-pointer"
+          />
           {isOpen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
         </div>
       </div>

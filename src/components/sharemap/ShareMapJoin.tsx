@@ -19,29 +19,49 @@ import useSidebar from '@/utils/useSidebar';
 import Input from '../ui/Input';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import useStore from '@/store/useStore';
+
 import GoogleMapWrapper from './GoogleMapWrapper';
 import ShareLayerEdit from '../ui/layer/ShareLayerEdit';
+import useShareStore from '@/store/useShareStore';
+import useHashStore from '@/store/useHashStore';
 
 export default function ShareMapJoin() {
   const router = useRouter();
   const [isReportOpen, setIsReportOpen] = useState(false);
   const { isOpen, toggle, close } = useSidebar();
+  const [input, setInput] = useState('');
 
-  const markers = useStore((state) => state.markers);
-  const removeMarker = useStore((state) => state.removeMarker);
-  const setSelectedLayerId = useStore((state) => state.setSelectedLayerId);
+  const addLayer = useShareStore((state) => state.addLayer);
+  const selectedLayerId = useShareStore((state) => state.selectedLayerId);
+  const setSelectedLayerId = useShareStore((state) => state.setSelectedLayerId);
+  const layers = useShareStore((state) => state.layers);
 
+  const markers = useShareStore((state) => state.markers);
+  const removeMarker = useShareStore((state) => state.removeMarker);
   const handleResetMarkers = () => {
     const confirmed = confirm('모든 마커를 초기화하시겠습니까?');
     if (!confirmed) return;
 
     const markerIds = Object.keys(markers);
-    markerIds.forEach((id) => removeMarker(id));
+    markerIds.forEach((id) => removeMarker(Number(id)));
   };
 
-  const enterRoom = useStore((state) => state.liveblocks.enterRoom);
-  const leaveRoom = useStore((state) => state.liveblocks.leaveRoom);
+  const hashtags = useHashStore((state) => state.hashtags);
+  const addHashtag = useHashStore((state) => state.addHashtag);
+  const removeHashtag = useHashStore((state) => state.removeHashtag);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (!input.trim()) return;
+      if (hashtags.includes(input)) return; // 중복 방지
+      addHashtag(input.trim());
+      setInput('');
+    }
+  };
+
+  const enterRoom = useShareStore((state) => state.liveblocks.enterRoom);
+  const leaveRoom = useShareStore((state) => state.liveblocks.leaveRoom);
   const mapRef = useRef<google.maps.Map | null>(null);
 
   useEffect(() => {
@@ -57,7 +77,7 @@ export default function ShareMapJoin() {
       <GoogleMapWrapper />
 
       {/* 지도 위 UI 요소들 */}
-      <div className="absolute top-4 left-[100px] flex items-center gap-3 px-4 py-2 z-20">
+      <div className="absolute top-2 left-[140px] flex items-center gap-3 px-4 py-2 z-20">
         <Button
           buttonStyle="white"
           onClick={() => router.back()}
@@ -67,28 +87,22 @@ export default function ShareMapJoin() {
           뒤로가기
         </Button>
 
-        <Button
-          buttonStyle="white"
-          className="text-sm"
-          onClick={handleResetMarkers}
-        >
-          마커 초기화
-        </Button>
-
         {/* ✅ 레이어 선택 */}
         <div className="relative w-[140px]">
           <select
             className="w-full h-[34px] text-sm bg-white border-none rounded pl-3 appearance-none"
-            defaultValue=""
-            onChange={(e) => setSelectedLayerId(e.target.value)}
+            value={selectedLayerId ?? ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              setSelectedLayerId(value === 'all' ? 'all' : Number(value));
+            }}
           >
-            <option value="" disabled hidden>
-              레이어 이름
-            </option>
             <option value="all">전체 레이어</option>
-            <option value="1">레이어 1</option>
-            <option value="2">레이어 2</option>
-            <option value="3">레이어 3</option>
+            {layers.map((layer) => (
+              <option key={layer.id} value={layer.id}>
+                {layer.name}
+              </option>
+            ))}
           </select>
           <ChevronDown
             size={18}
@@ -160,9 +174,16 @@ export default function ShareMapJoin() {
             <p className="text-[16px] text-black mb-2">
               나 송지은인데 디자인 그만하고 대학로 갈거니까 맛집 알아와라
             </p>
-            <div className="flex gap-2 text-sm text-[#005C54] mb-2">
-              <span>#태그1</span>
-              <span>#태그2</span>
+            <div className="flex gap-[5px] text-sm text-[#005C54] mb-2">
+              {hashtags.map((tag) => (
+                <span
+                  key={tag}
+                  className="relative pr-3 after:content-['×'] after:absolute after:right-0 after:top-0 after:cursor-pointer after:text-[12px] after:text-[#888] hover:after:text-red-500"
+                  onClick={() => removeHashtag(tag)}
+                >
+                  #{tag}
+                </span>
+              ))}
             </div>
             <div className="flex gap-[5px] items-center mb-5">
               <div className="rounded-full bg-amber-950 size-[25px]"></div>
@@ -179,12 +200,23 @@ export default function ShareMapJoin() {
             <div className="flex gap-2 mb-3">
               <Input
                 type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
                 placeholder="해시태그 추가"
                 className="h-[44px] border-[#E4E4E4] rounded-md"
               />
               <Button
                 buttonStyle="smGreen"
+                className="text-[10px]"
+                onClick={handleResetMarkers}
+              >
+                마커 전체 삭제
+              </Button>
+              <Button
+                buttonStyle="smGreen"
                 className="w-[76px] h-[44px] text-3xl font-medium"
+                onClick={addLayer}
               >
                 <Plus size={30} />
               </Button>
@@ -211,9 +243,14 @@ export default function ShareMapJoin() {
 
             {/* 레이어 편집 컴포넌트 */}
             <div className="space-y-3">
-              <ShareLayerEdit title="레이어 1" mapRef={mapRef} />
-              <ShareLayerEdit title="레이어 2" mapRef={mapRef} />
-              <ShareLayerEdit title="레이어 3" mapRef={mapRef} />
+              {layers.map((layer) => (
+                <ShareLayerEdit
+                  key={layer.id}
+                  title={layer.name}
+                  layer={layer}
+                  mapRef={mapRef}
+                />
+              ))}
             </div>
 
             {/* 하단 버튼 */}

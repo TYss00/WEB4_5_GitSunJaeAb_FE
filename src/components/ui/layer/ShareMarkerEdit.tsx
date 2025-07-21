@@ -4,15 +4,15 @@ import { useEffect, useState } from 'react';
 import { MapPin, Trash2 } from 'lucide-react';
 import Button from '../Button';
 import DaumPostcodeEmbed from 'react-daum-postcode';
-import { Marker } from '@/types/type';
 import { geocodeAddress } from '@/libs/geocode';
+import useShareStore, { MarkerWithAddress } from '@/store/useShareStore';
 
 export interface AddressData {
   address: string;
 }
 
 interface ShareMarkerEditProps {
-  marker?: Marker;
+  marker?: MarkerWithAddress;
   isTextArea?: boolean;
   onDelete: () => void;
   mapRef: React.RefObject<google.maps.Map | null>;
@@ -25,7 +25,9 @@ export default function ShareMarkerEdit({
   mapRef,
 }: ShareMarkerEditProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [address, setAddress] = useState('주소를 입력해주세요.');
+  const [address, setAddress] = useState(
+    marker?.address || '주소를 입력해주세요.'
+  );
   const [placeName, setPlaceName] = useState(marker?.name || '이름 없음');
   const [description, setDescription] = useState(marker?.description || '');
   const [isEditingName, setIsEditingName] = useState(false);
@@ -34,6 +36,9 @@ export default function ShareMarkerEdit({
     setPlaceName(marker?.name || '이름 없음');
     setDescription(marker?.description || '');
   }, [marker]);
+
+  const addMarker = useShareStore((state) => state.addMarker);
+  const selectedLayerId = useShareStore((state) => state.selectedLayerId);
 
   const handleComplete = async (data: AddressData) => {
     const fullAddress = data.address;
@@ -47,15 +52,39 @@ export default function ShareMarkerEdit({
       // 지도 중심 이동
       mapRef.current?.panTo({ lat: coords.lat, lng: coords.lng });
 
-      // TODO: updateMarker(marker.id, ...) 구현 시 여기에 적용
+      addMarker({
+        lat: coords.lat,
+        lng: coords.lng,
+        address: fullAddress,
+        name: '',
+        description: '',
+        color: '#FF0000',
+        imageUrl: '',
+        layer: typeof selectedLayerId === 'number' ? selectedLayerId : 0,
+      });
     } catch (err) {
       console.error('지오코딩 실패:', err);
     }
   };
+  const updateMarker = useShareStore((state) => state.updateMarker);
 
+  // const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (e.key === 'Enter') {
+  //     setIsEditingName(false);
+  //   }
+  // };
   const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       setIsEditingName(false);
+
+      if (marker?.id) {
+        updateMarker(marker.id, { name: placeName });
+      }
+    }
+  };
+  const handleDescriptionBlur = () => {
+    if (marker?.id) {
+      updateMarker(marker.id, { description });
     }
   };
 
@@ -121,6 +150,7 @@ export default function ShareMarkerEdit({
           placeholder="장소에 대한 설명을 입력해주세요."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          onBlur={handleDescriptionBlur}
         ></textarea>
       )}
     </div>

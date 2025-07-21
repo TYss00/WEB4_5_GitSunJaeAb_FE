@@ -108,7 +108,7 @@ export type SearchRecord = {
 };
 
 export type Marker = {
-  id: string;
+  id: number;
   name: string;
   description: string;
   lat: number;
@@ -116,7 +116,7 @@ export type Marker = {
   color: string;
   imageUrl: string;
   markerSeq: number;
-  layer: string;
+  layer: number;
   member?: {
     id: number;
     name: string;
