@@ -5,12 +5,13 @@ import Button from '../ui/Button'
 import Input from '../ui/Input'
 import Toggle from '../ui/Toggle'
 import LayerEdit from '../ui/layer/LayerEdit'
-import Map from './Map'
+
 import useLayerAdd from '@/hooks/useLayerAdd'
 import { useEffect, useState } from 'react'
 import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
 import { RoadmapWriteProps } from '@/types/type'
 import useHashtags from '@/hooks/useHashtags'
+import RoadMapGoogleWrite from './RoadMapGoogleWrite'
 
 export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
   const {
@@ -48,6 +49,7 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
   const [description, setDescription] = useState('')
   const [categoryId, setCategoryId] = useState<number | null>(null)
   const isPublic = true
+  const thumbnail = '썸네일 입력란도 추가해야하나'
 
   const handleSubmit = async () => {
     const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL
@@ -55,57 +57,23 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
       // 1. 로드맵 생성
       const roadmapRes = await fetch(`${baseURL}/roadmaps/personal`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          credentials: 'include',
+        },
         body: JSON.stringify({
+          categoryId,
           title,
           description,
-          categoryId,
-          // hashtags,
+          thumbnail,
+          hashtags,
           isPublic,
         }),
       })
       const roadmap = await roadmapRes.json()
+      console.log(roadmap)
+      //로드맵 id가 응답 바디에 반환되면 레이어, 마커 생성 post 요청 추가 예정입니다.
 
-      // 2. 레이어 생성
-      const layerIds: Record<string, number> = {}
-      for (const layerTitle of layers) {
-        const layerRes = await fetch(`${baseURL}/layers`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: layerTitle,
-            roadmapId: roadmap.id,
-            layerSeq: 1,
-          }),
-        })
-        const layer = await layerRes.json()
-        layerIds[layerTitle] = layer.id
-      }
-
-      // 3. 마커 생성
-      for (const layerTitle of layers) {
-        const markers = layerMarkers[layerTitle] || []
-        for (const marker of markers) {
-          await fetch(
-            `${baseURL}/markers
-`,
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                layer: layerIds[layerTitle],
-                lat: marker.lat,
-                lng: marker.lng,
-                name: 'test',
-                description: 'test',
-                color: 'test',
-                imgUrl: 'test',
-                markerSeq: 1,
-              }),
-            }
-          )
-        }
-      }
       alert('로드맵이 성공적으로 생성되었습니다.')
     } catch (error) {
       console.error('로드맵 생성 실패', error)
@@ -117,7 +85,7 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
     <section className="flex w-full h-screen overflow-hidden">
       {/* 왼쪽 지도 */}
       <div className="w-4/6 bg-gray-200 relative">
-        <Map
+        <RoadMapGoogleWrite
           selectedLayer={selectedLayer}
           layerMarkers={layerMarkers}
           onMapClick={addMarkerByLatLng}
@@ -226,10 +194,10 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
                 key={index}
                 className="px-2 py-1 bg-[#e0f0ef] rounded-full flex items-center"
               >
-                #{tag}
+                #{tag.name}
                 <button
                   className="ml-1 text-black"
-                  onClick={() => deleteHashtag(tag)}
+                  onClick={() => deleteHashtag(tag.name)}
                 >
                   ×
                 </button>

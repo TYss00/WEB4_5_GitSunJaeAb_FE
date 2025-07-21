@@ -20,10 +20,12 @@ import MarkerDetail from '../ui/layer/MarkerDetail'
 import useSidebar from '@/utils/useSidebar'
 import { useRouter } from 'next/navigation'
 import { HashtagProps, RoadmapDetailProps } from '@/types/type'
+import RoadMapGoogleDetail from './RoadMapGoogleDetail'
 
 export default function Loadmapdetail({
   roadMapInfo,
   layerInfo,
+  markersByLayer,
   commentsInfo,
 }: RoadmapDetailProps) {
   const router = useRouter()
@@ -33,8 +35,8 @@ export default function Loadmapdetail({
   return (
     <>
       <section className="relative w-full h-screen overflow-hidden">
-        {/* 왼쪽 지도 */}
         <div className="absolute inset-0 bg-gray-200 z-0">
+          <RoadMapGoogleDetail />
           <div className="absolute top-4 left-8 flex items-center gap-3 px-4 py-2 z-10">
             <Button
               buttonStyle="white"
@@ -145,10 +147,22 @@ export default function Loadmapdetail({
                 <h3 className="text-xl text-black">레이어 및 마커</h3>
                 <Download size={18} className="cursor-pointer text-gray-600" />
               </div>
-              {layerInfo.map((layer) => {
+              {markersByLayer.map(({ layerId, markers }) => {
+                const layer = layerInfo.find((l) => l.id === layerId)
+
                 return (
-                  <LayerDetail title={layer.name} key={layer.id}>
-                    <MarkerDetail isTextArea></MarkerDetail>
+                  <LayerDetail
+                    title={layer?.name ?? `Layer ${layerId}`}
+                    key={layerId}
+                  >
+                    {markers.map((marker) => (
+                      <MarkerDetail
+                        key={marker.id}
+                        title={marker.name}
+                        description={marker.description}
+                        isTextArea
+                      />
+                    ))}
                   </LayerDetail>
                 )
               })}

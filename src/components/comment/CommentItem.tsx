@@ -29,7 +29,9 @@ export default function CommentItem({
                 onClick={() => setIsReportOpen(true)}
               />
             </div>
-            <p className="text-xs text-[var(--gray-200)]">2025.07.06</p>
+            <p className="text-xs text-[var(--gray-200)]">
+              {commentInfo.createdAt.slice(0, 10)}
+            </p>
           </div>
         </div>
         <p className="text-sm px-1.5">{commentInfo.content}</p>

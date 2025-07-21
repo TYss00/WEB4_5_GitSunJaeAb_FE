@@ -69,6 +69,8 @@ export type MarkerEditProps = {
 }
 
 export type MarkerDetailProps = {
+  title: string
+  description: string
   isTextArea?: boolean
 }
 
@@ -141,6 +143,7 @@ export type CommentInfo = {
   roadmapId: number
   member: Member
   questId: number | null
+  createdAt: string
 }
 
 export type CategoryInfo = {
@@ -151,9 +154,22 @@ export type CategoryInfo = {
   createdAt: string
 }
 
+export type MarkerInfo = {
+  id: number
+  name: string
+  description: string
+  lat: number
+  lng: number
+  color: string
+  imageUrl: string
+  markerSeq: number
+  layer: number
+  member: Member
+}
 export type RoadmapDetailProps = {
   roadMapInfo: RoadmapInfo
   layerInfo: LayerInfo[]
+  markersByLayer: MarkerInfo[]
   commentsInfo: CommentInfo[]
 }
 

@@ -25,14 +25,27 @@ export default async function page({ params }: { params: { id: string } }) {
     res3.json(),
   ])
 
-  console.log('roadMapInfo:', roadmapData.roadmap)
-  console.log('layerInfo:', layersData.layers)
-  console.log('commentsInfo:', commentsData.comments)
+  const layerIds = layersData.layers.map((layer) => layer.id)
+  const markerRes = await Promise.all(
+    layerIds.map((id) =>
+      fetch(`${baseURL}/markers?layerId=${id}`, {
+        next: { revalidate: 60 },
+      })
+    )
+  )
+
+  const markerData = await Promise.all(markerRes.map((res) => res.json()))
+  const markersByLayer = layerIds.map((id, index) => ({
+    layerId: id,
+    markers: markerData[index].markers,
+  }))
+
   return (
     <>
       <LoadMapDetail
         roadMapInfo={roadmapData.roadmap}
         layerInfo={layersData.layers}
+        markersByLayer={markersByLayer}
         commentsInfo={commentsData.comments}
       />
     </>

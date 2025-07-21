@@ -5,7 +5,11 @@ import { MarkerDetailProps } from '@/types/type'
 import { MapPin, Siren } from 'lucide-react'
 import { useState } from 'react'
 
-export default function MarkerDetail({ isTextArea }: MarkerDetailProps) {
+export default function MarkerDetail({
+  title,
+  description,
+  isTextArea,
+}: MarkerDetailProps) {
   const [isReportOpen, setIsReportOpen] = useState(false)
   return (
     <>
@@ -15,7 +19,7 @@ export default function MarkerDetail({ isTextArea }: MarkerDetailProps) {
             <MapPin size={24} color="var(--primary-100)" />
 
             <span className="text-[18px] text-[var(--primary-100)] font-semibold cursor-pointer">
-              장소 이름
+              {title}
             </span>
           </div>
           <Siren
@@ -32,7 +36,7 @@ export default function MarkerDetail({ isTextArea }: MarkerDetailProps) {
         </div>
         {isTextArea && (
           <div className="p-[5px] mt-[20px] border border-[var(--primary-100)] rounded-[5px] h-[100px] ">
-            내용입니다~
+            {description}
           </div>
         )}
       </div>

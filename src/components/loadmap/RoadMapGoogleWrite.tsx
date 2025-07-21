@@ -11,7 +11,7 @@ const containerStyle = {
 //서울 좌표 기본값
 const defaultCenter = { lat: 37.5665, lng: 126.978 }
 
-export default function Map({
+export default function RoadMapGoogleWrite({
   center = defaultCenter,
   selectedLayer,
   layerMarkers,
