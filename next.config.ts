@@ -4,7 +4,12 @@ const nextConfig: NextConfig = {
   images: {
     // 테스트용으로 넣은것입니다.
     // 이미지용 supabase url 추가
-    domains: ['lyrvpfgoxwppqtuuolav.supabase.co', 'example.com'],
+    domains: [
+      'lyrvpfgoxwppqtuuolav.supabase.co',
+      'example.com',
+      'mapick.cedartodo.uk',
+      'localhost',
+    ],
     // 이미지 테스트용
     remotePatterns: [
       // 이미지 테스트용
@@ -23,6 +28,11 @@ const nextConfig: NextConfig = {
         hostname: 'localhost',
         port: '3000',
         pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'example.com',
+        pathname: '/**',
       },
     ],
   },

@@ -9,11 +9,12 @@ export default function SearchInputs({
   onChange,
   placeholder = '검색어를 입력해주세요',
   className = '',
-}: SearchInputProps) {
+  inputClassName = '',
+}: SearchInputProps & { inputClassName?: string }) {
   return (
     <div className={`relative ${className}`}>
       <Input
-        className="w-[250px] bg-[var(--white)] border-[var(--white)] pr-10"
+        className={`w-full pr-10 ${inputClassName}`}
         placeholder={placeholder}
         value={value}
         onChange={onChange}

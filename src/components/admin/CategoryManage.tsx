@@ -8,6 +8,7 @@ import Button from '../ui/Button';
 import { Category } from '@/types/admin';
 import Input from '../ui/Input';
 import CategoryCard from './CategoryCard';
+import axiosInstance from '@/libs/axios';
 
 export default function CategoryManage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -22,22 +23,18 @@ export default function CategoryManage() {
     image: File | null;
   }>({ name: '', image: null });
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}categories`);
-        const data = await res.json();
-        setCategories(data.categories);
+        const res = await axiosInstance.get('/categories');
+        setCategories(res.data.categories);
       } catch (error) {
         console.error('카테고리 불러오기 실패:', error);
       }
     };
     fetchCategories();
-  }, [API_BASE_URL]);
+  }, []);
 
-  // 요청 확인용 - 나중에 데이터들어가는지 확인
   const handleSubmit = async () => {
     if (!newCategory.name.trim()) {
       alert('카테고리 이름을 입력하세요');
@@ -50,18 +47,6 @@ export default function CategoryManage() {
       formData.append('description', '테스트용 설명');
       if (newCategory.image) {
         formData.append('image', newCategory.image);
-      }
-
-      const res = await fetch(`${API_BASE_URL}categories`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      const result = await res.json();
-      console.log('POST 결과:', result);
-
-      if (!res.ok) {
-        throw new Error('카테고리 등록 실패');
       }
 
       alert('POST 요청 성공!');
