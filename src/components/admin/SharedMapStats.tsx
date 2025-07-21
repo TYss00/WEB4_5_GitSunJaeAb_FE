@@ -10,7 +10,7 @@ export default function SharedMapStats() {
 
   return (
     <div className="w-[350px] h-[178px] bg-[var(--white)] rounded-xl p-4 space-y-4 border border-[var(--gray-50)]">
-      <div className="flex items-center text-[16px] text-[var(--primary-300)] font-semibold">
+      <div className="flex items-center text-base text-[var(--primary-300)] font-semibold">
         <ChartBar size={20} className="mr-1" />
         공유지도 참여율
       </div>
