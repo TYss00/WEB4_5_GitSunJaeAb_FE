@@ -14,11 +14,7 @@ export default function MypageLayer({
   useEffect(() => {
     const fetchLayers = async () => {
       try {
-        const memberId = 2;
-        const res = await axiosInstance.get(`/layers/member`, {
-          params: { memberId },
-        });
-
+        const res = await axiosInstance.get('/layers/member');
         const fetchedLayers: Layer[] = res.data.layers;
 
         const roadmapIds = [
@@ -30,12 +26,12 @@ export default function MypageLayer({
         ];
 
         const titleMap: Record<number, string> = {};
-        const titlePromises = roadmapIds.map(async (id) => {
-          const res = await axiosInstance.get(`/roadmaps/${id}`);
-          titleMap[id] = res.data.roadmap.title;
-        });
-
-        await Promise.all(titlePromises);
+        await Promise.all(
+          roadmapIds.map(async (id) => {
+            const res = await axiosInstance.get(`/roadmaps/${id}`);
+            titleMap[id] = res.data.roadmap.title;
+          })
+        );
 
         const layersWithTitle: LayerWithTitle[] = fetchedLayers.map(
           (layer) => ({
@@ -46,7 +42,7 @@ export default function MypageLayer({
 
         setLayers(layersWithTitle);
       } catch (err) {
-        console.error('데이터 불러오기 실패:', err);
+        console.error('레이어 데이터 불러오기 실패:', err);
       }
     };
 
@@ -76,7 +72,11 @@ export default function MypageLayer({
     );
   });
 
-  return (
+  return filteredLayers.length === 0 ? (
+    <div className="text-center py-50 text-[var(--gray-300)]">
+      찜한 레이어가 없습니다.
+    </div>
+  ) : (
     <table className="min-w-full text-sm text-left border-t border-[#606060]">
       <thead className="text-[#222222] text-base font-medium">
         <tr>

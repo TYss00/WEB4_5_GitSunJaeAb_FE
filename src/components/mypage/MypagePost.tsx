@@ -67,25 +67,37 @@ export default function MypagePost({
   });
 
   return (
-    <div className="grid grid-cols-4 gap-6">
-      {filteredCards.map((card) => (
-        <MypageCard
-          key={card.id}
-          title={card.title}
-          date={card.createdAt?.split('T')[0]}
-          type={mapType(card)}
-          mapImageUrl={card.thumbnail || '/map.png'}
-          isLiked={card.isLiked}
-          onToggleLike={() => toggleLike(card.id)}
-          {...(activeTab === '좋아요글' && card.member
-            ? {
-                author: card.member.nickname,
-                profileImgUrl:
-                  card.member.profileImage || '/assets/userProfile.png',
-              }
-            : {})}
-        />
-      ))}
+    <div>
+      {activeTab === '참여글' ? (
+        <div className="text-center text-[var(--gray-300)] py-50">
+          해당하는 참여한 글이 없습니다.
+        </div>
+      ) : filteredCards.length === 0 ? (
+        <div className="text-center text-[var(--gray-300)] py-50">
+          해당하는 게시글이 없습니다.
+        </div>
+      ) : (
+        <div className="grid grid-cols-4 gap-6">
+          {filteredCards.map((card) => (
+            <MypageCard
+              key={card.id}
+              title={card.title}
+              date={card.createdAt?.split('T')[0]}
+              type={mapType(card)}
+              mapImageUrl={card.thumbnail || '/map.png'}
+              isLiked={card.isLiked}
+              onToggleLike={() => toggleLike(card.id)}
+              {...(activeTab === '좋아요글' && card.member
+                ? {
+                    author: card.member.nickname,
+                    profileImgUrl:
+                      card.member.profileImage || '/assets/userProfile.png',
+                  }
+                : {})}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

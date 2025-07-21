@@ -5,6 +5,7 @@ import { XCircle } from 'lucide-react';
 import { ReportModal } from '@/types/admin';
 import Image from 'next/image';
 import axiosInstance from '@/libs/axios';
+import ReportDetailSkeleton from './ReportDetailSkeleton';
 
 export default function ReportDetailModal({
   isOpen,
@@ -74,9 +75,7 @@ export default function ReportDetailModal({
         <h2 className="text-xl font-semibold mb-4">신고 상세 정보</h2>
 
         {loading ? (
-          <div className="text-center text-sm text-gray-500">
-            불러오는 중...
-          </div>
+          <ReportDetailSkeleton contentType={contentType} />
         ) : data === null ? (
           <div className="text-center text-sm text-gray-500">정보 없음</div>
         ) : contentType === '퀘스트' ? (

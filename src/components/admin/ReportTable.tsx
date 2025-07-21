@@ -56,6 +56,22 @@ export default function ReportTable() {
     fetchReports();
   }, []);
 
+  const handleStatusUpdate = async (reportId: number) => {
+    try {
+      await axiosInstance.put(`/reports/admin/${reportId}`, {
+        status: 'RESOLVED',
+      });
+
+      setReports((prev) =>
+        prev.map((r) => (r.id === reportId ? { ...r, status: '완료' } : r))
+      );
+      alert('상태가 완료되었습니다.');
+    } catch (err) {
+      console.error('상태 업데이트 실패:', err);
+      alert('상태 변경에 실패했습니다.');
+    }
+  };
+
   const filteredReports =
     selectedTab === '전체'
       ? reports
@@ -148,7 +164,14 @@ export default function ReportTable() {
                   <td>{report.reporter}</td>
                   <td>{report.type}</td>
                   <td>{report.date}</td>
-                  <td className="text-left align-middle pr-[12px]">
+                  <td
+                    className="text-left align-middle pr-[12px] cursor-pointer"
+                    onClick={() =>
+                      report.status === '대기'
+                        ? handleStatusUpdate(report.id)
+                        : null
+                    }
+                  >
                     <span
                       className={`inline-block px-[10px] rounded-full text-[13px] ${
                         report.status === '대기'
@@ -159,6 +182,7 @@ export default function ReportTable() {
                       {report.status}
                     </span>
                   </td>
+
                   <td className="text-[var(--blue)]">
                     <span
                       className="mr-2 cursor-pointer"
