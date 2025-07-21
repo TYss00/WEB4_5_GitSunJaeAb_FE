@@ -11,7 +11,7 @@ const containerStyle = {
 };
 
 const center = {
-  lat: 37.5665, // 서울 중심
+  lat: 37.5665,
   lng: 126.978,
 };
 
@@ -28,24 +28,6 @@ export default function GoogleMapWrapper() {
 
   const mapRef = useRef<google.maps.Map | null>(null);
 
-  // const handleClick = useCallback(
-  //   (e: google.maps.MapMouseEvent) => {
-  //     if (!e.latLng) return;
-  //     const lat = e.latLng.lat();
-  //     const lng = e.latLng.lng();
-
-  //     addMarker({
-  //       lat,
-  //       lng,
-  //       name: '',
-  //       description: '',
-  //       color: '#FF0000',
-  //       imageUrl: '',
-  //       layer: selectedLayerId ?? 'unassigned', // ❗ string 타입으로 변경했으므로 string 사용
-  //     });
-  //   },
-  //   [addMarker, selectedLayerId]
-  // );
   const handleClick = useCallback(
     async (e: google.maps.MapMouseEvent) => {
       if (!e.latLng) return;

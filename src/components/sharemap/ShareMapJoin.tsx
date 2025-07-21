@@ -87,7 +87,7 @@ export default function ShareMapJoin() {
           뒤로가기
         </Button>
 
-        {/* ✅ 레이어 선택 */}
+        {/* 레이어 선택 */}
         <div className="relative w-[140px]">
           <select
             className="w-full h-[34px] text-sm bg-white border-none rounded pl-3 appearance-none"
@@ -174,6 +174,7 @@ export default function ShareMapJoin() {
             <p className="text-[16px] text-black mb-2">
               나 송지은인데 디자인 그만하고 대학로 갈거니까 맛집 알아와라
             </p>
+            {/* 태그 디자인 수정 */}
             <div className="flex gap-[5px] text-sm text-[#005C54] mb-2">
               {hashtags.map((tag) => (
                 <span

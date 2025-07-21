@@ -68,11 +68,6 @@ export default function ShareMarkerEdit({
   };
   const updateMarker = useShareStore((state) => state.updateMarker);
 
-  // const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  //   if (e.key === 'Enter') {
-  //     setIsEditingName(false);
-  //   }
-  // };
   const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       setIsEditingName(false);
