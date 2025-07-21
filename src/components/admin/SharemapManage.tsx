@@ -4,37 +4,30 @@ import { useEffect, useState } from 'react';
 import { Map } from 'lucide-react';
 import Button from '../ui/Button';
 import { Roadmap } from '@/types/admin';
+import axiosInstance from '@/libs/axios';
 
 export default function SharemapManage() {
   const [roadmaps, setRoadmaps] = useState<Roadmap[]>([]);
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   useEffect(() => {
     const fetchRoadmaps = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}roadmaps/shared`);
-        const data = await res.json();
-        setRoadmaps(data.roadmaps);
+        const res = await axiosInstance.get('/roadmaps/shared');
+        setRoadmaps(res.data.roadmaps);
       } catch (err) {
         console.error('공유지도 목록 불러오기 실패:', err);
         setRoadmaps([]);
       }
     };
     fetchRoadmaps();
-  }, [API_BASE_URL]);
+  }, []);
 
   const handleDelete = async (id: number) => {
     const confirmDelete = confirm('정말 삭제하시겠습니까?');
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(`${API_BASE_URL}roadmaps/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (!res.ok) throw new Error('삭제 실패');
-
-      // 성공 시 리스트에서 제거
+      await axiosInstance.delete(`/roadmaps/${id}`);
       setRoadmaps((prev) => prev.filter((roadmap) => roadmap.id !== id));
       alert('삭제되었습니다.');
     } catch (err) {

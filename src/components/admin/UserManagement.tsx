@@ -4,28 +4,41 @@ import { useEffect, useState } from 'react';
 import { UserCog } from 'lucide-react';
 import { User, UserResponse } from '@/types/admin';
 import UserActionButtons from './UserActionButtons';
+import { useAuthStore } from '@/store/useAuthStore';
+import { redirect } from 'next/navigation';
+import axiosInstance from '@/libs/axios';
 
 const TABS = ['전체 사용자', '관리자', '블랙 리스트'];
 
 export default function UserManagement() {
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+  const { user } = useAuthStore();
   const [selectedTab, setSelectedTab] = useState<string>('전체 사용자');
   const [loadingUserId, setLoadingUserId] = useState<number | null>(null);
   const [members, setMembers] = useState<User[]>([]);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}members/list`)
-      .then((res) => res.json())
-      .then((data: UserResponse) => {
-        if (Array.isArray(data.members)) {
-          setMembers(data.members);
+    if (!user || user.role !== 'ROLE_ADMIN') {
+      alert('관리자만 접근할 수 있습니다.');
+      redirect('/');
+      return;
+    }
+
+    const fetchMembers = async () => {
+      try {
+        const res = await axiosInstance.get<UserResponse>('members/list'); // ✅ 변경
+        if (Array.isArray(res.data.members)) {
+          setMembers(res.data.members);
         } else {
-          console.warn('회원 목록 데이터가 올바르지 않습니다:', data);
+          console.warn('회원 목록 데이터가 올바르지 않습니다:', res.data);
           setMembers([]);
         }
-      })
-      .catch((err) => console.error('회원 목록 불러오기 실패:', err));
-  }, [API_BASE_URL]);
+      } catch (err) {
+        console.error('회원 목록 불러오기 실패:', err);
+      }
+    };
+
+    fetchMembers();
+  }, [user]);
 
   const filteredMembers = members.filter((member) => {
     if (selectedTab === '전체 사용자') return true;
@@ -38,18 +51,8 @@ export default function UserManagement() {
   const toggleBlacklist = async (id: number) => {
     setLoadingUserId(id);
     try {
-      const res = await fetch(`${API_BASE_URL}members/blacklist/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.message || '블랙리스트 업데이트 실패');
-
+      const res = await axiosInstance.put(`members/blacklist/${id}`);
+      const data = res.data;
       setMembers((prev) =>
         prev.map((u) =>
           u.id === id ? { ...u, blacklisted: !u.blacklisted } : u
@@ -72,16 +75,8 @@ export default function UserManagement() {
 
     setLoadingUserId(id);
     try {
-      const res = await fetch(`${API_BASE_URL}members/role/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || '권한 변경 실패');
+      const res = await axiosInstance.put(`members/role/${id}`);
+      const data = res.data;
 
       const newRole = user.role === 'ROLE_ADMIN' ? 'ROLE_USER' : 'ROLE_ADMIN';
 
@@ -103,14 +98,9 @@ export default function UserManagement() {
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(`${API_BASE_URL}members?memberId=${id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      await axiosInstance.delete(`members`, {
+        params: { memberId: id },
       });
-
-      if (!res.ok) throw new Error('삭제 실패');
 
       setMembers((prev) => prev.filter((user) => user.id !== id));
       alert('사용자가 성공적으로 삭제되었습니다.');
