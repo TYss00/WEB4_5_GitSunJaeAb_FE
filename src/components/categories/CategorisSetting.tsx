@@ -3,58 +3,70 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import Button from '../ui/Button';
-
-const categories = [
-  '프론트엔드',
-  '백엔드',
-  'AI',
-  '데이터',
-  '모바일',
-  '게임',
-  '보안',
-  '클라우드',
-  'UI/UX',
-  '블록체인',
-  'IoT',
-  '로봇',
-  'DevOps',
-  '메타버스',
-  '챗봇',
-  'PM',
-  'QA',
-  '창업',
-];
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { fetchCategories, postCategoryInterests } from '@/libs/category';
+import { useRouter } from 'next/navigation';
 
 export default function CategoriesSetting() {
-  const [selected, setSelected] = useState<string[]>([]);
+  const router = useRouter();
+  const [selected, setSelected] = useState<number[]>([]);
 
-  const toggleCategory = (category: string) => {
+  const {
+    data: categories = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['categories'],
+    queryFn: fetchCategories,
+  });
+
+  const toggleCategory = (id: number) => {
     setSelected((prev) =>
-      prev.includes(category)
-        ? prev.filter((c) => c !== category)
-        : [...prev, category]
+      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]
     );
   };
+
+  const { mutate: submitInterests, isPending } = useMutation({
+    mutationFn: postCategoryInterests,
+    onSuccess: () => {
+      alert('관심 분야 등록 완료!');
+      router.push('/dashbord');
+    },
+    onError: () => {
+      alert('등록 중 오류가 발생했습니다.');
+    },
+  });
+
+  const handleSubmit = () => {
+    if (selected.length === 0) {
+      alert('1개 이상 선택해주세요.');
+      return;
+    }
+
+    submitInterests(selected);
+  };
+
+  if (isLoading) return <p>로딩 중...</p>;
+  if (isError) return <p>카테고리를 불러오지 못했습니다.</p>;
 
   return (
     <div className="flex flex-col items-center px-4 py-8 pt-30 2xl:pt-50">
       <h1 className="text-[#005C54] text-4xl font-bold mb-10">
-        관심 분야를 설정해주세요.
+        관심 분야를 설정해주세요
       </h1>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-20">
         {categories.map((category) => (
           <button
-            // 키를 카테코리로해서 중복되면 안됩니다.
-            key={category}
-            onClick={() => toggleCategory(category)}
-            className={`border px-4 py-2 rounded-full text-sm transition ${
-              selected.includes(category)
+            key={category.id}
+            onClick={() => toggleCategory(category.id)}
+            className={`border px-4 py-2.5 rounded-[12px] text-sm font-medium transition-all duration-150 ${
+              selected.includes(category.id)
                 ? 'bg-[#005C54] text-white border-[#005C54]'
                 : 'border-gray-300 text-gray-800'
             }`}
           >
-            {category}
+            {category.name}
           </button>
         ))}
       </div>
@@ -62,12 +74,17 @@ export default function CategoriesSetting() {
       <Button
         buttonStyle="green"
         className="w-[80px] h-[40px] px-6 py-3 rounded-lg text-base mb-3"
+        onClick={handleSubmit}
+        disabled={isPending}
       >
         확인
       </Button>
 
       {/* 나중에 경로수정 */}
-      <Link href="/" className="text-[#005C54] cursor-pointer hover:underline">
+      <Link
+        href="/dashbord"
+        className="text-[#005C54] cursor-pointer hover:underline"
+      >
         → 다음에 할게요
       </Link>
     </div>

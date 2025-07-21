@@ -106,3 +106,8 @@ export type SearchRecord = {
   term: string;
   date: string;
 };
+
+export type CategorySetting = {
+  id: number;
+  name: string;
+};

@@ -49,8 +49,16 @@ export default function Login() {
 
       useAuthStore.getState().setUser(user);
 
+      // 토스트 메시지로 변경
       alert('로그인 성공');
-      router.push('/');
+
+      // 처음 로그인 시 카테고리 설정
+      if (user.loginCount === 0) {
+        router.push('/categories');
+      } else {
+        // 아니면 메인대시보드로 이동
+        router.push('/dashbord');
+      }
     },
     onError: (error: unknown) => {
       const err = error as AxiosError<{ message?: string }>;
