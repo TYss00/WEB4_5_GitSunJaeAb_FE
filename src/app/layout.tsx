@@ -1,5 +1,7 @@
 import TanstackProvider from '@/providers/TanstackProvider';
 import '../styles/index.css';
+import InitAuthProvider from '@/providers/InitAuthProvider';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 export const metadata = {
   title: 'Next.js',
@@ -14,7 +16,13 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <TanstackProvider>{children}</TanstackProvider>
+        <GoogleOAuthProvider
+          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
+        >
+          <TanstackProvider>
+            <InitAuthProvider>{children}</InitAuthProvider>
+          </TanstackProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );
