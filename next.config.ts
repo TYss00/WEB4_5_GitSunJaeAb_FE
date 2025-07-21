@@ -2,6 +2,10 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   images: {
+    // 테스트용으로 넣은것입니다.
+    // 이미지용 supabase url 추가
+    domains: ['lyrvpfgoxwppqtuuolav.supabase.co', 'example.com'],
+    // 이미지 테스트용
     remotePatterns: [
       // 이미지 테스트용
       {
