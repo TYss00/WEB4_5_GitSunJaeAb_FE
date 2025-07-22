@@ -106,9 +106,7 @@ export default function UserManagement() {
     if (!confirmDelete) return;
 
     try {
-      await axiosInstance.delete(`members`, {
-        params: { memberId: id },
-      });
+      await axiosInstance.delete(`/members/${id}`);
 
       setMembers((prev) => prev.filter((user) => user.id !== id));
       alert('사용자가 성공적으로 삭제되었습니다.');
