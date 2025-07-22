@@ -1,11 +1,11 @@
 import Footer from '@/components/common/Footer';
-import Header from '@/components/common/Header';
+import LandingHeader from '@/components/landingpage/LandingHeader';
 import LandingPage from '@/components/landingpage/LandingPage';
 
 export default async function page() {
   return (
     <>
-      <Header />
+      <LandingHeader />
       <LandingPage />
       <Footer />
     </>

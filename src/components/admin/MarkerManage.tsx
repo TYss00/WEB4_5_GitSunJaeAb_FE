@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { Folder } from 'lucide-react';
 import CategoryAddCard from '@/components/admin/CategoryAddCard';
 
-const categories = ['음식', '등산', '레트로', '서울', '역사', '인천'];
+const categories = ['음식', '등산', '레트로', '서울', '역사', '인천', '예시1'];
 
 export default function MarkerManage() {
   return (
@@ -31,7 +31,6 @@ export default function MarkerManage() {
           </div>
         ))}
 
-        <div className="basis-full h-0" />
         <CategoryAddCard
           type="marker"
           onClick={() => {

@@ -101,10 +101,10 @@ export default function Notification({ onClose }: NotificationProps) {
   };
 
   return (
-    <div className="absolute w-[500px] border border-[var(--gray-100)] shadow-md right-12 bg-[var(--white)] z-40 rounded-[10px]">
+    <div className="absolute w-[440px] border border-[var(--gray-100)] shadow-md right-12 bg-[var(--white)] z-40 rounded-[10px]">
       {/* 헤더 */}
       <div className="flex justify-between items-center mb-[14px] p-4">
-        <h2 className="text-[18px] font-medium">Notification</h2>
+        <h2 className="text-[18px] font-medium">알림</h2>
         <X
           onClick={onClose}
           size={20}
