@@ -5,18 +5,20 @@ import MypageCard from '../ui/card/MypageCard';
 import { MypagePostProps, RoadmapResponse } from '@/types/myprofile';
 import { useProfileStore } from '@/store/profileStore';
 import axiosInstance from '@/libs/axios';
+import MypageCardSkeleton from './MypageCardSkeleton';
 
 export default function MypagePost({
   activeTab,
   searchKeyword,
 }: MypagePostProps) {
   const [cards, setCards] = useState<RoadmapResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { member } = useProfileStore();
 
   useEffect(() => {
+    if (!member?.id) return;
     const fetchRoadmaps = async () => {
-      if (!member) return;
-
+      setIsLoading(true);
       try {
         let url = '';
         if (activeTab === '작성글') {
@@ -24,6 +26,8 @@ export default function MypagePost({
         } else if (activeTab === '좋아요글') {
           url = `/bookmarks/bookmarkedRoadmaps`;
         } else {
+          setCards([]);
+          setIsLoading(false);
           return;
         }
 
@@ -32,15 +36,17 @@ export default function MypagePost({
           ...r,
           isLiked: r.isBookmarked,
         }));
-
         setCards(mapped);
       } catch (err) {
         console.error('로드맵 불러오기 실패:', err);
+        setCards([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchRoadmaps();
-  }, [activeTab, member]);
+  }, [activeTab, member?.id]);
 
   const mapType = (roadmap: RoadmapResponse): '공개' | '비공개' | '공유' => {
     if (roadmap.roadmapType === 'SHARED') return '공유';
@@ -68,7 +74,15 @@ export default function MypagePost({
 
   return (
     <div>
-      {activeTab === '참여글' ? (
+      {isLoading ? (
+        <div className="grid grid-cols-4 gap-6">
+          {Array(1)
+            .fill(null)
+            .map((_, i) => (
+              <MypageCardSkeleton key={i} />
+            ))}
+        </div>
+      ) : activeTab === '참여글' ? (
         <div className="text-center text-[var(--gray-300)] py-50">
           해당하는 참여한 글이 없습니다.
         </div>
@@ -81,8 +95,9 @@ export default function MypagePost({
           {filteredCards.map((card) => (
             <MypageCard
               key={card.id}
+              id={card.id}
               title={card.title}
-              date={card.createdAt?.split('T')[0]}
+              date={card.createdAt?.split('T')[0] || ''}
               type={mapType(card)}
               mapImageUrl={card.thumbnail || '/map.png'}
               isLiked={card.isLiked}

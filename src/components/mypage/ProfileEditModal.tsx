@@ -1,6 +1,6 @@
 'use client';
 
-import { X } from 'lucide-react';
+import { XCircle } from 'lucide-react';
 import { useState } from 'react';
 import Button from '../ui/Button';
 import ProfileTab from './profiletab/ProfileTab';
@@ -9,12 +9,14 @@ import AchievementTab from './profiletab/AchievementTab';
 import PasswordTab from './profiletab/PasswordTab';
 import { useProfileEditStore } from '@/store/profileeditStore';
 import axiosInstance from '@/libs/axios';
+import { useProfileStore } from '@/store/profileStore';
 
 const TABS = ['프로필', '비밀번호', '관심 분야', '업적'];
 
 export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
   const [activeTab, setActiveTab] = useState('프로필');
   const [isSaving, setIsSaving] = useState(false);
+  const fetchMember = useProfileStore((state) => state.fetchMember);
 
   const handleClose = () => {
     useProfileEditStore.getState().reset();
@@ -46,8 +48,8 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
           nickname,
           profileImage,
         });
+        await fetchMember();
         alert('저장 완료');
-        console.log('전송 데이터', { nickname, profileImage });
       } else if (activeTab === '비밀번호') {
         const { password, newPassword, confirmPassword } =
           useProfileEditStore.getState();
@@ -95,8 +97,8 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
       <div className="w-[500px] h-[700px] px-[25px] pt-[20px] pb-[20px] flex flex-col justify-between items-center gap-[15px] bg-[var(--gray-40)] shadow-[rgba(0,0,0,0.1)_0px_4px_20px] rounded-xl">
         {/* 닫기 버튼 */}
         <div className="w-full flex justify-end">
-          <X
-            size={20}
+          <XCircle
+            size={25}
             onClick={handleClose}
             className="cursor-pointer text-[var(--gray-300)] hover:text-[var(--black)]"
           />
