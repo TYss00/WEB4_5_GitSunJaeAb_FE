@@ -8,8 +8,9 @@ import { LogOut, UserRound } from 'lucide-react';
 
 type Props = {
   onClose: () => void;
+  isAdmin?: boolean;
 };
-export default function UserModal({ onClose }: Props) {
+export default function UserModal({ onClose, isAdmin }: Props) {
   const router = useRouter();
   const logout = useAuthStore((state) => state.logout);
   const queryClient = useQueryClient();
@@ -43,12 +44,14 @@ export default function UserModal({ onClose }: Props) {
   return (
     <div className="w-[130px] shadow-md rounded-[8px] z-30 p-2 border border-[var(--gray-100)] bg-[var(--white)]/80">
       <ul className="font-medium text-[var(--gray-300)]">
-        <li
-          className="cursor-pointer p-2 text-[15px] rounded-[8px] hover:bg-[var(--primary-50)] hover:text-[var(--primary-300)] mb-1 flex items-center gap-1"
-          onClick={goMyPage}
-        >
-          <UserRound size={16} /> 마이페이지
-        </li>
+        {!isAdmin && (
+          <li
+            className="cursor-pointer p-2 text-[15px] rounded-[8px] hover:bg-[var(--primary-50)] hover:text-[var(--primary-300)] mb-1 flex items-center gap-1"
+            onClick={goMyPage}
+          >
+            <UserRound size={16} /> 마이페이지
+          </li>
+        )}
         <li
           className="cursor-pointer p-2 text-[15px] rounded-[8px] hover:bg-[var(--primary-50)] hover:text-[var(--primary-300)] flex items-center gap-1"
           onClick={handleLogout}

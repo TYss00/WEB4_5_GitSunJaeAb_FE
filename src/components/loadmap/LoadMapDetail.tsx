@@ -19,16 +19,24 @@ import LayerDetail from '../ui/layer/LayerDetail'
 import MarkerDetail from '../ui/layer/MarkerDetail'
 import useSidebar from '@/utils/useSidebar'
 import { useRouter } from 'next/navigation'
+import { HashtagProps, RoadmapDetailProps } from '@/types/type'
+import RoadMapGoogleDetail from './RoadMapGoogleDetail'
 
-export default function Loadmapdetail() {
+export default function Loadmapdetail({
+  roadMapInfo,
+  layerInfo,
+  markersByLayer,
+  commentsInfo,
+}: RoadmapDetailProps) {
   const router = useRouter()
   const [isReportOpen, setIsReportOpen] = useState(false)
   const { isOpen, toggle, close } = useSidebar()
+
   return (
     <>
       <section className="relative w-full h-screen overflow-hidden">
-        {/* 왼쪽 지도 */}
         <div className="absolute inset-0 bg-gray-200 z-0">
+          <RoadMapGoogleDetail />
           <div className="absolute top-4 left-8 flex items-center gap-3 px-4 py-2 z-10">
             <Button
               buttonStyle="white"
@@ -45,11 +53,10 @@ export default function Loadmapdetail() {
                 className="w-full h-[34px] text-sm bg-white border-none rounded pl-3 appearance-none"
                 defaultValue=""
               >
-                <option value="" disabled hidden>
-                  레이어 이름
-                </option>
-                <option>레이어 1</option>
-                <option>레이어 2</option>
+                <option>전체</option>
+                {layerInfo.map((layer) => {
+                  return <option key={layer.id}>{layer.name}</option>
+                })}
               </select>
 
               <ChevronDown
@@ -94,10 +101,10 @@ export default function Loadmapdetail() {
               {/* 좋아요,조회수,신고 */}
               <div className="flex gap-4 text-gray-700 text-sm items-center">
                 <span className="flex items-center gap-1">
-                  <Heart size={16} strokeWidth={3} /> 4
+                  <Heart size={16} strokeWidth={3} /> {roadMapInfo.likeCount}
                 </span>
                 <span className="flex items-center gap-1">
-                  <Eye size={16} strokeWidth={3} /> 22
+                  <Eye size={16} strokeWidth={3} /> {roadMapInfo.viewCount}
                 </span>
                 <span className="flex items-center gap-1">
                   <Siren
@@ -112,57 +119,58 @@ export default function Loadmapdetail() {
 
             <div>
               <h2 className="text-2xl font-semibold mb-2">
-                서울 대학로 맛집 추천좀
+                {roadMapInfo.title}
               </h2>
               <p className="text-[16px] text-black mb-2">
-                나 송지은인데 디자인 그만하고 대학로 갈거니까 맛집 알아와라
+                {roadMapInfo.description}
               </p>
               <div className="flex gap-2 text-sm text-[#005C54] mb-2">
-                <span>#태그1</span>
-                <span>#태그2</span>
+                {roadMapInfo.hashtags.map((tag: HashtagProps) => {
+                  return <span key={tag.id}>#{tag.name}</span>
+                })}
               </div>
             </div>
             <div className="flex gap-[5px] items-center mb-6">
               <div className="rounded-full bg-amber-950 size-[25px]"></div>
-              <span className="text-sm">작성자 닉네임</span>
+              <span className="text-sm">{roadMapInfo.member.nickname}</span>
             </div>
 
-            {/* 공통 컴포넌트 토글 */}
+            {/* 토글 */}
             <div className="space-y-3 border-t border-gray-300 pt-6 mb-6">
               <Toggle label="경로" />
               <Toggle label="애니메이션" />
             </div>
 
-            {/* 레이어 - 공통컴포넌트로 수정 */}
+            {/* 레이어 */}
             <div className="border-t border-gray-300 space-y-[15px]">
               <div className="flex items-center justify-between mt-6 mb-3 mr-3">
                 <h3 className="text-xl text-black">레이어 및 마커</h3>
                 <Download size={18} className="cursor-pointer text-gray-600" />
               </div>
-              <LayerDetail title="레이어1">
-                <MarkerDetail isTextArea />
-              </LayerDetail>
-              <LayerDetail title="레이어2">
-                <MarkerDetail isTextArea />
-                <MarkerDetail isTextArea />
-                <MarkerDetail isTextArea />
-              </LayerDetail>
-              <LayerDetail title="레이어3">
-                <MarkerDetail isTextArea />
-                <MarkerDetail isTextArea />
-              </LayerDetail>
-              <LayerDetail title="레이어4">
-                <MarkerDetail isTextArea />
-                <MarkerDetail isTextArea />
-                <MarkerDetail isTextArea />
-                <MarkerDetail isTextArea />
-                <MarkerDetail isTextArea />
-              </LayerDetail>
+              {markersByLayer.map(({ layerId, markers }) => {
+                const layer = layerInfo.find((l) => l.id === layerId)
+
+                return (
+                  <LayerDetail
+                    title={layer?.name ?? `Layer ${layerId}`}
+                    key={layerId}
+                  >
+                    {markers.map((marker) => (
+                      <MarkerDetail
+                        key={marker.id}
+                        title={marker.name}
+                        description={marker.description}
+                        isTextArea
+                      />
+                    ))}
+                  </LayerDetail>
+                )
+              })}
             </div>
 
             {/* 공용 컴포넌트 댓글 */}
             <div className="mt-8 border-t border-gray-300 pt-4">
-              <Comment postId="adslf" />
+              <Comment variant="roadmap" commentsInfo={commentsInfo} />
             </div>
           </div>
         </div>

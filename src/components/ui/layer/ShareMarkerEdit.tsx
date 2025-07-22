@@ -1,31 +1,44 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MapPin, Trash2 } from 'lucide-react';
 import Button from '../Button';
 import DaumPostcodeEmbed from 'react-daum-postcode';
-import { MarkerEditProps } from '@/types/type';
 import { geocodeAddress } from '@/libs/geocode';
-import useStore from '@/store/useStore';
+import useShareStore, { MarkerWithAddress } from '@/store/useShareStore';
 
 export interface AddressData {
   address: string;
 }
 
-interface ShareMarkerEditProps extends MarkerEditProps {
+interface ShareMarkerEditProps {
+  marker?: MarkerWithAddress;
+  isTextArea?: boolean;
+  onDelete: () => void;
   mapRef: React.RefObject<google.maps.Map | null>;
 }
 
 export default function ShareMarkerEdit({
+  marker,
   isTextArea,
   onDelete,
   mapRef,
 }: ShareMarkerEditProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [address, setAddress] = useState('주소를 입력해주세요.');
-  const [placeName, setPlaceName] = useState('');
-  const [description, setDescription] = useState('');
+  const [address, setAddress] = useState(
+    marker?.address || '주소를 입력해주세요.'
+  );
+  const [placeName, setPlaceName] = useState(marker?.name || '이름 없음');
+  const [description, setDescription] = useState(marker?.description || '');
   const [isEditingName, setIsEditingName] = useState(false);
+
+  useEffect(() => {
+    setPlaceName(marker?.name || '이름 없음');
+    setDescription(marker?.description || '');
+  }, [marker]);
+
+  const addMarker = useShareStore((state) => state.addMarker);
+  const selectedLayerId = useShareStore((state) => state.selectedLayerId);
 
   const handleComplete = async (data: AddressData) => {
     const fullAddress = data.address;
@@ -39,34 +52,34 @@ export default function ShareMarkerEdit({
       // 지도 중심 이동
       mapRef.current?.panTo({ lat: coords.lat, lng: coords.lng });
 
-      // Liveblocks 마커 추가
-      const room = useStore.getState().liveblocks.room;
-      if (!room) return;
-
-      const storage = await room.getStorage();
-
-      let markers = storage.root.get('markers');
-      if (!markers || !(markers as any).push) {
-        const { LiveList } = await import('@liveblocks/client');
-        markers = new LiveList([]);
-        storage.root.set('markers', markers);
-      }
-
-      (markers as any).push({
-        id: Date.now(),
+      addMarker({
         lat: coords.lat,
         lng: coords.lng,
-        name: placeName || '',
-        description,
+        address: fullAddress,
+        name: '',
+        description: '',
+        color: '#FF0000',
+        imageUrl: '',
+        layer: typeof selectedLayerId === 'number' ? selectedLayerId : 0,
       });
     } catch (err) {
       console.error('지오코딩 실패:', err);
     }
   };
+  const updateMarker = useShareStore((state) => state.updateMarker);
 
   const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       setIsEditingName(false);
+
+      if (marker?.id) {
+        updateMarker(marker.id, { name: placeName });
+      }
+    }
+  };
+  const handleDescriptionBlur = () => {
+    if (marker?.id) {
+      updateMarker(marker.id, { description });
     }
   };
 
@@ -132,6 +145,7 @@ export default function ShareMarkerEdit({
           placeholder="장소에 대한 설명을 입력해주세요."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          onBlur={handleDescriptionBlur}
         ></textarea>
       )}
     </div>
