@@ -1,5 +1,6 @@
 import { AuthState } from '@/types/authType';
 import { create } from 'zustand';
+import { useProfileStore } from './profileStore';
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   accessToken: null,
@@ -21,6 +22,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (typeof window !== 'undefined') {
       localStorage.removeItem('accessToken');
     }
+    useProfileStore.getState().reset();
     set({ accessToken: null, user: null });
   },
 

@@ -1,10 +1,12 @@
 'use client';
 
-import { MypageCardProps } from '@/types/type';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Heart } from 'lucide-react';
+import { MypageCardProps } from '@/types/myprofile';
 
 export default function MypageCard({
+  id,
   title,
   date,
   type,
@@ -14,6 +16,8 @@ export default function MypageCard({
   isLiked = false,
   onToggleLike,
 }: MypageCardProps & { onToggleLike?: () => void }) {
+  const router = useRouter();
+
   const typeColorMap: Record<string, string> = {
     공개: 'bg-[#E7FAE2] text-[var(--primary-300)]',
     비공개: 'bg-[var(--gray-200)] text-[var(--white)]',
@@ -23,8 +27,19 @@ export default function MypageCard({
 
   const badgeClass = typeColorMap[type] || 'bg-gray-200 text-gray-600';
 
+  const handleClick = () => {
+    if (type === '공개' || type === '비공개') {
+      router.push(`/dashbord/roadmap/detail/${id}`);
+    } else if (type === '공유') {
+      router.push(`/dashbord/sharemap/detail/${id}`);
+    } else if (type === '퀘스트') {
+      router.push(`/dashbord/quest/detail/${id}`);
+    }
+  };
+
   return (
     <div
+      onClick={handleClick}
       className="w-full h-[227px] 2xl:h-[300px] bg-white overflow-hidden rounded-lg shadow-sm cursor-pointer transition-all duration-300 ease-in-out 
              hover:shadow-lg hover:-translate-y-1"
     >
@@ -50,7 +65,10 @@ export default function MypageCard({
         <div className="flex items-start justify-between">
           <p className="text-base text-[var(--black)] pt-1">{title}</p>
           <button
-            onClick={onToggleLike}
+            onClick={(e) => {
+              e.stopPropagation(); // 클릭 이벤트 버블링 방지
+              onToggleLike?.();
+            }}
             className="w-6 h-6 flex items-center justify-center text-[var(--gray-200)]"
           >
             <Heart
