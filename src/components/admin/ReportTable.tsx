@@ -176,20 +176,18 @@ export default function ReportTable() {
                   <td>{report.reporter}</td>
                   <td>{report.type}</td>
                   <td>{report.date}</td>
-                  <td
-                    className="text-left align-middle pr-[12px] cursor-pointer"
-                    onClick={() =>
-                      report.status === '대기'
-                        ? handleStatusUpdate(report.id)
-                        : null
-                    }
-                  >
+                  <td className="text-left align-middle pr-[15px]">
                     <span
-                      className={`inline-block px-[10px] rounded-full text-[13px] ${
+                      className={`inline-block px-[10px] rounded-full text-[13px] cursor-pointer ${
                         report.status === '대기'
                           ? 'bg-[#FFF4F4] text-[var(--red)]'
                           : 'bg-[#F4FFF4] text-[var(--primary-200)]'
                       }`}
+                      onClick={() =>
+                        report.status === '대기'
+                          ? handleStatusUpdate(report.id)
+                          : null
+                      }
                     >
                       {report.status}
                     </span>
