@@ -6,6 +6,7 @@ import { CircleAlert, Medal } from 'lucide-react';
 import ProfileEditModal from './ProfileEditModal';
 import Image from 'next/image';
 import { useProfileStore } from '@/store/profileStore';
+import defaultProfile from '../../../public/assets/defaultProfile.png';
 
 export default function MypageLabel() {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -33,7 +34,7 @@ export default function MypageLabel() {
         {/* 프로필 이미지 */}
         <div className="relative -top-13 w-[140px] h-[140px] rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
           <Image
-            src={member?.profileImage || '/assets/userProfile.png'}
+            src={member?.profileImage || defaultProfile}
             alt="프로필 이미지"
             fill
             sizes="140px"
