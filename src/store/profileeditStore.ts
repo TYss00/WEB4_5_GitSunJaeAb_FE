@@ -9,6 +9,9 @@ export const useProfileEditStore = create<ProfileEditState>((set) => ({
   newPassword: '',
   confirmPassword: '',
 
+  selectedCategoryIds: [],
+  setSelectedCategoryIds: (ids) => set({ selectedCategoryIds: ids }),
+
   setNickname: (nickname) => set({ nickname }),
   setProfileImage: (profileImage) => set({ profileImage }),
 
@@ -23,5 +26,6 @@ export const useProfileEditStore = create<ProfileEditState>((set) => ({
       password: '',
       newPassword: '',
       confirmPassword: '',
+      selectedCategoryIds: [],
     }),
 }));

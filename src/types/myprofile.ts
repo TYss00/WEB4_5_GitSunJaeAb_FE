@@ -10,6 +10,18 @@ export type ProfileMember = {
   nickname: string;
   profileImage: string | null;
   blacklisted?: boolean;
+  memberInterests?: MemberInterest[];
+};
+
+export type Category = {
+  id: number;
+  name: string;
+};
+
+export type MemberInterest = {
+  id: number;
+  createdAt: string;
+  categories: Category[];
 };
 
 export type useProfileStores = {
@@ -70,6 +82,9 @@ export type ProfileEditState = {
   password: string;
   newPassword: string;
   confirmPassword: string;
+
+  selectedCategoryIds: number[];
+  setSelectedCategoryIds: (ids: number[]) => void;
 
   setNickname: (nickname: string) => void;
   setProfileImage: (image: string | null) => void;
