@@ -15,6 +15,7 @@ export type ProfileMember = {
 export type useProfileStores = {
   member: ProfileMember | null;
   fetchMember: () => Promise<void>;
+  reset: () => void;
 };
 
 export type RoadmapResponse = {
@@ -47,6 +48,7 @@ export type LayerWithTitle = Layer & {
 };
 
 export type MypageCardProps = {
+  id: number;
   title: string;
   date: string;
   author?: string;

@@ -48,7 +48,7 @@ export type ReportResponse = {
   code: string;
   message: string;
   timestamp: string;
-  reports: Report[];
+  reportSimpleDTOS: Report[];
 };
 
 export type DisplayReport = {

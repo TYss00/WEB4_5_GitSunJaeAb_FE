@@ -22,11 +22,25 @@ export default function ReportTable() {
         const res = await axiosInstance.get<ReportResponse>('/reports');
         const data = res.data;
 
-        if (!Array.isArray(data.reports)) {
+        const rawReports = data.reportSimpleDTOS;
+
+        if (!Array.isArray(rawReports)) {
           console.warn('서버에서 reports 배열이 안 옴:', data);
           setReports([]);
           return;
         }
+
+        rawReports.sort((a, b) => {
+          // 대기순
+          if (a.status !== b.status) {
+            return a.status === 'REPORTED' ? -1 : 1;
+          }
+
+          // 그다음 최신순
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        });
 
         const getContentType = (report: Report): '지도' | '퀘스트' => {
           if (report.quest !== null) return '퀘스트';
@@ -34,7 +48,7 @@ export default function ReportTable() {
           return '지도';
         };
 
-        const mapped: DisplayReport[] = data.reports.map((report: Report) => ({
+        const mapped: DisplayReport[] = rawReports.map((report: Report) => ({
           id: report.id,
           reported: report.reportedMember.nickname,
           reporter: report.reporter.nickname,
@@ -58,9 +72,7 @@ export default function ReportTable() {
 
   const handleStatusUpdate = async (reportId: number) => {
     try {
-      await axiosInstance.put(`/reports/admin/${reportId}`, {
-        status: 'RESOLVED',
-      });
+      await axiosInstance.get(`/reports/admin/${reportId}`, {});
 
       setReports((prev) =>
         prev.map((r) => (r.id === reportId ? { ...r, status: '완료' } : r))
