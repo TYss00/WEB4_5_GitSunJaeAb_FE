@@ -18,7 +18,7 @@ export default function CategoryCard({
   cancelEdit,
 }: CategoryCardProps) {
   return (
-    <div className="w-[100px] h-[126px] rounded-md overflow-hidden border border-[var(--gray-100)] bg-[var(--white)] relative">
+    <div className="w-[100px] h-[126px] rounded-md overflow-hidden border-1 border-black bg-[var(--white)] relative">
       {isEditing ? (
         <>
           <div className="w-full h-[100px] bg-gray-100 relative">
@@ -80,10 +80,10 @@ export default function CategoryCard({
           <p className="text-center py-[4px] text-[15px]">{category.name}</p>
           <div className="absolute top-1 right-1">
             <button
-              className="text-[var(--white)] hover:scale-110 transition"
+              className="bg-black rounded-full p-[4px] text-white hover:scale-110 transition cursor-pointer"
               onClick={() => onEditClick(category)}
             >
-              <Pencil size={16} />
+              <Pencil size={15} />
             </button>
           </div>
           <div className="flex justify-center mt-1">

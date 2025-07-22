@@ -20,6 +20,7 @@ export type useProfileStores = {
 export type RoadmapResponse = {
   id: number;
   title: string;
+  isBookmarked?: boolean;
   thumbnail: string | null;
   roadmapType: 'SHARED' | 'PERSONAL';
   isPublic?: boolean;
@@ -28,6 +29,7 @@ export type RoadmapResponse = {
     profileImage: string | null;
   };
   isLiked?: boolean;
+  createdAt?: string;
 };
 
 export type Layer = {

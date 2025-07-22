@@ -1,11 +1,10 @@
 'use client';
 
-// 로딩만들어지면 로딩 바꿔서 수정할곳
-
 import { useEffect, useState } from 'react';
 import { XCircle } from 'lucide-react';
 import { ReportModal } from '@/types/admin';
 import Image from 'next/image';
+import axiosInstance from '@/libs/axios';
 
 export default function ReportDetailModal({
   isOpen,
@@ -20,8 +19,6 @@ export default function ReportDetailModal({
     imageUrl?: string;
   } | null>(null);
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => {
@@ -35,10 +32,8 @@ export default function ReportDetailModal({
     const fetchDetail = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${API_BASE_URL}reports/${reportId}`, {
-          credentials: 'include',
-        });
-        const detail = await res.json();
+        const res = await axiosInstance.get(`/reports/${reportId}`);
+        const detail = res.data;
 
         if (contentType === '퀘스트' && detail.report.quest) {
           setData({
@@ -62,7 +57,7 @@ export default function ReportDetailModal({
     };
 
     fetchDetail();
-  }, [isOpen, reportId, contentType, API_BASE_URL]);
+  }, [isOpen, reportId, contentType]);
 
   if (!isOpen || reportId === null || contentType === null) return null;
 
@@ -97,8 +92,7 @@ export default function ReportDetailModal({
             <div className="bg-gray-200 h-[400px] rounded flex items-center justify-center text-sm text-gray-500 overflow-hidden">
               {data.imageUrl ? (
                 <Image
-                  // src에 원래는 data.imageUrl 이거들어가야됨 - 이미지가 예제라 안나와서 이걸로 대체
-                  src={'/quest.jpg'}
+                  src={data.imageUrl}
                   alt="퀘스트 이미지"
                   width={700}
                   height={100}
@@ -106,7 +100,7 @@ export default function ReportDetailModal({
                 />
               ) : (
                 <Image
-                  src={'/quest.jpg'}
+                  src="/quest.jpg"
                   alt="퀘스트 이미지"
                   width={10}
                   height={10}

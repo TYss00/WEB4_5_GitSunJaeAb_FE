@@ -4,27 +4,24 @@ import { useState, useEffect } from 'react';
 import { Siren } from 'lucide-react';
 import { DisplayReport, Report, ReportResponse } from '@/types/admin';
 import ReportDetailModal from './ReportDetailModal';
+import axiosInstance from '@/libs/axios';
 
 const TABS = ['전체', '대기중', '완료'];
 
 export default function ReportTable() {
   const [selectedTab, setSelectedTab] = useState('전체');
   const [reports, setReports] = useState<DisplayReport[]>([]);
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const [selectedReport, setSelectedReport] = useState<{
     id: number;
     contentType: '지도' | '퀘스트';
   } | null>(null);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}reports`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error('서버 응답 실패');
-        }
-        return res.json();
-      })
-      .then((data: ReportResponse) => {
+    const fetchReports = async () => {
+      try {
+        const res = await axiosInstance.get<ReportResponse>('/reports');
+        const data = res.data;
+
         if (!Array.isArray(data.reports)) {
           console.warn('서버에서 reports 배열이 안 옴:', data);
           setReports([]);
@@ -51,9 +48,13 @@ export default function ReportTable() {
         }));
 
         setReports(mapped);
-      })
-      .catch((err) => console.error('신고 목록 불러오기 실패:', err));
-  }, [API_BASE_URL]);
+      } catch (err) {
+        console.error('신고 목록 불러오기 실패:', err);
+      }
+    };
+
+    fetchReports();
+  }, []);
 
   const filteredReports =
     selectedTab === '전체'
@@ -67,9 +68,9 @@ export default function ReportTable() {
     let deleteUrl = '';
 
     if (contentType === '지도' && roadmap !== null) {
-      deleteUrl = `${API_BASE_URL}roadmaps/${roadmap}`;
+      deleteUrl = `/roadmaps/${roadmap}`;
     } else if (contentType === '퀘스트' && quest !== null) {
-      deleteUrl = `${API_BASE_URL}quests/${quest}`;
+      deleteUrl = `/quests/${quest}`;
     } else {
       alert('삭제할 게시글 ID가 없습니다.');
       return;
@@ -79,11 +80,10 @@ export default function ReportTable() {
     if (!confirmDelete) return;
 
     try {
-      const res = await fetch(deleteUrl, { method: 'DELETE' });
-      if (!res.ok) throw new Error('삭제 실패');
+      const res = await axiosInstance.delete(deleteUrl);
+      if (res.status !== 200) throw new Error('삭제 실패');
 
       alert('게시글이 삭제되었습니다.');
-      // 삭제 후 리스트 갱신 (서버에서 실제 삭제되었을 때만)
       setReports((prev) => prev.filter((r) => r.id !== report.id));
     } catch (err) {
       console.error(err);
@@ -114,7 +114,6 @@ export default function ReportTable() {
         ))}
       </div>
 
-      {/* 테이블 */}
       <div>
         <table className="w-full text-left text-[14px]">
           <thead>
@@ -133,7 +132,7 @@ export default function ReportTable() {
             {filteredReports.length === 0 ? (
               <tr>
                 <td
-                  colSpan={6}
+                  colSpan={8}
                   className="text-center py-6 text-[var(--gray-300)]"
                 >
                   해당하는 신고 내역이 없습니다.
@@ -173,11 +172,9 @@ export default function ReportTable() {
                       상세 보기
                     </span>
                   </td>
-
                   <td className="py-2 align-top text-[13px] text-[var(--gray-700)]">
                     <div>{report.contentType}</div>
                   </td>
-
                   <td className="py-2 align-top text-[13px] text-center text-[var(--red)]">
                     <button
                       className="underline cursor-pointer"
@@ -191,6 +188,7 @@ export default function ReportTable() {
             )}
           </tbody>
         </table>
+
         <ReportDetailModal
           isOpen={selectedReport !== null}
           onClose={() => setSelectedReport(null)}

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Layer, LayerWithTitle } from '@/types/myprofile';
+import axiosInstance from '@/libs/axios';
 
 export default function MypageLayer({
   searchKeyword,
@@ -9,17 +10,16 @@ export default function MypageLayer({
   searchKeyword: string;
 }) {
   const [layers, setLayers] = useState<LayerWithTitle[]>([]);
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   useEffect(() => {
     const fetchLayers = async () => {
       try {
         const memberId = 2;
-        const res = await fetch(
-          `${API_BASE_URL}layers/member?memberId=${memberId}`
-        );
-        const data = await res.json();
-        const fetchedLayers: Layer[] = data.layers;
+        const res = await axiosInstance.get(`/layers/member`, {
+          params: { memberId },
+        });
+
+        const fetchedLayers: Layer[] = res.data.layers;
 
         const roadmapIds = [
           ...new Set(
@@ -31,10 +31,8 @@ export default function MypageLayer({
 
         const titleMap: Record<number, string> = {};
         const titlePromises = roadmapIds.map(async (id) => {
-          const res = await fetch(`${API_BASE_URL}roadmaps/${id}`);
-          if (!res.ok) throw new Error(`로드맵 ${id} 불러오기 실패`);
-          const data = await res.json();
-          titleMap[id] = data.roadmap.title;
+          const res = await axiosInstance.get(`/roadmaps/${id}`);
+          titleMap[id] = res.data.roadmap.title;
         });
 
         await Promise.all(titlePromises);
@@ -53,21 +51,14 @@ export default function MypageLayer({
     };
 
     fetchLayers();
-  }, [API_BASE_URL]);
+  }, []);
 
   const handleDelete = async (layerId: number) => {
     const confirmed = window.confirm('정말 삭제하시겠습니까?');
     if (!confirmed) return;
 
     try {
-      const res = await fetch(`${API_BASE_URL}layers/${layerId}`, {
-        method: 'DELETE',
-      });
-
-      if (!res.ok) {
-        throw new Error('레이어 삭제 실패');
-      }
-
+      await axiosInstance.delete(`/layers/${layerId}`);
       setLayers((prev) => prev.filter((layer) => layer.id !== layerId));
       alert('삭제가 완료되었습니다.');
     } catch (err) {

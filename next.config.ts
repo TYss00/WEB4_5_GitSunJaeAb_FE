@@ -2,16 +2,27 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   images: {
-      // 테스트용으로 넣은것입니다.
-  // 이미지용 supabase url 추가
+    // 테스트용으로 넣은것입니다.
+    // 이미지용 supabase url 추가
     domains: ['lyrvpfgoxwppqtuuolav.supabase.co', 'example.com'],
     // 이미지 테스트용
     remotePatterns: [
+      // 이미지 테스트용
       {
         protocol: 'https',
-        hostname: 'example.com',
-        port: '', // 기본 포트일 경우 빈 문자열
-        pathname: '/**', // 모든 경로 허용
+        hostname: 'lyrvpfgoxwppqtuuolav.supabase.co',
+        pathname: '/storage/v1/object/public/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'mapick.cedartodo.uk',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/uploads/**',
       },
     ],
   },
