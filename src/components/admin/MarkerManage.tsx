@@ -20,14 +20,17 @@ export default function MarkerManage() {
             key={idx}
             className="w-[100px] h-[126px] rounded-md overflow-hidden border border-[var(--gray-100)] bg-[var(--white)]"
           >
-            <Image
-              src="/assets/steak.jpg"
-              alt={name}
-              width={100}
-              height={100}
-              className="w-full h-[100px] object-cover"
-            />
-            <p className="text-center py-[4px] text-[15px]">{name}</p>
+            <div className="relative w-full h-[100px]">
+              <Image
+                src="/assets/steak.jpg"
+                alt={name}
+                fill
+                sizes="100px"
+                className="object-cover"
+                priority
+              />
+            </div>
+            <p className="text-center text-base">{name}</p>
           </div>
         ))}
 
