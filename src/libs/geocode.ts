@@ -17,3 +17,18 @@ export async function geocodeAddress(address: string) {
   const { lat, lng } = data.results[0].geometry.location;
   return { lat, lng };
 }
+
+export async function reverseGeocode(lat: number, lng: number) {
+  const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY;
+
+  const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`;
+
+  const response = await fetch(url);
+  const data = await response.json();
+
+  if (data.status !== 'OK' || !data.results.length) {
+    throw new Error('주소 변환 실패');
+  }
+
+  return data.results[0].formatted_address;
+}
