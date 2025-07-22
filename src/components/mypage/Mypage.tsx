@@ -1,16 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { Search } from 'lucide-react';
-import Input from '../ui/Input';
 import MypageLayer from './MypageLayer';
 import MypagePost from './MypagePost';
+import SearchInput from '../ui/SearchInputs';
 
 export default function Mypage() {
   const [activeTab, setActiveTab] = useState('작성글');
+  const [searchKeyword, setSearchKeyword] = useState('');
 
   return (
-    <section className="w-full bg-[var(--gray-40)] px-48 pt-6 pb-15">
+    <section className="w-full h-[650px] bg-[var(--gray-40)] px-48 pt-6">
       <div className="flex justify-between items-center mb-10">
         {/* 메뉴 */}
         <ul className="flex gap-8 text-lg text-[var(--gray-300)] font-medium">
@@ -22,7 +22,10 @@ export default function Mypage() {
                   ? 'text-[var(--primary-300)] border-[var(--primary-300)]'
                   : 'text-[var(--gray-300)] border-transparent'
               }`}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => {
+                setActiveTab(tab);
+                setSearchKeyword('');
+              }}
             >
               {tab}
             </li>
@@ -31,25 +34,20 @@ export default function Mypage() {
 
         {/* 검색 */}
         <div className="relative">
-          <Input
-            className="w-[250px] bg-[var(--white)] border-[var(--white)] pr-10"
-            placeholder="검색어를 입력해주세요"
-          />
-          <Search
-            size={16}
-            strokeWidth={3}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--gray-20)]"
+          <SearchInput
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
           />
         </div>
       </div>
 
-      {/* 카드 or 테이블 */}
-      <div className="mt-4">
+      <div className="mt-4 h-[calc(100%-80px)] overflow-y-auto pr-2">
         {activeTab === '레이어' ? (
-          <MypageLayer />
+          <MypageLayer searchKeyword={searchKeyword} />
         ) : (
           <MypagePost
             activeTab={activeTab as '작성글' | '참여글' | '좋아요글'}
+            searchKeyword={searchKeyword}
           />
         )}
       </div>

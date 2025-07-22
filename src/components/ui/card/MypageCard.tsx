@@ -10,6 +10,7 @@ export default function MypageCard({
   type,
   mapImageUrl,
   author,
+  profileImgUrl,
   isLiked = false,
   onToggleLike,
 }: MypageCardProps & { onToggleLike?: () => void }) {
@@ -27,7 +28,6 @@ export default function MypageCard({
       className="w-full h-[227px] 2xl:h-[300px] bg-white overflow-hidden rounded-lg shadow-sm cursor-pointer transition-all duration-300 ease-in-out 
              hover:shadow-lg hover:-translate-y-1"
     >
-      {/* 이미지 */}
       <div className="relative w-full h-2/3">
         <Image
           src={mapImageUrl}
@@ -64,10 +64,21 @@ export default function MypageCard({
           </button>
         </div>
 
-        <div className="pt-1 flex justify-between items-center">
+        <div className="pt-1 flex items-center justify-between">
           {author ? (
             <>
-              <p className="text-sm text-[var(--gray-200)]">{author}</p>
+              <div className="flex items-center gap-2">
+                {profileImgUrl && (
+                  <Image
+                    src={profileImgUrl}
+                    alt="프로필 이미지"
+                    width={20}
+                    height={20}
+                    className="rounded-full"
+                  />
+                )}
+                <p className="text-sm text-[var(--gray-200)]">{author}</p>
+              </div>
               <p className="text-sm text-[var(--gray-200)] pr-1">{date}</p>
             </>
           ) : (

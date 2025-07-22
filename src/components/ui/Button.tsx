@@ -28,7 +28,7 @@ export default function Button({
   const fullWidthStyle = fullWidth ? 'w-full' : '';
 
   const disabledStyle =
-    'bg-white text-[#9F9F9F] border border-[var(--primary-300)] cursor-not-allowed';
+    'bg-white text-[var(--gray-200)] border border-[var(--gray-200)] cursor-not-allowed';
 
   return (
     <button
@@ -36,8 +36,11 @@ export default function Button({
       onClick={onClick}
       disabled={disabled}
       className={twMerge(
-        `${baseStyle} ${styleByType} ${fullWidthStyle} ${className}`,
-        disabled && disabledStyle
+        baseStyle,
+        styleByType,
+        fullWidthStyle,
+        className,
+        disabled ? disabledStyle : ''
       )}
     >
       {icon && <span>{icon}</span>}

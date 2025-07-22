@@ -118,6 +118,7 @@ const dummyQuests: QuestCardProps[] = [
 export default function SearchResultSection() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
+  const category = searchParams.get('category');
   const hasResults =
     dummyQuests.length > 0 ||
     dummyRoadmaps.length > 0 ||
@@ -127,27 +128,30 @@ export default function SearchResultSection() {
     <div className="w-[1100px] m-auto pt-13">
       {hasResults ? (
         <>
-          {dummyRoadmaps.length > 0 && (
-            <SearchCategoryGroup
-              title="로드맵"
-              cardType="roadmap"
-              items={dummyRoadmaps}
-            />
-          )}
-          {dummySharemaps.length > 0 && (
-            <SearchCategoryGroup
-              title="공유지도"
-              cardType="sharemap"
-              items={dummySharemaps}
-            />
-          )}
-          {dummyQuests.length > 0 && (
-            <SearchCategoryGroup
-              title="퀘스트"
-              cardType="quest"
-              items={dummyQuests}
-            />
-          )}
+          {(category === null || category === 'roadmap') &&
+            dummyRoadmaps.length > 0 && (
+              <SearchCategoryGroup
+                title="로드맵"
+                cardType="roadmap"
+                items={dummyRoadmaps}
+              />
+            )}
+          {(category === null || category === 'sharemap') &&
+            dummySharemaps.length > 0 && (
+              <SearchCategoryGroup
+                title="공유지도"
+                cardType="sharemap"
+                items={dummySharemaps}
+              />
+            )}
+          {(category === null || category === 'quest') &&
+            dummyQuests.length > 0 && (
+              <SearchCategoryGroup
+                title="퀘스트"
+                cardType="quest"
+                items={dummyQuests}
+              />
+            )}
         </>
       ) : (
         <p className="text-[var(--gray-200)] text-lg text-center">

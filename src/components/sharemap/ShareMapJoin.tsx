@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Heart,
   Siren,
@@ -16,50 +16,80 @@ import {
 import Button from '../ui/Button';
 import ReportModal from '../common/modal/ReportModal';
 import useSidebar from '@/utils/useSidebar';
-
 import Input from '../ui/Input';
-import LayerEdit from '../ui/layer/LayerEdit';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import useStore from '@/store/useStore';
+import GoogleMapWrapper from './GoogleMapWrapper';
+import ShareLayerEdit from '../ui/layer/ShareLayerEdit';
 
 export default function ShareMapJoin() {
   const router = useRouter();
   const [isReportOpen, setIsReportOpen] = useState(false);
   const { isOpen, toggle, close } = useSidebar();
 
+  const markers = useStore((state) => state.markers);
+  const removeMarker = useStore((state) => state.removeMarker);
+
+  const handleResetMarkers = () => {
+    const confirmed = confirm('모든 마커를 초기화하시겠습니까?');
+    if (!confirmed) return;
+
+    const markerIds = Object.keys(markers);
+    markerIds.forEach((id) => removeMarker(id));
+  };
+
+  const enterRoom = useStore((state) => state.liveblocks.enterRoom);
+  const leaveRoom = useStore((state) => state.liveblocks.leaveRoom);
+  const mapRef = useRef<google.maps.Map | null>(null);
+
+  useEffect(() => {
+    enterRoom('collab-map-room');
+    return () => {
+      leaveRoom();
+    };
+  }, [enterRoom, leaveRoom]);
+
   return (
     <section className="relative w-full h-screen overflow-hidden">
       {/* 지도 영역 */}
-      <div className="absolute inset-0 bg-gray-200 z-0">
-        {/* 왼쪽 상단 버튼 */}
-        <div className="absolute top-4 left-8 flex items-center gap-3 px-4 py-2 z-10">
-          <Button
-            buttonStyle="white"
-            onClick={() => router.back()}
-            icon={<ChevronLeft size={18} />}
-            className="text-sm"
+      <GoogleMapWrapper />
+      {/* 지도 위 UI 요소들 */}
+      <div className="absolute top-4 left-[100px] flex items-center gap-3 px-4 py-2 z-20">
+        <Button
+          buttonStyle="white"
+          onClick={() => router.back()}
+          icon={<ChevronLeft size={18} />}
+          className="text-sm"
+        >
+          뒤로가기
+        </Button>
+
+        <Button
+          buttonStyle="white"
+          className="text-sm"
+          onClick={handleResetMarkers}
+        >
+          마커 초기화
+        </Button>
+
+        {/* 레이어 선택 */}
+        <div className="relative w-[140px]">
+          <select
+            className="w-full h-[34px] text-sm bg-white border-none rounded pl-3 appearance-none"
+            defaultValue=""
           >
-            뒤로가기
-          </Button>
-
-          {/* 레이어 선택 */}
-          <div className="relative w-[140px]">
-            <select
-              className="w-full h-[34px] text-sm bg-white border-none rounded pl-3 appearance-none"
-              defaultValue=""
-            >
-              <option value="" disabled hidden>
-                레이어 이름
-              </option>
-              <option>레이어 1</option>
-              <option>레이어 2</option>
-            </select>
-
-            <ChevronDown
-              size={18}
-              className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-black"
-            />
-          </div>
+            <option value="" disabled hidden>
+              레이어 이름
+            </option>
+            <option>전체 레이어</option>
+            <option>레이어 1</option>
+            <option>레이어 2</option>
+          </select>
+          <ChevronDown
+            size={18}
+            className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-black"
+          />
         </div>
       </div>
 
@@ -83,11 +113,13 @@ export default function ShareMapJoin() {
       >
         <div className="h-full px-5 py-4 overflow-y-auto scrollbar-none">
           {/* 닫기 버튼 */}
-          <div
-            className="flex items-center mb-4 space-x-[-16px] cursor-pointer"
-            onClick={close}
-          >
-            <ChevronsRight size={35} />
+          <div className="flex items-center mb-5 gap-[10px]">
+            <ChevronsRight
+              size={35}
+              onClick={close}
+              className="cursor-pointer"
+            />
+            <h1 className="font-semibold text-xl">공유지도 수정하기</h1>
           </div>
 
           {/* 위치/날짜/좋아요/조회수/신고 */}
@@ -127,9 +159,17 @@ export default function ShareMapJoin() {
             <h2 className="text-2xl font-semibold mb-4">
               서울 대학로 맛집 추천좀
             </h2>
-            <p className="text-sm text-black mb-4">
+            <p className="text-[16px] text-black mb-2">
               나 송지은인데 디자인 그만하고 대학로 갈거니까 맛집 알아와라
             </p>
+            <div className="flex gap-2 text-sm text-[#005C54] mb-2">
+              <span>#태그1</span>
+              <span>#태그2</span>
+            </div>
+            <div className="flex gap-[5px] items-center mb-5">
+              <div className="rounded-full bg-amber-950 size-[25px]"></div>
+              <span className="text-sm">작성자 닉네임</span>
+            </div>
           </div>
 
           {/* 레이어 목록 */}
@@ -172,9 +212,9 @@ export default function ShareMapJoin() {
             </div>
 
             <div className="space-y-3">
-              <LayerEdit title="레이어1" isTextArea />
-              <LayerEdit title="레이어1" isTextArea />
-              <LayerEdit title="레이어1" isTextArea />
+              <ShareLayerEdit title="레이어" isTextArea mapRef={mapRef} />
+              <ShareLayerEdit title="레이어" isTextArea mapRef={mapRef} />
+              <ShareLayerEdit title="레이어" isTextArea mapRef={mapRef} />
             </div>
 
             <div className="flex justify-end mt-4 gap-5">

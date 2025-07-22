@@ -1,5 +1,14 @@
 import React, { ReactNode } from 'react'
 
+export type HeaderProps = {
+  isAdmin?: boolean;
+};
+
+export type CategoryAddCardProps = {
+  type?: 'category' | 'marker';
+  onClick?: () => void;
+};
+
 export type RoadMapCardProps = {
   category: string
   mapImageUrl: string
@@ -32,33 +41,21 @@ export type ShareMapCardProps = {
   className?: string
 }
 
-export type MypageCardProps = {
-  title: string
-  date: string
-  author?: string
-  type: '공개' | '비공개' | '퀘스트' | '공유'
-  mapImageUrl: string
-  isLiked?: boolean
-}
-
 export type CardListProps = {
   type?: 'roadmap' | 'sharemap' | 'quest'
 }
 
-export type MypagePostProps = {
-  activeTab: '작성글' | '참여글' | '좋아요글'
-}
-
 export type ButtonProps = {
-  children: React.ReactNode
-  buttonStyle?: 'green' | 'white' | 'withIcon' | 'smGreen'
-  fullWidth?: boolean
-  icon?: React.ReactNode
-  className?: string
-  onClick?: () => void
-  disabled?: boolean
-  type?: 'button' | 'submit' | 'reset'
-}
+  children: React.ReactNode;
+  style?: string | undefined;
+  buttonStyle?: 'green' | 'white' | 'withIcon' | 'smGreen';
+  fullWidth?: boolean;
+  icon?: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+};
 
 export type MarkerEditProps = {
   isTextArea?: boolean
@@ -166,6 +163,7 @@ export type MarkerInfo = {
   layer: number
   member: Member
 }
+
 export type RoadmapDetailProps = {
   roadMapInfo: RoadmapInfo
   layerInfo: LayerInfo[]
@@ -194,3 +192,30 @@ export type MapProps = {
   onMapClick: (lat: number, lng: number) => void
   onMarkerDelete: (layer: string, id: number) => void
 }
+
+export type SearchRecord = {
+  term: string;
+  date: string;
+};
+
+export type LandingCategories = {
+  id: number;
+  name: string;
+  description: string;
+  categoryImage: string | null;
+  createdAt: string;
+};
+
+export type LandingCategoryResponse = {
+  code: string;
+  message: string;
+  timestamp: string;
+  categories: LandingCategories[];
+};
+
+export type SearchInputProps = {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  className?: string;
+};

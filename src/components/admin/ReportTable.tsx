@@ -1,77 +1,201 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { Siren } from 'lucide-react';
+import { DisplayReport, Report, ReportResponse } from '@/types/admin';
+import ReportDetailModal from './ReportDetailModal';
+import axiosInstance from '@/libs/axios';
+
+const TABS = ['전체', '대기중', '완료'];
 
 export default function ReportTable() {
+  const [selectedTab, setSelectedTab] = useState('전체');
+  const [reports, setReports] = useState<DisplayReport[]>([]);
+  const [selectedReport, setSelectedReport] = useState<{
+    id: number;
+    contentType: '지도' | '퀘스트';
+  } | null>(null);
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const res = await axiosInstance.get<ReportResponse>('/reports');
+        const data = res.data;
+
+        if (!Array.isArray(data.reports)) {
+          console.warn('서버에서 reports 배열이 안 옴:', data);
+          setReports([]);
+          return;
+        }
+
+        const getContentType = (report: Report): '지도' | '퀘스트' => {
+          if (report.quest !== null) return '퀘스트';
+          if (report.roadmap !== null || report.marker !== null) return '지도';
+          return '지도';
+        };
+
+        const mapped: DisplayReport[] = data.reports.map((report: Report) => ({
+          id: report.id,
+          reported: report.reportedMember.nickname,
+          reporter: report.reporter.nickname,
+          type: report.description,
+          date: new Date(report.createdAt).toLocaleDateString('ko-KR'),
+          status: report.status === 'RESOLVED' ? '완료' : '대기',
+          contentType: getContentType(report),
+          roadmap: report.roadmap,
+          marker: report.marker,
+          quest: report.quest,
+        }));
+
+        setReports(mapped);
+      } catch (err) {
+        console.error('신고 목록 불러오기 실패:', err);
+      }
+    };
+
+    fetchReports();
+  }, []);
+
+  const filteredReports =
+    selectedTab === '전체'
+      ? reports
+      : selectedTab === '대기중'
+      ? reports.filter((r) => r.status === '대기')
+      : reports.filter((r) => r.status === '완료');
+
+  const handleDelete = async (report: DisplayReport) => {
+    const { contentType, roadmap, quest } = report;
+    let deleteUrl = '';
+
+    if (contentType === '지도' && roadmap !== null) {
+      deleteUrl = `/roadmaps/${roadmap}`;
+    } else if (contentType === '퀘스트' && quest !== null) {
+      deleteUrl = `/quests/${quest}`;
+    } else {
+      alert('삭제할 게시글 ID가 없습니다.');
+      return;
+    }
+
+    const confirmDelete = confirm('정말 삭제하시겠습니까?');
+    if (!confirmDelete) return;
+
+    try {
+      const res = await axiosInstance.delete(deleteUrl);
+      if (res.status !== 200) throw new Error('삭제 실패');
+
+      alert('게시글이 삭제되었습니다.');
+      setReports((prev) => prev.filter((r) => r.id !== report.id));
+    } catch (err) {
+      console.error(err);
+      alert('삭제 중 오류가 발생했습니다.');
+    }
+  };
+
   return (
-    <section className="w-[732px] h-[542px] bg-[var(--white)] rounded-[10px] p-6 border border-[var(--gray-50)] flex-1">
-      <div className="flex items-center gap-[16px] font-semibold text-[var(--primary-300)] mb-[24px]">
+    <div className="w-[1000px] bg-[var(--white)] rounded-lg p-4 flex flex-col justify-start border border-[var(--gray-50)]">
+      <div className="flex items-center gap-[16px] font-semibold text-[var(--primary-300)] mb-[20px]">
         <Siren className="w-[20px] h-[20px]" />
-        <span className="text-[18px]">신고 내역</span>
+        <span className="text-lg">신고 내역</span>
       </div>
 
       <div className="flex gap-[26px] mb-4 text-[15px] font-medium">
-        <span className="text-[var(--primary-300)] border-b-2 border-[var(--primary-300)] pb-1">
-          전체
-        </span>
-        <span className="text-[var(--gray-300)]">대기중</span>
-        <span className="text-[var(--gray-300)]">완료</span>
+        {TABS.map((tab) => (
+          <span
+            key={tab}
+            onClick={() => setSelectedTab(tab)}
+            className={`cursor-pointer pb-1 ${
+              selectedTab === tab
+                ? 'text-[var(--primary-300)] border-b-2 border-[var(--primary-300)]'
+                : 'text-[var(--gray-300)]'
+            }`}
+          >
+            {tab}
+          </span>
+        ))}
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full text-[14px]">
+      <div>
+        <table className="w-full text-left text-[14px]">
           <thead>
             <tr className="text-[var(--black)] border-b border-[var(--gray-50)]">
-              <th className="text-left py-2">피신고자</th>
-              <th className="text-left py-2">신고자</th>
-              <th className="text-left py-2">유형</th>
-              <th className="text-left py-2">날짜</th>
-              <th className="text-left py-2">상태</th>
-              <th className="text-left py-2">조치</th>
+              <th className="py-2">피신고자</th>
+              <th className="py-2">신고자</th>
+              <th className="py-2">유형</th>
+              <th className="py-2">날짜</th>
+              <th className="py-2 pl-2">상태</th>
+              <th className="py-2 pl-3">조치</th>
+              <th className="py-2">종류</th>
+              <th className="text-center py-2">게시글 삭제</th>
             </tr>
           </thead>
           <tbody>
-            {[...Array(8)].map((_, i) => (
-              <tr key={i} className="border-b border-[var(--gray-50)]">
-                <td className="py-2">홍길동</td>
-                <td>지지</td>
-                <td>허위 게시글</td>
-                <td>2025.07.07</td>
-                <td className="text-left align-middle pr-[12px]">
-                  <span className="inline-block bg-[#FFF4F4] text-[var(--red)] px-[10px] py-[2px] rounded-full text-[13px]">
-                    대기
-                  </span>
-                </td>
-
-                <td className="text-[var(--blue)]">
-                  <span className="mr-2 cursor-pointer">상세 보기</span>
-                  <button className="text-[var(--primary-200)] mr-1">✔</button>
-                  <button className="text-[var(--red)]">✖</button>
+            {filteredReports.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={8}
+                  className="text-center py-6 text-[var(--gray-300)]"
+                >
+                  해당하는 신고 내역이 없습니다.
                 </td>
               </tr>
-            ))}
-            <tr className="border-b border-[#F0F0F0]">
-              <td className="py-2">홍길동</td>
-              <td>지지</td>
-              <td>허위 게시글</td>
-              <td>2025.07.07</td>
-              <td className="text-left align-middle pr-[12px]">
-                <span className="inline-block bg-[#F4FFF4] text-[var(--primary-200)] px-[10px] py-[2px] rounded-full text-[13px]">
-                  완료
-                </span>
-              </td>
-
-              <td className="text-[var(--blue)]">
-                <span className="mr-2 cursor-pointer">상세 보기</span>
-              </td>
-            </tr>
+            ) : (
+              filteredReports.map((report) => (
+                <tr
+                  key={report.id}
+                  className="border-b border-[var(--gray-50)]"
+                >
+                  <td className="py-2">{report.reported}</td>
+                  <td>{report.reporter}</td>
+                  <td>{report.type}</td>
+                  <td>{report.date}</td>
+                  <td className="text-left align-middle pr-[12px]">
+                    <span
+                      className={`inline-block px-[10px] rounded-full text-[13px] ${
+                        report.status === '대기'
+                          ? 'bg-[#FFF4F4] text-[var(--red)]'
+                          : 'bg-[#F4FFF4] text-[var(--primary-200)]'
+                      }`}
+                    >
+                      {report.status}
+                    </span>
+                  </td>
+                  <td className="text-[var(--blue)]">
+                    <span
+                      className="mr-2 cursor-pointer"
+                      onClick={() =>
+                        setSelectedReport({
+                          id: report.id,
+                          contentType: report.contentType,
+                        })
+                      }
+                    >
+                      상세 보기
+                    </span>
+                  </td>
+                  <td className="py-2 align-top text-[13px] text-[var(--gray-700)]">
+                    <div>{report.contentType}</div>
+                  </td>
+                  <td className="py-2 align-top text-[13px] text-center text-[var(--red)]">
+                    <button
+                      className="underline cursor-pointer"
+                      onClick={() => handleDelete(report)}
+                    >
+                      삭제
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
-      </div>
 
-      <div className="text-right mt-4 text-[14px] text-[var(--gray-300)] cursor-pointer">
-        더보기
+        <ReportDetailModal
+          isOpen={selectedReport !== null}
+          onClose={() => setSelectedReport(null)}
+          reportId={selectedReport?.id ?? null}
+          contentType={selectedReport?.contentType ?? null}
+        />
       </div>
-    </section>
+    </div>
   );
 }
