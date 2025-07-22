@@ -48,7 +48,7 @@ export type ReportResponse = {
   code: string;
   message: string;
   timestamp: string;
-  reports: Report[];
+  reportSimpleDTOS: Report[];
 };
 
 export type DisplayReport = {
@@ -82,17 +82,17 @@ export type UserResponse = {
 
 export type CategoryCardProps = {
   category: Category;
-  isEditing: boolean;
   onEditClick: (category: Category) => void;
-  onComplete: (id: number) => void;
-  editedCategory: {
-    name: string;
-    image: File | null;
-  };
-  setEditedCategory: (category: { name: string; image: File | null }) => void;
-  handleEditImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleEditSubmit: (id: number) => void;
-  cancelEdit: () => void;
+  onDelete: (category: Category) => void;
+};
+
+export type CategoryCardFormProps = {
+  name: string;
+  image: File | null;
+  onNameChange: (name: string) => void;
+  onImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: () => void;
+  onCancel: () => void;
 };
 
 export type UserActionButton = {

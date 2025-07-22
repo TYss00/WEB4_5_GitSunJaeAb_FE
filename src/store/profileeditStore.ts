@@ -3,24 +3,24 @@ import { create } from 'zustand';
 
 export const useProfileEditStore = create<ProfileEditState>((set) => ({
   nickname: '',
-  profileImage: null,
+  profileImage: '',
 
-  currentPassword: '',
+  password: '',
   newPassword: '',
   confirmPassword: '',
 
   setNickname: (nickname) => set({ nickname }),
   setProfileImage: (profileImage) => set({ profileImage }),
 
-  setCurrentPassword: (v) => set({ currentPassword: v }),
+  setPassword: (v) => set({ password: v }),
   setNewPassword: (v) => set({ newPassword: v }),
   setConfirmPassword: (v) => set({ confirmPassword: v }),
 
   reset: () =>
     set({
       nickname: '',
-      profileImage: null,
-      currentPassword: '',
+      profileImage: '',
+      password: '',
       newPassword: '',
       confirmPassword: '',
     }),

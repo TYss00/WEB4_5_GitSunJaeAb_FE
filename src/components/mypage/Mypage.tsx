@@ -37,6 +37,7 @@ export default function Mypage() {
           <SearchInput
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
+            inputClassName="bg-[var(--white)] border-[var(--white)]"
           />
         </div>
       </div>

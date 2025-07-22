@@ -37,7 +37,7 @@ export default function SharemapManage() {
   };
 
   return (
-    <section className="w-[1000px] bg-[var(--white)] rounded-[10px] p-6 border border-[var(--gray-50)]">
+    <section className="w-[1000px] bg-[var(--white)] rounded-[10px] p-4 border border-[var(--gray-50)]">
       <div className="flex items-center justify-between font-semibold text-[var(--primary-300)] mb-[24px]">
         <div className="flex items-center text-lg text-[var(--primary-300)] font-semibold">
           <Map size={20} className="mr-1" />

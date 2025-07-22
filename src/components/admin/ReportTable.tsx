@@ -22,11 +22,25 @@ export default function ReportTable() {
         const res = await axiosInstance.get<ReportResponse>('/reports');
         const data = res.data;
 
-        if (!Array.isArray(data.reports)) {
+        const rawReports = data.reportSimpleDTOS;
+
+        if (!Array.isArray(rawReports)) {
           console.warn('서버에서 reports 배열이 안 옴:', data);
           setReports([]);
           return;
         }
+
+        rawReports.sort((a, b) => {
+          // 대기순
+          if (a.status !== b.status) {
+            return a.status === 'REPORTED' ? -1 : 1;
+          }
+
+          // 그다음 최신순
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        });
 
         const getContentType = (report: Report): '지도' | '퀘스트' => {
           if (report.quest !== null) return '퀘스트';
@@ -34,7 +48,7 @@ export default function ReportTable() {
           return '지도';
         };
 
-        const mapped: DisplayReport[] = data.reports.map((report: Report) => ({
+        const mapped: DisplayReport[] = rawReports.map((report: Report) => ({
           id: report.id,
           reported: report.reportedMember.nickname,
           reporter: report.reporter.nickname,
@@ -55,6 +69,20 @@ export default function ReportTable() {
 
     fetchReports();
   }, []);
+
+  const handleStatusUpdate = async (reportId: number) => {
+    try {
+      await axiosInstance.get(`/reports/admin/${reportId}`, {});
+
+      setReports((prev) =>
+        prev.map((r) => (r.id === reportId ? { ...r, status: '완료' } : r))
+      );
+      alert('상태가 완료되었습니다.');
+    } catch (err) {
+      console.error('상태 업데이트 실패:', err);
+      alert('상태 변경에 실패했습니다.');
+    }
+  };
 
   const filteredReports =
     selectedTab === '전체'
@@ -148,17 +176,23 @@ export default function ReportTable() {
                   <td>{report.reporter}</td>
                   <td>{report.type}</td>
                   <td>{report.date}</td>
-                  <td className="text-left align-middle pr-[12px]">
+                  <td className="text-left align-middle pr-[15px]">
                     <span
-                      className={`inline-block px-[10px] rounded-full text-[13px] ${
+                      className={`inline-block px-[10px] rounded-full text-[13px] cursor-pointer ${
                         report.status === '대기'
                           ? 'bg-[#FFF4F4] text-[var(--red)]'
                           : 'bg-[#F4FFF4] text-[var(--primary-200)]'
                       }`}
+                      onClick={() =>
+                        report.status === '대기'
+                          ? handleStatusUpdate(report.id)
+                          : null
+                      }
                     >
                       {report.status}
                     </span>
                   </td>
+
                   <td className="text-[var(--blue)]">
                     <span
                       className="mr-2 cursor-pointer"

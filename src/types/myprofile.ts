@@ -15,6 +15,7 @@ export type ProfileMember = {
 export type useProfileStores = {
   member: ProfileMember | null;
   fetchMember: () => Promise<void>;
+  reset: () => void;
 };
 
 export type RoadmapResponse = {
@@ -47,6 +48,7 @@ export type LayerWithTitle = Layer & {
 };
 
 export type MypageCardProps = {
+  id: number;
   title: string;
   date: string;
   author?: string;
@@ -65,14 +67,14 @@ export type ProfileEditState = {
   nickname: string;
   profileImage: string | null;
 
-  currentPassword: string;
+  password: string;
   newPassword: string;
   confirmPassword: string;
 
   setNickname: (nickname: string) => void;
   setProfileImage: (image: string | null) => void;
 
-  setCurrentPassword: (v: string) => void;
+  setPassword: (v: string) => void;
   setNewPassword: (v: string) => void;
   setConfirmPassword: (v: string) => void;
 

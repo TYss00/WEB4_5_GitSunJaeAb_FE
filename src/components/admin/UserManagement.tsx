@@ -5,8 +5,8 @@ import { UserCog } from 'lucide-react';
 import { User, UserResponse } from '@/types/admin';
 import UserActionButtons from './UserActionButtons';
 import { useAuthStore } from '@/store/useAuthStore';
-import { redirect } from 'next/navigation';
 import axiosInstance from '@/libs/axios';
+import SearchInputs from '../ui/SearchInputs';
 
 const TABS = ['전체 사용자', '관리자', '블랙 리스트'];
 
@@ -15,17 +15,12 @@ export default function UserManagement() {
   const [selectedTab, setSelectedTab] = useState<string>('전체 사용자');
   const [loadingUserId, setLoadingUserId] = useState<number | null>(null);
   const [members, setMembers] = useState<User[]>([]);
+  const [searchKeyword, setSearchKeyword] = useState('');
 
   useEffect(() => {
-    if (!user || user.role !== 'ROLE_ADMIN') {
-      alert('관리자만 접근할 수 있습니다.');
-      redirect('/');
-      return;
-    }
-
     const fetchMembers = async () => {
       try {
-        const res = await axiosInstance.get<UserResponse>('members/list'); // ✅ 변경
+        const res = await axiosInstance.get<UserResponse>('members/list');
         if (Array.isArray(res.data.members)) {
           setMembers(res.data.members);
         } else {
@@ -40,12 +35,18 @@ export default function UserManagement() {
     fetchMembers();
   }, [user]);
 
-  const filteredMembers = members.filter((member) => {
-    if (selectedTab === '전체 사용자') return true;
-    if (selectedTab === '관리자') return member.role === 'ROLE_ADMIN';
-    if (selectedTab === '블랙 리스트') return member.blacklisted === true;
-    return false;
-  });
+  const filteredMembers = members
+    .filter((member) => {
+      if (selectedTab === '전체 사용자') return true;
+      if (selectedTab === '관리자') return member.role === 'ROLE_ADMIN';
+      if (selectedTab === '블랙 리스트') return member.blacklisted === true;
+      return false;
+    })
+    .filter((member) =>
+      [member.name, member.nickname, member.email].some((field) =>
+        field.toLowerCase().includes(searchKeyword.toLowerCase())
+      )
+    );
 
   // 블랙리스트 토글
   const toggleBlacklist = async (id: number) => {
@@ -98,9 +99,7 @@ export default function UserManagement() {
     if (!confirmDelete) return;
 
     try {
-      await axiosInstance.delete(`members`, {
-        params: { memberId: id },
-      });
+      await axiosInstance.delete(`/members/${id}`);
 
       setMembers((prev) => prev.filter((user) => user.id !== id));
       alert('사용자가 성공적으로 삭제되었습니다.');
@@ -118,21 +117,29 @@ export default function UserManagement() {
         사용자 관리
       </div>
 
-      {/* 탭 메뉴 */}
-      <div className="flex gap-[26px] mb-4 text-[15px] font-medium">
-        {TABS.map((tab) => (
-          <span
-            key={tab}
-            onClick={() => setSelectedTab(tab)}
-            className={`cursor-pointer pb-1 ${
-              selectedTab === tab
-                ? 'text-[var(--primary-300)] border-b-2 border-[var(--primary-300)]'
-                : 'text-[var(--gray-300)]'
-            }`}
-          >
-            {tab}
-          </span>
-        ))}
+      <div className="flex justify-between items-center mb-4">
+        {/* 탭 영역 */}
+        <div className="flex gap-[26px] text-[15px] font-medium">
+          {TABS.map((tab) => (
+            <span
+              key={tab}
+              onClick={() => setSelectedTab(tab)}
+              className={`cursor-pointer pb-1 ${
+                selectedTab === tab
+                  ? 'text-[var(--primary-300)] border-b-2 border-[var(--primary-300)]'
+                  : 'text-[var(--gray-300)]'
+              }`}
+            >
+              {tab}
+            </span>
+          ))}
+        </div>
+
+        <SearchInputs
+          value={searchKeyword}
+          onChange={(e) => setSearchKeyword(e.target.value)}
+          inputClassName="bg-[var(--gray-40)]"
+        />
       </div>
 
       {/* 사용자 테이블 */}
@@ -174,7 +181,7 @@ export default function UserManagement() {
             {filteredMembers.map((user) => (
               <tr
                 key={user.id}
-                className="border-t border-[var(--gray-100)] text-[var(--black)]"
+                className="border-t border-[var(--black)] text-[var(--black)]"
               >
                 <td className="py-2 px-4">{user.name}</td>
                 <td className="py-2 px-4">{user.nickname}</td>

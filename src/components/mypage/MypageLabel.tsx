@@ -14,8 +14,10 @@ export default function MypageLabel() {
 
   // 프로필 정보 불러오기
   useEffect(() => {
-    fetchMember();
-  }, [fetchMember]);
+    if (!member) {
+      fetchMember();
+    }
+  }, [member, fetchMember]);
 
   // 모달 열릴 때 body 스크롤 막기
   useEffect(() => {
