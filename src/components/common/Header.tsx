@@ -114,12 +114,16 @@ export default function Header({ isAdmin = false }: HeaderProps) {
         )}
 
         {/* 프로필 이미지 이상하면 여기 확인하기 */}
-        <Image
-          src={profileImage || defaultProfile}
-          alt="User Profile"
-          className="size-[40px] rounded-full object-cover cursor-pointer border border-[var(--gray-100)] hover:ring-2 hover:ring-[var(--primary-300)]"
-          onClick={() => setIsUserModalOpen((prev) => !prev)}
-        />
+        <div className="size-[40px]">
+          <Image
+            width={100}
+            height={100}
+            src={profileImage || defaultProfile}
+            alt="User Profile"
+            className="size-[40px] rounded-full object-cover cursor-pointer border border-[var(--gray-100)] hover:ring-2 hover:ring-[var(--primary-300)]"
+            onClick={() => setIsUserModalOpen((prev) => !prev)}
+          />
+        </div>
       </div>
 
       {/* 알림 모달 */}
