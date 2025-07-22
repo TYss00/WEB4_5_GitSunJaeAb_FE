@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Folder } from 'lucide-react';
 import CategoryAddCard from '@/components/admin/CategoryAddCard';
 import { Category } from '@/types/admin';
 import CategoryCard from './CategoryCard';
@@ -141,11 +140,6 @@ export default function CategoryManage() {
 
   return (
     <div className="w-[732px] mx-auto border border-[var(--gray-50)] rounded-[10px] px-[16px] py-[16px]">
-      <h2 className="text-lg font-semibold text-[var(--primary-300)] mb-[16px] flex items-center gap-2">
-        <Folder size={24} className="text-[var(--primary-300)]" />
-        카테고리 관리
-      </h2>
-
       <div className="flex flex-wrap gap-[16px]">
         {categories.map((category) =>
           editingId === category.id ? (

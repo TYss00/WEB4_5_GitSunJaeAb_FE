@@ -5,7 +5,6 @@ import { UserCog } from 'lucide-react';
 import { User, UserResponse } from '@/types/admin';
 import UserActionButtons from './UserActionButtons';
 import { useAuthStore } from '@/store/useAuthStore';
-import { redirect } from 'next/navigation';
 import axiosInstance from '@/libs/axios';
 import SearchInputs from '../ui/SearchInputs';
 
@@ -19,12 +18,6 @@ export default function UserManagement() {
   const [searchKeyword, setSearchKeyword] = useState('');
 
   useEffect(() => {
-    if (!user || user.role !== 'ROLE_ADMIN') {
-      alert('관리자만 접근할 수 있습니다.');
-      redirect('/');
-      return;
-    }
-
     const fetchMembers = async () => {
       try {
         const res = await axiosInstance.get<UserResponse>('members/list');
