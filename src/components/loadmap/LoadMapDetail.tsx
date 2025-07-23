@@ -18,19 +18,19 @@ import Toggle from '../ui/Toggle'
 import LayerDetail from '../ui/layer/LayerDetail'
 import MarkerDetail from '../ui/layer/MarkerDetail'
 import useSidebar from '@/utils/useSidebar'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { HashtagProps } from '@/types/type'
 import RoadMapGoogleDetail from './RoadMapGoogleDetail'
 import axiosInstance from '@/libs/axios'
 
-export default function Loadmapdetail({ roadmapId }: { roadmapId: string }) {
+export default function Loadmapdetail() {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState(null)
-
+  const params = useParams()
   const router = useRouter()
   const [isReportOpen, setIsReportOpen] = useState(false)
   const { isOpen, toggle, close } = useSidebar()
-
+  const roadmapId = params?.id as string
   useEffect(() => {
     const fetchAll = async () => {
       try {
@@ -146,7 +146,8 @@ export default function Loadmapdetail({ roadmapId }: { roadmapId: string }) {
               {/* 좋아요,조회수,신고 */}
               <div className="flex gap-4 text-gray-700 text-sm items-center">
                 <span className="flex items-center gap-1">
-                  <Heart size={16} strokeWidth={3} /> {roadMapInfo.likeCount}
+                  <Heart size={16} strokeWidth={3} className="cursor-pointer" />{' '}
+                  {roadMapInfo.likeCount}
                 </span>
                 <span className="flex items-center gap-1">
                   <Eye size={16} strokeWidth={3} /> {roadMapInfo.viewCount}
@@ -200,11 +201,12 @@ export default function Loadmapdetail({ roadmapId }: { roadmapId: string }) {
                     title={layer?.name ?? `Layer ${layerId}`}
                     key={layerId}
                   >
-                    {markers.map((marker) => (
+                    {markers?.map((marker) => (
                       <MarkerDetail
                         key={marker.id}
                         title={marker.name}
                         description={marker.description}
+                        location={{ lat: marker.lat, lng: marker.lng }}
                         isTextArea
                       />
                     ))}
