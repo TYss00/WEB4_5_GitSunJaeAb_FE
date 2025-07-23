@@ -143,31 +143,55 @@ export default function UserManagement() {
       </div>
 
       {/* 사용자 테이블 */}
-      <div>
-        <table className="w-full text-left border border-[var(--gray-100)] text-[14px]">
-          <thead>
-            <tr className="bg-[var(--gray-50)] text-[var(--gray-500)]">
+      <div className="relative w-full border border-[var(--gray-100)] text-[14px]">
+        {/* thead 테이블 */}
+        <table className="w-full text-left table-fixed">
+          <colgroup>
+            <col style={{ width: '12%' }} />
+            <col style={{ width: '12%' }} />
+            <col style={{ width: '20%' }} />
+            {selectedTab === '전체 사용자' && (
+              <>
+                <col style={{ width: '10%' }} />
+                <col style={{ width: '14%' }} />
+                <col style={{ width: '10%' }} />
+                <col style={{ width: '10%' }} />
+                <col style={{ width: '12%' }} />
+              </>
+            )}
+            {selectedTab === '관리자' && (
+              <>
+                <col style={{ width: '20%' }} />
+                <col style={{ width: '20%' }} />
+              </>
+            )}
+            {selectedTab === '블랙 리스트' && (
+              <>
+                <col style={{ width: '20%' }} />
+                <col style={{ width: '20%' }} />
+              </>
+            )}
+          </colgroup>
+          <thead className="sticky top-0 bg-[var(--gray-50)] text-[var(--gray-500)] z-10">
+            <tr>
               <th className="py-2 px-4">이름</th>
               <th className="py-2 px-4">닉네임</th>
               <th className="py-2 px-4">이메일</th>
-
               {selectedTab === '전체 사용자' && (
                 <>
                   <th className="py-2 px-4">역할</th>
-                  <th className="py-2 px-4 text-center">블랙리스트 여부</th>
-                  <th className="py-2 px-4 text-center">블랙리스트</th>
-                  <th className="py-2 px-4 text-center">관리자 권한</th>
-                  <th className="py-2 px-4 text-center">회원탈퇴</th>
+                  <th className="py-2 px-4">블랙리스트 여부</th>
+                  <th className="py-2 px-2">블랙리스트</th>
+                  <th className="py-2 px-2">관리자 권한</th>
+                  <th className="py-2 px-5 ">회원탈퇴</th>
                 </>
               )}
-
               {selectedTab === '관리자' && (
                 <>
                   <th className="py-2 px-4 text-center">관리자 권한</th>
                   <th className="py-2 px-4 text-center">회원탈퇴</th>
                 </>
               )}
-
               {selectedTab === '블랙 리스트' && (
                 <>
                   <th className="py-2 px-4 text-center">블랙리스트</th>
@@ -176,29 +200,60 @@ export default function UserManagement() {
               )}
             </tr>
           </thead>
-
-          <tbody>
-            {filteredMembers.map((user) => (
-              <tr
-                key={user.id}
-                className="border-t border-[var(--black)] text-[var(--black)]"
-              >
-                <td className="py-2 px-4">{user.name}</td>
-                <td className="py-2 px-4">{user.nickname}</td>
-                <td className="py-2 px-4">{user.email}</td>
-
-                <UserActionButtons
-                  user={user}
-                  selectedTab={selectedTab}
-                  loadingUserId={loadingUserId}
-                  onToggleBlacklist={toggleBlacklist}
-                  onToggleAdminRole={toggleAdminRole}
-                  onDeleteMember={deleteMember}
-                />
-              </tr>
-            ))}
-          </tbody>
         </table>
+
+        {/* tbody 스크롤 영역 */}
+        <div className="max-h-[400px] overflow-y-auto">
+          <table className="w-full text-left table-fixed">
+            <colgroup>
+              <col style={{ width: '12%' }} />
+              <col style={{ width: '12%' }} />
+              <col style={{ width: '20%' }} />
+              {selectedTab === '전체 사용자' && (
+                <>
+                  <col style={{ width: '10%' }} />
+                  <col style={{ width: '14%' }} />
+                  <col style={{ width: '10%' }} />
+                  <col style={{ width: '10%' }} />
+                  <col style={{ width: '12%' }} />
+                </>
+              )}
+              {selectedTab === '관리자' && (
+                <>
+                  <col style={{ width: '20%' }} />
+                  <col style={{ width: '20%' }} />
+                </>
+              )}
+              {selectedTab === '블랙 리스트' && (
+                <>
+                  <col style={{ width: '20%' }} />
+                  <col style={{ width: '20%' }} />
+                </>
+              )}
+            </colgroup>
+            <tbody>
+              {filteredMembers.map((user) => (
+                <tr
+                  key={user.id}
+                  className="border-t border-[var(--gray-100)] text-[var(--black)]"
+                >
+                  <td className="py-2 px-4">{user.name}</td>
+                  <td className="py-2 px-4">{user.nickname}</td>
+                  <td className="py-2 px-4">{user.email}</td>
+
+                  <UserActionButtons
+                    user={user}
+                    selectedTab={selectedTab}
+                    loadingUserId={loadingUserId}
+                    onToggleBlacklist={toggleBlacklist}
+                    onToggleAdminRole={toggleAdminRole}
+                    onDeleteMember={deleteMember}
+                  />
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
