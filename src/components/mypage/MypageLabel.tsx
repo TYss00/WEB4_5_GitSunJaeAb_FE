@@ -55,7 +55,11 @@ export default function MypageLabel() {
               </span>
             </div>
             <div className="flex flex-wrap gap-2 mt-2">
-              {['음식', '역사', '삼국지', '신라'].map((tag) => (
+              {(
+                member?.memberInterests?.flatMap((interest) =>
+                  interest.categories.map((cat) => cat.name)
+                ) ?? []
+              ).map((tag) => (
                 <span
                   key={tag}
                   className="h-[26px] bg-[#EBF2F2] text-[#005C54] text-sm py-1 px-3 rounded-sm"

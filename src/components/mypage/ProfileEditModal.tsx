@@ -81,6 +81,13 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
         });
 
         alert('비밀번호가 성공적으로 변경되었습니다.');
+      } else if (activeTab === '관심 분야') {
+        const { selectedCategoryIds } = useProfileEditStore.getState();
+        await axiosInstance.put('/members/interests', {
+          categoryId: selectedCategoryIds,
+        });
+        await fetchMember();
+        alert('관심 분야가 저장되었습니다.');
       }
 
       handleClose();
