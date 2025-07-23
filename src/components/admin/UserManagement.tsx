@@ -110,7 +110,7 @@ export default function UserManagement() {
   };
 
   return (
-    <div className="w-[1000px] bg-[var(--white)] rounded-lg p-4 flex flex-col justify-start border border-[var(--gray-50)]">
+    <div className="w-[1000px] h-[530px] bg-[var(--white)] rounded-lg p-4 flex flex-col justify-start border border-[var(--gray-50)]">
       {/* 상단 타이틀 */}
       <div className="flex items-center gap-2 text-[var(--primary-300)] font-semibold text-[18px] mb-[16px]">
         <UserCog size={20} className="mr-1" />
@@ -203,7 +203,7 @@ export default function UserManagement() {
         </table>
 
         {/* tbody 스크롤 영역 */}
-        <div className="max-h-[400px] overflow-y-auto">
+        <div className="max-h-[360px] overflow-y-auto">
           <table className="w-full text-left table-fixed">
             <colgroup>
               <col style={{ width: '12%' }} />
