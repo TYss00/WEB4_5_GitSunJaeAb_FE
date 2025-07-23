@@ -1,10 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Search } from 'lucide-react';
-import Input from '../ui/Input';
 import MypageLayer from './MypageLayer';
 import MypagePost from './MypagePost';
+import SearchInput from '../ui/SearchInputs';
 
 export default function Mypage() {
   const [activeTab, setActiveTab] = useState('작성글');
@@ -35,16 +34,10 @@ export default function Mypage() {
 
         {/* 검색 */}
         <div className="relative">
-          <Input
-            className="w-[250px] bg-[var(--white)] border-[var(--white)] pr-10"
-            placeholder="검색어를 입력해주세요"
+          <SearchInput
             value={searchKeyword}
             onChange={(e) => setSearchKeyword(e.target.value)}
-          />
-          <Search
-            size={16}
-            strokeWidth={3}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--gray-20)]"
+            inputClassName="bg-[var(--white)] border-[var(--white)]"
           />
         </div>
       </div>

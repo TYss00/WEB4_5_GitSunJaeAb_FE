@@ -6,8 +6,8 @@ export default function PasswordTab() {
   const {
     newPassword,
     setNewPassword,
-    currentPassword,
-    setCurrentPassword,
+    password,
+    setPassword,
     confirmPassword,
     setConfirmPassword,
   } = useProfileEditStore();
@@ -24,8 +24,8 @@ export default function PasswordTab() {
           <PasswordInput
             label="현재 비밀번호"
             placeholder="비밀번호를 입력하세요"
-            value={currentPassword}
-            onChange={(e) => setCurrentPassword(e.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <PasswordInput
             label="새 비밀번호"

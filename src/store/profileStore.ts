@@ -1,18 +1,23 @@
+import axiosInstance from '@/libs/axios';
 import { useProfileStores } from '@/types/myprofile';
 import { create } from 'zustand';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const useProfileStore = create<useProfileStores>((set) => ({
   member: null,
 
   fetchMember: async () => {
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      console.warn('토큰이 없어 fetchMember 요청을 생략합니다.');
+      return;
+    }
     try {
-      const res = await fetch(`${API_BASE_URL}members`);
-      const data = await res.json();
-      set({ member: data.member });
+      const res = await axiosInstance.get('/members');
+      set({ member: res.data.memberDetailDto });
     } catch (err) {
       console.error('프로필 불러오기 실패:', err);
+      set({ member: null });
     }
   },
+  reset: () => set({ member: null }),
 }));

@@ -4,39 +4,49 @@ import { useEffect, useState } from 'react';
 import MypageCard from '../ui/card/MypageCard';
 import { MypagePostProps, RoadmapResponse } from '@/types/myprofile';
 import { useProfileStore } from '@/store/profileStore';
+import axiosInstance from '@/libs/axios';
+import MypageCardSkeleton from './MypageCardSkeleton';
 
 export default function MypagePost({
   activeTab,
   searchKeyword,
 }: MypagePostProps) {
   const [cards, setCards] = useState<RoadmapResponse[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { member } = useProfileStore();
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   useEffect(() => {
+    if (!member?.id) return;
     const fetchRoadmaps = async () => {
-      if (!member) return;
-
+      setIsLoading(true);
       try {
         let url = '';
         if (activeTab === '작성글') {
-          url = `${API_BASE_URL}roadmaps/member?memberId=${member.id}`;
+          url = `/roadmaps/member?memberId=${member.id}`;
         } else if (activeTab === '좋아요글') {
-          url = `${API_BASE_URL}bookmarks/bookmarkedRoadmaps`;
+          url = `/bookmarks/bookmarkedRoadmaps`;
         } else {
+          setCards([]);
+          setIsLoading(false);
           return;
         }
 
-        const res = await fetch(url);
-        const data = await res.json();
-        setCards(data.roadmaps);
+        const res = await axiosInstance.get(url);
+        const mapped = res.data.roadmaps.map((r: RoadmapResponse) => ({
+          ...r,
+          isLiked: r.isBookmarked,
+        }));
+        setCards(mapped);
       } catch (err) {
         console.error('로드맵 불러오기 실패:', err);
+        setCards([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchRoadmaps();
-  }, [activeTab, member, API_BASE_URL]);
+  }, [activeTab, member?.id]);
 
   const mapType = (roadmap: RoadmapResponse): '공개' | '비공개' | '공유' => {
     if (roadmap.roadmapType === 'SHARED') return '공유';
@@ -55,35 +65,54 @@ export default function MypagePost({
   };
 
   const filteredCards = cards.filter((card) => {
-    const titleMatch = card.title
-      .toLowerCase()
-      .includes(searchKeyword.toLowerCase());
-    const authorMatch = card.member?.nickname
-      ?.toLowerCase()
-      .includes(searchKeyword.toLowerCase());
-    return titleMatch || authorMatch;
+    const keyword = searchKeyword.toLowerCase();
+    return (
+      card.title.toLowerCase().includes(keyword) ||
+      card.member?.nickname?.toLowerCase().includes(keyword)
+    );
   });
 
   return (
-    <div className="grid grid-cols-4 gap-6">
-      {filteredCards.map((card) => (
-        <MypageCard
-          key={card.id}
-          title={card.title}
-          date={'2025.07.07'}
-          type={mapType(card)}
-          mapImageUrl={card.thumbnail || '/map.png'}
-          isLiked={card.isLiked}
-          onToggleLike={() => toggleLike(card.id)}
-          {...(activeTab === '좋아요글' && card.member
-            ? {
-                author: card.member.nickname,
-                profileImgUrl:
-                  card.member.profileImage || '/assets/userProfile.png',
-              }
-            : {})}
-        />
-      ))}
+    <div>
+      {isLoading ? (
+        <div className="grid grid-cols-4 gap-6">
+          {Array(1)
+            .fill(null)
+            .map((_, i) => (
+              <MypageCardSkeleton key={i} />
+            ))}
+        </div>
+      ) : activeTab === '참여글' ? (
+        <div className="text-center text-[var(--gray-300)] py-50">
+          해당하는 참여한 글이 없습니다.
+        </div>
+      ) : filteredCards.length === 0 ? (
+        <div className="text-center text-[var(--gray-300)] py-50">
+          해당하는 게시글이 없습니다.
+        </div>
+      ) : (
+        <div className="grid grid-cols-4 gap-6">
+          {filteredCards.map((card) => (
+            <MypageCard
+              key={card.id}
+              id={card.id}
+              title={card.title}
+              date={card.createdAt?.split('T')[0] || ''}
+              type={mapType(card)}
+              mapImageUrl={card.thumbnail || '/map.png'}
+              isLiked={card.isLiked}
+              onToggleLike={() => toggleLike(card.id)}
+              {...(activeTab === '좋아요글' && card.member
+                ? {
+                    author: card.member.nickname,
+                    profileImgUrl:
+                      card.member.profileImage || '/assets/userProfile.png',
+                  }
+                : {})}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

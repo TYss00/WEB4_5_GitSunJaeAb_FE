@@ -54,7 +54,7 @@ export default function Header({ isAdmin = false }: HeaderProps) {
     <header className="w-full h-20 px-11 flex items-center justify-between bg-[var(--white)] relative">
       {/* 로고 */}
       <Link
-        href="/"
+        href={!isAdmin ? '/' : '/'}
         className="text-3xl text-[var(--primary-300)] font-[vitro-core]"
       >
         MAPICK
@@ -114,12 +114,16 @@ export default function Header({ isAdmin = false }: HeaderProps) {
         )}
 
         {/* 프로필 이미지 이상하면 여기 확인하기 */}
-        <Image
-          src={profileImage || defaultProfile}
-          alt="User Profile"
-          className="size-[40px] rounded-full object-cover cursor-pointer border border-[var(--gray-100)] hover:ring-2 hover:ring-[var(--primary-300)]"
-          onClick={() => setIsUserModalOpen((prev) => !prev)}
-        />
+        <div className="size-[40px]">
+          <Image
+            width={100}
+            height={100}
+            src={profileImage || defaultProfile}
+            alt="User Profile"
+            className="size-[40px] rounded-full object-cover cursor-pointer border border-[var(--gray-100)] hover:ring-2 hover:ring-[var(--primary-300)]"
+            onClick={() => setIsUserModalOpen((prev) => !prev)}
+          />
+        </div>
       </div>
 
       {/* 알림 모달 */}
@@ -142,7 +146,10 @@ export default function Header({ isAdmin = false }: HeaderProps) {
       {/* 유저프로필 모달 */}
       {isUserModalOpen && (
         <div ref={userRef} className="absolute top-[72px] right-[38px] z-50">
-          <UserModal onClose={() => setIsUserModalOpen(false)} />
+          <UserModal
+            onClose={() => setIsUserModalOpen(false)}
+            isAdmin={isAdmin}
+          />
         </div>
       )}
     </header>

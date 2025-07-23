@@ -1,13 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { Folder, ImagePlus } from 'lucide-react';
 import CategoryAddCard from '@/components/admin/CategoryAddCard';
-import Button from '../ui/Button';
 import { Category } from '@/types/admin';
-import Input from '../ui/Input';
 import CategoryCard from './CategoryCard';
+import axiosInstance from '@/libs/axios';
+import CategoryFormCard from './CategoryFormCard';
 
 export default function CategoryManage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -22,22 +20,18 @@ export default function CategoryManage() {
     image: File | null;
   }>({ name: '', image: null });
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}categories`);
-        const data = await res.json();
-        setCategories(data.categories);
+        const res = await axiosInstance.get('/categories');
+        setCategories(res.data.categories);
       } catch (error) {
         console.error('카테고리 불러오기 실패:', error);
       }
     };
     fetchCategories();
-  }, [API_BASE_URL]);
+  }, []);
 
-  // 요청 확인용 - 나중에 데이터들어가는지 확인
   const handleSubmit = async () => {
     if (!newCategory.name.trim()) {
       alert('카테고리 이름을 입력하세요');
@@ -47,27 +41,29 @@ export default function CategoryManage() {
     try {
       const formData = new FormData();
       formData.append('name', newCategory.name);
-      formData.append('description', '테스트용 설명');
+      formData.append('description', '설명 미구현');
       if (newCategory.image) {
         formData.append('image', newCategory.image);
       }
 
-      const res = await fetch(`${API_BASE_URL}categories`, {
-        method: 'POST',
-        body: formData,
+      const res = await axiosInstance.post('/categories', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       });
 
-      const result = await res.json();
-      console.log('POST 결과:', result);
+      const addedCategory = {
+        ...res.data,
+        name: res.data.name || newCategory.name,
+      };
 
-      if (!res.ok) {
-        throw new Error('카테고리 등록 실패');
-      }
-
-      alert('POST 요청 성공!');
+      setCategories((prev) => [...prev, addedCategory]);
+      setNewCategory({ name: '', image: null });
+      setShowForm(false);
+      alert('카테고리가 성공적으로 추가되었습니다.');
     } catch (error) {
       console.error('POST 요청 실패:', error);
-      alert('POST 요청 실패');
+      alert('카테고리 추가 중 오류가 발생했습니다.');
     }
   };
 
@@ -83,152 +79,115 @@ export default function CategoryManage() {
     }
   };
 
-  const handleEditSubmit = (id: number) => {
-    setCategories((prev) =>
-      prev.map((cat) =>
-        cat.id === id
-          ? {
-              ...cat,
-              name: editedCategory.name,
-              categoryImage: editedCategory.image
-                ? URL.createObjectURL(editedCategory.image)
-                : cat.categoryImage,
-            }
-          : cat
-      )
-    );
-    setEditingId(null);
-    setEditedCategory({ name: '', image: null });
+  const handleEditSubmit = async (id: number) => {
+    try {
+      const formData = new FormData();
+      if (editedCategory.image) {
+        formData.append('imageFile', editedCategory.image);
+      }
+
+      const params = new URLSearchParams();
+      params.append('name', editedCategory.name);
+      params.append('description', '설명 미구현');
+
+      const res = await axiosInstance.put(
+        `/categories/${id}?${params.toString()}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+
+      const updatedCategory = res.data;
+
+      setCategories((prev) =>
+        prev.map((cat) =>
+          cat.id === id
+            ? {
+                ...cat,
+                ...updatedCategory,
+                name: updatedCategory.name || editedCategory.name,
+              }
+            : cat
+        )
+      );
+
+      setEditingId(null);
+      setEditedCategory({ name: '', image: null });
+      alert('카테고리 수정이 완료되었습니다.');
+    } catch (err) {
+      console.error('카테고리 수정 실패:', err);
+      alert('카테고리 수정 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleDeleteCategory = async (id: number) => {
+    const confirmDelete = confirm('정말로 이 카테고리를 삭제하시겠습니까?');
+    if (!confirmDelete) return;
+
+    try {
+      await axiosInstance.delete(`/categories/${id}`);
+
+      setCategories((prev) => prev.filter((cat) => cat.id !== id));
+      alert('카테고리가 삭제되었습니다.');
+    } catch (error) {
+      console.error('카테고리 삭제 실패:', error);
+      alert('카테고리 삭제 중 오류가 발생했습니다.');
+    }
   };
 
   return (
     <div className="w-[732px] mx-auto border border-[var(--gray-50)] rounded-[10px] px-[16px] py-[16px]">
-      <h2 className="text-lg font-semibold text-[var(--primary-300)] mb-[16px] flex items-center gap-2">
-        <Folder size={24} className="text-[var(--primary-300)]" />
-        카테고리 관리
-      </h2>
-
       <div className="flex flex-wrap gap-[16px]">
         {categories.map((category) =>
           editingId === category.id ? (
-            <div
-              key={category.id}
-              className="w-[100px] h-[126px] p-2 rounded-md overflow-hidden border border-dashed border-[var(--gray-300)] bg-[var(--white)] flex flex-col justify-between"
-            >
-              <div className="w-full h-[100px] flex items-center justify-center bg-gray-100 relative">
-                {editedCategory.image ? (
-                  <Image
-                    src={URL.createObjectURL(editedCategory.image)}
-                    alt="preview"
-                    fill
-                    className="object-cover"
-                  />
-                ) : (
-                  <label className="text-sm text-[var(--gray-100)] cursor-pointer">
-                    <input
-                      type="file"
-                      className="hidden"
-                      onChange={handleEditImageChange}
-                    />
-                    <ImagePlus className="w-4 h-4 text-[var(--gray-200)] absolute left-1/2 top-1/2 -translate-1/2" />
-                  </label>
-                )}
-              </div>
-              <Input
-                placeholder="제목"
-                value={editedCategory.name}
-                onChange={(e) =>
-                  setEditedCategory({ ...editedCategory, name: e.target.value })
-                }
-                className="text-sm py-[2px] placeholder:text-xs"
-              />
-              <div className="flex justify-between mt-1 gap-1">
-                <Button
-                  buttonStyle="smGreen"
-                  className="text-[12px] py-[2px] px-[8px] h-[24px] w-full"
-                  onClick={() => handleEditSubmit(category.id)}
-                >
-                  등록
-                </Button>
-                <Button
-                  buttonStyle="white"
-                  className="text-[12px] py-[2px] px-[8px] h-[24px] w-full"
-                  onClick={() => setEditingId(null)}
-                >
-                  취소
-                </Button>
-              </div>
-            </div>
+            <CategoryFormCard
+              key={`edit-${category.id}`}
+              name={editedCategory.name}
+              image={editedCategory.image}
+              onNameChange={(name) =>
+                setEditedCategory((prev) => ({ ...prev, name }))
+              }
+              onImageChange={handleEditImageChange}
+              onSubmit={() => handleEditSubmit(category.id)}
+              onCancel={() => setEditingId(null)}
+            />
           ) : (
             <CategoryCard
-              key={category.id}
+              key={`view-${category.id}`}
               category={category}
-              isEditing={false}
-              editedCategory={editedCategory}
-              setEditedCategory={setEditedCategory}
-              handleEditImageChange={handleEditImageChange}
-              handleEditSubmit={handleEditSubmit}
-              onEditClick={(cat: Category) => {
+              onEditClick={(cat) => {
                 setEditingId(cat.id);
                 setEditedCategory({ name: cat.name, image: null });
               }}
-              cancelEdit={() => setEditingId(null)}
-              onComplete={() => {}}
+              onDelete={() => handleDeleteCategory(category.id)}
             />
           )
         )}
 
         {showForm ? (
-          <div className="w-[100px] h-[126px] p-2 rounded-md overflow-hidden border border-dashed border-[var(--gray-300)] bg-[var(--white)] flex flex-col justify-between">
-            <div className="w-full h-[100px] flex items-center justify-center bg-gray-100 relative">
-              {newCategory.image ? (
-                <Image
-                  src={URL.createObjectURL(newCategory.image)}
-                  alt="preview"
-                  fill
-                  className="object-cover"
-                />
-              ) : (
-                <label className="text-sm text-[var(--gray-100)] cursor-pointer">
-                  <input
-                    type="file"
-                    className="hidden"
-                    onChange={handleImageChange}
-                  />
-                  <ImagePlus className="w-4 h-4 text-[var(--gray-200)] absolute left-1/2 top-1/2 -translate-1/2" />
-                </label>
-              )}
-            </div>
-            <Input
-              placeholder="제목"
-              value={newCategory.name}
-              onChange={(e) =>
-                setNewCategory({ ...newCategory, name: e.target.value })
-              }
-              className="text-sm py-[2px] placeholder:text-xs"
-            />
-            <div className="flex justify-between mt-1 gap-1">
-              <Button
-                buttonStyle="smGreen"
-                className="text-[12px] py-[2px] px-[8px] h-[24px]"
-                onClick={handleSubmit}
-              >
-                등록
-              </Button>
-              <Button
-                buttonStyle="white"
-                className="text-[12px] py-[2px] px-[8px] h-[24px]"
-                onClick={() => {
-                  setShowForm(false);
-                  setNewCategory({ name: '', image: null });
-                }}
-              >
-                취소
-              </Button>
-            </div>
-          </div>
+          <CategoryFormCard
+            key="new-category-form"
+            name={newCategory.name}
+            image={newCategory.image}
+            onNameChange={(name) =>
+              setNewCategory((prev) => ({ ...prev, name }))
+            }
+            onImageChange={handleImageChange}
+            onSubmit={handleSubmit}
+            onCancel={() => {
+              setShowForm(false);
+              setNewCategory({ name: '', image: null });
+            }}
+          />
         ) : (
-          <CategoryAddCard type="category" onClick={() => setShowForm(true)} />
+          <CategoryAddCard
+            key="category-add-button"
+            type="category"
+            onClick={() => setShowForm(true)}
+          />
         )}
       </div>
     </div>
