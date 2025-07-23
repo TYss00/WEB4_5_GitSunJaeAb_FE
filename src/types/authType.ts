@@ -9,6 +9,7 @@ export type User = {
   createdAt: string;
   updatedAt?: string | null;
   deletedAt?: string | null;
+  loginCount: number;
 };
 
 export type SignupFormData = {
