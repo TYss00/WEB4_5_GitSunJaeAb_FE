@@ -46,6 +46,7 @@ export default function Header({ isAdmin = false }: HeaderProps) {
     { name: '사용자 관리', href: '/admin/users' },
     { name: '기타 관리', href: '/admin/manage' },
     { name: '공유지도', href: '/admin/sharemap' },
+    { name: '관리자공지', href: '/admin/notice' },
   ];
 
   const navItems = isAdmin ? adminNavItems : userNavItems;
@@ -85,15 +86,15 @@ export default function Header({ isAdmin = false }: HeaderProps) {
 
       {/* 우측 아이콘 */}
       <div className="flex items-center gap-6 text-[var(--black)]">
-        {/* 알림 아이콘 */}
-        <Bell
-          size={30}
-          strokeWidth={1.7}
-          className="cursor-pointer hover:text-[var(--primary-300)]"
-          onClick={handleNoti}
-        />
         {!isAdmin && (
           <>
+            {/* 알림 아이콘 */}
+            <Bell
+              size={30}
+              strokeWidth={1.7}
+              className="cursor-pointer hover:text-[var(--primary-300)]"
+              onClick={handleNoti}
+            />
             {/* 검색 아이콘 or 닫기 아이콘 */}
             {isSearchOpen ? (
               <X
@@ -127,7 +128,7 @@ export default function Header({ isAdmin = false }: HeaderProps) {
       </div>
 
       {/* 알림 모달 */}
-      {isNotiOpen && (
+      {!isAdmin && isNotiOpen && (
         <div ref={notiRef} className="absolute top-[72px] right-[80px] z-50">
           <Notification onClose={() => setIsNotiOpen(false)} />
         </div>
