@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Heart,
   Siren,
@@ -19,18 +19,63 @@ import LayerDetail from '../ui/layer/LayerDetail'
 import MarkerDetail from '../ui/layer/MarkerDetail'
 import useSidebar from '@/utils/useSidebar'
 import { useRouter } from 'next/navigation'
-import { HashtagProps, RoadmapDetailProps } from '@/types/type'
+import { HashtagProps } from '@/types/type'
 import RoadMapGoogleDetail from './RoadMapGoogleDetail'
+import axiosInstance from '@/libs/axios'
 
-export default function Loadmapdetail({
-  roadMapInfo,
-  layerInfo,
-  markersByLayer,
-  commentsInfo,
-}: RoadmapDetailProps) {
+export default function Loadmapdetail({ roadmapId }: { roadmapId: string }) {
+  const [loading, setLoading] = useState(true)
+  const [data, setData] = useState(null)
+
   const router = useRouter()
   const [isReportOpen, setIsReportOpen] = useState(false)
   const { isOpen, toggle, close } = useSidebar()
+
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const [roadmapRes, layersRes, commentsRes] = await Promise.all([
+          axiosInstance.get(`/roadmaps/${roadmapId}`),
+          axiosInstance.get(`/layers/roadmap?roadmapId=${roadmapId}`),
+          axiosInstance.get(`/comments/roadmaps?roadmapId=${roadmapId}`),
+        ])
+
+        const layerIds = layersRes.data.layers.map((layer) => layer.id)
+
+        const markerRes = await Promise.all(
+          layerIds.map((id) => axiosInstance.get(`/markers?layerId=${id}`))
+        )
+
+        const markersByLayer = layerIds.map((id, index) => ({
+          layerId: id,
+          markers: markerRes[index].data.markers,
+        }))
+
+        setData({
+          roadmap: roadmapRes.data.roadmap,
+          layers: layersRes.data.layers,
+          comments: commentsRes.data.comments,
+          markersByLayer,
+        })
+      } catch (e) {
+        console.error('데이터 요청 실패:', e)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchAll()
+  }, [roadmapId])
+
+  if (loading) return <div>로딩 중...</div>
+  if (!data) return <div>데이터 없음</div>
+
+  const {
+    roadmap: roadMapInfo,
+    layers: layerInfo,
+    comments: commentsInfo,
+    markersByLayer,
+  } = data
 
   return (
     <>
