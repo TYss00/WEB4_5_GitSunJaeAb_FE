@@ -10,11 +10,12 @@ export default function InterestTab() {
   const member = useProfileStore((state) => state.member);
   const [allCategories, setAllCategories] = useState<Category[]>([]);
   const [selectedNames, setSelectedNames] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const setSelectedCategoryIds = useProfileEditStore(
     (state) => state.setSelectedCategoryIds
   );
 
-  // 전체 카테고리 불러오기
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -22,12 +23,13 @@ export default function InterestTab() {
         setAllCategories(res.data.categories);
       } catch (err) {
         console.error('카테고리 불러오기 실패:', err);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchCategories();
   }, []);
 
-  // 멤버의 기존 관심 카테고리 → 선택 목록 초기화
   useEffect(() => {
     if (!member) return;
     const names =
@@ -36,7 +38,6 @@ export default function InterestTab() {
     setSelectedNames(names);
   }, [member]);
 
-  // 선택된 name → id 배열 저장
   useEffect(() => {
     const selectedIds = allCategories
       .filter((cat) => selectedNames.includes(cat.name))
@@ -54,21 +55,32 @@ export default function InterestTab() {
 
   return (
     <div className="mt-7 h-[300px]">
-      {/* 제목 및 버튼 렌더링 생략 */}
+      <div className="flex justify-center">
+        <p className="w-[105px] text-3xl text-[var(--primary-300)] mb-14 font-bold border-b-2 border-[var(--primary-300)]">
+          관심분야
+        </p>
+      </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 gap-3 max-h-[300px] overflow-y-auto pr-2">
-        {allCategories.map((category) => (
-          <button
-            key={category.id}
-            onClick={() => toggleCategory(category.name)}
-            className={`w-full px-4 py-2 rounded-full text-sm border transition text-center ${
-              selectedNames.includes(category.name)
-                ? 'bg-[var(--primary-300)] text-white border-[var(--primary-300)]'
-                : 'border-[var(--gray-200)] text-[var(--gray-400)]'
-            }`}
-          >
-            {category.name}
-          </button>
-        ))}
+        {isLoading
+          ? Array.from({ length: 9 }).map((_, i) => (
+              <div
+                key={i}
+                className="w-full h-[36px] animate-pulse bg-[var(--gray-100)] rounded-full"
+              />
+            ))
+          : allCategories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => toggleCategory(category.name)}
+                className={`w-full px-4 py-2 rounded-full text-sm border transition text-center ${
+                  selectedNames.includes(category.name)
+                    ? 'bg-[var(--primary-300)] text-white border-[var(--primary-300)]'
+                    : 'border-[var(--gray-200)] text-[var(--gray-400)]'
+                }`}
+              >
+                {category.name}
+              </button>
+            ))}
       </div>
     </div>
   );

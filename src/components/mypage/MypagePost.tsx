@@ -3,9 +3,8 @@
 import { useEffect, useState } from 'react';
 import MypageCard from '../ui/card/MypageCard';
 import { MypagePostProps, RoadmapResponse } from '@/types/myprofile';
-import { useProfileStore } from '@/store/profileStore';
 import axiosInstance from '@/libs/axios';
-import MypageCardSkeleton from './MypageCardSkeleton';
+import MypageCardSkeleton from './skeleton/MypageCardSkeleton';
 
 export default function MypagePost({
   activeTab,
@@ -13,16 +12,14 @@ export default function MypagePost({
 }: MypagePostProps) {
   const [cards, setCards] = useState<RoadmapResponse[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { member } = useProfileStore();
 
   useEffect(() => {
-    if (!member?.id) return;
     const fetchRoadmaps = async () => {
       setIsLoading(true);
       try {
         let url = '';
         if (activeTab === '작성글') {
-          url = `/roadmaps/member?memberId=${member.id}`;
+          url = `/roadmaps/member`;
         } else if (activeTab === '좋아요글') {
           url = `/bookmarks/bookmarkedRoadmaps`;
         } else {
@@ -32,10 +29,12 @@ export default function MypagePost({
         }
 
         const res = await axiosInstance.get(url);
+
         const mapped = res.data.roadmaps.map((r: RoadmapResponse) => ({
           ...r,
           isLiked: r.isBookmarked,
         }));
+
         setCards(mapped);
       } catch (err) {
         console.error('로드맵 불러오기 실패:', err);
@@ -46,7 +45,7 @@ export default function MypagePost({
     };
 
     fetchRoadmaps();
-  }, [activeTab, member?.id]);
+  }, [activeTab]);
 
   const mapType = (roadmap: RoadmapResponse): '공개' | '비공개' | '공유' => {
     if (roadmap.roadmapType === 'SHARED') return '공유';
@@ -56,12 +55,34 @@ export default function MypagePost({
     return '공개';
   };
 
-  const toggleLike = (id: number) => {
+  const toggleLike = async (roadmapId: number) => {
+    const card = cards.find((c) => c.id === roadmapId);
+    const wasLiked = card?.isLiked;
+    const likeId = card?.likeId;
+
     setCards((prev) =>
       prev.map((card) =>
-        card.id === id ? { ...card, isLiked: !card.isLiked } : card
+        card.id === roadmapId ? { ...card, isLiked: !card.isLiked } : card
       )
     );
+
+    try {
+      if (!wasLiked) {
+        await axiosInstance.post(`/bookmarks/${roadmapId}`);
+      } else if (likeId) {
+        await axiosInstance.delete(`/bookmarks/${likeId}`);
+      } else {
+        throw new Error('likeId가 없어 삭제할 수 없습니다.');
+      }
+    } catch (err) {
+      console.error('좋아요 토글 실패:', err);
+      alert('좋아요 처리 중 오류가 발생했습니다.');
+      setCards((prev) =>
+        prev.map((card) =>
+          card.id === roadmapId ? { ...card, isLiked: wasLiked } : card
+        )
+      );
+    }
   };
 
   const filteredCards = cards.filter((card) => {
