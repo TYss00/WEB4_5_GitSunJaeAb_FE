@@ -8,7 +8,7 @@ export default function LandingHeader() {
 
   const handleRouter = (path: string) => {
     ScrollTrigger.getAll().forEach((t) => t.kill());
-    router.push(path);
+    router.push(path, { scroll: false });
   };
 
   const handleScrollTop = () => {
