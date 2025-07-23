@@ -97,7 +97,7 @@ export default function MypagePost({
     <div>
       {isLoading ? (
         <div className="grid grid-cols-4 gap-6">
-          {Array(4)
+          {Array(1)
             .fill(null)
             .map((_, i) => (
               <MypageCardSkeleton key={i} />
