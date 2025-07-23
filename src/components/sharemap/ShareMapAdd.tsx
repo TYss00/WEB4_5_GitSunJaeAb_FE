@@ -9,12 +9,17 @@ import Link from 'next/link';
 import { geocodeAddress } from '@/libs/geocode';
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import DaumPostcodeEmbed from 'react-daum-postcode';
+import { CategoryInfo } from '@/types/type';
+
+interface ShareMapAddProps {
+  categories: CategoryInfo[];
+}
 
 export interface AddressData {
   address: string;
 }
 
-export default function ShareMapAdd() {
+export default function ShareMapAdd({ categories }: ShareMapAddProps) {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!,
   });
@@ -22,14 +27,17 @@ export default function ShareMapAdd() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [region, setRegion] = useState('');
-  const [categoryId, setCategoryId] = useState<number>(9007199254740991); // 카테고리 선택 시 이 값 바꿔도 됨
+  const [categoryId, setCategoryId] = useState<number | null>(null);
   const thumbnail =
     'https://cdn.pixabay.com/photo/2023/06/04/20/21/cat-8040862_1280.jpg';
   const isPublic = true;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
-
   const mapRef = useRef<google.maps.Map | null>(null);
+
+  const [tagInput, setTagInput] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
 
   const handleComplete = async (data: AddressData) => {
     const fullAddress = data.address;
@@ -45,6 +53,17 @@ export default function ShareMapAdd() {
     } catch (err) {
       console.error('지오코딩 실패:', err);
     }
+  };
+
+  const handleAddTag = () => {
+    const newTag = tagInput.trim();
+    if (!newTag || tags.includes(newTag)) return;
+    setTags([...tags, newTag]);
+    setTagInput('');
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
   const handleSubmit = async () => {
@@ -65,6 +84,7 @@ export default function ShareMapAdd() {
           region,
           lat: center.lat,
           lng: center.lng,
+          hashtags: tags.map((tag) => ({ name: tag })),
         },
       });
 
@@ -76,7 +96,6 @@ export default function ShareMapAdd() {
 
   return (
     <section className="flex h-screen overflow-hidden">
-      {/* 왼쪽 지도 구글맵 api로 여기서 구현 */}
       <div className="w-4/6 bg-gray-200 relative">
         {isLoaded && (
           <GoogleMap
@@ -182,7 +201,31 @@ export default function ShareMapAdd() {
           />
         </div>
 
-        {/* 카테고리 구현해야함 */}
+        {/* 카테고리(로드맵꺼 복사) */}
+        <div className="space-y-2">
+          <label className="text-lg text-black">카테고리</label>
+          <div className="relative">
+            <select
+              className="w-full h-[40px] text-sm border border-[#E4E4E4] rounded px-3 appearance-none"
+              value={categoryId ?? ''}
+              onChange={(e) => setCategoryId(Number(e.target.value))}
+            >
+              <option value="" disabled hidden>
+                카테고리를 선택해주세요.
+              </option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+
+            <ChevronDown
+              size={18}
+              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-black"
+            />
+          </div>
+        </div>
 
         {/* 해시태그 */}
         <div className="space-y-2">
@@ -192,21 +235,38 @@ export default function ShareMapAdd() {
               type="text"
               placeholder="해시태그 추가"
               className="h-[40px] border-[#E4E4E4] rounded-md"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddTag();
+                }
+              }}
             />
             <Button
               buttonStyle="smGreen"
               className="w-[80px] h-[40px] text-3xl font-medium"
+              onClick={handleAddTag}
             >
               <Plus size={25} />
             </Button>
           </div>
-          <div className="flex gap-2 text-sm text-[#005C54] mt-1">
-            <span>
-              #태그1 <button className="ml-1 text-black">×</button>
-            </span>
-            <span>
-              #태그2 <button className="ml-1 text-black">×</button>
-            </span>
+          <div className="flex flex-wrap gap-2 text-sm text-[#005C54] mt-1">
+            {tags.map((tag) => (
+              <span
+                key={tag}
+                className="bg-[#E4F4F2] px-2 py-1 rounded flex items-center"
+              >
+                #{tag}
+                <button
+                  className="ml-1 text-black"
+                  onClick={() => handleRemoveTag(tag)}
+                >
+                  ×
+                </button>
+              </span>
+            ))}
           </div>
         </div>
 
