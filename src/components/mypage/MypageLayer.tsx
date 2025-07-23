@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Layer, LayerWithTitle } from '@/types/myprofile';
+import { Layer } from '@/types/myprofile';
 import axiosInstance from '@/libs/axios';
 
 export default function MypageLayer({
@@ -9,38 +9,14 @@ export default function MypageLayer({
 }: {
   searchKeyword: string;
 }) {
-  const [layers, setLayers] = useState<LayerWithTitle[]>([]);
+  const [layers, setLayers] = useState<Layer[]>([]);
 
   useEffect(() => {
     const fetchLayers = async () => {
       try {
         const res = await axiosInstance.get('/layers/member');
         const fetchedLayers: Layer[] = res.data.layers;
-
-        const roadmapIds = [
-          ...new Set(
-            fetchedLayers
-              .map((layer) => layer.roadmap)
-              .filter((id): id is number => typeof id === 'number')
-          ),
-        ];
-
-        const titleMap: Record<number, string> = {};
-        await Promise.all(
-          roadmapIds.map(async (id) => {
-            const res = await axiosInstance.get(`/roadmaps/${id}`);
-            titleMap[id] = res.data.roadmap.title;
-          })
-        );
-
-        const layersWithTitle: LayerWithTitle[] = fetchedLayers.map(
-          (layer) => ({
-            ...layer,
-            roadmapTitle: layer.roadmap ? titleMap[layer.roadmap] : undefined,
-          })
-        );
-
-        setLayers(layersWithTitle);
+        setLayers(fetchedLayers);
       } catch (err) {
         console.error('레이어 데이터 불러오기 실패:', err);
       }
@@ -68,7 +44,7 @@ export default function MypageLayer({
     return (
       layer.member.nickname.toLowerCase().includes(keyword) ||
       layer.name.toLowerCase().includes(keyword) ||
-      layer.roadmapTitle?.toLowerCase().includes(keyword)
+      layer.roadmap?.title?.toLowerCase().includes(keyword)
     );
   });
 
@@ -83,7 +59,6 @@ export default function MypageLayer({
           <th className="py-3 px-4">작성자</th>
           <th className="py-3 px-4">레이어명</th>
           <th className="py-3 px-4">적용된 게시글</th>
-          <th className="py-3 px-4">수정</th>
           <th className="py-3 px-4">삭제</th>
         </tr>
       </thead>
@@ -95,12 +70,7 @@ export default function MypageLayer({
           >
             <td className="py-3 px-4">{layer.member.nickname}</td>
             <td className="py-3 px-4">{layer.name}</td>
-            <td className="py-3 px-4">{layer.roadmapTitle || '제목 없음'}</td>
-            <td className="py-3 px-4">
-              <button className="text-[13px] text-[var(--primary-300)] underline cursor-pointer">
-                수정
-              </button>
-            </td>
+            <td className="py-3 px-4">{layer.roadmap?.title ?? '제목 없음'}</td>
             <td className="py-3 px-4">
               <button
                 onClick={() => handleDelete(layer.id)}
