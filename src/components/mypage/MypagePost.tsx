@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import MypageCard from '../ui/card/MypageCard';
 import { MypagePostProps, RoadmapResponse } from '@/types/myprofile';
 import axiosInstance from '@/libs/axios';
-import MypageCardSkeleton from './MypageCardSkeleton';
+import MypageCardSkeleton from './skeleton/MypageCardSkeleton';
 
 export default function MypagePost({
   activeTab,
