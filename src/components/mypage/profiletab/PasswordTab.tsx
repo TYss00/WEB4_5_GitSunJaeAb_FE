@@ -15,7 +15,7 @@ export default function PasswordTab() {
   return (
     <div className="mt-7">
       <div className="flex justify-center">
-        <p className="w-[170px] text-3xl text-[var(--primary-300)] mb-14 font-bold border-b-2 border-[var(--primary-300)]">
+        <p className="w-[165px] text-3xl text-[var(--primary-300)] mb-14 font-bold border-b-2 border-[var(--primary-300)]">
           비밀번호 변경
         </p>
       </div>
