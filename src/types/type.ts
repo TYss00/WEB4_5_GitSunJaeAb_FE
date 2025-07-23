@@ -82,9 +82,16 @@ export type LayerEditProps = {
   deleteMarker: (layer: string, markerId: number) => void;
   addMarkerByAddress: (layer: string, address: string) => void;
 };
+
 export type LayerDetailProps = {
   title: string;
   children: ReactNode;
+  defaultOpen?: boolean;
+};
+
+export type ShareLayerEditProps = {
+  title: string;
+  isTextArea?: boolean;
   defaultOpen?: boolean;
 };
 
