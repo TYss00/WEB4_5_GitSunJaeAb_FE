@@ -5,7 +5,7 @@ import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import { Calendar, ChevronLeft, Eye, Heart, MapPin, Siren } from 'lucide-react';
 import ReportModal from '../common/modal/ReportModal';
-import Comment from '../comment/Comment';
+// import Comment from '../comment/Comment';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -76,7 +76,7 @@ export default function ShareMapDetail() {
         <div className="flex gap-6">
           <section className="flex-1">
             <div className="w-full h-[360px] py-4 rounded-md flex items-center justify-center">
-              <Comment postId="adf" />
+              {/* <Comment postId="adf" /> */}
             </div>
           </section>
 

@@ -40,9 +40,9 @@ const useShareStore = create<WithLiveblocks<ShareState>>()(
   liveblocks(
     (set, get) => ({
       layers: [
-        { id: 1, name: '레이어 1(이름 변경 가능)' },
-        { id: 2, name: '레이어 2(이름 변경 가능)' },
-        { id: 3, name: '레이어 3(이름 변경 가능)' },
+        { id: 1, name: '레이어 1' },
+        { id: 2, name: '레이어 2' },
+        { id: 3, name: '레이어 3' },
       ],
 
       addLayer: () => {

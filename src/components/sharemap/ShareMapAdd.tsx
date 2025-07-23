@@ -107,7 +107,7 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
             }}
           />
         )}
-        <div className="absolute top-4 left-8 flex items-center gap-3 px-4 py-2 z-10">
+        <div className="absolute top-2 left-[140px] flex items-center gap-3 px-4 py-2 z-20">
           <Button
             buttonStyle="white"
             icon={<ChevronLeft size={18} />}

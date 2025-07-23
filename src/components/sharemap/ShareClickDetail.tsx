@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   Heart,
   Siren,
@@ -17,23 +17,79 @@ import Button from '../ui/Button';
 import ReportModal from '../common/modal/ReportModal';
 import useSidebar from '@/utils/useSidebar';
 import Link from 'next/link';
-import LayerDetail from '../ui/layer/LayerDetail';
-import MarkerDetail from '../ui/layer/MarkerDetail';
-import Toggle from '../ui/Toggle';
-
 import { useRouter } from 'next/navigation';
+import ShareLayerDetail from '../ui/layer/ShareLayerDetail';
+import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
 
 export default function ShareClickDetail() {
   const router = useRouter();
   const [isReportOpen, setIsReportOpen] = useState(false);
   const { isOpen, toggle, close } = useSidebar();
 
+  const layers = [
+    {
+      id: 1,
+      name: '맛집 레이어',
+      markers: [
+        {
+          id: 101,
+          name: '이태원 맛집',
+          address: '서울시 용산구 이태원로 123',
+          description: '수제버거가 맛있는 집',
+          lat: 37.534,
+          lng: 126.994,
+          color: '#FF5733',
+          imageUrl: '',
+          markerSeq: 0,
+          layer: 1,
+        },
+        {
+          id: 102,
+          name: '홍대 파스타',
+          address: '서울시 마포구 홍익로 45',
+          description: '해장 파스타가 맛있어요',
+          lat: 37.557,
+          lng: 126.923,
+          color: '#33A1FF',
+          imageUrl: '',
+          markerSeq: 1,
+          layer: 1,
+        },
+      ],
+    },
+  ];
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!,
+  });
+  const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
+  const mapRef = useRef<google.maps.Map | null>(null);
+
   return (
     <section className="relative w-full h-screen overflow-hidden">
       {/* 지도 영역 */}
       <div className="absolute inset-0 bg-gray-200 z-0">
+        {isLoaded && (
+          <GoogleMap
+            mapContainerStyle={{ width: '100%', height: '100%' }}
+            center={center}
+            zoom={13}
+            onLoad={(map) => {
+              mapRef.current = map;
+            }}
+          >
+            {layers.flatMap((layer) =>
+              layer.markers.map((marker) => (
+                <Marker
+                  key={marker.id}
+                  position={{ lat: marker.lat, lng: marker.lng }}
+                  title={marker.name}
+                />
+              ))
+            )}
+          </GoogleMap>
+        )}
         {/* 왼쪽 상단 버튼 */}
-        <div className="absolute top-4 left-8 flex items-center gap-3 px-4 py-2 z-10">
+        <div className="absolute top-2 left-[140px] flex items-center gap-3 px-4 py-2 z-20">
           <Button
             buttonStyle="white"
             onClick={() => router.back()}
@@ -143,30 +199,21 @@ export default function ShareClickDetail() {
             </div>
           </div>
 
-          {/* 토글 스위치 */}
-          <div className="space-y-3 border-t border-gray-300 pt-5 mb-6">
-            <Toggle label="경로" />
-            <Toggle label="애니메이션" />
-          </div>
-
           {/* 레이어 목록 */}
           <div className="border-t border-[var(--gray-50)] space-y-[15px] mt-4">
             <div className="flex items-center justify-between mt-4 mb-4 mr-3">
               <h3 className="text-xl text-black">레이어 및 마커</h3>
               <Download size={20} className="cursor-pointer text-[#000]" />
             </div>
-            <LayerDetail title="레이어1">
-              <MarkerDetail isTextArea />
-            </LayerDetail>
-            <LayerDetail title="레이어2">
-              <MarkerDetail isTextArea />
-              <MarkerDetail isTextArea />
-              <MarkerDetail isTextArea />
-            </LayerDetail>
-            <LayerDetail title="레이어3">
-              <MarkerDetail isTextArea />
-              <MarkerDetail isTextArea />
-            </LayerDetail>
+
+            {/* 여기서 layers 배열을 기반으로 동적 렌더링 */}
+            {layers.map((layer) => (
+              <ShareLayerDetail
+                key={layer.id}
+                name={layer.name}
+                markers={layer.markers}
+              />
+            ))}
           </div>
 
           {/* 참여하기 버튼 */}
