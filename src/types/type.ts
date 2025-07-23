@@ -10,6 +10,7 @@ export type CategoryAddCardProps = {
 };
 
 export type RoadMapCardProps = {
+  id?: number;
   category: string;
   mapImageUrl: string;
   title: string;
@@ -23,6 +24,7 @@ export type RoadMapCardProps = {
 };
 
 export type QuestCardProps = {
+  id?: number;
   isInProgress?: boolean;
   mapImageUrl: string;
   title: string;
@@ -34,6 +36,7 @@ export type QuestCardProps = {
 };
 
 export type ShareMapCardProps = {
+  id?: number;
   isEvent?: boolean;
   title: string;
   mapImageUrl: string;

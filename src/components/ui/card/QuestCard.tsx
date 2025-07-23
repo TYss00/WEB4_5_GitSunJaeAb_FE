@@ -1,11 +1,13 @@
-'use client'
+'use client';
 
-import { QuestCardProps } from '@/types/type'
-import { truncateText } from '@/utils/truncateText'
-import { Heart, CalendarDays } from 'lucide-react'
-import { useState } from 'react'
+import { QuestCardProps } from '@/types/type';
+import { truncateText } from '@/utils/truncateText';
+import { Heart, CalendarDays } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function QuestCard({
+  id,
   isInProgress,
   mapImageUrl,
   title,
@@ -15,18 +17,25 @@ export default function QuestCard({
   author,
   deadLine,
 }: QuestCardProps) {
-  const [isLiked, setIsLiked] = useState(false)
+  const [isLiked, setIsLiked] = useState(false);
   const likeHandler = () => {
-    setIsLiked((prev) => !prev)
-  }
-  const labelText = isInProgress ? '진행중' : '마감'
-  const labelColor = isInProgress ? 'var(--primary-300)' : 'var(--gray-200)'
+    setIsLiked((prev) => !prev);
+  };
+  const labelText = isInProgress ? '진행중' : '마감';
+  const labelColor = isInProgress ? 'var(--primary-300)' : 'var(--gray-200)';
 
-  const truncatedTitle = truncateText(title, 16)
-  const truncatedDescription = truncateText(description, 22)
+  const truncatedTitle = truncateText(title, 16);
+  const truncatedDescription = truncateText(description, 22);
+
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push(`/dashbord/quest/detail/${id}`);
+  };
   return (
     <>
       <div
+        onClick={handleClick}
         className="relative flex flex-col w-[350px] h-[278px] border border-[var(--gray-100)] rounded-[10px] overflow-hidden cursor-pointer transition-all duration-300 ease-in-out 
              hover:shadow-lg hover:-translate-y-1"
         style={{
@@ -88,5 +97,5 @@ export default function QuestCard({
         </div>
       </div>
     </>
-  )
+  );
 }

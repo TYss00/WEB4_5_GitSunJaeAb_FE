@@ -1,8 +1,10 @@
 'use client';
 
 import { ShareMapCardProps } from '@/types/type';
+import { useRouter } from 'next/navigation';
 
 export default function ShareMapCard({
+  id,
   isEvent = false,
   title,
   mapImageUrl,
@@ -11,9 +13,15 @@ export default function ShareMapCard({
 }: ShareMapCardProps) {
   const labelText = isEvent ? 'Event' : 'User';
   const labelColor = isEvent ? 'var(--blue)' : 'var(--primary-300)';
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push(`/dashbord/sharemap/detail/${id}`);
+  };
   return (
     <>
       <div
+        onClick={handleClick}
         className={`flex flex-col w-[252px] h-[350px] border border-[var(--gray-100)] rounded-[10px] overflow-hidden cursor-pointer transition-all duration-300 ease-in-out 
              hover:shadow-lg hover:-translate-y-1 bg-white ${className}`}
       >
