@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { useState } from 'react';
 import Button from '@/components/ui/Button';
 import { Calendar, ChevronLeft, Eye, Heart, MapPin, Siren } from 'lucide-react';
-import HistoryModal from './HistoryModal';
 import ReportModal from '../common/modal/ReportModal';
 import Comment from '../comment/Comment';
 import Link from 'next/link';
@@ -12,7 +11,7 @@ import { useRouter } from 'next/navigation';
 
 export default function ShareMapDetail() {
   const router = useRouter();
-  const [showHistoryModal, setShowHistoryModal] = useState(false);
+
   const [isReportOpen, setIsReportOpen] = useState(false);
 
   return (
@@ -61,17 +60,6 @@ export default function ShareMapDetail() {
             군침이 싹도노
           </p>
         </div>
-
-        <div
-          className="flex justify-end text-[15px] text-[#066E65] font-medium mb-[6px] cursor-pointer"
-          onClick={() => setShowHistoryModal(true)}
-        >
-          최근 변경 내역
-        </div>
-
-        {showHistoryModal && (
-          <HistoryModal onClose={() => setShowHistoryModal(false)} />
-        )}
 
         <Link href="/dashbord/sharemap/detail/1/preview">
           <div className="w-full h-[500px] bg-[var(--gray-200)] rounded-[10px] overflow-hidden mb-[30px] relative transition duration-300 hover:brightness-90">
