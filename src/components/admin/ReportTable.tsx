@@ -13,7 +13,7 @@ export default function ReportTable() {
   const [reports, setReports] = useState<DisplayReport[]>([]);
   const [selectedReport, setSelectedReport] = useState<{
     id: number;
-    contentType: '지도' | '퀘스트';
+    contentType: '지도' | '퀘스트' | '마커';
   } | null>(null);
 
   useEffect(() => {
@@ -42,9 +42,10 @@ export default function ReportTable() {
           );
         });
 
-        const getContentType = (report: Report): '지도' | '퀘스트' => {
+        const getContentType = (report: Report): '지도' | '퀘스트' | '마커' => {
           if (report.quest !== null) return '퀘스트';
-          if (report.roadmap !== null || report.marker !== null) return '지도';
+          if (report.marker !== null) return '마커';
+          if (report.roadmap !== null) return '지도';
           return '지도';
         };
 
@@ -153,7 +154,7 @@ export default function ReportTable() {
               <th className="py-2 pl-2">상태</th>
               <th className="py-2 pl-3">조치</th>
               <th className="py-2">종류</th>
-              <th className="text-center py-2">게시글 삭제</th>
+              <th className="text-center py-2">삭제</th>
             </tr>
           </thead>
           <tbody>
