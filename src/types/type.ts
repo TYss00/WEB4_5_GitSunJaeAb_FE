@@ -198,6 +198,10 @@ export type SearchRecord = {
   date: string;
 };
 
+export type CategorySetting = {
+  id: number;
+  name: string;
+};
 export type Marker = {
   id: number;
   name: string;
