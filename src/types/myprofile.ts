@@ -43,16 +43,20 @@ export type RoadmapResponse = {
   };
   isLiked?: boolean;
   createdAt?: string;
+  likeId?: number;
 };
 
 export type Layer = {
   id: number;
   name: string;
-  title: string;
   member: {
+    id: number;
     nickname: string;
   };
-  roadmap: number;
+  roadmap: {
+    id: number;
+    title: string;
+  } | null;
 };
 
 export type LayerWithTitle = Layer & {

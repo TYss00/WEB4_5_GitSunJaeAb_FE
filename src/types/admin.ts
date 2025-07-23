@@ -10,7 +10,7 @@ export type ReportModal = {
   isOpen: boolean;
   onClose: () => void;
   reportId: number | null;
-  contentType: '지도' | '퀘스트' | null;
+  contentType: '지도' | '퀘스트' | '마커' | null;
 };
 
 export type ReportStatus = 'REPORTED' | 'RESOLVED';
@@ -58,7 +58,7 @@ export type DisplayReport = {
   type: string;
   date: string;
   status: '대기' | '완료';
-  contentType: '지도' | '퀘스트';
+  contentType: '지도' | '퀘스트' | '마커';
   roadmap: number | null;
   marker: number | null;
   quest: number | null;
