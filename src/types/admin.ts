@@ -86,14 +86,21 @@ export type UserResponse = {
   members: User[];
 };
 
-export type ManageCardProps<T> = {
-  id: number;
+export interface ManageCardProps<T extends { id: number }> {
   name: string;
-  image: string | null;
-  onEditClick?: (item: T) => void;
-  onDelete?: (item: T) => void;
+  image?: string | null;
+  type: 'category';
   item: T;
-};
+  description?: string;
+  onEditClick?: (item: T) => void;
+  onEditSubmit?: (updatedItem: {
+    id: number;
+    name: string;
+    image: File | null;
+    description: string;
+  }) => void;
+  onDelete?: (item: T) => void;
+}
 
 export type ManageCardFormProps = {
   name: string;

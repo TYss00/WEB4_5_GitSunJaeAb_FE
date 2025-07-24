@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { Category } from '@/types/admin';
 import axiosInstance from '@/libs/axios';
-import ManageCard from './Card/ManageCard';
-import ManageCardFormCard from './Card/ManageCardFormCard';
-import ManageAddCard from './Card/ManageAddCard';
+import ManageCard from './card/ManageCard';
+import ManageCardFormCard from './card/ManageCardFormCard';
+import ManageAddCard from './card/ManageAddCard';
 
 export default function CategoryManage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -91,9 +91,12 @@ export default function CategoryManage() {
         formData.append('imageFile', editedCategory.image);
       }
 
+      const existingDescription =
+        categories.find((cat) => cat.id === id)?.description || '';
+
       const params = new URLSearchParams();
       params.append('name', editedCategory.name);
-      params.append('description', '설명 미구현');
+      params.append('description', existingDescription);
 
       const res = await axiosInstance.put(
         `/categories/${id}?${params.toString()}`,
@@ -108,7 +111,9 @@ export default function CategoryManage() {
       const updatedCategory = res.data;
       const imageUrl =
         updatedCategory.categoryImage ||
-        (editedCategory.image && URL.createObjectURL(editedCategory.image));
+        (editedCategory.image && URL.createObjectURL(editedCategory.image)) ||
+        categories.find((cat) => cat.id === id)?.categoryImage ||
+        '';
 
       setCategories((prev) =>
         prev.map((cat) =>
@@ -117,6 +122,7 @@ export default function CategoryManage() {
                 ...cat,
                 ...updatedCategory,
                 name: updatedCategory.name || editedCategory.name,
+                description: existingDescription,
                 categoryImage: imageUrl,
               }
             : cat
@@ -129,6 +135,58 @@ export default function CategoryManage() {
     } catch (err) {
       console.error('카테고리 수정 실패:', err);
       alert('카테고리 수정 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleModalEditSubmit = async ({
+    id,
+    name,
+    image,
+    description,
+  }: {
+    id: number;
+    name: string;
+    image: File | null;
+    description: string;
+  }) => {
+    try {
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('description', description);
+      if (image) {
+        formData.append('imageFile', image);
+      }
+
+      const res = await axiosInstance.put(`/categories/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const updated = res.data;
+      const imageUrl =
+        updated.categoryImage ||
+        (image && URL.createObjectURL(image)) ||
+        categories.find((c) => c.id === id)?.categoryImage ||
+        '';
+
+      setCategories((prev) =>
+        prev.map((cat) =>
+          cat.id === id
+            ? {
+                ...cat,
+                name: updated.name || name,
+                description: updated.description || description,
+                categoryImage: imageUrl,
+              }
+            : cat
+        )
+      );
+
+      alert('카테고리 수정 완료!');
+    } catch (err) {
+      console.error(err);
+      alert('카테고리 수정 실패');
     }
   };
 
@@ -166,15 +224,17 @@ export default function CategoryManage() {
           ) : (
             <ManageCard
               key={`view-${category.id}`}
-              id={category.id}
               name={category.name}
               image={category.categoryImage}
               item={category}
+              description={category.description}
               onEditClick={(cat) => {
                 setEditingId(cat.id);
                 setEditedCategory({ name: cat.name, image: null });
               }}
+              onEditSubmit={handleModalEditSubmit}
               onDelete={() => handleDeleteCategory(category.id)}
+              type="category"
             />
           )
         )}

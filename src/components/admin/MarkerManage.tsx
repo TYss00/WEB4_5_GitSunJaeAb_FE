@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import axiosInstance from '@/libs/axios';
-import ManageCard from './Card/ManageCard';
-import ManageCardFormCard from './Card/ManageCardFormCard';
-import ManageAddCard from './Card/ManageAddCard';
+import ManageCard from './card/ManageCard';
+import ManageCardFormCard from './card/ManageCardFormCard';
+import ManageAddCard from './card/ManageAddCard';
 import { CustomMarker } from '@/types/admin';
 
 export default function MarkerManage() {
