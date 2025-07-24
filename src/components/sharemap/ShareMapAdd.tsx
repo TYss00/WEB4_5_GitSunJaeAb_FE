@@ -1,15 +1,16 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { ChevronDown, ChevronLeft, Plus } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ImagePlus, Plus } from 'lucide-react';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
-import { api } from '@/libs/api';
 import Link from 'next/link';
 import { geocodeAddress } from '@/libs/geocode';
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import DaumPostcodeEmbed from 'react-daum-postcode';
 import { CategoryInfo } from '@/types/type';
+import axiosInstance from '@/libs/axios';
+import Image from 'next/image';
 
 interface ShareMapAddProps {
   categories: CategoryInfo[];
@@ -28,13 +29,15 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
   const [description, setDescription] = useState('');
   const [region, setRegion] = useState('');
   const [categoryId, setCategoryId] = useState<number | null>(null);
-  const thumbnail =
-    'https://cdn.pixabay.com/photo/2023/06/04/20/21/cat-8040862_1280.jpg';
+  const [thumbnail, setThumbnail] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const isPublic = true;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
   const mapRef = useRef<google.maps.Map | null>(null);
+
+  const [endDate, setEndDate] = useState('');
 
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>([]);
@@ -66,6 +69,19 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
+  const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        const base64Only = result.split(',')[1];
+        setThumbnail(base64Only);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!title || !description || !categoryId) {
       console.log('필수 값을 입력해주세요.');
@@ -73,20 +89,22 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
     }
 
     try {
-      const res = await api('/roadmaps/shared', {
-        method: 'POST',
-        body: {
-          categoryId,
-          title,
-          description,
-          thumbnail,
-          isPublic,
-          region,
-          lat: center.lat,
-          lng: center.lng,
-          hashtags: tags.map((tag) => ({ name: tag })),
-        },
-      });
+      const { lat, lng, city } = await geocodeAddress(region);
+
+      const payload = {
+        categoryId,
+        title,
+        description,
+        thumbnail: thumbnail ?? '',
+        address: city,
+        regionLatitude: lat,
+        regionLongitude: lng,
+        participationEnd: new Date(endDate).toISOString(), // TODO: 날짜 선택값으로 대체
+        hashtags: tags.map((tag) => ({ name: tag })),
+        isPublic,
+      };
+
+      const res = await axiosInstance.post('/roadmaps/shared', payload);
 
       console.log('작성 완료:', res);
     } catch (err) {
@@ -176,6 +194,35 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
           </div>
         </div>
 
+        {/* 썸네일 첨부 */}
+        <div className="space-y-2">
+          <label className="text-lg text-black">썸네일</label>
+          <div
+            className="w-[200px] h-[120px] bg-gray-100 rounded overflow-hidden relative cursor-pointer"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            {thumbnail ? (
+              <Image
+                src={thumbnail}
+                alt="썸네일"
+                fill
+                unoptimized
+                className="object-cover"
+              />
+            ) : (
+              <ImagePlus className="text-gray-300 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
+            )}
+          </div>
+
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={handleThumbnailUpload}
+          />
+        </div>
+
         {/* 주소찾기 모달 */}
         {isModalOpen && (
           <div className="fixed inset-0 bg-black/25 flex justify-center items-center z-50">
@@ -198,6 +245,8 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
             type="date"
             placeholder="기간을 입력해주세요."
             className="h-[40px] border-[#E4E4E4] rounded-md"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
           />
         </div>
 
