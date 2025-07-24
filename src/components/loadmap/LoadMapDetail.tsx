@@ -26,36 +26,23 @@ import axiosInstance from '@/libs/axios'
 export default function Loadmapdetail() {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState(null)
-  const params = useParams()
   const router = useRouter()
   const [isReportOpen, setIsReportOpen] = useState(false)
   const { isOpen, toggle, close } = useSidebar()
+  const params = useParams()
   const roadmapId = params?.id as string
+  const [selectedLayerId, setSelectedLayerId] = useState<number | 'all'>('all')
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [roadmapRes, layersRes, commentsRes] = await Promise.all([
+        const [roadmapRes, commentsRes] = await Promise.all([
           axiosInstance.get(`/roadmaps/${roadmapId}`),
-          axiosInstance.get(`/layers/roadmap?roadmapId=${roadmapId}`),
           axiosInstance.get(`/comments/roadmaps?roadmapId=${roadmapId}`),
         ])
 
-        const layerIds = layersRes.data.layers.map((layer) => layer.id)
-
-        const markerRes = await Promise.all(
-          layerIds.map((id) => axiosInstance.get(`/markers?layerId=${id}`))
-        )
-
-        const markersByLayer = layerIds.map((id, index) => ({
-          layerId: id,
-          markers: markerRes[index].data.markers,
-        }))
-
         setData({
           roadmap: roadmapRes.data.roadmap,
-          layers: layersRes.data.layers,
           comments: commentsRes.data.comments,
-          markersByLayer,
         })
       } catch (e) {
         console.error('데이터 요청 실패:', e)
@@ -65,23 +52,33 @@ export default function Loadmapdetail() {
     }
 
     fetchAll()
+    console.log(data)
   }, [roadmapId])
 
   if (loading) return <div>로딩 중...</div>
   if (!data) return <div>데이터 없음</div>
 
-  const {
-    roadmap: roadMapInfo,
-    layers: layerInfo,
-    comments: commentsInfo,
-    markersByLayer,
-  } = data
+  const { roadmap: roadMapInfo, comments: commentsInfo } = data
+  const defaultCenter = { lat: 37.5665, lng: 126.978 }
 
+  // 선택된 레이어의 마커만 추출
+  const filteredMarkers =
+    selectedLayerId === 'all'
+      ? roadMapInfo.layers.flatMap((item) => item.markers)
+      : roadMapInfo.layers
+          .filter((item) => item.layer.id === selectedLayerId)
+          .flatMap((item) => item.markers)
+
+  // 중심 좌표 계산
+  const center =
+    filteredMarkers.length > 0
+      ? { lat: filteredMarkers[0].lat, lng: filteredMarkers[0].lng }
+      : defaultCenter
   return (
     <>
       <section className="relative w-full h-screen overflow-hidden">
         <div className="absolute inset-0 bg-gray-200 z-0">
-          <RoadMapGoogleDetail />
+          <RoadMapGoogleDetail markers={filteredMarkers} center={center} />
           <div className="absolute top-4 left-8 flex items-center gap-3 px-4 py-2 z-10">
             <Button
               buttonStyle="white"
@@ -97,10 +94,18 @@ export default function Loadmapdetail() {
               <select
                 className="w-full h-[34px] text-sm bg-white border-none rounded pl-3 appearance-none"
                 defaultValue=""
+                onChange={(e) => {
+                  const value = e.target.value
+                  setSelectedLayerId(value === 'all' ? 'all' : parseInt(value))
+                }}
               >
-                <option>전체</option>
-                {layerInfo.map((layer) => {
-                  return <option key={layer.id}>{layer.name}</option>
+                <option value="all">전체</option>
+                {roadMapInfo.layers.map((item) => {
+                  return (
+                    <option key={item.layer.id} value={item.layer.id}>
+                      {item.layer.name}
+                    </option>
+                  )
                 })}
               </select>
 
@@ -193,15 +198,13 @@ export default function Loadmapdetail() {
                 <h3 className="text-xl text-black">레이어 및 마커</h3>
                 <Download size={18} className="cursor-pointer text-gray-600" />
               </div>
-              {markersByLayer.map(({ layerId, markers }) => {
-                const layer = layerInfo.find((l) => l.id === layerId)
-
+              {roadMapInfo.layers.map((item) => {
                 return (
                   <LayerDetail
-                    title={layer?.name ?? `Layer ${layerId}`}
-                    key={layerId}
+                    title={item.layer?.name ?? `Layer ${item.layer.id}`}
+                    key={item.layer.id}
                   >
-                    {markers?.map((marker) => (
+                    {item.markers?.map((marker) => (
                       <MarkerDetail
                         key={marker.id}
                         title={marker.name}

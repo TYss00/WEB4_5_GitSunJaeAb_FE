@@ -1,15 +1,18 @@
 'use client'
-import { GoogleMap, useLoadScript } from '@react-google-maps/api'
+import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api'
 
 const containerStyle = {
   width: '100%',
   height: '100%',
 }
 
-//서울 좌표 기본값
-const defaultCenter = { lat: 37.5665, lng: 126.978 }
-
-export default function RoadMapGoogleDetail() {
+export default function RoadMapGoogleDetail({
+  markers,
+  center,
+}: {
+  markers: any[]
+  center: { lat: number; lng: number }
+}) {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!,
   })
@@ -17,10 +20,14 @@ export default function RoadMapGoogleDetail() {
   if (!isLoaded) return <div>Loading...</div>
 
   return (
-    <GoogleMap
-      mapContainerStyle={containerStyle}
-      center={defaultCenter}
-      zoom={13}
-    ></GoogleMap>
+    <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={13}>
+      {markers.map((marker) => (
+        <Marker
+          key={marker.id}
+          position={{ lat: marker.lat, lng: marker.lng }}
+          title={marker.name}
+        />
+      ))}
+    </GoogleMap>
   )
 }
