@@ -5,12 +5,7 @@ import axiosInstance from '@/libs/axios';
 import ManageCard from './Card/ManageCard';
 import ManageCardFormCard from './Card/ManageCardFormCard';
 import ManageAddCard from './Card/ManageAddCard';
-
-type CustomMarker = {
-  id: number;
-  name: string;
-  markerImage: string;
-};
+import { CustomMarker } from '@/types/admin';
 
 export default function MarkerManage() {
   const [markers, setMarkers] = useState<CustomMarker[]>([]);

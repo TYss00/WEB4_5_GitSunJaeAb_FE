@@ -6,6 +6,12 @@ export type Roadmap = {
   };
 };
 
+export type CustomMarker = {
+  id: number;
+  name: string;
+  markerImage: string;
+};
+
 export type ReportModal = {
   isOpen: boolean;
   onClose: () => void;
