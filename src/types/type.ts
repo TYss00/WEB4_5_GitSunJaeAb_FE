@@ -4,11 +4,6 @@ export type HeaderProps = {
   isAdmin?: boolean;
 };
 
-export type CategoryAddCardProps = {
-  type?: 'category' | 'marker';
-  onClick?: () => void;
-};
-
 export type RoadMapCardProps = {
   id?: number;
   category: string;

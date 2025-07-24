@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import CategoryAddCard from '@/components/admin/CategoryAddCard';
 import { Category } from '@/types/admin';
-import CategoryCard from './CategoryCard';
 import axiosInstance from '@/libs/axios';
-import CategoryFormCard from './CategoryFormCard';
+import ManageCard from './Card/ManageCard';
+import ManageCardFormCard from './Card/ManageCardFormCard';
+import ManageAddCard from './Card/ManageAddCard';
 
 export default function CategoryManage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -52,9 +52,14 @@ export default function CategoryManage() {
         },
       });
 
+      const imageUrl =
+        res.data.categoryImage ||
+        (newCategory.image && URL.createObjectURL(newCategory.image));
+
       const addedCategory = {
         ...res.data,
         name: res.data.name || newCategory.name,
+        categoryImage: imageUrl,
       };
 
       setCategories((prev) => [...prev, addedCategory]);
@@ -101,6 +106,9 @@ export default function CategoryManage() {
       );
 
       const updatedCategory = res.data;
+      const imageUrl =
+        updatedCategory.categoryImage ||
+        (editedCategory.image && URL.createObjectURL(editedCategory.image));
 
       setCategories((prev) =>
         prev.map((cat) =>
@@ -109,6 +117,7 @@ export default function CategoryManage() {
                 ...cat,
                 ...updatedCategory,
                 name: updatedCategory.name || editedCategory.name,
+                categoryImage: imageUrl,
               }
             : cat
         )
@@ -143,7 +152,7 @@ export default function CategoryManage() {
       <div className="flex flex-wrap gap-[16px]">
         {categories.map((category) =>
           editingId === category.id ? (
-            <CategoryFormCard
+            <ManageCardFormCard
               key={`edit-${category.id}`}
               name={editedCategory.name}
               image={editedCategory.image}
@@ -155,9 +164,12 @@ export default function CategoryManage() {
               onCancel={() => setEditingId(null)}
             />
           ) : (
-            <CategoryCard
+            <ManageCard
               key={`view-${category.id}`}
-              category={category}
+              id={category.id}
+              name={category.name}
+              image={category.categoryImage}
+              item={category}
               onEditClick={(cat) => {
                 setEditingId(cat.id);
                 setEditedCategory({ name: cat.name, image: null });
@@ -168,7 +180,7 @@ export default function CategoryManage() {
         )}
 
         {showForm ? (
-          <CategoryFormCard
+          <ManageCardFormCard
             key="new-category-form"
             name={newCategory.name}
             image={newCategory.image}
@@ -183,7 +195,7 @@ export default function CategoryManage() {
             }}
           />
         ) : (
-          <CategoryAddCard
+          <ManageAddCard
             key="category-add-button"
             type="category"
             onClick={() => setShowForm(true)}

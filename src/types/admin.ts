@@ -80,13 +80,16 @@ export type UserResponse = {
   members: User[];
 };
 
-export type CategoryCardProps = {
-  category: Category;
-  onEditClick: (category: Category) => void;
-  onDelete: (category: Category) => void;
+export type ManageCardProps<T> = {
+  id: number;
+  name: string;
+  image: string | null;
+  onEditClick?: (item: T) => void;
+  onDelete?: (item: T) => void;
+  item: T;
 };
 
-export type CategoryCardFormProps = {
+export type ManageCardFormProps = {
   name: string;
   image: File | null;
   onNameChange: (name: string) => void;
@@ -102,4 +105,9 @@ export type UserActionButton = {
   onToggleBlacklist: (id: number) => void;
   onToggleAdminRole: (id: number, role: string) => void;
   onDeleteMember: (id: number) => void;
+};
+
+export type ManageAddCardProps = {
+  type?: 'category' | 'marker';
+  onClick?: () => void;
 };
