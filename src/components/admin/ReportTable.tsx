@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Siren, Filter } from 'lucide-react';
+import { Siren, Filter, MapPin, ClipboardList, Landmark } from 'lucide-react';
 import { DisplayReport, Report, ReportResponse } from '@/types/admin';
 import ReportDetailModal from './ReportDetailModal';
 import axiosInstance from '@/libs/axios';
@@ -164,31 +164,59 @@ export default function ReportTable() {
           </button>
 
           {isFilterOpen && (
-            <div className="absolute right-0 mt-2 bg-white border border-[var(--gray-100)] shadow-md rounded-md w-[150px] z-10 py-2 px-3">
-              <p className="text-center">종류필터</p>
-              {['지도', '퀘스트', '마커'].map((type) => {
-                const isSelected = selectedTypes.includes(type);
-                return (
-                  <label
-                    key={type}
-                    className="flex items-center gap-2 cursor-pointer mb-2 text-sm text-[var(--gray-500)]"
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isSelected}
-                      onChange={() =>
-                        setSelectedTypes((prev) =>
-                          isSelected
-                            ? prev.filter((t) => t !== type)
-                            : [...prev, type]
-                        )
-                      }
-                      className="accent-[var(--primary-300)]"
-                    />
-                    {type}
-                  </label>
-                );
-              })}
+            <div className="absolute right-0 mt-2 bg-white shadow-xl border border-[var(--gray-100)] rounded-xl w-[200px] z-10 px-4 py-3 transition-all duration-200">
+              <div className="flex justify-center items-center gap-1 mb-3">
+                <Filter size={16} className="text-[var(--primary-300)]" />
+                <p className="text-sm font-semibold text-[var(--gray-400)]">
+                  종류 필터
+                </p>
+              </div>
+              <div className="flex flex-col gap-2">
+                {[
+                  { label: '지도', icon: <Landmark size={16} /> },
+                  { label: '퀘스트', icon: <ClipboardList size={16} /> },
+                  { label: '마커', icon: <MapPin size={16} /> },
+                ].map(({ label, icon }) => {
+                  const isSelected = selectedTypes.includes(label);
+                  return (
+                    <label
+                      key={label}
+                      className={`flex items-center justify-between text-sm px-3 py-[6px] rounded-lg cursor-pointer transition-all
+              ${
+                isSelected
+                  ? 'bg-[var(--primary-50)] text-[var(--primary-300)] font-semibold'
+                  : 'text-[var(--gray-500)] hover:bg-[var(--gray-40)]'
+              }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        {icon}
+                        <span>{label}</span>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() =>
+                          setSelectedTypes((prev) =>
+                            isSelected
+                              ? prev.filter((t) => t !== label)
+                              : [...prev, label]
+                          )
+                        }
+                        className="accent-[var(--primary-300)]"
+                      />
+                    </label>
+                  );
+                })}
+              </div>
+
+              {selectedTypes.length > 0 && (
+                <button
+                  onClick={() => setSelectedTypes([])}
+                  className="mt-3 w-full text-sm text-[var(--gray-300)] hover:text-[var(--primary-300)] transition-colors"
+                >
+                  필터 초기화
+                </button>
+              )}
             </div>
           )}
         </div>
