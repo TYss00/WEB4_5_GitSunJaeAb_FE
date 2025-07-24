@@ -119,6 +119,7 @@ export type ManageAddCardProps = {
 };
 
 export type Notice = {
+  announcementType: string;
   id: number;
   title: string;
   content: string;

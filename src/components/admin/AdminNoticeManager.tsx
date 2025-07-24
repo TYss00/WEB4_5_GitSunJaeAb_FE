@@ -15,7 +15,23 @@ export default function AdminNoticeManager() {
     content: string;
   }>(null);
 
+  const TYPE_LABELS: Record<string, string> = {
+    SYSTEM: '시스템',
+    EVENT: '이벤트',
+    UPDATE: '업데이트',
+    ETC: '안내사항',
+  };
+
+  const TYPE_TABS = ['전체', 'SYSTEM', 'EVENT', 'UPDATE', 'ETC'];
+
+  const [selectedTypeTab, setSelectedTypeTab] = useState('전체');
+
   const [notices, setNotices] = useState<Notice[]>([]);
+
+  const filteredNotices =
+    selectedTypeTab === '전체'
+      ? notices
+      : notices.filter((n) => n.announcementType === selectedTypeTab);
 
   const handleOpenModal = () => {
     setEditData(null);
@@ -104,8 +120,25 @@ export default function AdminNoticeManager() {
           </Button>
         </div>
 
+        <div className="flex gap-4 mb-4 text-sm font-semibold text-[var(--gray-300)]">
+          {TYPE_TABS.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setSelectedTypeTab(tab)}
+              className={`px-3 py-1 rounded-full border transition-all
+        ${
+          selectedTypeTab === tab
+            ? 'bg-[var(--primary-300)] text-white border-[var(--primary-300)]'
+            : 'bg-white text-[var(--gray-400)] border-[var(--gray-100)] hover:bg-[var(--gray-50)]'
+        }`}
+            >
+              {tab === '전체' ? '전체' : TYPE_LABELS[tab]}
+            </button>
+          ))}
+        </div>
+
         <div className="space-y-3 max-h-[470px] overflow-y-auto pr-1">
-          {notices.map((n) => (
+          {filteredNotices.map((n) => (
             <div
               key={n.id}
               className="py-3 px-4 border rounded bg-[var(--gray-40)] flex justify-between items-start"
@@ -114,9 +147,13 @@ export default function AdminNoticeManager() {
                 <span className="text-base font-bold text-[var(--gray-400)] w-10 flex justify-center">
                   {n.id}
                 </span>
+
                 <div>
-                  <p className="text-base text-[var(--gray-500)] font-bold">
+                  <p className="text-base text-[var(--gray-500)] font-bold flex items-center gap-2">
                     {n.title}
+                    <span className="text-[12px] px-2 py-[2px] rounded-full bg-[var(--primary-50)] text-[var(--primary-300)] font-semibold">
+                      {TYPE_LABELS[n.announcementType]}
+                    </span>
                   </p>
                   <p className="text-base text-[var(--gray-400)] mt-1">
                     {n.content}
