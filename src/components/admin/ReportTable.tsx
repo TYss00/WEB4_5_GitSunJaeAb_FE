@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Siren } from 'lucide-react';
+import { Siren, Filter } from 'lucide-react';
 import { DisplayReport, Report, ReportResponse } from '@/types/admin';
 import ReportDetailModal from './ReportDetailModal';
 import axiosInstance from '@/libs/axios';
@@ -15,6 +15,8 @@ export default function ReportTable() {
     id: number;
     contentType: '지도' | '퀘스트' | '마커';
   } | null>(null);
+  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -85,12 +87,17 @@ export default function ReportTable() {
     }
   };
 
-  const filteredReports =
-    selectedTab === '전체'
-      ? reports
-      : selectedTab === '대기중'
-      ? reports.filter((r) => r.status === '대기')
-      : reports.filter((r) => r.status === '완료');
+  const filteredReports = reports
+    .filter((r) => {
+      if (selectedTab === '전체') return true;
+      if (selectedTab === '대기중') return r.status === '대기';
+      return r.status === '완료';
+    })
+    .filter((r) => {
+      // 아무것도 선택 안 했으면 전체
+      if (selectedTypes.length === 0) return true;
+      return selectedTypes.includes(r.contentType);
+    });
 
   const handleDelete = async (report: DisplayReport) => {
     const { contentType, roadmap, quest } = report;
@@ -127,20 +134,64 @@ export default function ReportTable() {
         <span className="mt-1">신고 내역</span>
       </div>
 
-      <div className="flex gap-[26px] mb-4 text-[15px] font-medium">
-        {TABS.map((tab) => (
-          <span
-            key={tab}
-            onClick={() => setSelectedTab(tab)}
-            className={`cursor-pointer pb-1 ${
-              selectedTab === tab
-                ? 'text-[var(--primary-300)] border-b-2 border-[var(--primary-300)]'
-                : 'text-[var(--gray-300)]'
-            }`}
+      {/* 탭과 필터 전체 감싸기 */}
+      <div className="flex justify-between items-center mb-4">
+        {/* 왼쪽: 탭 */}
+        <div className="flex gap-[26px] text-[15px] font-medium">
+          {TABS.map((tab) => (
+            <span
+              key={tab}
+              onClick={() => setSelectedTab(tab)}
+              className={`cursor-pointer pb-1 ${
+                selectedTab === tab
+                  ? 'text-[var(--primary-300)] border-b-2 border-[var(--primary-300)]'
+                  : 'text-[var(--gray-300)]'
+              }`}
+            >
+              {tab}
+            </span>
+          ))}
+        </div>
+
+        {/* 오른쪽: 필터 버튼 */}
+        <div className="relative">
+          <button
+            onClick={() => setIsFilterOpen((prev) => !prev)}
+            className="flex items-center gap-1 px-3 py-1 border border-[var(--gray-200)] text-sm rounded-md hover:bg-[var(--primary-50)] transition"
           >
-            {tab}
-          </span>
-        ))}
+            <Filter size={16} />
+            <span>필터</span>
+          </button>
+
+          {isFilterOpen && (
+            <div className="absolute right-0 mt-2 bg-white border border-[var(--gray-100)] shadow-md rounded-md w-[150px] z-10 py-2 px-3">
+              <p className="text-center">종류필터</p>
+              {['지도', '퀘스트', '마커'].map((type) => {
+                const isSelected = selectedTypes.includes(type);
+                return (
+                  <label
+                    key={type}
+                    className="flex items-center gap-2 cursor-pointer mb-2 text-sm text-[var(--gray-500)]"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={() =>
+                        setSelectedTypes((prev) =>
+                          isSelected
+                            ? prev.filter((t) => t !== type)
+                            : [...prev, type]
+                        )
+                      }
+                      className="accent-[var(--primary-300)]"
+                    />
+                    {type}
+                  </label>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
 
       <div>
