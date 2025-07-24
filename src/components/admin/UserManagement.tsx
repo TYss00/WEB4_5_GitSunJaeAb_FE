@@ -119,8 +119,8 @@ export default function UserManagement() {
   return (
     <div className="w-[1000px] h-[530px] bg-[var(--white)] rounded-lg p-4 flex flex-col justify-start border border-[var(--gray-50)]">
       {/* 상단 타이틀 */}
-      <div className="flex items-center gap-2 text-[var(--primary-300)] font-semibold text-[18px] mb-[16px]">
-        <UserCog size={20} className="mr-1" />
+      <div className="flex items-center gap-2 text-[var(--primary-300)] font-bold text-xl mb-[16px]">
+        <UserCog size={25} className="mr-1" />
         사용자 관리
       </div>
 

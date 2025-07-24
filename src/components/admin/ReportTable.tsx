@@ -122,9 +122,9 @@ export default function ReportTable() {
 
   return (
     <div className="w-[1000px] bg-[var(--white)] rounded-lg p-4 flex flex-col justify-start border border-[var(--gray-50)]">
-      <div className="flex items-center gap-[16px] font-semibold text-[var(--primary-300)] mb-[20px]">
-        <Siren className="w-[20px] h-[20px]" />
-        <span className="text-lg">신고 내역</span>
+      <div className="flex items-center gap-2 text-[var(--primary-300)] font-bold text-xl mb-[16px]">
+        <Siren size={25} />
+        <span className="mt-1">신고 내역</span>
       </div>
 
       <div className="flex gap-[26px] mb-4 text-[15px] font-medium">

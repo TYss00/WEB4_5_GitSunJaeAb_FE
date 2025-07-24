@@ -5,6 +5,7 @@ import AdminNoticeModal from './AdminNoticeModal';
 import Button from '@/components/ui/Button';
 import { AdminNoticePayload, Notice } from '@/types/admin';
 import axiosInstance from '@/libs/axios';
+import { Megaphone } from 'lucide-react';
 
 export default function AdminNoticeManager() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -93,14 +94,16 @@ export default function AdminNoticeManager() {
   return (
     <section className="w-[900px] h-[470px] space-y-6">
       <div className="border border-[var(--gray-100)] rounded-lg p-6 space-y-4">
-        <div className="flex justify-between items-center mb-3">
-          <h2 className="text-xl font-bold text-[var(--primary-300)]">
-            관리자 공지 목록
-          </h2>
+        <div className="flex items-center justify-between mb-[20px]">
+          <div className="flex items-center gap-2 text-[var(--primary-300)] font-bold text-xl">
+            <Megaphone size={20} className="mr-1" />
+            관리자공지 관리
+          </div>
           <Button buttonStyle="green" onClick={handleOpenModal}>
             공지 작성
           </Button>
         </div>
+
         <div className="space-y-3 max-h-[470px] overflow-y-auto pr-1">
           {notices.map((n) => (
             <div
