@@ -69,7 +69,7 @@ export type User = {
   name: string;
   nickname: string;
   email: string;
-  role: string;
+  role: 'ROLE_ADMIN' | 'ROLE_USER';
   blacklisted: boolean;
 };
 

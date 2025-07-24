@@ -51,7 +51,7 @@ export default function ReportDetailModal({
             title: detail.roadmap.title,
             description: detail.roadmap.description,
           });
-        } else if (contentType === '마커' && detail.marker) {
+        } else if (contentType === '마커' && detail?.marker) {
           setData({
             title: detail.marker.name,
             description: detail.marker.description,

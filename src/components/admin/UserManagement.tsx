@@ -49,11 +49,15 @@ export default function UserManagement() {
     );
 
   // 블랙리스트 토글
-  const toggleBlacklist = async (id: number) => {
+  const toggleBlacklist = async (id: number, currentStatus: boolean) => {
     setLoadingUserId(id);
     try {
-      const res = await axiosInstance.put(`members/blacklist/${id}`);
+      const res = currentStatus
+        ? await axiosInstance.delete(`members/blacklist/${id}`)
+        : await axiosInstance.put(`members/blacklist/${id}`);
+
       const data = res.data;
+
       setMembers((prev) =>
         prev.map((u) =>
           u.id === id ? { ...u, blacklisted: !u.blacklisted } : u
@@ -70,16 +74,19 @@ export default function UserManagement() {
   };
 
   // 관리자 권한 토글
-  const toggleAdminRole = async (id: number) => {
-    const user = members.find((u) => u.id === id);
-    if (!user) return;
-
+  const toggleAdminRole = async (
+    id: number,
+    currentRole: 'ROLE_ADMIN' | 'ROLE_USER'
+  ) => {
     setLoadingUserId(id);
     try {
-      const res = await axiosInstance.put(`members/role/${id}`);
-      const data = res.data;
+      const res =
+        currentRole === 'ROLE_ADMIN'
+          ? await axiosInstance.delete(`members/role/${id}`)
+          : await axiosInstance.put(`members/role/${id}`);
 
-      const newRole = user.role === 'ROLE_ADMIN' ? 'ROLE_USER' : 'ROLE_ADMIN';
+      const data = res.data;
+      const newRole = currentRole === 'ROLE_ADMIN' ? 'ROLE_USER' : 'ROLE_ADMIN';
 
       setMembers((prev) =>
         prev.map((u) => (u.id === id ? { ...u, role: newRole } : u))
@@ -152,8 +159,8 @@ export default function UserManagement() {
             <col style={{ width: '20%' }} />
             {selectedTab === '전체 사용자' && (
               <>
-                <col style={{ width: '10%' }} />
-                <col style={{ width: '14%' }} />
+                <col style={{ width: '8%' }} />
+                <col style={{ width: '16%' }} />
                 <col style={{ width: '10%' }} />
                 <col style={{ width: '10%' }} />
                 <col style={{ width: '12%' }} />
@@ -180,10 +187,10 @@ export default function UserManagement() {
               {selectedTab === '전체 사용자' && (
                 <>
                   <th className="py-2 px-4">역할</th>
-                  <th className="py-2 px-4">블랙리스트 여부</th>
-                  <th className="py-2 px-2">블랙리스트</th>
-                  <th className="py-2 px-2">관리자 권한</th>
-                  <th className="py-2 px-5 ">회원탈퇴</th>
+                  <th className="py-2 text-center">블랙리스트들</th>
+                  <th className="py-2 px-4">블랙리스트</th>
+                  <th className="py-2 px-4">관리자 권한</th>
+                  <th className="py-2 px-8">회원탈퇴</th>
                 </>
               )}
               {selectedTab === '관리자' && (
@@ -245,8 +252,12 @@ export default function UserManagement() {
                     user={user}
                     selectedTab={selectedTab}
                     loadingUserId={loadingUserId}
-                    onToggleBlacklist={toggleBlacklist}
-                    onToggleAdminRole={toggleAdminRole}
+                    onToggleBlacklist={() =>
+                      toggleBlacklist(user.id, user.blacklisted)
+                    }
+                    onToggleAdminRole={() =>
+                      toggleAdminRole(user.id, user.role)
+                    }
                     onDeleteMember={deleteMember}
                   />
                 </tr>

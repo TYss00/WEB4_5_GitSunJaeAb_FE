@@ -17,9 +17,10 @@ export default function UserActionButtons({
           <td className="py-2 px-4">
             {user.role === 'ROLE_ADMIN' ? '관리자' : '일반'}
           </td>
-          <td className="py-2 px-4 text-center">
-            {user.blacklisted ? 'O' : 'X'}
+          <td className="py-2 px-14">
+            {user.blacklisted ? 'O' : <span className="text-red-500">X</span>}
           </td>
+
           <td className="py-2 px-4 text-center">
             <button
               onClick={() => onToggleBlacklist(user.id)}
