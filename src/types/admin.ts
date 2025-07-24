@@ -117,3 +117,34 @@ export type ManageAddCardProps = {
   type?: 'category' | 'marker';
   onClick?: () => void;
 };
+
+export type Notice = {
+  id: number;
+  title: string;
+  content: string;
+  createdAt: string;
+  member: {
+    id: number;
+    name: string;
+    nickname: string;
+    email: string;
+    profileImage: string;
+  };
+};
+
+export type AdminNoticePayload = {
+  title: string;
+  content: string;
+  announcementType: 'SYSTEM' | 'EVENT' | 'UPDATE' | 'ETC';
+};
+
+export type AdminNoticeProps = {
+  onClose: () => void;
+  initialData?: {
+    id: number;
+    type?: '시스템' | '이벤트' | '업데이트' | '안내사항';
+    title: string;
+    content: string;
+  };
+  onSubmit: (payload: AdminNoticePayload, id?: number) => Promise<void>;
+};

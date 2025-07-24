@@ -4,39 +4,56 @@ import { useEffect, useState } from 'react';
 import { XCircle } from 'lucide-react';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
+import { AdminNoticeProps } from '@/types/admin';
 
-type Props = {
-  onClose: () => void;
-  initialData?: {
-    id: number;
-    type: '시스템' | '이벤트';
-    title: string;
-    content: string;
-  };
+const typeMap: Record<string, string> = {
+  시스템: 'SYSTEM',
+  이벤트: 'EVENT',
+  업데이트: 'UPDATE',
+  안내사항: 'ETC',
 };
 
-export default function AdminNoticeModal({ onClose, initialData }: Props) {
+export default function AdminNoticeModal({
+  onClose,
+  initialData,
+  onSubmit,
+}: AdminNoticeProps) {
   const isEdit = !!initialData;
 
-  const [type, setType] = useState<'시스템' | '이벤트'>('시스템');
+  const [type, setType] = useState<
+    '시스템' | '이벤트' | '업데이트' | '안내사항'
+  >('시스템');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
   useEffect(() => {
     if (initialData) {
-      setType(initialData.type);
+      // 타입이 아직없어서 이처리
+      setType(initialData.type ?? '시스템');
       setTitle(initialData.title);
       setContent(initialData.content);
     }
   }, [initialData]);
 
-  const handleSubmit = () => {
-    if (isEdit) {
-      alert(`✏️ ${type} 공지 수정: ${title}`);
-    } else {
-      alert(`📢 ${type} 공지 등록: ${title}`);
+  const handleSubmit = async () => {
+    const payload = {
+      title,
+      content,
+      announcementType: typeMap[type] as 'SYSTEM' | 'EVENT' | 'UPDATE' | 'ETC',
+    };
+
+    try {
+      if (isEdit) {
+        await onSubmit(payload, initialData.id);
+      } else {
+        await onSubmit(payload);
+      }
+
+      onClose();
+    } catch (err) {
+      console.error('공지 처리 실패:', err);
+      alert('공지 처리 중 오류 발생');
     }
-    onClose();
   };
 
   return (
@@ -54,7 +71,7 @@ export default function AdminNoticeModal({ onClose, initialData }: Props) {
         </div>
 
         <div className="flex gap-4">
-          {['시스템', '이벤트'].map((t) => (
+          {['시스템', '이벤트', '업데이트', '안내사항'].map((t) => (
             <button
               key={t}
               onClick={() => setType(t as '시스템' | '이벤트')}
