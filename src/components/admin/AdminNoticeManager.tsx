@@ -91,7 +91,7 @@ export default function AdminNoticeManager() {
   }, []);
 
   return (
-    <section className="w-[900px] space-y-6">
+    <section className="w-[900px] h-[470px] space-y-6">
       <div className="border border-[var(--gray-100)] rounded-lg p-6 space-y-4">
         <div className="flex justify-between items-center mb-3">
           <h2 className="text-xl font-bold text-[var(--primary-300)]">
@@ -101,55 +101,56 @@ export default function AdminNoticeManager() {
             공지 작성
           </Button>
         </div>
+        <div className="space-y-3 max-h-[470px] overflow-y-auto pr-1">
+          {notices.map((n) => (
+            <div
+              key={n.id}
+              className="py-3 px-4 border rounded bg-[var(--gray-40)] flex justify-between items-start"
+            >
+              <div className="flex gap-4 items-center">
+                <span className="text-base font-bold text-[var(--gray-400)] w-10 flex justify-center">
+                  {n.id}
+                </span>
+                <div>
+                  <p className="text-base text-[var(--gray-500)] font-bold">
+                    {n.title}
+                  </p>
+                  <p className="text-base text-[var(--gray-400)] mt-1">
+                    {n.content}
+                  </p>
+                </div>
+              </div>
 
-        {notices.map((n) => (
-          <div
-            key={n.id}
-            className="py-3 px-4 border rounded bg-[var(--gray-40)] flex justify-between items-start"
-          >
-            <div className="flex gap-4 items-center">
-              <span className="text-base font-bold text-[var(--gray-400)] w-10 flex justify-center">
-                {n.id}
-              </span>
-              <div>
-                <p className="text-base text-[var(--gray-500)] font-bold">
-                  {n.title}
-                </p>
-                <p className="text-base text-[var(--gray-400)] mt-1">
-                  {n.content}
-                </p>
+              <div className="flex flex-col items-end space-y-1">
+                <span className="text-sm text-[var(--gray-300)] whitespace-nowrap">
+                  등록일 : {new Date(n.createdAt).toLocaleDateString('ko-KR')}
+                </span>
+                <div className="flex gap-2">
+                  <Button
+                    buttonStyle="green"
+                    className="text-sm"
+                    onClick={() =>
+                      handleEditModal({
+                        id: n.id,
+                        title: n.title,
+                        content: n.content,
+                      })
+                    }
+                  >
+                    수정
+                  </Button>
+                  <Button
+                    buttonStyle="withIcon"
+                    className="text-[var(--red)] text-sm"
+                    onClick={() => handleDeleteNotice(n.id, n.title)}
+                  >
+                    삭제
+                  </Button>
+                </div>
               </div>
             </div>
-
-            <div className="flex flex-col items-end space-y-1">
-              <span className="text-sm text-[var(--gray-300)] whitespace-nowrap">
-                등록일 : {new Date(n.createdAt).toLocaleDateString('ko-KR')}
-              </span>
-              <div className="flex gap-2">
-                <Button
-                  buttonStyle="green"
-                  className="text-sm"
-                  onClick={() =>
-                    handleEditModal({
-                      id: n.id,
-                      title: n.title,
-                      content: n.content,
-                    })
-                  }
-                >
-                  수정
-                </Button>
-                <Button
-                  buttonStyle="withIcon"
-                  className="text-[var(--red)] text-sm"
-                  onClick={() => handleDeleteNotice(n.id, n.title)}
-                >
-                  삭제
-                </Button>
-              </div>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       {isModalOpen && (
