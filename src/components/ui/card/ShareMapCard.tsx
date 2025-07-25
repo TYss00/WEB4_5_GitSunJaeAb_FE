@@ -1,6 +1,7 @@
 'use client';
 
-import { ShareMapCardProps } from '@/types/type';
+import { ShareMapCardUIProps } from '@/types/share';
+
 import { useRouter } from 'next/navigation';
 
 export default function ShareMapCard({
@@ -8,9 +9,10 @@ export default function ShareMapCard({
   isEvent = false,
   title,
   mapImageUrl,
+  category,
   participants,
   className,
-}: ShareMapCardProps) {
+}: ShareMapCardUIProps) {
   const labelText = isEvent ? 'Event' : 'User';
   const labelColor = isEvent ? 'var(--blue)' : 'var(--primary-300)';
   const router = useRouter();
@@ -33,6 +35,7 @@ export default function ShareMapCard({
             {labelText}
           </span>
           <span className="text-[18px] font-semibold">{title}</span>
+          <span className="text-[14px] text-[#999]">{category}</span>
         </div>
         <div
           className="flex-grow relative"
