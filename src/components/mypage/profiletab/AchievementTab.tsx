@@ -3,17 +3,12 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import axiosInstance from '@/libs/axios';
-
-type Achievement = {
-  id: number;
-  name: string;
-  image: string;
-};
+import { Achievement } from '@/types/myprofile';
+import { Lock } from 'lucide-react';
 
 export default function AchievementTab() {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [achievedIds, setAchievedIds] = useState<number[]>([]);
-  const [selected, setSelected] = useState<number[]>([]);
 
   useEffect(() => {
     const fetchAchievements = async () => {
@@ -35,16 +30,6 @@ export default function AchievementTab() {
     fetchAchievements();
   }, []);
 
-  const toggleSelect = (id: number) => {
-    setSelected((prev) =>
-      prev.includes(id)
-        ? prev.filter((x) => x !== id)
-        : prev.length < 2
-        ? [...prev, id]
-        : prev
-    );
-  };
-
   const achievedCount = achievements.filter((a) =>
     achievedIds.includes(a.id)
   ).length;
@@ -53,8 +38,7 @@ export default function AchievementTab() {
     : 0;
 
   return (
-    <div className="flex flex-col gap-6 mt-4 h-[440px]">
-      {/* 제목, 진행률 */}
+    <div className="flex flex-col gap-6 mt-4 h-[520px]">
       <div className="flex flex-col gap-2">
         <h2 className="text-xl font-semibold text-[var(--gray-800)]">업적</h2>
         <div className="w-full bg-[var(--gray-100)] h-3 rounded-full overflow-hidden">
@@ -69,9 +53,8 @@ export default function AchievementTab() {
         </p>
       </div>
 
-      {/* 업적 리스트 */}
-      <div className="flex flex-col gap-3 max-h-[480px] overflow-y-auto pr-2">
-        {[...achievements]
+      <div className="grid grid-cols-3 gap-4 overflow-y-auto pr-1">
+        {achievements
           .sort((a, b) => {
             const aAch = achievedIds.includes(a.id);
             const bAch = achievedIds.includes(b.id);
@@ -79,39 +62,34 @@ export default function AchievementTab() {
           })
           .map((achieve) => {
             const achieved = achievedIds.includes(achieve.id);
-            const isSelected = selected.includes(achieve.id);
+
             return (
               <div
                 key={achieve.id}
-                className={`flex items-center gap-4 px-4 py-3 border rounded-md cursor-pointer transition ${
-                  achieved
-                    ? isSelected
-                      ? 'bg-[var(--primary-50)] border-[var(--primary-300)]'
-                      : 'bg-white border-[var(--gray-100)]'
-                    : 'bg-[var(--gray-50)] border-[var(--gray-100)] opacity-50'
+                className={`flex flex-col items-center justify-center p-5 rounded-xl border text-center transition-all duration-200 bg-white border-[var(--gray-100)] ${
+                  !achieved ? 'opacity-40' : ''
                 }`}
-                onClick={() => achieved && toggleSelect(achieve.id)}
               >
-                <div className="w-12 h-12 relative">
-                  <Image
-                    src={
-                      achieve.image?.trim() ? achieve.image : '/이미지없다.jpg'
-                    }
-                    alt={achieve.name}
-                    fill
-                    className="object-contain"
-                  />
+                <div className="w-24 h-24 rounded-full overflow-hidden relative mb-3 flex items-center justify-center bg-[var(--gray-100)]">
+                  {achieved ? (
+                    <Image
+                      src={
+                        achieve.image?.trim()
+                          ? achieve.image
+                          : '/이미지없다.jpg'
+                      }
+                      alt={achieve.name}
+                      fill
+                      sizes="96px"
+                      className="object-cover"
+                    />
+                  ) : (
+                    <Lock className="w-8 h-8 text-[var(--gray-400)]" />
+                  )}
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-base font-semibold text-[var(--black)]">
-                    {achieve.name}
-                  </span>
-                </div>
-                {isSelected && (
-                  <span className="ml-auto text-xs text-[var(--primary-300)] font-medium">
-                    프로필 표시 중
-                  </span>
-                )}
+                <span className="text-sm font-medium text-[var(--black)]">
+                  {achieve.name}
+                </span>
               </div>
             );
           })}

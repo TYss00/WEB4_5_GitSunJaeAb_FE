@@ -99,3 +99,9 @@ export type ProfileEditState = {
 
   reset: () => void;
 };
+
+export type Achievement = {
+  id: number;
+  name: string;
+  image: string;
+};

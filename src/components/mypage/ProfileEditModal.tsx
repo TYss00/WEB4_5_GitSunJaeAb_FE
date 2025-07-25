@@ -114,7 +114,6 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
       <div className="w-[500px] h-[700px] px-[25px] pt-[20px] pb-[20px] flex flex-col justify-between items-center gap-[15px] bg-[var(--gray-40)] shadow-[rgba(0,0,0,0.1)_0px_4px_20px] rounded-xl">
-        {/* 닫기 버튼 */}
         <div className="w-full flex justify-end">
           <XCircle
             size={25}
@@ -123,7 +122,6 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
           />
         </div>
 
-        {/* 탭 버튼 */}
         <div className="w-full flex justify-center gap-[15px] mb-2">
           {TABS.map((tab) => (
             <button
@@ -141,7 +139,6 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
           ))}
         </div>
 
-        {/* 탭 내용 */}
         <div
           className={`flex-1 w-full bg-white rounded-lg p-4 ${
             activeTab !== '업적' ? 'p-10 pt-10' : ''
@@ -153,30 +150,31 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
           {activeTab === '업적' && <AchievementTab />}
         </div>
 
-        {/* 하단 버튼 */}
-        <div className="w-full flex items-center justify-between mt-4">
-          <div className="w-[180px]" />
-          <div className="flex justify-center flex-1">
-            <Button
-              buttonStyle="green"
-              className="w-[180px] h-[40px] px-6"
-              onClick={handleSave}
-              disabled={isSaving}
-            >
-              {isSaving ? '저장 중' : '저장'}
-            </Button>
-          </div>
-          <div className="w-[180px] flex justify-end">
-            {activeTab === '프로필' && (
-              <button
-                className="text-sm text-[var(--gray-200)] underline underline-offset-2 cursor-pointer h-[40px] flex items-center"
-                onClick={handleWithdraw}
+        {activeTab !== '업적' && (
+          <div className="w-full flex items-center justify-between mt-4">
+            <div className="w-[180px]" />
+            <div className="flex justify-center flex-1">
+              <Button
+                buttonStyle="green"
+                className="w-[180px] h-[40px] px-6"
+                onClick={handleSave}
+                disabled={isSaving}
               >
-                회원탈퇴
-              </button>
-            )}
+                {isSaving ? '저장 중' : '저장'}
+              </Button>
+            </div>
+            <div className="w-[180px] flex justify-end">
+              {activeTab === '프로필' && (
+                <button
+                  className="text-sm text-[var(--gray-200)] underline underline-offset-2 cursor-pointer h-[40px] flex items-center"
+                  onClick={handleWithdraw}
+                >
+                  회원탈퇴
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
