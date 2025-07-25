@@ -1,9 +1,11 @@
 'use client';
 
-import { getPopularCategories, getRoadmapCount } from '@/libs/category';
+import { getPopularCategories } from '@/libs/category';
 import { LandingCategories } from '@/types/type';
 import { useQueries, useQuery } from '@tanstack/react-query';
 import SkeletonCategoryCard from './SkeletonCategoryCard';
+import defaultCategoryImg from '../../../public/assets/defaultCategory.avif';
+import { getRoadmapCount } from '@/libs/mainDashboard';
 
 export default function HotNow() {
   // 인기 카테고리 조회
@@ -29,9 +31,9 @@ export default function HotNow() {
   // 로딩중일때는 스켈레톤
   if (isPending) {
     return (
-      <section className="bg-[#EBF2F2] h-[406px] flex items-center justify-center px-4">
+      <section className="bg-[var(--primary-50)] h-[406px] flex items-center justify-center px-4">
         <div className="text-center">
-          <h3 className="text-3xl font-semibold text-[#005C54] mb-8">
+          <h3 className="text-3xl font-semibold text-[var(--primary-300)] mb-8">
             What’s Hot Now
           </h3>
           <div className="flex justify-center">
@@ -51,9 +53,9 @@ export default function HotNow() {
 
   // 클릭 시 로드맵으로 이동 연결?
   return (
-    <section className="bg-[#EBF2F2] h-[406px] flex items-center justify-center px-4">
+    <section className="bg-[var(--primary-50)] h-[406px] flex items-center justify-center px-4">
       <div className="text-center">
-        <h3 className="text-3xl font-semibold text-[#005C54] mb-8">
+        <h3 className="text-3xl font-semibold text-[var(--primary-300)] mb-8">
           What’s Hot Now
         </h3>
 
@@ -65,16 +67,23 @@ export default function HotNow() {
               return (
                 <div
                   key={cat.id}
-                  className="w-[200px] h-[200px] rounded-xl flex items-center justify-center p-2 bg-center bg-cover"
-                  style={{
-                    backgroundImage: `url(${cat.categoryImage})`,
-                  }}
+                  className="w-[200px] h-[200px] rounded-xl overflow-hidden"
                 >
-                  <p className="bg-[var(--black)]/40 p-3 w-20 rounded-[4px] text-[var(--white)] text-sm text-center">
-                    {cat.name}
-                    <br />
-                    {isCountLoading ? '...' : `${postCount}개`}
-                  </p>
+                  <div
+                    className="w-full h-full flex items-center justify-center p-2 bg-center bg-cover 
+                          transition-transform duration-500 hover:scale-110"
+                    style={{
+                      backgroundImage: `url(${
+                        cat.categoryImage || defaultCategoryImg.src
+                      })`,
+                    }}
+                  >
+                    <p className="bg-[var(--black)]/40 p-3 w-20 rounded-[4px] text-[var(--white)] text-sm text-center">
+                      {cat.name}
+                      <br />
+                      {isCountLoading ? '...' : `${postCount ?? 0}개`}
+                    </p>
+                  </div>
                 </div>
               );
             })}

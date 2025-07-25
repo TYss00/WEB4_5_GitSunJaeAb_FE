@@ -31,16 +31,13 @@ export const postCategoryInterests = async (categoryIds: number[]) => {
 
 // 인기 카테고리 조회
 export const getPopularCategories = async (): Promise<LandingCategories[]> => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/categories/top5`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      cache: 'no-store',
-    }
-  );
+  const res = await fetch(`${BASE_URL}/categories/top5`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    cache: 'no-store',
+  });
 
   if (!res.ok) {
     throw new Error('카테고리 조회 실패');
@@ -48,14 +45,4 @@ export const getPopularCategories = async (): Promise<LandingCategories[]> => {
 
   const data: LandingCategoryResponse = await res.json();
   return data.categories;
-};
-
-// 로드맵, 공유지도 카테고리별 카운트
-export const getRoadmapCount = async (categoryId: number): Promise<number> => {
-  const [personal, shared] = await Promise.all([
-    axiosInstance.get(`/roadmaps/personal?categoryId=${categoryId}`),
-    axiosInstance.get(`/roadmaps/shared?categoryId=${categoryId}`),
-  ]);
-
-  return personal.data.roadmaps.length + shared.data.roadmaps.length;
 };
