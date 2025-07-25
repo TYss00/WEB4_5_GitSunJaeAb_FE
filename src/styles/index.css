@@ -72,29 +72,3 @@ body {
   -ms-overflow-style: none; /* IE & Edge */
   scrollbar-width: none; /* Firefox */
 }
-
-.karaoke-text {
-  position: relative;
-  color: rgba(0, 0, 0, 0.2);
-  font-weight: 600;
-  font-size: 1rem;
-  overflow: hidden;
-}
-
-.karaoke-text::after {
-  content: attr(data-content);
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: #000;
-  white-space: nowrap;
-  overflow: hidden;
-  width: 0;
-  animation: fillText 1.2s ease forwards;
-}
-
-@keyframes fillText {
-  to {
-    width: 100%;
-  }
-}
