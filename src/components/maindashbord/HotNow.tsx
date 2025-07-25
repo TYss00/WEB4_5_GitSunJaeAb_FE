@@ -53,14 +53,14 @@ export default function HotNow() {
 
   // 클릭 시 로드맵으로 이동 연결?
   return (
-    <section className="bg-[var(--primary-50)] h-[406px] flex items-center justify-center px-4">
+    <section className="bg-[var(--primary-50)] h-[406px] flex items-center justify-center">
       <div className="text-center">
-        <h3 className="text-3xl font-semibold text-[var(--primary-300)] mb-8">
+        <h3 className="text-3xl font-semibold text-[var(--primary-300)] mb-[30px]">
           What’s Hot Now
         </h3>
-
-        <div className="flex justify-center">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-7 cursor-pointer">
+        {/* 인기 카테고리 */}
+        <div className="w-[1100px] mx-auto">
+          <div className="flex justify-between cursor-pointer">
             {categories?.map((cat, index) => {
               const postCount = countQueries[index]?.data;
               const isCountLoading = countQueries[index]?.isPending;

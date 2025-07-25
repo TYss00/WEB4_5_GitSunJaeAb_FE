@@ -3,7 +3,6 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Button from '../ui/Button';
-import { TrendingQuest } from '@/types/type';
 import { useQuery } from '@tanstack/react-query';
 import { getTrendingQuests } from '@/libs/mainDashboard';
 import defaultQuestImg from '../../../public/assets/SharedMap.jpg';
@@ -19,6 +18,7 @@ import type { Swiper as SwiperClass } from 'swiper';
 import type { NavigationOptions } from 'swiper/types';
 import { formatDate } from '@/utils/formatDate';
 import SkeletonQuestCard from './SkeletonQuestCard';
+import { TrendingQuest } from '@/types/mainDash';
 
 export default function TrendingQuests() {
   const {
@@ -69,8 +69,8 @@ export default function TrendingQuests() {
   }
 
   return (
-    <section className="py-10 px-43 h-[259px] pt-10">
-      <div className="max-w-screen-xl mx-auto flex flex-row gap-15 2xl:pl-22">
+    <section className="py-10 w-[1100px] mx-auto">
+      <div className="flex justify-between">
         <div className="flex flex-col items-start mr-5">
           <h3 className="text-3xl font-semibold text-[var(--primary-300)] mb-2">
             Trending Quests?
@@ -139,14 +139,14 @@ export default function TrendingQuests() {
                       <div className="w-[260px] h-[120px] relative rounded-lg overflow-hidden">
                         <Image
                           src={
-                            imgError
+                            imgError || !quest.questImage?.startsWith('http')
                               ? defaultQuestImg
-                              : quest.questImage ?? defaultQuestImg
+                              : quest.questImage
                           }
                           onError={() => setImgError(true)}
                           alt="title"
                           fill
-                          sizes="100"
+                          sizes="100vw"
                           className="object-cover"
                         />
                       </div>

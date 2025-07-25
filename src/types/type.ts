@@ -252,13 +252,3 @@ export type SearchInputProps = {
   placeholder?: string;
   className?: string;
 };
-
-export type TrendingQuest = {
-  id: number;
-  title: string;
-  questImage: string;
-  createdAt: string;
-  member: {
-    nickname: string;
-  };
-};

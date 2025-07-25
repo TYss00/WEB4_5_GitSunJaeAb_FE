@@ -1,4 +1,4 @@
-import { TrendingQuest } from '@/types/type';
+import { Roadmap, TrendingQuest } from '@/types/mainDash';
 import axiosInstance from './axios';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -11,6 +11,14 @@ export const getRoadmapCount = async (categoryId: number): Promise<number> => {
   ]);
 
   return personal.data.roadmaps.length + shared.data.roadmaps.length;
+};
+
+// 메인대시보드 공유지도 불러오기
+export const getPopularShared = async (): Promise<Roadmap[]> => {
+  const res = await axiosInstance.get<{ roadmaps: Roadmap[] }>('/roadmaps');
+  return res.data.roadmaps.filter(
+    (r) => r.roadmapType === 'SHARED' && r.isPublic
+  );
 };
 
 // 메인대시보드 퀘스트 불러오기
