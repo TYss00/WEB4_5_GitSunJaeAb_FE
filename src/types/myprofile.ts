@@ -81,7 +81,7 @@ export type MypagePostProps = {
 
 export type ProfileEditState = {
   nickname: string;
-  profileImage: string | null;
+  profileImage: string | File | null;
 
   password: string;
   newPassword: string;
@@ -91,7 +91,7 @@ export type ProfileEditState = {
   setSelectedCategoryIds: (ids: number[]) => void;
 
   setNickname: (nickname: string) => void;
-  setProfileImage: (image: string | null) => void;
+  setProfileImage: (image: string | File | null) => void;
 
   setPassword: (v: string) => void;
   setNewPassword: (v: string) => void;

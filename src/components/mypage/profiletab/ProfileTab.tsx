@@ -14,6 +14,7 @@ export default function ProfileTab() {
     useProfileEditStore();
 
   const [isEditingName, setIsEditingName] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
     fetchMember();
@@ -29,11 +30,8 @@ export default function ProfileTab() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      setProfileImage(file);
+      setPreviewUrl(URL.createObjectURL(file));
     }
   };
 
@@ -58,7 +56,10 @@ export default function ProfileTab() {
           >
             {profileImage ? (
               <Image
-                src={profileImage}
+                src={
+                  previewUrl ??
+                  (typeof profileImage === 'string' ? profileImage : '')
+                }
                 alt="profile"
                 fill
                 className="object-cover rounded-full transition duration-200 group-hover:brightness-75"

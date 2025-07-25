@@ -10,6 +10,7 @@ import PasswordTab from './profiletab/PasswordTab';
 import { useProfileEditStore } from '@/store/profileeditStore';
 import axiosInstance from '@/libs/axios';
 import { useProfileStore } from '@/store/profileStore';
+import { useAuthStore } from '@/store/useAuthStore';
 
 const TABS = ['프로필', '비밀번호', '관심 분야', '업적'];
 
@@ -44,11 +45,22 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
 
     try {
       if (activeTab === '프로필') {
-        await axiosInstance.put('/members', {
-          nickname,
-          profileImage,
-        });
+        const formData = new FormData();
+        formData.append(
+          'member',
+          new Blob([JSON.stringify({ nickname })], { type: 'application/json' })
+        );
+        if (profileImage instanceof File) {
+          formData.append('imageFile', profileImage);
+        }
+
+        await axiosInstance.put('/members', formData);
+
+        const res = await axiosInstance.get('/members');
+        useAuthStore.getState().setUser(res.data.memberDetailDto);
+
         await fetchMember();
+
         alert('저장 완료');
       } else if (activeTab === '비밀번호') {
         const { password, newPassword, confirmPassword } =
@@ -149,8 +161,9 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
               buttonStyle="green"
               className="w-[180px] h-[40px] px-6"
               onClick={handleSave}
+              disabled={isSaving}
             >
-              저장
+              {isSaving ? '저장 중' : '저장'}
             </Button>
           </div>
           <div className="w-[180px] flex justify-end">
