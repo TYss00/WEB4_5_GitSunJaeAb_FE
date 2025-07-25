@@ -37,13 +37,15 @@ export default function ManageCard<T extends { id: number }>({
         {/* 이름 + info 아이콘 */}
         <div className="flex justify-center pl-2 items-center gap-1 relative">
           <p className="text-base font-semibold truncate">{name}</p>
-          {type === 'category' && (
+          {type === 'category' ? (
             <button
               onClick={() => setShowOverlay(true)}
               className="cursor-pointer"
             >
               <Info size={16} className="text-black" />
             </button>
+          ) : (
+            <span className="w-[3px] h-[16px]" />
           )}
         </div>
 

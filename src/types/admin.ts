@@ -156,3 +156,18 @@ export type AdminNoticeProps = {
   };
   onSubmit: (payload: AdminNoticePayload, id?: number) => Promise<void>;
 };
+
+export type ManageCardModalProps<T> = {
+  name: string;
+  image?: string | null;
+  description?: string;
+  item: T;
+  onClose: () => void;
+  onEditSubmit?: (updatedItem: {
+    id: number;
+    name: string;
+    image: File | null;
+    description: string;
+  }) => Promise<void>;
+  onDelete?: (item: T) => void;
+};

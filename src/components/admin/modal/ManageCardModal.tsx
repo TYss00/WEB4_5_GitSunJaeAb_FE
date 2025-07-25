@@ -4,21 +4,7 @@ import Image from 'next/image';
 import { XCircle, Folder, FileText, ImagePlus } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { ChangeEvent, useRef, useState } from 'react';
-
-interface ManageCardModalProps<T> {
-  name: string;
-  image?: string | null;
-  description?: string;
-  item: T;
-  onClose: () => void;
-  onEditSubmit?: (updatedItem: {
-    id: number;
-    name: string;
-    image: File | null;
-    description: string;
-  }) => Promise<void>;
-  onDelete?: (item: T) => void;
-}
+import { ManageCardModalProps } from '@/types/admin';
 
 export default function ManageCardModal<T extends { id: number }>({
   name,
@@ -32,7 +18,36 @@ export default function ManageCardModal<T extends { id: number }>({
   const [editedName, setEditedName] = useState(name);
   const [editedImage, setEditedImage] = useState<File | null>(null);
   const [editedDescription, setEditedDescription] = useState(description || '');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const isAddMode = item.id === 0;
+
+  const handleSubmit = async () => {
+    if (!onEditSubmit || isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      await onEditSubmit({
+        id: item.id,
+        name: editedName,
+        image: editedImage,
+        description: editedDescription,
+      });
+      onClose();
+    } catch (err) {
+      console.error('제출 실패:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDelete = () => {
+    if (onDelete) {
+      onDelete(item);
+      onClose();
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex justify-center items-center px-4">
@@ -102,34 +117,25 @@ export default function ManageCardModal<T extends { id: number }>({
             />
           </div>
         </div>
+
+        {/* 버튼 영역 */}
         <div className="flex justify-center gap-3 pt-6 pb-8">
           {onEditSubmit && (
             <Button
               buttonStyle="smGreen"
               className="w-30"
-              onClick={async () => {
-                if (onEditSubmit) {
-                  await onEditSubmit({
-                    id: item.id,
-                    name: editedName,
-                    image: editedImage,
-                    description: editedDescription,
-                  });
-                  onClose();
-                }
-              }}
+              disabled={isSubmitting}
+              onClick={handleSubmit}
             >
-              수정
+              {isAddMode ? '추가' : '수정'}
             </Button>
           )}
-          {onDelete && (
+          {!isAddMode && onDelete && (
             <Button
               buttonStyle="white"
               className="w-30"
-              onClick={() => {
-                onDelete(item);
-                onClose();
-              }}
+              disabled={isSubmitting}
+              onClick={handleDelete}
             >
               삭제
             </Button>
