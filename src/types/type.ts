@@ -58,11 +58,15 @@ export type ButtonProps = {
 }
 
 export type MarkerEditProps = {
+  id: number
   isTextArea?: boolean
   onDelete: () => void
   address?: string
+  name?: string
+  description?: string
   onAddByAddress?: (address: string) => void
-  addMarkerByAddress?: (layer: string, address: string) => void
+  onChangeName?: (id: number, name: string) => void
+  onChangeDescription?: (id: number, description: string) => void
 }
 
 export type MarkerDetailProps = {
@@ -111,19 +115,6 @@ export type Member = {
   profileImage: string | null
 }
 
-export type RoadmapInfo = {
-  title: string
-  category: { id: number; name: string }
-  description: string
-  thumbnail: null
-  member: Member
-  hashtags: HashtagProps[]
-  likeCount: number
-  viewCount: number
-  isPublic: boolean
-  isAnimated: boolean
-}
-
 export type LayerInfo = {
   id: number
   name: string
@@ -165,18 +156,15 @@ export type MarkerInfo = {
   member: Member
 }
 
-export type RoadmapDetailProps = {
-  roadMapInfo: RoadmapInfo
-  layerInfo: LayerInfo[]
-  markersByLayer: MarkerInfo[]
-  commentsInfo: CommentInfo[]
-}
-
 export type RoadmapWriteProps = {
   categories: CategoryInfo[]
 }
 
 export type MarkerData = {
+  name?: string
+  description?: string
+  color?: string
+  customImageId?: string | null
   id: number
   lat: number
   lng: number

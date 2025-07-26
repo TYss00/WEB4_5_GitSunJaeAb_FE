@@ -1,6 +1,6 @@
 'use client'
 
-import { LayerEditProps } from '@/types/type'
+import { LayerEditProps, MarkerData } from '@/types/type'
 import { ChevronDown, ChevronUp, Layers, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import MarkerEdit from './MarkerEdit'
@@ -12,16 +12,18 @@ export default function LayerEdit({
   deleteMarker,
   onDelete,
   addMarkerByAddress,
-}: LayerEditProps) {
+  updateMarkerData,
+  addManualMarker,
+}: LayerEditProps & {
+  updateMarkerData: (
+    layerName: string,
+    markerId: number,
+    updatedFields: Partial<MarkerData>
+  ) => void
+  addManualMarker: (layer: string) => void
+}) {
   const [isOpen, setIsOpen] = useState(defaultOpen)
-  const [manualMarkers, setManualMarkers] = useState<{ id: number }[]>([])
 
-  const addManualMarker = () => {
-    setManualMarkers((prev) => [...prev, { id: Date.now() }])
-  }
-  const deleteManualMarker = (id: number) => {
-    setManualMarkers((prev) => prev.filter((m) => m.id !== id))
-  }
   return (
     <>
       <div className="w-full">
@@ -62,31 +64,26 @@ export default function LayerEdit({
             {markers.map((marker) => (
               <MarkerEdit
                 key={marker.id}
+                id={marker.id}
                 isTextArea={true}
                 address={marker.address}
+                name={marker.name}
+                description={marker.description}
                 onDelete={() => deleteMarker(title, marker.id)}
                 onAddByAddress={(address) => {
-                  deleteManualMarker(marker.id)
                   addMarkerByAddress(title, address)
                 }}
+                onChangeName={(id, name) =>
+                  updateMarkerData(title, id, { name })
+                }
+                onChangeDescription={(id, description) =>
+                  updateMarkerData(title, id, { description })
+                }
               />
             ))}
 
-            {manualMarkers.map((m) => (
-              <MarkerEdit
-                key={m.id}
-                isTextArea={true}
-                onDelete={() =>
-                  setManualMarkers((prev) => prev.filter((x) => x.id !== m.id))
-                }
-                onAddByAddress={(address) => {
-                  setManualMarkers((prev) => prev.filter((x) => x.id !== m.id))
-                  addMarkerByAddress(title, address)
-                }}
-              />
-            ))}
             <div
-              onClick={addManualMarker}
+              onClick={() => addManualMarker(title)}
               className="w-full min-h-[44px] flex justify-center items-center rounded-[5px] bg-[var(--primary-100)] cursor-pointer"
             >
               <Plus size={24} color="white" />
