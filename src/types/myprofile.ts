@@ -105,3 +105,12 @@ export type Achievement = {
   name: string;
   image: string;
 };
+
+export type CommentItem = {
+  id: number;
+  content: string;
+  roadmap: number | null;
+  quest: number | null;
+  postTitle: string;
+  createdAt: string;
+};

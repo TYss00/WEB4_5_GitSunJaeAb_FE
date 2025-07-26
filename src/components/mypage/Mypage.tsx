@@ -4,6 +4,7 @@ import { useState } from 'react';
 import MypageLayer from './MypageLayer';
 import MypagePost from './MypagePost';
 import SearchInput from '../ui/SearchInputs';
+import MypageComment from './MypageComment';
 
 export default function Mypage() {
   const [activeTab, setActiveTab] = useState('작성글');
@@ -43,7 +44,9 @@ export default function Mypage() {
       </div>
 
       <div className="mt-4 h-[calc(100%-80px)] overflow-y-auto pr-2">
-        {activeTab === '레이어' || activeTab === '댓글' ? (
+        {activeTab === '댓글' ? (
+          <MypageComment searchKeyword={searchKeyword} />
+        ) : activeTab === '레이어' ? (
           <MypageLayer searchKeyword={searchKeyword} />
         ) : (
           <MypagePost
