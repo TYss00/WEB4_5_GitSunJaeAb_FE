@@ -104,7 +104,7 @@ export type SearchItemProps = {
 export type HashtagProps = {
   id: number
   name: string
-  createdAt: string | null
+  createdAt?: string | null
 }
 
 export type Member = {
@@ -134,6 +134,56 @@ export type CommentInfo = {
   questId: number | null
   createdAt: string
 }
+export type RoadmapInfo = {
+  title: string
+  category: {
+    id: number
+    name: string
+  }
+  description: string
+  thumbnail: string
+  member: Member
+  hashtags: {
+    id: number
+    name: string
+  }[]
+
+  likeCount: number
+  viewCount: number
+  layers: {
+    layer: {
+      id: number
+      name: string
+      description: string
+      layerSeq: number
+    }
+    markers: {
+      id: number
+      name: string
+      description: string
+      address: string
+      lat: number
+      lng: number
+      color: string
+      customImage: {
+        id: number
+        name: string
+        markerImage: string
+      }
+      markerSeq: number
+      layerId: number
+    }[]
+  }[]
+
+  isPublic: true
+  isAnimated: true
+}
+
+export type BookmarksInfo = {
+  id: number
+  roadmap: number
+  member: number
+}
 
 export type CategoryInfo = {
   id: number
@@ -158,6 +208,11 @@ export type MarkerInfo = {
 
 export type RoadmapWriteProps = {
   categories: CategoryInfo[]
+}
+
+export type RoadmapDetailProps = {
+  roadmap: RoadmapInfo
+  comments: CommentInfo[]
 }
 
 export type MarkerData = {
