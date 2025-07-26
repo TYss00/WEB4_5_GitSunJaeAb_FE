@@ -59,3 +59,56 @@ export interface ShareMapCardUIProps {
   participants?: number;
   className?: string;
 }
+
+export interface RoadmapDetailResponse {
+  id?: number;
+  title: string;
+  description: string;
+  address: string;
+  regionLatitude: number;
+  regionLongitude: number;
+  participationEnd: string;
+  likeCount: number;
+  viewCount: number;
+  thumbnail: string;
+  category: {
+    id: number;
+    name: string;
+  };
+  member: {
+    id: number;
+    name: string;
+    nickname: string;
+    email: string;
+    profileImage: string;
+  };
+  hashtags: { id: number; name: string }[];
+  layers: {
+    layer: {
+      id: number;
+      name: string;
+      description: string;
+      layerSeq: number;
+      layerTime: string;
+      createdAt: string;
+    };
+    markers: {
+      id: number;
+      name: string;
+      description: string;
+      address: string;
+      lat: number;
+      lng: number;
+      color: string;
+      customImage: {
+        id: number;
+        name: string;
+        markerImage: string;
+      };
+      markerSeq: number;
+      layerId: number;
+    }[];
+  }[];
+  isPublic: boolean;
+  isAnimated: boolean;
+}
