@@ -22,7 +22,8 @@ export default function AchievementTab() {
 
         setAchievements(allRes.data.achievements || []);
         setAchievedIds(
-          memberRes.data.achievements?.map((a: { id: number }) => a.id) || []
+          memberRes.data.memberAchievements?.map((a: { id: number }) => a.id) ||
+            []
         );
       } catch (err) {
         console.error('업적 불러오기 실패:', err);
