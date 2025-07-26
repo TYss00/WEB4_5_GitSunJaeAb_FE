@@ -33,13 +33,19 @@ export default function Loadmapdetail() {
   const params = useParams()
   const roadmapId = params?.id as string
   const [selectedLayerId, setSelectedLayerId] = useState<number | 'all'>('all')
+  const [isBookmarked, setIsBookmarked] = useState(false)
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [roadmapRes, commentsRes] = await Promise.all([
+        const [roadmapRes, commentsRes, bookmarksRes] = await Promise.all([
           axiosInstance.get(`/roadmaps/${roadmapId}`),
           axiosInstance.get(`/comments/roadmaps?roadmapId=${roadmapId}`),
+          axiosInstance.get(`/bookmarks/bookmarkedRoadmaps`),
         ])
+        const bookmarks = bookmarksRes.data.roadmaps
+
+        const matched = bookmarks.some((item) => String(item.id) === roadmapId)
+        setIsBookmarked(matched)
 
         setData({
           roadmap: roadmapRes.data.roadmap,
@@ -58,6 +64,17 @@ export default function Loadmapdetail() {
 
   if (loading) return <div>로딩 중...</div>
   if (!data) return <div>데이터 없음</div>
+
+  const toggleBookmark = async () => {
+    try {
+      if (!isBookmarked) {
+        await axiosInstance.post(`/bookmarks/${roadmapId}`)
+        setIsBookmarked(true)
+      }
+    } catch (error) {
+      console.error('북마크 처리 오류', error)
+    }
+  }
 
   const { roadmap: roadMapInfo, comments: commentsInfo } = data
   const defaultCenter = { lat: 37.5665, lng: 126.978 }
@@ -152,7 +169,14 @@ export default function Loadmapdetail() {
               {/* 좋아요,조회수,신고 */}
               <div className="flex gap-4 text-gray-700 text-sm items-center">
                 <span className="flex items-center gap-1">
-                  <Heart size={16} strokeWidth={3} className="cursor-pointer" />{' '}
+                  <Heart
+                    fill={isBookmarked ? 'red' : 'none'}
+                    color={isBookmarked ? 'red' : 'black'}
+                    size={16}
+                    strokeWidth={3}
+                    className="cursor-pointer"
+                    onClick={toggleBookmark}
+                  />
                   {roadMapInfo.likeCount}
                 </span>
                 <span className="flex items-center gap-1">
