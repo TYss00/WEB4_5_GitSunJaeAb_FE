@@ -22,6 +22,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { HashtagProps } from '@/types/type'
 import RoadMapGoogleDetail from './RoadMapGoogleDetail'
 import axiosInstance from '@/libs/axios'
+import Image from 'next/image'
 
 export default function Loadmapdetail() {
   const [loading, setLoading] = useState(true)
@@ -182,7 +183,17 @@ export default function Loadmapdetail() {
               </div>
             </div>
             <div className="flex gap-[5px] items-center mb-6">
-              <div className="rounded-full bg-amber-950 size-[25px]"></div>
+              <div className="relative rounded-full size-[25px]">
+                <Image
+                  src={
+                    roadMapInfo.member.profileImage ??
+                    '/assets/defaultProfile.png'
+                  }
+                  alt="작성자 프로필 이미지"
+                  fill
+                  className="object-cover rounded-full"
+                />
+              </div>
               <span className="text-sm">{roadMapInfo.member.nickname}</span>
             </div>
 
