@@ -1,4 +1,3 @@
-'use client';
 import { useEffect, useState } from 'react';
 import RecentSearchItem from './RecentSearchItem';
 import {
@@ -6,7 +5,7 @@ import {
   getRecentSearches,
   removeSearchTerm,
 } from '@/utils/searchHistory';
-import { SearchRecord } from '@/types/type';
+import { SearchRecord } from '@/types/search';
 
 export default function RecentSearchList({
   onSelect,
@@ -16,12 +15,21 @@ export default function RecentSearchList({
   const [searches, setSearches] = useState<SearchRecord[]>([]);
 
   useEffect(() => {
-    setSearches(getRecentSearches());
+    const fetchData = async () => {
+      const data = await getRecentSearches();
+      setSearches(data);
+    };
+    fetchData();
   }, []);
 
-  const handleClearAll = () => {
-    clearSearchHistory();
+  const handleClearAll = async () => {
+    await clearSearchHistory();
     setSearches([]);
+  };
+
+  const handleRemove = async (term: string) => {
+    await removeSearchTerm(term);
+    setSearches((prev) => prev.filter((t) => t.keyword !== term));
   };
 
   return (
@@ -38,18 +46,14 @@ export default function RecentSearchList({
         )}
       </div>
 
-      {/* 최근 검색어 리스트 */}
       <div>
         {searches.length > 0 ? (
           searches.map((item) => (
             <RecentSearchItem
-              key={item.term}
-              term={item.term}
-              date={item.date}
-              onRemove={() => {
-                removeSearchTerm(item.term);
-                setSearches((prev) => prev.filter((t) => t.term !== item.term));
-              }}
+              key={item.id}
+              term={item.keyword}
+              date={item.createdAt.split('T')[0].replaceAll('-', '.')}
+              onRemove={() => handleRemove(item.keyword)}
               onSelect={onSelect}
             />
           ))

@@ -78,3 +78,18 @@ export type SearchCategoryGroupProps = {
   items: ShareMapCardProps[] | RoadMapCardProps[] | QuestCardProps[];
   query: string;
 };
+
+export type SearchRecord = {
+  id: number;
+  keyword: string;
+  memberId: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string | null;
+};
+
+export type SearchInputProps = {
+  onClose?: () => void;
+  searchValue?: string;
+  onSearchComplete?: () => void;
+};
