@@ -1,9 +1,9 @@
-import { CategoryAddCardProps } from '@/types/type';
+import { ManageAddCardProps } from '@/types/admin';
 
-export default function CategoryAddCard({
+export default function ManageAddCard({
   type = 'category',
   onClick,
-}: CategoryAddCardProps) {
+}: ManageAddCardProps) {
   const label = type === 'marker' ? '마커' : '카테고리';
 
   return (

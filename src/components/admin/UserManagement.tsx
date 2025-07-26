@@ -49,11 +49,15 @@ export default function UserManagement() {
     );
 
   // 블랙리스트 토글
-  const toggleBlacklist = async (id: number) => {
+  const toggleBlacklist = async (id: number, currentStatus: boolean) => {
     setLoadingUserId(id);
     try {
-      const res = await axiosInstance.put(`members/blacklist/${id}`);
+      const res = currentStatus
+        ? await axiosInstance.delete(`members/blacklist/${id}`)
+        : await axiosInstance.put(`members/blacklist/${id}`);
+
       const data = res.data;
+
       setMembers((prev) =>
         prev.map((u) =>
           u.id === id ? { ...u, blacklisted: !u.blacklisted } : u
@@ -70,16 +74,19 @@ export default function UserManagement() {
   };
 
   // 관리자 권한 토글
-  const toggleAdminRole = async (id: number) => {
-    const user = members.find((u) => u.id === id);
-    if (!user) return;
-
+  const toggleAdminRole = async (
+    id: number,
+    currentRole: 'ROLE_ADMIN' | 'ROLE_USER'
+  ) => {
     setLoadingUserId(id);
     try {
-      const res = await axiosInstance.put(`members/role/${id}`);
-      const data = res.data;
+      const res =
+        currentRole === 'ROLE_ADMIN'
+          ? await axiosInstance.delete(`members/role/${id}`)
+          : await axiosInstance.put(`members/role/${id}`);
 
-      const newRole = user.role === 'ROLE_ADMIN' ? 'ROLE_USER' : 'ROLE_ADMIN';
+      const data = res.data;
+      const newRole = currentRole === 'ROLE_ADMIN' ? 'ROLE_USER' : 'ROLE_ADMIN';
 
       setMembers((prev) =>
         prev.map((u) => (u.id === id ? { ...u, role: newRole } : u))
@@ -112,8 +119,8 @@ export default function UserManagement() {
   return (
     <div className="w-[1000px] h-[530px] bg-[var(--white)] rounded-lg p-4 flex flex-col justify-start border border-[var(--gray-50)]">
       {/* 상단 타이틀 */}
-      <div className="flex items-center gap-2 text-[var(--primary-300)] font-semibold text-[18px] mb-[16px]">
-        <UserCog size={20} className="mr-1" />
+      <div className="flex items-center gap-2 text-[var(--primary-300)] font-bold text-xl mb-[16px]">
+        <UserCog size={25} className="mr-1" />
         사용자 관리
       </div>
 
@@ -142,68 +149,9 @@ export default function UserManagement() {
         />
       </div>
 
-      {/* 사용자 테이블 */}
+      {/* 테이블 wrapper */}
       <div className="relative w-full border border-[var(--gray-100)] text-[14px]">
-        {/* thead 테이블 */}
-        <table className="w-full text-left table-fixed">
-          <colgroup>
-            <col style={{ width: '12%' }} />
-            <col style={{ width: '12%' }} />
-            <col style={{ width: '20%' }} />
-            {selectedTab === '전체 사용자' && (
-              <>
-                <col style={{ width: '10%' }} />
-                <col style={{ width: '14%' }} />
-                <col style={{ width: '10%' }} />
-                <col style={{ width: '10%' }} />
-                <col style={{ width: '12%' }} />
-              </>
-            )}
-            {selectedTab === '관리자' && (
-              <>
-                <col style={{ width: '20%' }} />
-                <col style={{ width: '20%' }} />
-              </>
-            )}
-            {selectedTab === '블랙 리스트' && (
-              <>
-                <col style={{ width: '20%' }} />
-                <col style={{ width: '20%' }} />
-              </>
-            )}
-          </colgroup>
-          <thead className="sticky top-0 bg-[var(--gray-50)] text-[var(--gray-500)] z-10">
-            <tr>
-              <th className="py-2 px-4">이름</th>
-              <th className="py-2 px-4">닉네임</th>
-              <th className="py-2 px-4">이메일</th>
-              {selectedTab === '전체 사용자' && (
-                <>
-                  <th className="py-2 px-4">역할</th>
-                  <th className="py-2 px-4">블랙리스트 여부</th>
-                  <th className="py-2 px-2">블랙리스트</th>
-                  <th className="py-2 px-2">관리자 권한</th>
-                  <th className="py-2 px-5 ">회원탈퇴</th>
-                </>
-              )}
-              {selectedTab === '관리자' && (
-                <>
-                  <th className="py-2 px-4 text-center">관리자 권한</th>
-                  <th className="py-2 px-4 text-center">회원탈퇴</th>
-                </>
-              )}
-              {selectedTab === '블랙 리스트' && (
-                <>
-                  <th className="py-2 px-4 text-center">블랙리스트</th>
-                  <th className="py-2 px-4 text-center">회원탈퇴</th>
-                </>
-              )}
-            </tr>
-          </thead>
-        </table>
-
-        {/* tbody 스크롤 영역 */}
-        <div className="max-h-[360px] overflow-y-auto">
+        <div className="max-h-[360px] overflow-y-auto pr-[8px]">
           <table className="w-full text-left table-fixed">
             <colgroup>
               <col style={{ width: '12%' }} />
@@ -213,9 +161,9 @@ export default function UserManagement() {
                 <>
                   <col style={{ width: '10%' }} />
                   <col style={{ width: '14%' }} />
-                  <col style={{ width: '10%' }} />
-                  <col style={{ width: '10%' }} />
-                  <col style={{ width: '12%' }} />
+                  <col style={{ width: '11%' }} />
+                  <col style={{ width: '14%' }} />
+                  <col style={{ width: '13%' }} />
                 </>
               )}
               {selectedTab === '관리자' && (
@@ -231,6 +179,36 @@ export default function UserManagement() {
                 </>
               )}
             </colgroup>
+
+            <thead className="sticky top-0 bg-[var(--gray-50)] text-[var(--gray-500)] z-10">
+              <tr>
+                <th className="py-2 px-4">이름</th>
+                <th className="py-2 px-4">닉네임</th>
+                <th className="py-2 px-4">이메일</th>
+                {selectedTab === '전체 사용자' && (
+                  <>
+                    <th className="py-2 px-4">역할</th>
+                    <th className="py-2 text-center">블랙리스트들</th>
+                    <th className="py-2 px-4">블랙리스트</th>
+                    <th className="py-2 px-7">관리자 권한</th>
+                    <th className="py-2 px-8">회원탈퇴</th>
+                  </>
+                )}
+                {selectedTab === '관리자' && (
+                  <>
+                    <th className="py-2 px-4 text-center">관리자 권한</th>
+                    <th className="py-2 px-4 text-center">회원탈퇴</th>
+                  </>
+                )}
+                {selectedTab === '블랙 리스트' && (
+                  <>
+                    <th className="py-2 px-4 text-center">블랙리스트</th>
+                    <th className="py-2 px-4 text-center">회원탈퇴</th>
+                  </>
+                )}
+              </tr>
+            </thead>
+
             <tbody>
               {filteredMembers.map((user) => (
                 <tr
@@ -245,8 +223,12 @@ export default function UserManagement() {
                     user={user}
                     selectedTab={selectedTab}
                     loadingUserId={loadingUserId}
-                    onToggleBlacklist={toggleBlacklist}
-                    onToggleAdminRole={toggleAdminRole}
+                    onToggleBlacklist={() =>
+                      toggleBlacklist(user.id, user.blacklisted)
+                    }
+                    onToggleAdminRole={() =>
+                      toggleAdminRole(user.id, user.role)
+                    }
                     onDeleteMember={deleteMember}
                   />
                 </tr>

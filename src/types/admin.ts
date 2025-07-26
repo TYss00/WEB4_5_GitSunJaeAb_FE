@@ -6,6 +6,12 @@ export type Roadmap = {
   };
 };
 
+export type CustomMarker = {
+  id: number;
+  name: string;
+  markerImage: string;
+};
+
 export type ReportModal = {
   isOpen: boolean;
   onClose: () => void;
@@ -69,7 +75,7 @@ export type User = {
   name: string;
   nickname: string;
   email: string;
-  role: string;
+  role: 'ROLE_ADMIN' | 'ROLE_USER';
   blacklisted: boolean;
 };
 
@@ -80,13 +86,23 @@ export type UserResponse = {
   members: User[];
 };
 
-export type CategoryCardProps = {
-  category: Category;
-  onEditClick: (category: Category) => void;
-  onDelete: (category: Category) => void;
-};
+export interface ManageCardProps<T extends { id: number }> {
+  name: string;
+  image?: string | null;
+  type: 'category';
+  item: T;
+  description?: string;
+  onEditClick?: (item: T) => void;
+  onEditSubmit?: (updatedItem: {
+    id: number;
+    name: string;
+    image: File | null;
+    description: string;
+  }) => void;
+  onDelete?: (item: T) => void;
+}
 
-export type CategoryCardFormProps = {
+export type ManageCardFormProps = {
   name: string;
   image: File | null;
   onNameChange: (name: string) => void;
@@ -102,4 +118,56 @@ export type UserActionButton = {
   onToggleBlacklist: (id: number) => void;
   onToggleAdminRole: (id: number, role: string) => void;
   onDeleteMember: (id: number) => void;
+};
+
+export type ManageAddCardProps = {
+  type?: 'category' | 'marker';
+  onClick?: () => void;
+};
+
+export type Notice = {
+  announcementType: string;
+  id: number;
+  title: string;
+  content: string;
+  createdAt: string;
+  member: {
+    id: number;
+    name: string;
+    nickname: string;
+    email: string;
+    profileImage: string;
+  };
+};
+
+export type AdminNoticePayload = {
+  title: string;
+  content: string;
+  announcementType: 'SYSTEM' | 'EVENT' | 'UPDATE' | 'ETC';
+};
+
+export type AdminNoticeProps = {
+  onClose: () => void;
+  initialData?: {
+    id: number;
+    type?: '시스템' | '이벤트' | '업데이트' | '안내사항';
+    title: string;
+    content: string;
+  };
+  onSubmit: (payload: AdminNoticePayload, id?: number) => Promise<void>;
+};
+
+export type ManageCardModalProps<T> = {
+  name: string;
+  image?: string | null;
+  description?: string;
+  item: T;
+  onClose: () => void;
+  onEditSubmit?: (updatedItem: {
+    id: number;
+    name: string;
+    image: File | null;
+    description: string;
+  }) => Promise<void>;
+  onDelete?: (item: T) => void;
 };

@@ -14,7 +14,7 @@ export default function CustomManage() {
       <div className="flex gap-4 mb-4 pb-2">
         <button onClick={() => setActiveTab('category')}>
           <h2
-            className={`text-lg font-semibold flex items-center gap-2 
+            className={`text-xl font-bold flex items-center gap-1.5 
               ${
                 activeTab === 'category'
                   ? 'text-[var(--primary-300)] border-b-2 border-[var(--primary-300)]'
@@ -27,7 +27,7 @@ export default function CustomManage() {
         </button>
         <button onClick={() => setActiveTab('marker')}>
           <h2
-            className={`text-lg font-semibold flex items-center gap-2 
+            className={`text-xl font-bold flex items-center gap-1.5 
               ${
                 activeTab === 'marker'
                   ? 'text-[var(--primary-300)] border-b-2 border-[var(--primary-300)]'
