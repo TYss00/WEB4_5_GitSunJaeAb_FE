@@ -1,36 +1,18 @@
-import { useEffect, useState } from 'react';
 import RecentSearchItem from './RecentSearchItem';
 import {
-  clearSearchHistory,
-  getRecentSearches,
-  removeSearchTerm,
-} from '@/utils/searchHistory';
-import { SearchRecord } from '@/types/search';
+  useClearSearchHistory,
+  useRecentSearches,
+  useRemoveSearchTerm,
+} from '@/hooks/useRecentSearches';
 
 export default function RecentSearchList({
   onSelect,
 }: {
   onSelect?: (term: string) => void;
 }) {
-  const [searches, setSearches] = useState<SearchRecord[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getRecentSearches();
-      setSearches(data);
-    };
-    fetchData();
-  }, []);
-
-  const handleClearAll = async () => {
-    await clearSearchHistory();
-    setSearches([]);
-  };
-
-  const handleRemove = async (term: string) => {
-    await removeSearchTerm(term);
-    setSearches((prev) => prev.filter((t) => t.keyword !== term));
-  };
+  const { data: searches = [] } = useRecentSearches();
+  const clearMutation = useClearSearchHistory();
+  const removeMutation = useRemoveSearchTerm();
 
   return (
     <div className="w-[700px] h-[465px] m-auto px-2">
@@ -38,7 +20,7 @@ export default function RecentSearchList({
         <h3>최근 검색어</h3>
         {searches.length > 0 && (
           <button
-            onClick={handleClearAll}
+            onClick={() => clearMutation.mutate()}
             className="text-[15px] cursor-pointer"
           >
             전체 삭제
@@ -53,7 +35,7 @@ export default function RecentSearchList({
               key={item.id}
               term={item.keyword}
               date={item.createdAt.split('T')[0].replaceAll('-', '.')}
-              onRemove={() => handleRemove(item.keyword)}
+              onRemove={() => removeMutation.mutate(item.keyword)}
               onSelect={onSelect}
             />
           ))

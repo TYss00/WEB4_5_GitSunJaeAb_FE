@@ -19,20 +19,30 @@ export async function addSearchTerm(term: string) {
   }
 }
 
-export async function removeSearchTerm(term: string) {
+export async function removeSearchTerm(term: string): Promise<boolean> {
   try {
+    const confirm = window.confirm(`'${term}' 검색어를 삭제하시겠습니까?`);
+    if (!confirm) return false;
+
     await axiosInstance.delete('/search', {
       params: { keyword: term },
     });
+    return true;
   } catch (err) {
     console.error('검색어 삭제 실패:', err);
+    return false;
   }
 }
 
-export async function clearSearchHistory() {
+export async function clearSearchHistory(): Promise<boolean> {
   try {
+    const confirm = window.confirm('검색어를 모두 삭제하시겠습니까?');
+    if (!confirm) return false;
+
     await axiosInstance.delete('/search/list');
+    return true;
   } catch (err) {
     console.error('전체 검색어 삭제 실패:', err);
+    return false;
   }
 }
