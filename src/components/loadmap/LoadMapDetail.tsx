@@ -99,21 +99,20 @@ export default function Loadmapdetail() {
       <section className="relative w-full h-screen overflow-hidden">
         <div className="absolute inset-0 bg-gray-200 z-0">
           <RoadMapGoogleDetail markers={filteredMarkers} center={center} />
-          <div className="absolute top-4 left-8 flex items-center gap-3 px-4 py-2 z-10">
+          <div className="absolute top-[10px] left-5 flex items-center gap-3 z-10">
             <Button
               buttonStyle="white"
               onClick={() => router.back()}
               icon={<ChevronLeft size={18} />}
-              className="text-sm"
+              className="text-md h-[40px]"
             >
               뒤로가기
             </Button>
 
             {/* 레이어 선택 */}
-            <div className="relative w-[140px]">
+            <div className="relative w-[180px] shadow-sm">
               <select
-                className="w-full h-[34px] text-sm bg-white border-none rounded pl-3 appearance-none"
-                defaultValue=""
+                className="w-full h-[40px] text-sm bg-white border-none rounded-[3px] px-3 appearance-none focus:outline-none"
                 onChange={(e) => {
                   const value = e.target.value
                   setSelectedLayerId(value === 'all' ? 'all' : parseInt(value))
@@ -141,11 +140,9 @@ export default function Loadmapdetail() {
         {!isOpen && (
           <button
             onClick={toggle}
-            className="absolute top-7 right-12 z-20 bg-[var(--white)] rounded-[10px] p-[10px]"
+            className="flex justify-center items-center absolute top-[10px] right-5 z-20 bg-[var(--white)] rounded-[3px] size-[40px] shadow-sm"
           >
-            <div className="flex items-center space-x-[-16px]">
-              <ChevronsLeft size={35} />
-            </div>
+            <ChevronsLeft size={25} />
           </button>
         )}
 
@@ -157,7 +154,11 @@ export default function Loadmapdetail() {
         >
           <div className="h-full px-5 py-4 overflow-y-auto scrollbar-none">
             <div className="flex items-center mb-5 w-full gap-[10px]">
-              <ChevronsRight size={25} onClick={close} />
+              <ChevronsRight
+                size={25}
+                onClick={close}
+                className="cursor-pointer"
+              />
               {/* 화면 위치 */}
               <h1 className="font-semibold text-xl">로드맵 상세보기</h1>
             </div>
@@ -165,7 +166,7 @@ export default function Loadmapdetail() {
             <div className="flex items-center justify-between mb-3">
               {/* 카테고리 */}
               <span className="bg-[#005C54] text-white text-sm px-3 py-1 rounded-2xl">
-                게임
+                {roadMapInfo.category.name}
               </span>
 
               {/* 좋아요,조회수,신고 */}
@@ -199,17 +200,33 @@ export default function Loadmapdetail() {
               <h2 className="text-2xl font-semibold mb-2">
                 {roadMapInfo.title}
               </h2>
+              <div className="relative  w-full h-[300px] bg-gray-100 rounded-[5px] mb-2 overflow-hidden">
+                {/* 기본 썸네일 이미지 제작 시 교체 예정 */}
+                <Image
+                  src={roadMapInfo.thumbnail ?? '/next.svg'}
+                  alt="썸네일 이미지"
+                  fill
+                  className="object-cover"
+                />
+              </div>
               <p className="text-[16px] text-black mb-2">
                 {roadMapInfo.description}
               </p>
-              <div className="flex gap-2 text-sm text-[#005C54] mb-2">
+              <div className="flex gap-2 text-sm text-[#005C54] mb-3">
                 {roadMapInfo.hashtags.map((tag: HashtagProps) => {
-                  return <span key={tag.id}>#{tag.name}</span>
+                  return (
+                    <span
+                      key={tag.id}
+                      className="px-2 py-1 bg-[#e0f0ef] rounded-full flex items-center"
+                    >
+                      #{tag.name}
+                    </span>
+                  )
                 })}
               </div>
             </div>
-            <div className="flex gap-[5px] items-center mb-6">
-              <div className="relative rounded-full size-[25px]">
+            <div className="flex gap-[10px] items-center mb-6">
+              <div className="relative rounded-full size-[34px]">
                 <Image
                   src={
                     roadMapInfo.member.profileImage ??
@@ -220,7 +237,9 @@ export default function Loadmapdetail() {
                   className="object-cover rounded-full"
                 />
               </div>
-              <span className="text-sm">{roadMapInfo.member.nickname}</span>
+              <span className="text-[15px] font-medium">
+                {roadMapInfo.member.nickname}
+              </span>
             </div>
 
             {/* 토글 */}
