@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Button from '../ui/Button';
 import mainImg from '../../../public/assets/mainImg.jpg';
+import Link from 'next/link';
 
 export default function ExplorebyTheme() {
   return (
@@ -25,9 +26,14 @@ export default function ExplorebyTheme() {
           <br />
           당신의 경험이 누군가의 다음 여정이 될 수 있어요
         </p>
-        <Button buttonStyle="green" className="w-[120px] h-[34px] py-2 text-sm">
-          Start Exploring
-        </Button>
+        <Link href="/dashbord/roadmap">
+          <Button
+            buttonStyle="green"
+            className="w-[120px] h-[34px] py-2 text-sm"
+          >
+            Start Exploring
+          </Button>
+        </Link>
       </div>
 
       <div

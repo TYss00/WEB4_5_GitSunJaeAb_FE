@@ -19,6 +19,7 @@ import type { NavigationOptions } from 'swiper/types';
 import { formatDate } from '@/utils/formatDate';
 import SkeletonQuestCard from './SkeletonQuestCard';
 import { TrendingQuest } from '@/types/mainDash';
+import Link from 'next/link';
 
 export default function TrendingQuests() {
   const {
@@ -129,12 +130,14 @@ export default function TrendingQuests() {
                         <p className="text-base font-medium mt-1 mb-4">
                           {quest.title}
                         </p>
-                        <Button
-                          buttonStyle="green"
-                          className="w-[82px] h-[29px] px-4 py-2 rounded-lg text-sm"
-                        >
-                          Let’s go
-                        </Button>
+                        <Link href={`/dashbord/quest/detail/${quest.id}`}>
+                          <Button
+                            buttonStyle="green"
+                            className="w-[82px] h-[29px] px-4 py-2 rounded-lg text-sm"
+                          >
+                            Let’s go
+                          </Button>
+                        </Link>
                       </div>
                       <div className="w-[260px] h-[120px] relative rounded-lg overflow-hidden">
                         <Image
