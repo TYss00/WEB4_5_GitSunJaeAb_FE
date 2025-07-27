@@ -86,6 +86,7 @@ export type LayerEditProps = {
 }
 export type LayerDetailProps = {
   title: string
+  id: number
   children: ReactNode
   defaultOpen?: boolean
 }

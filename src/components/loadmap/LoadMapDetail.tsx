@@ -258,6 +258,7 @@ export default function Loadmapdetail() {
                 return (
                   <LayerDetail
                     title={item.layer?.name ?? `Layer ${item.layer.id}`}
+                    id={item.layer.id}
                     key={item.layer.id}
                   >
                     {item.markers?.map((marker) => (
