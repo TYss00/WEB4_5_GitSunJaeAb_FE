@@ -10,7 +10,7 @@ export default function RecentSearchList({
 }: {
   onSelect?: (term: string) => void;
 }) {
-  const { data: searches = [] } = useRecentSearches();
+  const { data: searches = [], isLoading } = useRecentSearches();
   const clearMutation = useClearSearchHistory();
   const removeMutation = useRemoveSearchTerm();
 
@@ -29,7 +29,16 @@ export default function RecentSearchList({
       </div>
 
       <div>
-        {searches.length > 0 ? (
+        {isLoading ? (
+          <div className="flex flex-col gap-2 py-3">
+            {[1].map((i) => (
+              <div
+                key={i}
+                className="w-[600px] h-[20px] bg-gray-200 animate-pulse rounded"
+              />
+            ))}
+          </div>
+        ) : searches.length > 0 ? (
           searches.map((item) => (
             <RecentSearchItem
               key={item.id}
