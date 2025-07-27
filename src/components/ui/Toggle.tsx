@@ -17,7 +17,7 @@ export default function Toggle({ label, onChange }: ToggleProps) {
   const toggleHandler = () => {
     setIsActive((prev) => {
       const next = !prev
-      if (onChange) onChange(next)
+      if (onChange) setTimeout(() => onChange(next), 0)
       return next
     })
   }

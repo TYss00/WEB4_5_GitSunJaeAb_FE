@@ -57,8 +57,12 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
   const [description, setDescription] = useState('')
   const [categoryId, setCategoryId] = useState<number | null>(null)
   const [thumbnail, setThumbnail] = useState<File | null>(null)
-  const isPublic = true
+  const [isPublic, setIsPublic] = useState(true)
   const router = useRouter()
+
+  const handleIsPublic = (value: boolean) => {
+    setIsPublic(value)
+  }
 
   const handleSubmit = async () => {
     const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL
@@ -156,10 +160,11 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
           {/* 레이어 선택 */}
           <div className="relative w-[180px] shadow-sm">
             <select
-              className="w-full h-[40px] text-sm bg-white border-none rounded-[3px] px-3 appearance-none"
+              className="w-full h-[40px] text-sm bg-white border-none rounded-[3px] px-3 appearance-none focus:outline-none"
               value={selectedLayer}
               onChange={(e) => setSelectedLayer(e.target.value)}
             >
+              <option value="all">전체</option>
               {layers.map((layer, index) => (
                 <option key={index} value={layer}>
                   {layer}
@@ -221,7 +226,7 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
         <label className="text-lg text-black">썸네일 이미지</label>
         <label
           htmlFor="thumbnail"
-          className="flex justify-center items-center w-full h-[300px] bg-gray-300 cursor-pointer"
+          className="flex justify-center items-center w-full h-[300px] bg-gray-100 rounded-[5px] cursor-pointer"
         >
           {thumbnail ? (
             // 썸네일이 있을 경우: 이미지 미리보기
@@ -302,7 +307,7 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
           </div>
         </div>
 
-        <Toggle label="공개" />
+        <Toggle label="공개" onChange={handleIsPublic} />
 
         {/* 레이어  */}
         <div className="border-t border-gray-300 pt-6">
@@ -366,14 +371,14 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
             <Button
               onClick={() => router.back()}
               buttonStyle="white"
-              className="text-sm w-[60px] h-[35px]"
+              className="w-[71px] h-[40px] text-lg font-medium"
             >
               취소
             </Button>
             <Button
               onClick={handleSubmit}
               buttonStyle="smGreen"
-              className="text-sm w-[60px] h-[35px]"
+              className="w-[71px] h-[40px] text-lg font-medium"
             >
               완료
             </Button>
