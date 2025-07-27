@@ -14,6 +14,7 @@ import useHashtags from '@/hooks/useHashtags'
 import RoadMapGoogleWrite from './RoadMapGoogleWrite'
 import axiosInstance from '@/libs/axios'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
   const { layers, setLayers, newLayerName, setNewLayerName, handleAddLayer } =
@@ -57,6 +58,7 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
   const [categoryId, setCategoryId] = useState<number | null>(null)
   const [thumbnail, setThumbnail] = useState<File | null>(null)
   const isPublic = true
+  const router = useRouter()
 
   const handleSubmit = async () => {
     const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL
@@ -150,11 +152,11 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
           onMapClick={addMarkerByLatLng}
           onMarkerDelete={deleteMarker}
         />
-        <div className="absolute top-4 right-8 flex items-center gap-3 px-4 py-2 z-10">
+        <div className="absolute top-[3px] right-15 flex items-center gap-3 px-4 py-2 z-10">
           {/* 레이어 선택 */}
-          <div className="relative w-[140px]">
+          <div className="relative w-[180px] shadow-sm">
             <select
-              className="w-full h-[34px] text-sm bg-white border-none rounded pl-3 appearance-none"
+              className="w-full h-[40px] text-sm bg-white border-none rounded-[3px] px-3 appearance-none"
               value={selectedLayer}
               onChange={(e) => setSelectedLayer(e.target.value)}
             >
@@ -184,7 +186,6 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
           <div className="relative">
             <select
               className="w-full h-[40px] text-sm border border-[#E4E4E4] rounded px-3 appearance-none"
-              defaultValue=""
               value={categoryId ?? ''}
               onChange={(e) => setCategoryId(Number(e.target.value))}
             >
@@ -362,7 +363,11 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
           </div>
 
           <div className="flex justify-end mt-4 gap-2">
-            <Button buttonStyle="white" className="text-sm w-[60px] h-[35px]">
+            <Button
+              onClick={() => router.back()}
+              buttonStyle="white"
+              className="text-sm w-[60px] h-[35px]"
+            >
               취소
             </Button>
             <Button
