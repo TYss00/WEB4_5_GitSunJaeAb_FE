@@ -41,6 +41,7 @@ export default function MypagePost({
         const mapped = res.data.roadmaps.map((r: RoadmapResponse) => ({
           ...r,
           isLiked: r.isBookmarked,
+          likeId: r.bookmarkId,
         }));
 
         setCards(mapped);

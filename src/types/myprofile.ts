@@ -33,6 +33,7 @@ export type useProfileStores = {
 export type RoadmapResponse = {
   id: number;
   title: string;
+  bookmarkId?: number;
   isBookmarked?: boolean;
   thumbnail: string | null;
   roadmapType: 'SHARED' | 'PERSONAL';
