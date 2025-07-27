@@ -81,6 +81,18 @@ export default function Loadmapdetail() {
   const { roadmap: roadMapInfo, comments: commentsInfo } = data
   const defaultCenter = { lat: 37.5665, lng: 126.978 }
 
+  const handleZzim = async () => {
+    try {
+      const promises = roadMapInfo.layers.map((item) =>
+        axiosInstance.post(`/layers/member?layerId=${item.layer.id}`)
+      )
+      await Promise.all(promises)
+      console.log('찜 완료')
+    } catch (err) {
+      console.log('레이어 찜 오류', err)
+    }
+  }
+
   // 선택된 레이어의 마커만 추출
   const filteredMarkers =
     selectedLayerId === 'all'
@@ -252,7 +264,11 @@ export default function Loadmapdetail() {
             <div className="border-t border-gray-300 space-y-[15px]">
               <div className="flex items-center justify-between mt-6 mb-3 mr-3">
                 <h3 className="text-xl text-black">레이어 및 마커</h3>
-                <Download size={18} className="cursor-pointer text-gray-600" />
+                <Download
+                  size={18}
+                  className="cursor-pointer text-gray-600"
+                  onClick={handleZzim}
+                />
               </div>
               {roadMapInfo.layers.map((item) => {
                 return (
