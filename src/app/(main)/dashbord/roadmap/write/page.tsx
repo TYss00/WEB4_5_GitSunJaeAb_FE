@@ -6,7 +6,7 @@ export default async function page() {
     next: { revalidate: 60 },
   })
   const categoriesData = await res.json()
-  console.log(categoriesData)
+
   return (
     <>
       <LoadMapWrite categories={categoriesData.categories} />
