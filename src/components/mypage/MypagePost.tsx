@@ -2,9 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import MypageCard from '../ui/card/MypageCard';
-import { MypagePostProps, RoadmapResponse } from '@/types/myprofile';
+import {
+  MypagePostProps,
+  ProfileMember,
+  RoadmapResponse,
+} from '@/types/myprofile';
 import axiosInstance from '@/libs/axios';
 import MypageCardSkeleton from './skeleton/MypageCardSkeleton';
+import { useProfileStore } from '@/store/profileStore';
 
 export default function MypagePost({
   activeTab,
@@ -12,6 +17,9 @@ export default function MypagePost({
 }: MypagePostProps) {
   const [cards, setCards] = useState<RoadmapResponse[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const member = useProfileStore(
+    (state) => state.member
+  ) as ProfileMember | null;
 
   useEffect(() => {
     const fetchRoadmaps = async () => {
@@ -125,9 +133,15 @@ export default function MypagePost({
               onToggleLike={() => toggleLike(card.id)}
               {...(activeTab === '좋아요글' && card.member
                 ? {
-                    author: card.member.nickname,
+                    author:
+                      card.member.id === member?.id
+                        ? member?.nickname
+                        : card.member.nickname,
                     profileImgUrl:
-                      card.member.profileImage || '/assets/userProfile.png',
+                      card.member.id === member?.id
+                        ? member?.profileImage || '/assets/defaultProfile.png'
+                        : card.member.profileImage ||
+                          '/assets/defaultProfile.png',
                   }
                 : {})}
             />

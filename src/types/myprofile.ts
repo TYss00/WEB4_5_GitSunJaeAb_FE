@@ -37,10 +37,7 @@ export type RoadmapResponse = {
   thumbnail: string | null;
   roadmapType: 'SHARED' | 'PERSONAL';
   isPublic?: boolean;
-  member?: {
-    nickname: string;
-    profileImage: string | null;
-  };
+  member?: ProfileMember;
   isLiked?: boolean;
   createdAt?: string;
   likeId?: number;
