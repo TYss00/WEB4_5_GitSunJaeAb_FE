@@ -95,12 +95,14 @@ export default function MypageCard({
             <>
               <div className="flex items-center gap-2">
                 {profileImgUrl && (
-                  <Image
-                    src={profileImgUrl}
-                    alt="프로필 이미지"
-                    width={20}
-                    height={20}
-                    className="rounded-full"
+                  <span
+                    className="size-[20px] rounded-full"
+                    style={{
+                      backgroundImage: `url(${profileImgUrl})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat',
+                    }}
                   />
                 )}
                 <p className="text-sm text-[var(--gray-200)]">{author}</p>
