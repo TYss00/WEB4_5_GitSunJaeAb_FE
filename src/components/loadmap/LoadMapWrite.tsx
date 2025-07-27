@@ -13,6 +13,7 @@ import { RoadmapWriteProps } from '@/types/type'
 import useHashtags from '@/hooks/useHashtags'
 import RoadMapGoogleWrite from './RoadMapGoogleWrite'
 import axiosInstance from '@/libs/axios'
+import Image from 'next/image'
 
 export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
   const { layers, setLayers, newLayerName, setNewLayerName, handleAddLayer } =
@@ -176,16 +177,7 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
       <div className="w-2/6 px-6 py-8 space-y-6 bg-white h-full overflow-y-auto scrollbar-none">
         {/* 화면 위치 */}
         <h1 className="font-semibold text-2xl">로드맵 작성하기</h1>
-        {/* 썸네일 */}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            if (e.target.files?.[0]) {
-              setThumbnail(e.target.files[0])
-            }
-          }}
-        />
+
         {/* 카테고리 */}
         <div className="space-y-2">
           <label className="text-lg text-black">카테고리</label>
@@ -212,6 +204,41 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
             />
           </div>
         </div>
+
+        {/* 썸네일 */}
+        <input
+          type="file"
+          id="thumbnail"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            if (e.target.files?.[0]) {
+              setThumbnail(e.target.files[0])
+            }
+          }}
+        />
+        <label className="text-lg text-black">썸네일 이미지</label>
+        <label
+          htmlFor="thumbnail"
+          className="flex justify-center items-center w-full h-[300px] bg-gray-300 cursor-pointer"
+        >
+          {thumbnail ? (
+            // 썸네일이 있을 경우: 이미지 미리보기
+            <img
+              src={URL.createObjectURL(thumbnail)}
+              alt="썸네일 미리보기"
+              className="object-cover w-full h-full"
+            />
+          ) : (
+            // 썸네일 없을 경우: 기본 업로드 아이콘
+            <Image
+              src="/file.svg"
+              alt="파일 업로드 아이콘"
+              width={40}
+              height={40}
+            />
+          )}
+        </label>
 
         {/* 제목 */}
         <div className="space-y-2">
