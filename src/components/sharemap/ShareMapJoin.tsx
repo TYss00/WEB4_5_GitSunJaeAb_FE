@@ -17,9 +17,8 @@ import Button from '../ui/Button';
 import ReportModal from '../common/modal/ReportModal';
 import useSidebar from '@/utils/useSidebar';
 import Input from '../ui/Input';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-
 import GoogleMapWrapper from './GoogleMapWrapper';
 import ShareLayerEdit from '../ui/layer/ShareLayerEdit';
 import useShareStore from '@/store/useShareStore';
@@ -27,6 +26,9 @@ import useHashStore from '@/store/useHashStore';
 
 export default function ShareMapJoin() {
   const router = useRouter();
+  const params = useParams();
+  const id = params?.id as string;
+
   const [isReportOpen, setIsReportOpen] = useState(false);
   const { isOpen, toggle, close } = useSidebar();
   const [input, setInput] = useState('');
@@ -65,11 +67,15 @@ export default function ShareMapJoin() {
   const mapRef = useRef<google.maps.Map | null>(null);
 
   useEffect(() => {
-    enterRoom('collab-map-room');
+    if (!id) return;
+
+    const roomId = `sharemap-room-${id}`;
+    enterRoom(roomId);
+
     return () => {
       leaveRoom();
     };
-  }, [enterRoom, leaveRoom]);
+  }, [id, enterRoom, leaveRoom]);
 
   return (
     <section className="relative w-full h-screen overflow-hidden">

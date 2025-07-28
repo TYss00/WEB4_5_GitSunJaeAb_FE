@@ -1,10 +1,9 @@
-// ✅ ShareLayerEdit.tsx (최종 통합 버전)
 'use client';
 
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, Layers, Plus, Trash2 } from 'lucide-react';
 import ShareMarkerEdit from './ShareMarkerEdit';
-import { LayerEditProps } from '@/types/type';
+import { ShareLayerEditProps } from '@/types/type';
 import useShareStore, { Layer } from '@/store/useShareStore';
 
 export default function ShareLayerEdit({
@@ -12,7 +11,7 @@ export default function ShareLayerEdit({
   isTextArea = true,
   defaultOpen = true,
   mapRef,
-}: LayerEditProps & {
+}: ShareLayerEditProps & {
   mapRef: React.RefObject<google.maps.Map | null>;
   layer: Layer;
 }) {

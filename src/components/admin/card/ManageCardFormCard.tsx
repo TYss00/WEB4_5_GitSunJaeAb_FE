@@ -2,18 +2,18 @@
 
 import Image from 'next/image';
 import { ImagePlus } from 'lucide-react';
-import Input from '../ui/Input';
-import Button from '../ui/Button';
-import { CategoryCardFormProps } from '@/types/admin';
+import { ManageCardFormProps } from '@/types/admin';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
 
-export default function CategoryFormCard({
+export default function ManageCardFormCard({
   name,
   image,
   onNameChange,
   onImageChange,
   onSubmit,
   onCancel,
-}: CategoryCardFormProps) {
+}: ManageCardFormProps) {
   return (
     <div className="w-[100px] h-[126px] p-2 rounded-md overflow-hidden border border-dashed border-[var(--gray-300)] bg-[var(--white)] flex flex-col justify-between">
       <div className="w-full h-[100px] flex items-center justify-center bg-gray-100 relative">
@@ -23,6 +23,8 @@ export default function CategoryFormCard({
             alt="preview"
             fill
             className="object-cover"
+            priority
+            unoptimized
           />
         ) : (
           <label className="text-sm text-[var(--gray-100)] cursor-pointer">

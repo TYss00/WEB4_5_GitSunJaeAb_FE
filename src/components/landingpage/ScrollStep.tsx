@@ -62,6 +62,7 @@ export default function ScrollStep({
               src={imageSrc}
               alt={title}
               fill
+              sizes="100"
               className="object-cover"
               priority
             />

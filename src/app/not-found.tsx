@@ -32,12 +32,13 @@ export default function NotFound() {
             >
               홈페이지로 이동
             </Button>
-            <span
+            <Button
+              buttonStyle="white"
               onClick={() => router.back()}
-              className="text-[18px] text-[var(--black)]"
+              className="w-[162px] h-[52px] text-[18px]"
             >
               이전 페이지로 이동
-            </span>
+            </Button>
           </div>
         </div>
 
