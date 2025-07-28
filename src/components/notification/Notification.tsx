@@ -1,20 +1,27 @@
 'use client';
+
 import { X } from 'lucide-react';
 import NotiListItem from './NotiListItem';
 import { useRef, useState } from 'react';
-import { useMarkAsRead, useNotifications } from '@/libs/notification';
+import { useMarkAsRead } from '@/libs/notification';
+import { useRouter } from 'next/navigation';
+import { AppNotification } from '@/types/notiType';
 
 type NotificationProps = {
+  notifications: AppNotification[];
   onClose: () => void;
 };
 
-export default function Notification({ onClose }: NotificationProps) {
+export default function Notification({
+  notifications,
+  onClose,
+}: NotificationProps) {
   const [activeTab, setActiveTab] = useState<'전체' | '게시글' | '공지'>(
     '전체'
   );
   const notiListRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
-  const { data: notifications = [] } = useNotifications();
   const { mutate } = useMarkAsRead();
 
   // 탭 필터
@@ -35,6 +42,41 @@ export default function Notification({ onClose }: NotificationProps) {
   const handleAllRead = () => {
     const unreadNotis = filteredNotis.filter((n) => !n.isRead);
     unreadNotis.forEach((noti) => mutate(noti.id));
+  };
+
+  // 클릭 시 라우팅 처리
+  const handleNotificationClick = (noti: AppNotification) => {
+    if (!noti.isRead) {
+      mutate(noti.id);
+    }
+
+    switch (noti.notificationType) {
+      case 'COMMENT':
+        if (noti.relatedQuestId) {
+          router.push(`/dashbord/quests/detail/${noti.relatedQuestId}`);
+        } else if (noti.relatedRoadmap?.id && noti.relatedLayer?.id) {
+          router.push(`/dashbord/roadmap/detail/${noti.relatedRoadmap.id}`);
+        } else if (noti.relatedRoadmap?.id) {
+          router.push(`/dashbord/roadmap/detail/${noti.relatedRoadmap.id}`);
+        }
+        break;
+      case 'ZZIM':
+      case 'FORK':
+        if (noti.relatedRoadmap?.id && noti.relatedLayer?.id) {
+          router.push(`/dashbord/roadmap/detail/${noti.relatedRoadmap.id}`);
+        }
+        break;
+      case 'BOOKMARK':
+        router.push(`/dashbord/roadmap/detail/${noti.relatedRoadmap?.id}`);
+        break;
+      case 'QUEST':
+      case 'QUEST_DEADLINE':
+        router.push(`/dashbord/quests/detail/${noti.relatedQuestId}`);
+        break;
+      case 'ANNOUNCEMENT':
+      case 'ETC':
+        break;
+    }
   };
 
   return (
@@ -100,17 +142,19 @@ export default function Notification({ onClose }: NotificationProps) {
         ref={notiListRef}
         className="px-2.5 pt-2.5 h-[390px] overflow-y-auto"
       >
-        {filteredNotis.map((noti) => (
-          // 나중에 프로필 이미지도 넘기기
-          <NotiListItem
-            key={noti.id}
-            id={noti.id}
-            message={noti.message}
-            time={noti.time}
-            isRead={noti.isRead}
-            type={noti.type}
-          />
-        ))}
+        {filteredNotis.length === 0 ? (
+          <p className="text-left text-[var(--gray-200)] p-2">
+            알림이 없습니다
+          </p>
+        ) : (
+          filteredNotis.map((noti) => (
+            <NotiListItem
+              key={noti.id}
+              noti={noti}
+              onClick={handleNotificationClick}
+            />
+          ))
+        )}
       </div>
     </div>
   );

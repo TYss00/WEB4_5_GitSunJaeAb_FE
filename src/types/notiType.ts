@@ -1,5 +1,5 @@
 export type NotificationType =
-  | 'POST'
+  | 'BOOKMARK'
   | 'COMMENT'
   | 'ZZIM'
   | 'FORK'
@@ -8,27 +8,37 @@ export type NotificationType =
   | 'ANNOUNCEMENT'
   | 'ETC';
 
-export type Notification = {
-  id: number;
-  message: string;
-  type: '게시글' | '공지';
-  time: string;
-  isRead: boolean;
-};
-
-export type NotificationSender = {
-  id: number;
-  name: string;
-  nickname: string;
-  email: string;
-  profileImage: string | null;
-};
-
 export type NotificationResponse = {
   id: number;
+  title: string;
   content: string;
   createdAt: string;
   read: boolean;
   notificationType: NotificationType;
-  sender?: NotificationSender | null;
+  sender?: {
+    id: number;
+    name: string;
+    nickname: string;
+    email: string;
+    profileImage: string | null;
+  } | null;
+  relatedRoadmap?: { id: number };
+  relatedLayer?: { id: number };
+  relatedQuestId?: number;
+  relatedCommentId?: number;
+};
+
+export type AppNotification = {
+  id: number;
+  title: string;
+  message: string;
+  time: string;
+  isRead: boolean;
+  senderProfileImage?: string | null;
+  notificationType: NotificationType;
+  type: '게시글' | '공지';
+  relatedRoadmap?: { id: number };
+  relatedLayer?: { id: number };
+  relatedQuestId?: number;
+  relatedCommentId?: number;
 };

@@ -139,7 +139,10 @@ export default function Header({ isAdmin = false }: HeaderProps) {
       {/* 알림 모달 */}
       {!isAdmin && isNotiOpen && (
         <div ref={notiRef} className="absolute top-[72px] right-[100px] z-50">
-          <Notification onClose={() => setIsNotiOpen(false)} />
+          <Notification
+            notifications={notifications}
+            onClose={() => setIsNotiOpen(false)}
+          />
         </div>
       )}
 
