@@ -12,6 +12,7 @@ import UserModal from './modal/UserModal';
 import { useAuthStore } from '@/store/useAuthStore';
 import defaultProfile from '../../../public/assets/defaultProfile.png';
 import Image from 'next/image';
+import { useNotifications } from '@/libs/notification';
 
 export default function Header({ isAdmin = false }: HeaderProps) {
   const pathname = usePathname();
@@ -24,6 +25,9 @@ export default function Header({ isAdmin = false }: HeaderProps) {
 
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const userRef = useRef<HTMLDivElement>(null);
+
+  const { data: notifications = [] } = useNotifications();
+  const hasUnread = notifications.some((n) => !n.isRead);
 
   useClickOut(searchRef, () => setIsSearchOpen(false));
   useClickOut(notiRef, () => setIsNotiOpen(false));
@@ -89,12 +93,17 @@ export default function Header({ isAdmin = false }: HeaderProps) {
         {!isAdmin && (
           <>
             {/* 알림 아이콘 */}
-            <Bell
-              size={30}
-              strokeWidth={1.7}
-              className="cursor-pointer hover:text-[var(--primary-300)]"
-              onClick={handleNoti}
-            />
+            <div className="relative">
+              <Bell
+                size={30}
+                strokeWidth={1.7}
+                className="cursor-pointer hover:text-[var(--primary-300)]"
+                onClick={handleNoti}
+              />
+              {hasUnread && (
+                <div className="absolute top-[-5px] right-[-2px] size-2 bg-[var(--red)] rounded-full" />
+              )}
+            </div>
             {/* 검색 아이콘 or 닫기 아이콘 */}
             {isSearchOpen ? (
               <X
@@ -129,7 +138,7 @@ export default function Header({ isAdmin = false }: HeaderProps) {
 
       {/* 알림 모달 */}
       {!isAdmin && isNotiOpen && (
-        <div ref={notiRef} className="absolute top-[72px] right-[80px] z-50">
+        <div ref={notiRef} className="absolute top-[72px] right-[100px] z-50">
           <Notification onClose={() => setIsNotiOpen(false)} />
         </div>
       )}
