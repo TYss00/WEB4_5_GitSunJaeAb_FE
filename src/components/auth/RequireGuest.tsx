@@ -9,15 +9,20 @@ export default function RequireGuest({
 }: {
   children: React.ReactNode;
 }) {
-  const { accessToken, loading } = useAuthStore();
+  const { accessToken, loading, user } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (accessToken && !loading) {
-      router.replace('/dashbord');
+    if (!loading && accessToken && user) {
+      if (user.role === 'ROLE_ADMIN') {
+        router.replace('/admin/report');
+      } else {
+        router.replace('/dashbord');
+      }
     }
-  }, [accessToken, loading, router]);
+  }, [accessToken, loading, user, router]);
 
+  if (loading) return null;
   if (accessToken) return null;
 
   return <>{children}</>;
