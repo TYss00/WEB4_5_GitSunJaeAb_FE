@@ -1,24 +1,43 @@
 export type Marker = {
-  id: number;
+  markerTempId: number;
   name: string;
   description: string;
   lat: number;
   lng: number;
   color: string;
-  imageUrl: string;
+  customImageId: string;
   markerSeq: number;
-  layer: number;
-  member?: {
-    id: number;
-    name: string;
-    nickname: string;
-    email: string;
-    profileImage: string;
-  };
+  layerTempId: number;
+};
+
+export type MarkerWithAddress = Marker & {
+  address?: string;
+};
+export type NewMarkerInput = Omit<
+  MarkerWithAddress,
+  'markerTempId' | 'markerSeq'
+>;
+
+// markerdto 타입 생성해서 생성, 수정, 삭제 시 서버로 보낼 때 쓰는 타입
+// Marker + userId + action
+export interface MarkerLogEntry extends Marker {
+  address?: string;
+  action: 'add' | 'update' | 'delete';
+  memberId: number;
+}
+
+export type LayerLogEntry = {
+  layerTempId: number;
+  name: string;
+  description: string;
+  action: 'add' | 'update' | 'delete';
+  memberId: number;
+  roadmapId: number;
+  layerSeq: number;
 };
 
 /** 마커 생성 시 사용할 입력 타입 (id 제외) */
-export type MarkerInput = Omit<Marker, 'id'>;
+export type MarkerInput = Omit<Marker, 'markerTempId'>;
 
 /** 클라이언트 내부에서만 쓰는 마커 타입 (id는 필수) */
 export interface LocalMarker extends Marker {
@@ -27,7 +46,7 @@ export interface LocalMarker extends Marker {
 
 /** 레이어 타입 */
 export interface Layer {
-  id: number;
+  layerTempId: number;
   name: string;
 }
 

@@ -22,6 +22,7 @@ import ShareLayerDetail from '../ui/layer/ShareLayerDetail';
 import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
 import axiosInstance from '@/libs/axios';
 import { RoadmapDetailResponse } from '@/types/share';
+import Image from 'next/image';
 
 export default function ShareClickDetail() {
   const router = useRouter();
@@ -35,6 +36,9 @@ export default function ShareClickDetail() {
   });
 
   const mapRef = useRef<google.maps.Map | null>(null);
+  const [selectedLayerId, setSelectedLayerId] = useState<'all' | number>('all');
+  const isParticipationClosed =
+    roadmap && new Date(roadmap.participationEnd) < new Date();
 
   useEffect(() => {
     const fetchRoadmap = async () => {
@@ -51,6 +55,12 @@ export default function ShareClickDetail() {
 
   if (!roadmap) return <div className="text-center py-20">로딩 중...</div>;
 
+  const filteredMarkers =
+    selectedLayerId === 'all'
+      ? roadmap.layers.flatMap((layer) => layer.markers)
+      : roadmap.layers.find((l) => l.layer.id === selectedLayerId)?.markers ??
+        [];
+
   return (
     <section className="relative w-full h-screen overflow-hidden">
       {/* 지도 영역 */}
@@ -63,23 +73,16 @@ export default function ShareClickDetail() {
               lng: Number(roadmap.regionLongitude),
             }}
             zoom={14}
-            options={{
-              disableDefaultUI: true,
-              draggable: true,
-              scrollwheel: true,
-            }}
             onLoad={(map) => {
               mapRef.current = map;
             }}
           >
-            {roadmap.layers
-              .flatMap((layer) => layer.markers)
-              .map((marker) => (
-                <MarkerF
-                  key={marker.id}
-                  position={{ lat: marker.lat, lng: marker.lng }}
-                />
-              ))}
+            {filteredMarkers.map((marker) => (
+              <MarkerF
+                key={marker.id}
+                position={{ lat: marker.lat, lng: marker.lng }}
+              />
+            ))}
           </GoogleMap>
         )}
         {/* 왼쪽 상단 버튼 */}
@@ -97,15 +100,19 @@ export default function ShareClickDetail() {
           <div className="relative w-[140px]">
             <select
               className="w-full h-[34px] text-sm bg-white border-none rounded pl-3 appearance-none"
-              defaultValue=""
+              value={selectedLayerId ?? ''}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSelectedLayerId(value === 'all' ? 'all' : Number(value));
+              }}
             >
-              <option value="" disabled hidden>
-                레이어 이름
-              </option>
-              <option>레이어 1</option>
-              <option>레이어 2</option>
+              <option value="all">전체 레이어</option>
+              {roadmap?.layers?.map((l) => (
+                <option key={l.layer.id} value={l.layer.id}>
+                  {l.layer.name}
+                </option>
+              ))}
             </select>
-
             <ChevronDown
               size={18}
               className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-black"
@@ -187,8 +194,14 @@ export default function ShareClickDetail() {
               ))}
             </div>
             <div className="flex gap-[5px] items-center mb-5">
-              <div className="rounded-full bg-amber-950 size-[25px]"></div>
-              <span className="text-sm">{roadmap.member.nickname}</span>
+              <Image
+                src={roadmap?.member.profileImage || '/assets/useProfile.png'}
+                alt="작성자 프로필"
+                width={25}
+                height={25}
+                className="rounded-full object-cover size-[25px]"
+              />
+              <span className="text-sm">{roadmap?.member?.nickname}</span>
             </div>
           </div>
 
@@ -209,17 +222,35 @@ export default function ShareClickDetail() {
             ))}
           </div>
 
-          {/* 참여하기 버튼 */}
-          <Link href={`/dashbord/sharemap/detail/${id}/preview/mapjoin`}>
-            <div className="flex justify-end pt-6">
+          <div className="flex justify-end gap-3 mt-5">
+            {/* 나가기 버튼 */}
+            <Button
+              buttonStyle="white"
+              className="w-[114px] h-[40px] text-[18px] font-semibold cursor-pointer"
+            >
+              나가기
+            </Button>
+
+            {/* 참여하기 버튼 or 참여 마감 */}
+            {isParticipationClosed ? (
               <Button
                 buttonStyle="smGreen"
-                className="w-[114px] h-[40px] text-[18px] font-semibold"
+                className="w-[114px] h-[40px] text-[18px] font-semibold bg-gray-300 cursor-not-allowed"
+                disabled
               >
-                참여하기
+                참여 마감
               </Button>
-            </div>
-          </Link>
+            ) : (
+              <Link href={`/dashbord/sharemap/detail/${id}/preview/mapjoin`}>
+                <Button
+                  buttonStyle="smGreen"
+                  className="w-[114px] h-[40px] text-[18px] font-semibold"
+                >
+                  참여하기
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 
