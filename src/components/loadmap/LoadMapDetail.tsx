@@ -48,6 +48,7 @@ export default function Loadmapdetail() {
           (item: BookmarksInfo) => String(item.id) === roadmapId
         )
         setIsBookmarked(matched)
+        console.log('matched', matched)
 
         setData({
           roadmap: roadmapRes.data.roadmap,
@@ -62,7 +63,7 @@ export default function Loadmapdetail() {
 
     fetchAll()
     console.log(data)
-  }, [roadmapId])
+  }, [roadmapId, data])
 
   if (loading) return <div>로딩 중...</div>
   if (!data) return <div>데이터 없음</div>

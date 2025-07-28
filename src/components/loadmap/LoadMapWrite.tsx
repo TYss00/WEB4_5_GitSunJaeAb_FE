@@ -9,7 +9,7 @@ import LayerEdit from '../ui/layer/LayerEdit'
 import useLayerAdd from '@/hooks/useLayerAdd'
 import { useEffect, useState } from 'react'
 import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
-import { RoadmapWriteProps } from '@/types/type'
+import { LayerInfo, RoadmapWriteProps } from '@/types/type'
 import useHashtags from '@/hooks/useHashtags'
 import RoadMapGoogleWrite from './RoadMapGoogleWrite'
 import axiosInstance from '@/libs/axios'
@@ -351,7 +351,7 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
               <option value="" disabled hidden>
                 레이어 선택
               </option>
-              {myZzimLayers?.map((layer) => (
+              {myZzimLayers?.map((layer: LayerInfo) => (
                 <option key={layer.id} value={layer.name}>
                   {layer.name}
                 </option>

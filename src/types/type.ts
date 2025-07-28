@@ -184,6 +184,7 @@ export type BookmarksInfo = {
   id: number
   roadmap: number
   member: number
+  bookmarkId: number
 }
 
 export type CategoryInfo = {
