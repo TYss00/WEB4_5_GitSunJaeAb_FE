@@ -209,6 +209,23 @@ export type MarkerInfo = {
 
 export type RoadmapWriteProps = {
   categories: CategoryInfo[]
+  // myZzimlayers: {
+  //   id: number
+  //   name: string
+  //   description: string
+  //   layerSeq: 2
+  //   layerTime: string | null
+  //   createdAt: string
+  //   updatedAt: string | null
+  //   deletedAt: string | null
+  //   member: Member
+  //   roadmap: {
+  //     id: number
+  //     categoryId: number
+  //     title: string
+  //     memberId: number
+  //   }
+  // }[]
 }
 
 export type RoadmapDetailProps = {

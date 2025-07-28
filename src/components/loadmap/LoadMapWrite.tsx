@@ -40,6 +40,19 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
     handleKeyDown,
   } = useHashtags()
 
+  useEffect(() => {
+    const getMyZzimLayers = async () => {
+      try {
+        const res = await axiosInstance.get(`/layers/member`)
+        const MyZzimLayers = await res.data
+        setMyZzimLayers(MyZzimLayers.layers)
+      } catch (err) {
+        console.log('회원 찜 레이어 조회 오류', err)
+      }
+    }
+    getMyZzimLayers()
+  }, [])
+
   const handleDeleteLayer = (index: number) => {
     const layerName = layers[index]
 
@@ -51,13 +64,14 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
     if (layers.length > 0 && !selectedLayer) {
       setSelectedLayer(layers[0]) // 첫 번째 레이어 자동 선택
     }
-  }, [layers])
+  }, [layers, setSelectedLayer, selectedLayer])
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [categoryId, setCategoryId] = useState<number | null>(null)
   const [thumbnail, setThumbnail] = useState<File | null>(null)
   const [isPublic, setIsPublic] = useState(true)
+  const [myZzimLayers, setMyZzimLayers] = useState([])
   const router = useRouter()
 
   const handleIsPublic = (value: boolean) => {
@@ -333,17 +347,15 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
           </div>
 
           <div className="relative mb-3">
-            <select
-              className="w-full h-[40px] text-sm border border-[#E4E4E4] rounded px-3 appearance-none"
-              defaultValue=""
-            >
+            <select className="w-full h-[40px] text-sm border border-[#E4E4E4] rounded px-3 appearance-none">
               <option value="" disabled hidden>
                 레이어 선택
               </option>
-              {/* 로그인 연결 후 api 연결 예정 */}
-              <option>게임</option>
-              <option>여행</option>
-              <option>맛집</option>
+              {myZzimLayers?.map((layer) => (
+                <option key={layer.id} value={layer.name}>
+                  {layer.name}
+                </option>
+              ))}
             </select>
 
             <ChevronDown
