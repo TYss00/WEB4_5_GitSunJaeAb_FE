@@ -72,6 +72,7 @@ export default function ShareMap() {
             : sharedMaps.map((roadmap) => (
                 <SwiperSlide key={roadmap.id} className="!w-[252px]">
                   <ShareMapCard
+                    id={roadmap.id}
                     isEvent={false}
                     title={roadmap.title}
                     mapImageUrl={roadmap.thumbnail || '/sharemapmap.svg'}

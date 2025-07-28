@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import MypageCard from '../ui/card/MypageCard';
+import MypageCardSkeleton from './skeleton/MypageCardSkeleton';
 import {
+  MemberQuest,
   MypagePostProps,
   ProfileMember,
   RoadmapResponse,
 } from '@/types/myprofile';
 import axiosInstance from '@/libs/axios';
-import MypageCardSkeleton from './skeleton/MypageCardSkeleton';
 import { useProfileStore } from '@/store/profileStore';
 
 export default function MypagePost({
@@ -16,44 +17,50 @@ export default function MypagePost({
   searchKeyword,
 }: MypagePostProps) {
   const [cards, setCards] = useState<RoadmapResponse[]>([]);
+  const [quests, setQuests] = useState<MemberQuest[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const member = useProfileStore(
     (state) => state.member
   ) as ProfileMember | null;
 
   useEffect(() => {
-    const fetchRoadmaps = async () => {
+    const fetchRoadmapsOrQuests = async () => {
       setIsLoading(true);
       try {
-        let url = '';
         if (activeTab === '작성글') {
-          url = `/roadmaps/member`;
+          const res = await axiosInstance.get('/roadmaps/member');
+          const mapped = res.data.roadmaps.map((r: RoadmapResponse) => ({
+            ...r,
+            isLiked: r.isBookmarked,
+            likeId: r.bookmarkId,
+          }));
+          setCards(mapped);
         } else if (activeTab === '좋아요글') {
-          url = `/bookmarks/bookmarkedRoadmaps`;
+          const res = await axiosInstance.get('/bookmarks/bookmarkedRoadmaps');
+          const mapped = res.data.roadmaps.map((r: RoadmapResponse) => ({
+            ...r,
+            isLiked: r.isBookmarked,
+            likeId: r.bookmarkId,
+          }));
+          setCards(mapped);
+        } else if (activeTab === '참여글') {
+          const res = await axiosInstance.get('/quests/memberQuest/my');
+          setQuests(res.data.memberQuests || []);
         } else {
           setCards([]);
-          setIsLoading(false);
-          return;
+          setQuests([]);
         }
-
-        const res = await axiosInstance.get(url);
-
-        const mapped = res.data.roadmaps.map((r: RoadmapResponse) => ({
-          ...r,
-          isLiked: r.isBookmarked,
-          likeId: r.bookmarkId,
-        }));
-
-        setCards(mapped);
       } catch (err) {
-        console.error('로드맵 불러오기 실패:', err);
+        alert('데이터 불러오는 중 오류가 발생했습니다.');
+        console.error(err);
         setCards([]);
+        setQuests([]);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchRoadmaps();
+    fetchRoadmapsOrQuests();
   }, [activeTab]);
 
   const mapType = (roadmap: RoadmapResponse): '공개' | '비공개' | '공유' => {
@@ -84,8 +91,8 @@ export default function MypagePost({
         throw new Error('likeId가 없어 삭제할 수 없습니다.');
       }
     } catch (err) {
-      console.error('좋아요 토글 실패:', err);
       alert('좋아요 처리 중 오류가 발생했습니다.');
+      console.error(err);
       setCards((prev) =>
         prev.map((card) =>
           card.id === roadmapId ? { ...card, isLiked: wasLiked } : card
@@ -102,6 +109,10 @@ export default function MypagePost({
     );
   });
 
+  const filteredQuests = quests.filter((q) =>
+    q.title.toLowerCase().includes(searchKeyword.toLowerCase())
+  );
+
   return (
     <div>
       {isLoading ? (
@@ -113,9 +124,36 @@ export default function MypagePost({
             ))}
         </div>
       ) : activeTab === '참여글' ? (
-        <div className="text-center text-[var(--gray-300)] py-50">
-          해당하는 참여한 글이 없습니다.
-        </div>
+        filteredQuests.length === 0 ? (
+          <div className="text-center text-[var(--gray-300)] py-50">
+            해당하는 참여한 글이 없습니다.
+          </div>
+        ) : (
+          <div className="grid grid-cols-4 gap-6">
+            {filteredQuests.map((q) => (
+              <MypageCard
+                key={q.id}
+                id={q.id}
+                title={q.title}
+                date={q.submitAt?.split('T')[0] || ''}
+                type="퀘스트"
+                mapImageUrl={q.imageUrl || '/map.png'}
+                isLiked={false}
+                onToggleLike={() => {}}
+                author={
+                  q.member.id === member?.id
+                    ? member?.nickname
+                    : q.member.nickname
+                }
+                profileImgUrl={
+                  q.member.id === member?.id
+                    ? member?.profileImage || '/assets/defaultProfile.png'
+                    : q.member.profileImage || '/assets/defaultProfile.png'
+                }
+              />
+            ))}
+          </div>
+        )
       ) : filteredCards.length === 0 ? (
         <div className="text-center text-[var(--gray-300)] py-50">
           해당하는 게시글이 없습니다.

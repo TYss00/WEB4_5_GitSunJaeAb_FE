@@ -27,8 +27,23 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
+        protocol: 'http',
+        hostname: 'example.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'cdn.example.com',
+        pathname: '/**',
+      },
+      {
         protocol: 'https',
         hostname: 'cdn.example.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'lh3.googleusercontent.com',
         pathname: '/**',
       },
       {

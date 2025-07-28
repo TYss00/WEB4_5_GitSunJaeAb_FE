@@ -23,7 +23,6 @@ export default function MypageComment({
           commentList.map(async (comment: Omit<CommentItem, 'postTitle'>) => {
             const isRoadmap = !!comment.roadmap;
             const targetId = isRoadmap ? comment.roadmap : comment.quest;
-            console.log(targetId);
             const endpoint = isRoadmap
               ? `/roadmaps/${targetId}`
               : `/quests/${targetId}`;

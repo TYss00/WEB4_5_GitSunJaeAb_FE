@@ -112,3 +112,16 @@ export type CommentItem = {
   postTitle: string;
   createdAt: string;
 };
+
+export type MemberQuest = {
+  id: number;
+  title: string;
+  imageUrl: string;
+  submitAt: string;
+  description: string;
+  member: {
+    id: number;
+    nickname: string;
+    profileImage: string | null;
+  };
+};
