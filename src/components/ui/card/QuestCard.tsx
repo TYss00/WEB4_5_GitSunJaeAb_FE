@@ -82,7 +82,12 @@ export default function QuestCard({
             <div className="flex items-center gap-[5px]">
               <span
                 className="size-[20px] rounded-full"
-                style={{ backgroundImage: `url(${profileImgUrl})` }}
+                style={{
+                  backgroundImage: `url(${profileImgUrl})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+                }}
               />
               <span className="text-[10px] text-[var(--gray-200)]">
                 {author}

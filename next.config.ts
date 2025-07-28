@@ -41,6 +41,9 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+    // SVG 허용 추가
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 };
 

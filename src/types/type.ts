@@ -198,11 +198,6 @@ export type MapProps = {
   onMarkerDelete: (layer: string, id: number) => void;
 };
 
-export type SearchRecord = {
-  term: string;
-  date: string;
-};
-
 export type CategorySetting = {
   id: number;
   name: string;

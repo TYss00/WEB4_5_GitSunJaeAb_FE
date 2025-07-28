@@ -6,16 +6,25 @@ import ProfileEditModal from './ProfileEditModal';
 import Image from 'next/image';
 import { useProfileStore } from '@/store/profileStore';
 import defaultProfile from '../../../public/assets/defaultProfile.png';
+import MypageLabelSkeleton from './skeleton/MypageLabelSkeleton';
 
 export default function MypageLabel() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const member = useProfileStore((state) => state.member);
   const fetchMember = useProfileStore((state) => state.fetchMember);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (!member) {
-      fetchMember();
-    }
+    const load = async () => {
+      if (!member) {
+        setIsLoading(true);
+        await fetchMember();
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+      }
+    };
+    load();
   }, [member, fetchMember]);
 
   useEffect(() => {
@@ -24,6 +33,10 @@ export default function MypageLabel() {
       document.body.style.overflow = 'auto';
     };
   }, [isEditOpen]);
+
+  if (isLoading) {
+    return <MypageLabelSkeleton />;
+  }
 
   return (
     <>

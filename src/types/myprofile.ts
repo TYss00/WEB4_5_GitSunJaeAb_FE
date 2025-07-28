@@ -33,14 +33,12 @@ export type useProfileStores = {
 export type RoadmapResponse = {
   id: number;
   title: string;
+  bookmarkId?: number;
   isBookmarked?: boolean;
   thumbnail: string | null;
   roadmapType: 'SHARED' | 'PERSONAL';
   isPublic?: boolean;
-  member?: {
-    nickname: string;
-    profileImage: string | null;
-  };
+  member?: ProfileMember;
   isLiked?: boolean;
   createdAt?: string;
   likeId?: number;
