@@ -3,24 +3,34 @@
 import { useState } from 'react'
 import { ChevronDown, ChevronUp, Download, Layers } from 'lucide-react'
 import { LayerDetailProps } from '@/types/type'
+import axiosInstance from '@/libs/axios'
 
 export default function LayerDetail({
   title,
+  id,
   defaultOpen = false,
   children,
 }: LayerDetailProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen)
 
+  const handleZzim = async () => {
+    try {
+      const res = await axiosInstance.post(`/layers/member?layerId=${id}`)
+      const zzim = await res.data
+      console.log(zzim)
+    } catch (err) {
+      console.log('레이어 찜 추가 오류', err)
+    }
+  }
   return (
     <>
       <div className="w-full">
         <div
-          className={`flex justify-between px-[15px] h-[55px]  cursor-pointer transition-colors ${
+          className={`flex justify-between px-[15px] h-[55px] transition-colors ${
             isOpen
               ? 'bg-[#EBF2F2] rounded-t-[5px]'
               : 'bg-[var(--gray-40)] rounded-[5px]'
           }`}
-          onClick={() => setIsOpen((prev) => !prev)}
         >
           <div className="flex gap-[10px] items-center">
             <Layers
@@ -36,8 +46,19 @@ export default function LayerDetail({
             </span>
           </div>
           <div className="flex gap-[10px] items-center">
-            <Download size={18} />
-            {isOpen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+            <Download
+              size={18}
+              onClick={handleZzim}
+              className="cursor-pointer"
+            />
+            {isOpen ? (
+              <ChevronUp size={24} onClick={() => setIsOpen((prev) => !prev)} />
+            ) : (
+              <ChevronDown
+                size={24}
+                onClick={() => setIsOpen((prev) => !prev)}
+              />
+            )}
           </div>
         </div>
         <div

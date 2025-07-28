@@ -30,18 +30,29 @@ export default function RoadMapGoogleWrite({
       center={center}
       zoom={13}
       onClick={(e) => {
+        if (selectedLayer === 'all') return
         const lat = e.latLng?.lat()
         const lng = e.latLng?.lng()
         if (lat && lng) onMapClick(lat, lng)
       }}
     >
-      {(layerMarkers[selectedLayer] || []).map((m) => (
-        <Marker
-          key={m.id}
-          position={{ lat: m.lat, lng: m.lng }}
-          onClick={() => onMarkerDelete(selectedLayer, m.id)}
-        />
-      ))}
+      {selectedLayer === 'all'
+        ? Object.entries(layerMarkers).flatMap(([layer, markers]) =>
+            markers.map((m) => (
+              <Marker
+                key={`${layer}-${m.id}`}
+                position={{ lat: m.lat, lng: m.lng }}
+                onClick={() => onMarkerDelete(layer, m.id)}
+              />
+            ))
+          )
+        : (layerMarkers[selectedLayer] || []).map((m) => (
+            <Marker
+              key={m.id}
+              position={{ lat: m.lat, lng: m.lng }}
+              onClick={() => onMarkerDelete(selectedLayer, m.id)}
+            />
+          ))}
     </GoogleMap>
   )
 }

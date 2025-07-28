@@ -12,15 +12,13 @@ import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
 import { RoadmapWriteProps } from '@/types/type'
 import useHashtags from '@/hooks/useHashtags'
 import RoadMapGoogleWrite from './RoadMapGoogleWrite'
+import axiosInstance from '@/libs/axios'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
-  const {
-    layers,
-    newLayerName,
-    setNewLayerName,
-    handleAddLayer,
-    handleDeleteLayer,
-  } = useLayerAdd()
+  const { layers, setLayers, newLayerName, setNewLayerName, handleAddLayer } =
+    useLayerAdd()
   const {
     selectedLayer,
     setSelectedLayer,
@@ -28,6 +26,9 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
     addMarkerByLatLng,
     deleteMarker,
     addMarkerByAddress,
+    updateMarkerData,
+    addManualMarker,
+    deleteLayer,
   } = useLayerMarkersAdd(layers)
 
   const {
@@ -39,6 +40,13 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
     handleKeyDown,
   } = useHashtags()
 
+  const handleDeleteLayer = (index: number) => {
+    const layerName = layers[index]
+
+    setLayers((prev) => prev.filter((_, i) => i !== index))
+    deleteLayer(layerName) // layerMarkers에서도 삭제
+  }
+
   useEffect(() => {
     if (layers.length > 0 && !selectedLayer) {
       setSelectedLayer(layers[0]) // 첫 번째 레이어 자동 선택
@@ -48,31 +56,88 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [categoryId, setCategoryId] = useState<number | null>(null)
-  const isPublic = true
-  const thumbnail = '썸네일 입력란도 추가해야하나'
+  const [thumbnail, setThumbnail] = useState<File | null>(null)
+  const [isPublic, setIsPublic] = useState(true)
+  const router = useRouter()
+
+  const handleIsPublic = (value: boolean) => {
+    setIsPublic(value)
+  }
 
   const handleSubmit = async () => {
     const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL
     try {
+      const formData = new FormData()
+
+      const requestData = {
+        categoryId,
+        title,
+        description,
+        isPublic,
+        hashtags,
+      }
+      formData.append(
+        'request',
+        new Blob([JSON.stringify(requestData)], { type: 'application/json' })
+      )
+
+      if (thumbnail instanceof File) {
+        formData.append('imageFile', thumbnail)
+      }
       // 1. 로드맵 생성
-      const roadmapRes = await fetch(`${baseURL}/roadmaps/personal`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          credentials: 'include',
-        },
-        body: JSON.stringify({
-          categoryId,
-          title,
-          description,
-          thumbnail,
-          hashtags,
-          isPublic,
-        }),
-      })
-      const roadmap = await roadmapRes.json()
+      const roadmapRes = await axiosInstance.post(
+        `${baseURL}/roadmaps/personal`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      )
+      const roadmap = await roadmapRes.data
       console.log(roadmap)
-      //로드맵 id가 응답 바디에 반환되면 레이어, 마커 생성 post 요청 추가 예정입니다.
+      const roadMapId = roadmap.roadmapId
+
+      //2. 레이어 생성 및 마커 생성
+      for (let i = 0; i < layers.length; i++) {
+        const layerName = layers[i]
+
+        const layerRes = await axiosInstance.post(
+          `/layers?roadmapId=${roadMapId}`,
+          {
+            name: layerName,
+            description: '',
+            layerSeq: i + 1,
+            layerTime: null,
+          }
+        )
+
+        const layerId = layerRes.data.layer.id
+        console.log('생성된 레이어:', layerRes.data.layer.id)
+
+        //3. 해당 레이어에 속한 마커들 추출
+        const markers = layerMarkers[layerName] || []
+
+        // 4. 마커 생성 요청
+        for (let j = 0; j < markers.length; j++) {
+          const marker = markers[j]
+          const markerReqBody = {
+            name: marker.name || '이름 없음',
+            description: marker.description || '설명없음',
+            address: marker.address || '주소없음',
+            lat: marker.lat,
+            lng: marker.lng,
+            color: marker.color || '#000000',
+            customImageId: marker.customImageId,
+            tempUUID: crypto.randomUUID(),
+            markerSeq: j + 1,
+            layerId: layerId,
+          }
+
+          const markerRes = await axiosInstance.post('/markers', markerReqBody)
+          console.log('마커 생성 응답:', markerRes.data)
+        }
+      }
 
       alert('로드맵이 성공적으로 생성되었습니다.')
     } catch (error) {
@@ -91,14 +156,15 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
           onMapClick={addMarkerByLatLng}
           onMarkerDelete={deleteMarker}
         />
-        <div className="absolute top-4 right-8 flex items-center gap-3 px-4 py-2 z-10">
+        <div className="absolute top-[3px] right-15 flex items-center gap-3 px-4 py-2 z-10">
           {/* 레이어 선택 */}
-          <div className="relative w-[140px]">
+          <div className="relative w-[180px] shadow-sm">
             <select
-              className="w-full h-[34px] text-sm bg-white border-none rounded pl-3 appearance-none"
+              className="w-full h-[40px] text-sm bg-white border-none rounded-[3px] px-3 appearance-none focus:outline-none"
               value={selectedLayer}
               onChange={(e) => setSelectedLayer(e.target.value)}
             >
+              <option value="all">전체</option>
               {layers.map((layer, index) => (
                 <option key={index} value={layer}>
                   {layer}
@@ -118,13 +184,13 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
       <div className="w-2/6 px-6 py-8 space-y-6 bg-white h-full overflow-y-auto scrollbar-none">
         {/* 화면 위치 */}
         <h1 className="font-semibold text-2xl">로드맵 작성하기</h1>
+
         {/* 카테고리 */}
         <div className="space-y-2">
           <label className="text-lg text-black">카테고리</label>
           <div className="relative">
             <select
               className="w-full h-[40px] text-sm border border-[#E4E4E4] rounded px-3 appearance-none"
-              defaultValue=""
               value={categoryId ?? ''}
               onChange={(e) => setCategoryId(Number(e.target.value))}
             >
@@ -144,6 +210,41 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
             />
           </div>
         </div>
+
+        {/* 썸네일 */}
+        <input
+          type="file"
+          id="thumbnail"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            if (e.target.files?.[0]) {
+              setThumbnail(e.target.files[0])
+            }
+          }}
+        />
+        <label className="text-lg text-black">썸네일 이미지</label>
+        <label
+          htmlFor="thumbnail"
+          className="flex justify-center items-center w-full h-[300px] bg-gray-100 rounded-[5px] cursor-pointer"
+        >
+          {thumbnail ? (
+            // 썸네일이 있을 경우: 이미지 미리보기
+            <img
+              src={URL.createObjectURL(thumbnail)}
+              alt="썸네일 미리보기"
+              className="object-cover w-full h-full"
+            />
+          ) : (
+            // 썸네일 없을 경우: 기본 업로드 아이콘
+            <Image
+              src="/file.svg"
+              alt="파일 업로드 아이콘"
+              width={40}
+              height={40}
+            />
+          )}
+        </label>
 
         {/* 제목 */}
         <div className="space-y-2">
@@ -206,7 +307,7 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
           </div>
         </div>
 
-        <Toggle label="공개" />
+        <Toggle label="공개" onChange={handleIsPublic} />
 
         {/* 레이어  */}
         <div className="border-t border-gray-300 pt-6">
@@ -260,18 +361,24 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
                 onDelete={() => handleDeleteLayer(index)}
                 deleteMarker={deleteMarker}
                 addMarkerByAddress={addMarkerByAddress}
+                addManualMarker={addManualMarker}
+                updateMarkerData={updateMarkerData}
               />
             ))}
           </div>
 
           <div className="flex justify-end mt-4 gap-2">
-            <Button buttonStyle="white" className="text-sm w-[60px] h-[35px]">
+            <Button
+              onClick={() => router.back()}
+              buttonStyle="white"
+              className="w-[71px] h-[40px] text-lg font-medium"
+            >
               취소
             </Button>
             <Button
               onClick={handleSubmit}
               buttonStyle="smGreen"
-              className="text-sm w-[60px] h-[35px]"
+              className="w-[71px] h-[40px] text-lg font-medium"
             >
               완료
             </Button>
