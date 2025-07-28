@@ -44,7 +44,7 @@ export default function SearchResultSection() {
         matchedRoadmaps.forEach((r) => {
           const common = {
             title: r.title,
-            mapImageUrl: r.thumbnail ?? '/default-thumbnail.jpg',
+            mapImageUrl: r.thumbnail ?? '/map.png',
           };
 
           if (r.roadmapType === 'PERSONAL') {
@@ -54,7 +54,8 @@ export default function SearchResultSection() {
               category: r.category.name,
               description: r.description,
               hashtags: r.hashtags.map((h) => `#${h.name}`),
-              profileImgUrl: r.member.profileImage ?? '/default-profile.jpg',
+              profileImgUrl:
+                r.member.profileImage ?? '/assets/defaultProfile.png',
               author: r.member.nickname,
               viewCount: r.viewCount,
               shareCount: r.citationCount,
@@ -77,11 +78,12 @@ export default function SearchResultSection() {
           .map((q) => ({
             id: q.id,
             isInProgress: q.isActive,
-            mapImageUrl: q.questImage ?? '/default-thumbnail.jpg',
+            mapImageUrl: q.questImage ?? '/map.png',
             title: q.title,
             description: q.description,
             hashtags: [],
-            profileImgUrl: q.member.profileImage ?? '/default-profile.jpg',
+            profileImgUrl:
+              q.member.profileImage ?? '/assets/defaultProfile.png',
             author: q.member.nickname,
             deadLine: q.createdAt.slice(0, 10).replace(/-/g, '.'),
           }));
