@@ -117,8 +117,9 @@ export type MemberQuest = {
   id: number;
   title: string;
   imageUrl: string;
-  submitAt: string;
+  createdAt: string;
   description: string;
+  submitAt: string;
   member: {
     id: number;
     nickname: string;

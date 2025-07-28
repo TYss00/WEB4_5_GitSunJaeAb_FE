@@ -72,22 +72,24 @@ export default function MypageCard({
       <div className="p-3 pl-4 2xl:p-5 flex flex-col h-1/3">
         <div className="flex items-start justify-between">
           <p className="text-base text-[var(--black)] pt-1">{title}</p>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleLike?.();
-            }}
-            className="w-6 h-6 flex items-center justify-center text-[var(--gray-200)]"
-          >
-            <Heart
-              size={16}
-              strokeWidth={3}
-              fill={isLiked ? 'var(--red)' : 'none'}
-              className={`transition-colors ${
-                isLiked ? 'text-[var(--red)]' : 'text-[var(--gray-200)]'
-              }`}
-            />
-          </button>
+          {type !== '퀘스트' && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleLike?.();
+              }}
+              className="w-6 h-6 flex items-center justify-center text-[var(--gray-200)]"
+            >
+              <Heart
+                size={16}
+                strokeWidth={3}
+                fill={isLiked ? 'var(--red)' : 'none'}
+                className={`transition-colors ${
+                  isLiked ? 'text-[var(--red)]' : 'text-[var(--gray-200)]'
+                }`}
+              />
+            </button>
+          )}
         </div>
 
         <div className="pt-1 flex items-center justify-between">
