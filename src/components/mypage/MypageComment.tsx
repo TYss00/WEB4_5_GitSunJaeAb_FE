@@ -23,7 +23,6 @@ export default function MypageComment({
           commentList.map(async (comment: Omit<CommentItem, 'postTitle'>) => {
             const isRoadmap = !!comment.roadmap;
             const targetId = isRoadmap ? comment.roadmap : comment.quest;
-            console.log(targetId);
             const endpoint = isRoadmap
               ? `/roadmaps/${targetId}`
               : `/quests/${targetId}`;
@@ -45,7 +44,12 @@ export default function MypageComment({
           })
         );
 
-        setComments(enriched);
+        setComments(
+          enriched.sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )
+        );
       } catch (err) {
         console.error('댓글 불러오기 실패:', err);
       } finally {

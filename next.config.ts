@@ -3,15 +3,6 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   images: {
     // 테스트용으로 넣은것입니다.
-    // 이미지용 supabase url 추가
-    domains: [
-      'lyrvpfgoxwppqtuuolav.supabase.co',
-      'example.com',
-      'mapick.cedartodo.uk',
-      'cdn.example.com',
-      'localhost',
-    ],
-    // 이미지 테스트용
     remotePatterns: [
       // 이미지 테스트용
       {
@@ -36,6 +27,26 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
+        protocol: 'http',
+        hostname: 'example.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'cdn.example.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.example.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'lh3.googleusercontent.com',
+        pathname: '/**',
+      },
+      {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
         pathname: '/**',
@@ -44,6 +55,16 @@ const nextConfig: NextConfig = {
     // SVG 허용 추가
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
+  // 홈 리다이렉트용
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/landing',
+        permanent: false,
+      },
+    ];
   },
 };
 

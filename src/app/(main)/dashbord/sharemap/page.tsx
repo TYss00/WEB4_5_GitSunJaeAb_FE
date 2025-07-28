@@ -3,6 +3,10 @@ import CardList from '@/components/dashboard/CardList';
 import EventBox from '@/components/dashboard/EventBox';
 import WriteButton from '@/components/dashboard/WriteButton';
 
+export const metadata = {
+  title: '공유지도',
+};
+
 export default async function page() {
   return (
     <>

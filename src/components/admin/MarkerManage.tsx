@@ -102,6 +102,7 @@ export default function MarkerManage() {
         markerImage:
           res.data.markerImage ||
           (editedMarker.image && URL.createObjectURL(editedMarker.image)) ||
+          markers.find((m) => m.id === id)?.markerImage ||
           '',
       };
 

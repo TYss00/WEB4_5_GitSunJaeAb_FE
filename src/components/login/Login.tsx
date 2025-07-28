@@ -49,16 +49,17 @@ export default function Login() {
 
       useAuthStore.getState().setUser(user);
 
-      // 토스트 메시지로 변경
-      alert('로그인 성공');
-
       // 처음 로그인 시 카테고리 설정
       if (user.loginCount === 1) {
         router.push('/categories');
+      } else if (user.role === 'ROLE_ADMIN') {
+        router.push('/admin/report');
       } else {
-        // 아니면 메인대시보드로 이동
         router.push('/dashbord');
       }
+
+      // 토스트 메시지로 변경
+      alert('로그인 성공');
     },
     onError: (error: unknown) => {
       const err = error as AxiosError<{ message?: string }>;

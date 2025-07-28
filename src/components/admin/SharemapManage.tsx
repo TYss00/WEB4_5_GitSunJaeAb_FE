@@ -8,6 +8,56 @@ import axiosInstance from '@/libs/axios';
 
 export default function SharemapManage() {
   const [roadmaps, setRoadmaps] = useState<Roadmap[]>([]);
+  const [totalMemberCount, setTotalMemberCount] = useState(0);
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const res = await axiosInstance.get('/members/list');
+        setTotalMemberCount(res.data.members.length);
+      } catch (err) {
+        console.error('회원 목록 불러오기 실패:', err);
+      }
+    };
+
+    fetchMembers();
+  }, []);
+
+  useEffect(() => {
+    const fetchRoadmaps = async () => {
+      try {
+        const res = await axiosInstance.get('/roadmaps/shared');
+        const roadmapList = res.data.roadmaps;
+
+        // 각 로드맵의 참여자 수 가져오기
+        const withEditors = await Promise.all(
+          roadmapList.map(async (roadmap: Roadmap) => {
+            try {
+              const editorsRes = await axiosInstance.get(
+                `/roadmaps/${roadmap.id}/editors`
+              );
+              return {
+                ...roadmap,
+                editorCount: editorsRes.data.count,
+              };
+            } catch (e) {
+              console.error(`로드맵 ${roadmap.id} 참여자 수 불러오기 실패`, e);
+              return { ...roadmap, editorCount: 0 };
+            }
+          })
+        );
+
+        setRoadmaps(withEditors);
+      } catch (err) {
+        console.error('공유지도 목록 불러오기 실패:', err);
+        setRoadmaps([]);
+      }
+    };
+
+    if (totalMemberCount > 0) {
+      fetchRoadmaps();
+    }
+  }, [totalMemberCount]);
 
   useEffect(() => {
     const fetchRoadmaps = async () => {
@@ -71,15 +121,38 @@ export default function SharemapManage() {
                     <td className="py-2 px-3">{roadmap.title}</td>
                     <td className="py-2 px-3">{roadmap.member.nickname}</td>
                     <td className="py-2 px-3 w-[200px]">
-                      <div className="flex justify-between text-[13px] mb-1">
-                        <span>62%</span>
-                      </div>
-                      <div className="w-full h-2 bg-[#EFEFEF] rounded-full">
-                        <div
-                          className="h-full bg-[var(--primary-300)] rounded-full"
-                          style={{ width: '62%' }}
-                        />
-                      </div>
+                      {typeof roadmap.editorCount === 'number' &&
+                      totalMemberCount > 0 ? (
+                        <>
+                          <div className="flex justify-between text-[13px] mb-1">
+                            <span>
+                              {Math.round(
+                                (roadmap.editorCount / totalMemberCount) * 100
+                              )}
+                              %
+                            </span>
+                          </div>
+                          <div className="w-full h-2 bg-[#EFEFEF] rounded-full">
+                            <div
+                              className="h-full bg-[var(--primary-300)] rounded-full"
+                              style={{
+                                width: `${Math.round(
+                                  (roadmap.editorCount / totalMemberCount) * 100
+                                )}%`,
+                              }}
+                            />
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex justify-between text-[13px] mb-1">
+                            <span>-</span>
+                          </div>
+                          <div className="w-full h-2 bg-[#EFEFEF] rounded-full">
+                            <div className="h-full bg-[var(--gray-200)] rounded-full w-0" />
+                          </div>
+                        </>
+                      )}
                     </td>
                     <td className="py-2 text-[13px] text-center text-[var(--red)]">
                       <button
