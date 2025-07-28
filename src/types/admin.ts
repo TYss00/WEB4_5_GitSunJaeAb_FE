@@ -4,6 +4,7 @@ export type Roadmap = {
   member: {
     nickname: string;
   };
+  editorCount: number; // 참여자수
 };
 
 export type CustomMarker = {
