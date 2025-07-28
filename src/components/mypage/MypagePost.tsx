@@ -53,7 +53,12 @@ export default function MypagePost({
           setCards(mapped);
         } else if (activeTab === '참여글') {
           const res = await axiosInstance.get('/quests/memberQuest/my');
-          setQuests(res.data.memberQuests || []);
+          const sorted = (res.data.memberQuests || []).sort(
+            (a: MemberQuest, b: MemberQuest) =>
+              new Date(b.submitAt || '').getTime() -
+              new Date(a.submitAt || '').getTime()
+          );
+          setQuests(sorted);
         } else {
           setCards([]);
           setQuests([]);

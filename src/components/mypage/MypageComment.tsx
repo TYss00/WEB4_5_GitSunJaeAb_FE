@@ -44,7 +44,12 @@ export default function MypageComment({
           })
         );
 
-        setComments(enriched);
+        setComments(
+          enriched.sort(
+            (a, b) =>
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          )
+        );
       } catch (err) {
         console.error('댓글 불러오기 실패:', err);
       } finally {
