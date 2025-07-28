@@ -17,6 +17,7 @@ export default function useLayerAdd() {
   }
   return {
     layers,
+    setLayers,
     newLayerName,
     setNewLayerName,
     handleAddLayer,

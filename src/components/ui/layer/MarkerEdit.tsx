@@ -11,13 +11,18 @@ export interface AddressData {
 }
 
 export default function MarkerEdit({
+  id,
   isTextArea,
   onDelete,
-  address = '주소를 입력해주세요.',
+  address = '',
+  name = '',
+  description = '',
   onAddByAddress,
+  onChangeName,
+  onChangeDescription,
 }: MarkerEditProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [placeName, setPlaceName] = useState('')
+
   const [isEditingName, setIsEditingName] = useState(false)
 
   const handleComplete = (data: AddressData) => {
@@ -45,8 +50,10 @@ export default function MarkerEdit({
               <input
                 autoFocus
                 className="text-[18px] font-semibold text-[var(--primary-100)] border-b border-[var(--primary-100)] bg-transparent outline-none"
-                value={placeName}
-                onChange={(e) => setPlaceName(e.target.value)}
+                value={name}
+                onChange={(e) => {
+                  onChangeName?.(id, e.target.value)
+                }}
                 onKeyDown={handleNameKeyDown}
                 onBlur={() => setIsEditingName(false)}
                 placeholder="장소 이름을 입력해주세요."
@@ -56,7 +63,7 @@ export default function MarkerEdit({
                 className="text-[18px] text-[var(--primary-100)] font-semibold cursor-pointer"
                 onClick={() => setIsEditingName(true)}
               >
-                {placeName || '장소 이름을 입력해주세요.'}
+                {name || '장소 이름을 입력해주세요.'}
               </span>
             )}
           </div>
@@ -97,6 +104,10 @@ export default function MarkerEdit({
           <textarea
             className="p-[5px] mt-[20px] border border-[var(--primary-100)] rounded-[5px] h-[100px] active:border-[var(--primary-100)] focus:outline-none "
             placeholder="장소에 대한 설명을 입력해주세요."
+            value={description}
+            onChange={(e) => {
+              onChangeDescription?.(id, e.target.value)
+            }}
           ></textarea>
         )}
       </div>

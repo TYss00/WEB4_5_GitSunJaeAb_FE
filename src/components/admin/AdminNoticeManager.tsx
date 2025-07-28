@@ -108,7 +108,7 @@ export default function AdminNoticeManager() {
   }, []);
 
   return (
-    <section className="w-[900px] h-[470px] space-y-6">
+    <section className="w-[900px] h-[420px] space-y-6">
       <div className="border border-[var(--gray-100)] rounded-lg p-6 space-y-4">
         <div className="flex items-center justify-between mb-[20px]">
           <div className="flex items-center gap-2 text-[var(--primary-300)] font-bold text-xl">
@@ -137,7 +137,7 @@ export default function AdminNoticeManager() {
           ))}
         </div>
 
-        <div className="space-y-3 max-h-[470px] overflow-y-auto pr-1">
+        <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
           {filteredNotices.map((n) => (
             <div
               key={n.id}

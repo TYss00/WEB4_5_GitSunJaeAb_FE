@@ -29,17 +29,15 @@ export const postCategoryInterests = async (categoryIds: number[]) => {
   return res.data;
 };
 
+// 인기 카테고리 조회
 export const getPopularCategories = async (): Promise<LandingCategories[]> => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE_URL}/categories/top5`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      cache: 'no-store', // or 'force-cache' or 'no-cache'
-    }
-  );
+  const res = await fetch(`${BASE_URL}/categories/top5`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    cache: 'no-store',
+  });
 
   if (!res.ok) {
     throw new Error('카테고리 조회 실패');

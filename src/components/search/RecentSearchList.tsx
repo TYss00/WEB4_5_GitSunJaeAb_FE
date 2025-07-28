@@ -1,28 +1,18 @@
-'use client';
-import { useEffect, useState } from 'react';
 import RecentSearchItem from './RecentSearchItem';
 import {
-  clearSearchHistory,
-  getRecentSearches,
-  removeSearchTerm,
-} from '@/utils/searchHistory';
-import { SearchRecord } from '@/types/type';
+  useClearSearchHistory,
+  useRecentSearches,
+  useRemoveSearchTerm,
+} from '@/hooks/useRecentSearches';
 
 export default function RecentSearchList({
   onSelect,
 }: {
   onSelect?: (term: string) => void;
 }) {
-  const [searches, setSearches] = useState<SearchRecord[]>([]);
-
-  useEffect(() => {
-    setSearches(getRecentSearches());
-  }, []);
-
-  const handleClearAll = () => {
-    clearSearchHistory();
-    setSearches([]);
-  };
+  const { data: searches = [], isLoading } = useRecentSearches();
+  const clearMutation = useClearSearchHistory();
+  const removeMutation = useRemoveSearchTerm();
 
   return (
     <div className="w-[700px] h-[465px] m-auto px-2">
@@ -30,7 +20,7 @@ export default function RecentSearchList({
         <h3>최근 검색어</h3>
         {searches.length > 0 && (
           <button
-            onClick={handleClearAll}
+            onClick={() => clearMutation.mutate()}
             className="text-[15px] cursor-pointer"
           >
             전체 삭제
@@ -38,18 +28,23 @@ export default function RecentSearchList({
         )}
       </div>
 
-      {/* 최근 검색어 리스트 */}
       <div>
-        {searches.length > 0 ? (
+        {isLoading ? (
+          <div className="flex flex-col gap-2 py-3">
+            {[1].map((i) => (
+              <div
+                key={i}
+                className="w-[600px] h-[20px] bg-gray-200 animate-pulse rounded"
+              />
+            ))}
+          </div>
+        ) : searches.length > 0 ? (
           searches.map((item) => (
             <RecentSearchItem
-              key={item.term}
-              term={item.term}
-              date={item.date}
-              onRemove={() => {
-                removeSearchTerm(item.term);
-                setSearches((prev) => prev.filter((t) => t.term !== item.term));
-              }}
+              key={item.id}
+              term={item.keyword}
+              date={item.createdAt.split('T')[0].replaceAll('-', '.')}
+              onRemove={() => removeMutation.mutate(item.keyword)}
               onSelect={onSelect}
             />
           ))

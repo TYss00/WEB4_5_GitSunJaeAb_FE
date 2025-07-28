@@ -6,12 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import RecentSearchList from './RecentSearchList';
 import { useClickOut } from '@/hooks/useClickOut';
-
-type SearchInputProps = {
-  onClose?: () => void;
-  searchValue?: string;
-  onSearchComplete?: () => void;
-};
+import { SearchInputProps } from '@/types/search';
 
 export default function SearchInput({
   onClose,
@@ -21,36 +16,34 @@ export default function SearchInput({
   const [search, setSearch] = useState(searchValue);
   const [showRecent, setShowRecent] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // 외부 클릭 시 최근 검색어 리스트 닫기
   useClickOut(containerRef, () => setShowRecent(false));
 
-  // searchValue 가 바뀔 경우 상태 반영
   useEffect(() => {
     setSearch(searchValue);
   }, [searchValue]);
 
-  const handleSearch = () => {
-    if (!search.trim()) return;
+  const handleSearch = async () => {
+    if (!search.trim() || isSubmitting) return;
 
-    // 저장
-    addSearchTerm(search.trim());
-
-    // 이동
-    router.push(`/search?q=${encodeURIComponent(search.trim())}`);
-
-    setShowRecent(false);
-
-    // 모달 닫기
-    onClose?.();
-
-    onSearchComplete?.();
+    setIsSubmitting(true);
+    try {
+      await addSearchTerm(search.trim());
+      router.push(`/search?q=${encodeURIComponent(search.trim())}`);
+      setShowRecent(false);
+      onClose?.();
+      onSearchComplete?.();
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
+      e.preventDefault();
       handleSearch();
     }
   };
@@ -58,7 +51,7 @@ export default function SearchInput({
   const handleRecentSelect = (term: string) => {
     setSearch(term);
     setShowRecent(false);
-    addSearchTerm(term);
+
     router.push(`/search?q=${encodeURIComponent(term)}`);
     onClose?.();
   };
@@ -84,7 +77,7 @@ export default function SearchInput({
         onBlur={() => setIsFocused(false)}
         className="w-full px-2 py-2 border-b border-b-[var(--gray-100)] 
          focus:outline-none focus:border-b-[var(--primary-300)] "
-      ></input>
+      />
       <Search
         size={18}
         color={
