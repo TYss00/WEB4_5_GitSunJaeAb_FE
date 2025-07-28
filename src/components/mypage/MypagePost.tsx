@@ -43,11 +43,13 @@ export default function MypagePost({
           setQuests(questRes.data.quests || []);
         } else if (activeTab === '좋아요글') {
           const res = await axiosInstance.get('/bookmarks/bookmarkedRoadmaps');
-          const mapped = res.data.roadmaps.map((r: RoadmapResponse) => ({
-            ...r,
-            isLiked: r.isBookmarked,
-            likeId: r.bookmarkId,
-          }));
+          const mapped = res.data.roadmaps
+            .map((r: RoadmapResponse) => ({
+              ...r,
+              isLiked: r.isBookmarked,
+              likeId: r.bookmarkId,
+            }))
+            .reverse();
           setCards(mapped);
         } else if (activeTab === '참여글') {
           const res = await axiosInstance.get('/quests/memberQuest/my');
@@ -93,6 +95,9 @@ export default function MypagePost({
         await axiosInstance.post(`/bookmarks/${roadmapId}`);
       } else if (likeId) {
         await axiosInstance.delete(`/bookmarks/${likeId}`);
+        if (activeTab === '좋아요글') {
+          setCards((prev) => prev.filter((c) => c.id !== roadmapId));
+        }
       } else {
         throw new Error('likeId가 없어 삭제할 수 없습니다.');
       }
