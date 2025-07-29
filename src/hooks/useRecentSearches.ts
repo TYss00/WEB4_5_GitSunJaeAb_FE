@@ -8,7 +8,12 @@ export function useRecentSearches() {
     queryKey: ['recentSearches'],
     queryFn: async () => {
       const res = await axiosInstance.get('/search/list');
-      return res.data.searchHistoryDTOs || [];
+      const list = res.data.searchHistoryDTOs || [];
+      return list.sort((a: SearchRecord, b: SearchRecord) => {
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      });
     },
   });
 }
