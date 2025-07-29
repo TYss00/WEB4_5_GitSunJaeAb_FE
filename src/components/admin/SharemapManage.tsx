@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { Map } from 'lucide-react';
-import Button from '../ui/Button';
 import { Roadmap } from '@/types/admin';
 import axiosInstance from '@/libs/axios';
 import LoadingSpener from '../common/LoadingSpener';
@@ -105,12 +104,6 @@ export default function SharemapManage() {
           <Map size={25} className="mr-1" />
           공유지도 관리
         </div>
-        <Button
-          buttonStyle="smGreen"
-          className="w-[100px] h-[28px] text-[14px]"
-        >
-          공유지도 생성
-        </Button>
       </div>
 
       <div className="overflow-auto h-[600px] max-h-[455px]">
