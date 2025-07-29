@@ -2,17 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import { Map } from 'lucide-react';
-import Button from '../ui/Button';
 import { Roadmap } from '@/types/admin';
 import axiosInstance from '@/libs/axios';
+import LoadingSpener from '../common/LoadingSpener';
+import { toast } from 'react-toastify';
 
 export default function SharemapManage() {
   const [roadmaps, setRoadmaps] = useState<Roadmap[]>([]);
   const [totalMemberCount, setTotalMemberCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchMembers = async () => {
       try {
+        setIsLoading(true);
         const res = await axiosInstance.get('/members/list');
         setTotalMemberCount(res.data.members.length);
       } catch (err) {
@@ -29,7 +32,6 @@ export default function SharemapManage() {
         const res = await axiosInstance.get('/roadmaps/shared');
         const roadmapList = res.data.roadmaps;
 
-        // 각 로드맵의 참여자 수 가져오기
         const withEditors = await Promise.all(
           roadmapList.map(async (roadmap: Roadmap) => {
             try {
@@ -51,6 +53,8 @@ export default function SharemapManage() {
       } catch (err) {
         console.error('공유지도 목록 불러오기 실패:', err);
         setRoadmaps([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -79,32 +83,37 @@ export default function SharemapManage() {
     try {
       await axiosInstance.delete(`/roadmaps/${id}`);
       setRoadmaps((prev) => prev.filter((roadmap) => roadmap.id !== id));
-      alert('삭제되었습니다.');
+      toast.success('삭제되었습니다.');
     } catch (err) {
       console.error('삭제 실패:', err);
-      alert('삭제 중 오류가 발생했습니다.');
+      toast.error('삭제 중 오류가 발생했습니다.');
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="w-full h-[600px] flex items-center justify-center">
+        <LoadingSpener />
+      </div>
+    );
+  }
   return (
     <section className="w-[1000px] bg-[var(--white)] rounded-[10px] p-4 border border-[var(--gray-50)]">
       <div className="flex items-center justify-between font-semibold text-[var(--primary-300)] mb-[24px]">
         <div className="flex items-center text-xl text-[var(--primary-300)] font-bold">
           <Map size={25} className="mr-1" />
           공유지도 관리
+          <span className="ml-1 text-xl text-[var(--gray-500)]">
+            ({roadmaps.length})
+          </span>
         </div>
-        <Button
-          buttonStyle="smGreen"
-          className="w-[100px] h-[28px] text-[14px]"
-        >
-          공유지도 생성
-        </Button>
       </div>
 
       <div className="overflow-auto h-[600px] max-h-[455px]">
         <table className="w-full text-[14px] border-t border-[var(--gray-100)]">
           <thead>
             <tr className="text-left border-b border-[var(--gray-100)]">
+              <th className="py-2 px-3">ID</th>
               <th className="py-2 px-3">제목</th>
               <th className="py-2 px-3">작성자</th>
               <th className="py-2 px-3">참여율</th>
@@ -118,6 +127,7 @@ export default function SharemapManage() {
                     key={roadmap.id}
                     className="border-b border-[var(--gray-50)]"
                   >
+                    <td className="py-2 px-3">{roadmap.id}</td>
                     <td className="py-2 px-3">{roadmap.title}</td>
                     <td className="py-2 px-3">{roadmap.member.nickname}</td>
                     <td className="py-2 px-3 w-[200px]">

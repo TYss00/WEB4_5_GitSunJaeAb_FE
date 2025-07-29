@@ -126,3 +126,10 @@ export type MemberQuest = {
     profileImage: string | null;
   };
 };
+
+export type ParticipatedItem = {
+  type: '퀘스트' | '공유로드맵';
+  id: number;
+  date: string;
+  data: MemberQuest | RoadmapResponse;
+};

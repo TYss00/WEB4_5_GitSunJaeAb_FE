@@ -7,6 +7,8 @@ import UserActionButtons from './UserActionButtons';
 import { useAuthStore } from '@/store/useAuthStore';
 import axiosInstance from '@/libs/axios';
 import SearchInputs from '../ui/SearchInputs';
+import LoadingSpener from '../common/LoadingSpener';
+import { toast } from 'react-toastify';
 
 const TABS = ['전체 사용자', '관리자', '블랙 리스트'];
 
@@ -16,10 +18,12 @@ export default function UserManagement() {
   const [loadingUserId, setLoadingUserId] = useState<number | null>(null);
   const [members, setMembers] = useState<User[]>([]);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchMembers = async () => {
       try {
+        setIsLoading(true);
         const res = await axiosInstance.get<UserResponse>('members/list');
         if (Array.isArray(res.data.members)) {
           setMembers(res.data.members);
@@ -29,6 +33,8 @@ export default function UserManagement() {
         }
       } catch (err) {
         console.error('회원 목록 불러오기 실패:', err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -48,7 +54,6 @@ export default function UserManagement() {
       )
     );
 
-  // 블랙리스트 토글
   const toggleBlacklist = async (id: number, currentStatus: boolean) => {
     setLoadingUserId(id);
     try {
@@ -64,16 +69,15 @@ export default function UserManagement() {
         )
       );
 
-      alert(data.message || '블랙리스트 상태가 변경되었습니다.');
+      toast.success(data.message || '블랙리스트 상태가 변경되었습니다.');
     } catch (err) {
       console.error('블랙리스트 업데이트 실패:', err);
-      alert('블랙리스트 상태를 변경할 수 없습니다.');
+      toast.error('블랙리스트 상태를 변경할 수 없습니다.');
     } finally {
       setLoadingUserId(null);
     }
   };
 
-  // 관리자 권한 토글
   const toggleAdminRole = async (
     id: number,
     currentRole: 'ROLE_ADMIN' | 'ROLE_USER'
@@ -92,10 +96,10 @@ export default function UserManagement() {
         prev.map((u) => (u.id === id ? { ...u, role: newRole } : u))
       );
 
-      alert(data.message || '관리자 권한이 변경되었습니다.');
+      toast.success(data.message || '관리자 권한이 변경되었습니다.');
     } catch (err) {
       console.error('권한 변경 실패:', err);
-      alert('관리자 권한을 변경할 수 없습니다.');
+      toast.error('관리자 권한을 변경할 수 없습니다.');
     } finally {
       setLoadingUserId(null);
     }
@@ -109,37 +113,54 @@ export default function UserManagement() {
       await axiosInstance.delete(`/members/${id}`);
 
       setMembers((prev) => prev.filter((user) => user.id !== id));
-      alert('사용자가 성공적으로 삭제되었습니다.');
+      toast.success('사용자가 성공적으로 삭제되었습니다.');
     } catch (err) {
       console.error('회원 삭제 실패:', err);
-      alert('회원 삭제 중 오류가 발생했습니다.');
+      toast.error('회원 삭제 중 오류가 발생했습니다.');
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="w-full h-[600px] flex items-center justify-center">
+        <LoadingSpener />
+      </div>
+    );
+  }
+
   return (
     <div className="w-[1000px] h-[530px] bg-[var(--white)] rounded-lg p-4 flex flex-col justify-start border border-[var(--gray-50)]">
-      {/* 상단 타이틀 */}
       <div className="flex items-center gap-2 text-[var(--primary-300)] font-bold text-xl mb-[16px]">
         <UserCog size={25} className="mr-1" />
         사용자 관리
       </div>
 
       <div className="flex justify-between items-center mb-4">
-        {/* 탭 영역 */}
         <div className="flex gap-[26px] text-[15px] font-medium">
-          {TABS.map((tab) => (
-            <span
-              key={tab}
-              onClick={() => setSelectedTab(tab)}
-              className={`cursor-pointer pb-1 ${
-                selectedTab === tab
-                  ? 'text-[var(--primary-300)] border-b-2 border-[var(--primary-300)]'
-                  : 'text-[var(--gray-300)]'
-              }`}
-            >
-              {tab}
-            </span>
-          ))}
+          {TABS.map((tab) => {
+            let count = 0;
+            if (tab === '전체 사용자') {
+              count = members.length;
+            } else if (tab === '관리자') {
+              count = members.filter((m) => m.role === 'ROLE_ADMIN').length;
+            } else if (tab === '블랙 리스트') {
+              count = members.filter((m) => m.blacklisted).length;
+            }
+
+            return (
+              <span
+                key={tab}
+                onClick={() => setSelectedTab(tab)}
+                className={`cursor-pointer pb-1 ${
+                  selectedTab === tab
+                    ? 'text-[var(--primary-300)] border-b-2 border-[var(--primary-300)]'
+                    : 'text-[var(--gray-300)]'
+                }`}
+              >
+                {tab} ({count})
+              </span>
+            );
+          })}
         </div>
 
         <SearchInputs
@@ -149,7 +170,6 @@ export default function UserManagement() {
         />
       </div>
 
-      {/* 테이블 wrapper */}
       <div className="relative w-full border border-[var(--gray-100)] text-[14px]">
         <div className="max-h-[360px] overflow-y-auto pr-[8px]">
           <table className="w-full text-left table-fixed">

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Layer } from '@/types/myprofile';
 import axiosInstance from '@/libs/axios';
 import MypageLayerSkeleton from './skeleton/MypageLayerSkeleton';
+import { toast } from 'react-toastify';
 
 export default function MypageLayer({
   searchKeyword,
@@ -34,10 +35,10 @@ export default function MypageLayer({
     try {
       await axiosInstance.delete(`/layers/${layerId}`);
       setLayers((prev) => prev.filter((layer) => layer.id !== layerId));
-      alert('삭제가 완료되었습니다.');
+      toast.success('삭제가 완료되었습니다.');
     } catch (err) {
       console.error(err);
-      alert('레이어 삭제 중 오류가 발생했습니다.');
+      toast.error('레이어 삭제 중 오류가 발생했습니다.');
     }
   };
 

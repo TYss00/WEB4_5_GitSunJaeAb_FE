@@ -6,11 +6,18 @@ import ManageCard from './card/ManageCard';
 import ManageCardFormCard from './card/ManageCardFormCard';
 import ManageAddCard from './card/ManageAddCard';
 import { CustomMarker } from '@/types/admin';
+import ManageCardSkeleton from './skeleton/ManageCardSkeleton';
+import { toast } from 'react-toastify';
 
-export default function MarkerManage() {
+export default function MarkerManage({
+  setCount,
+}: {
+  setCount: React.Dispatch<React.SetStateAction<number>>;
+}) {
   const [markers, setMarkers] = useState<CustomMarker[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [newMarker, setNewMarker] = useState<{
     name: string;
     image: File | null;
@@ -29,21 +36,25 @@ export default function MarkerManage() {
   useEffect(() => {
     const fetchMarkers = async () => {
       try {
+        setIsLoading(true);
         const res = await axiosInstance.get<{
           markerCustomImages: CustomMarker[];
         }>('/markers/customImages');
         setMarkers(res.data.markerCustomImages);
+        setCount(res.data.markerCustomImages.length);
       } catch (err) {
         console.error('마커 이미지 목록 불러오기 실패:', err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchMarkers();
-  }, []);
+  }, [setCount]);
 
   const handleSubmit = async () => {
     if (!newMarker.name.trim()) {
-      alert('마커 이름을 입력하세요');
+      toast.error('마커 이름을 입력하세요');
       return;
     }
 
@@ -67,12 +78,13 @@ export default function MarkerManage() {
       };
 
       setMarkers((prev) => [...prev, addedMarker]);
+      setCount(markers.length + 1);
       setNewMarker({ name: '', image: null });
       setShowForm(false);
-      alert('마커가 성공적으로 추가되었습니다.');
+      toast.success('마커가 성공적으로 추가되었습니다.');
     } catch (err) {
       console.error('마커 추가 실패:', err);
-      alert('마커 추가 중 오류 발생');
+      toast.error('마커 추가 중 오류 발생');
     }
   };
 
@@ -111,10 +123,10 @@ export default function MarkerManage() {
       );
       setEditingId(null);
       setEditedMarker({ name: '', image: null });
-      alert('마커 수정 완료');
+      toast.success('마커 수정 완료');
     } catch (err) {
       console.error('마커 수정 실패:', err);
-      alert('마커 수정 중 오류 발생');
+      toast.error('마커 수정 중 오류 발생');
     }
   };
 
@@ -124,10 +136,11 @@ export default function MarkerManage() {
     try {
       await axiosInstance.delete(`/markers/customImage/${id}`);
       setMarkers((prev) => prev.filter((m) => m.id !== id));
-      alert('마커 삭제 완료');
+      setCount((prev) => prev - 1);
+      toast.success('마커 삭제 완료');
     } catch (err) {
       console.error('마커 삭제 실패:', err);
-      alert('마커 삭제 중 오류 발생');
+      toast.error('마커 삭제 중 오류 발생');
     }
   };
 
@@ -146,54 +159,64 @@ export default function MarkerManage() {
   return (
     <div className="w-[732px] mx-auto border border-[var(--gray-50)] rounded-[10px] px-[16px] py-[16px]">
       <div className="flex flex-wrap gap-[16px]">
-        {markers.map((marker) =>
-          editingId === marker.id ? (
-            <ManageCardFormCard
-              key={`edit-${marker.id}`}
-              name={editedMarker.name}
-              image={editedMarker.image}
-              onNameChange={(name) =>
-                setEditedMarker((prev) => ({ ...prev, name }))
-              }
-              onImageChange={handleEditImageChange}
-              onSubmit={() => handleEditSubmit(marker.id)}
-              onCancel={() => setEditingId(null)}
-            />
-          ) : (
-            <ManageCard
-              key={`view-${marker.id}`}
-              id={marker.id}
-              name={marker.name}
-              image={marker.markerImage}
-              item={marker}
-              onEditClick={(marker) => {
-                setEditingId(marker.id);
-                setEditedMarker({ name: marker.name, image: null });
-              }}
-              onDelete={(marker) => handleDelete(marker.id)}
-            />
-          )
-        )}
-
-        {showForm ? (
-          <ManageCardFormCard
-            key="new-marker-form"
-            name={newMarker.name}
-            image={newMarker.image}
-            onNameChange={(name) => setNewMarker((prev) => ({ ...prev, name }))}
-            onImageChange={handleImageChange}
-            onSubmit={handleSubmit}
-            onCancel={() => {
-              setShowForm(false);
-              setNewMarker({ name: '', image: null });
-            }}
-          />
+        {isLoading ? (
+          Array.from({ length: 1 }).map((_, idx) => (
+            <ManageCardSkeleton key={idx} />
+          ))
         ) : (
-          <ManageAddCard
-            key="marker-add-button"
-            type="marker"
-            onClick={() => setShowForm(true)}
-          />
+          <>
+            {markers.map((marker) =>
+              editingId === marker.id ? (
+                <ManageCardFormCard
+                  key={`edit-${marker.id}`}
+                  name={editedMarker.name}
+                  image={editedMarker.image}
+                  onNameChange={(name) =>
+                    setEditedMarker((prev) => ({ ...prev, name }))
+                  }
+                  onImageChange={handleEditImageChange}
+                  onSubmit={() => handleEditSubmit(marker.id)}
+                  onCancel={() => setEditingId(null)}
+                />
+              ) : (
+                <ManageCard
+                  key={`view-${marker.id}`}
+                  id={marker.id}
+                  name={marker.name}
+                  image={marker.markerImage}
+                  item={marker}
+                  onEditClick={(marker) => {
+                    setEditingId(marker.id);
+                    setEditedMarker({ name: marker.name, image: null });
+                  }}
+                  onDelete={(marker) => handleDelete(marker.id)}
+                />
+              )
+            )}
+
+            {showForm ? (
+              <ManageCardFormCard
+                key="new-marker-form"
+                name={newMarker.name}
+                image={newMarker.image}
+                onNameChange={(name) =>
+                  setNewMarker((prev) => ({ ...prev, name }))
+                }
+                onImageChange={handleImageChange}
+                onSubmit={handleSubmit}
+                onCancel={() => {
+                  setShowForm(false);
+                  setNewMarker({ name: '', image: null });
+                }}
+              />
+            ) : (
+              <ManageAddCard
+                key="marker-add-button"
+                type="marker"
+                onClick={() => setShowForm(true)}
+              />
+            )}
+          </>
         )}
       </div>
     </div>
