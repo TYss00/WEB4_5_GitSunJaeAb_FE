@@ -42,7 +42,7 @@ export default function ShareMapDashboard() {
         subtitle="여러 유저들과 협업하여 지도를 만들어요"
       />
       <EventBox type="sharemap" />
-      <ShareMapCardList data={shareMaps} /> {/* ✅ 새로 만든 전용 CardList */}
+      <ShareMapCardList data={shareMaps} />
       <WriteButton type="sharemap" />
     </>
   );

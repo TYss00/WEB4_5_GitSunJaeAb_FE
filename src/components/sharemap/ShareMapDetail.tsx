@@ -22,6 +22,9 @@ export default function ShareMapDetail() {
   const { id } = useParams();
 
   const [roadmap, setRoadmap] = useState<RoadmapDetailResponse | null>(null);
+  const [editors, setEditors] = useState<
+    { memberId: number; name: string; profileImage: string }[]
+  >([]);
   const [isReportOpen, setIsReportOpen] = useState(false);
 
   const mapRef = useRef<google.maps.Map | null>(null);
@@ -39,7 +42,19 @@ export default function ShareMapDetail() {
       }
     };
 
-    if (id) fetchRoadmap();
+    const fetchEditors = async () => {
+      try {
+        const res = await axiosInstance.get(`/roadmaps/${id}/editors`);
+        setEditors(res.data.editors); // ← 상태에 맞게 수정
+      } catch (error) {
+        console.error('참여자 목록 조회 실패:', error);
+      }
+    };
+
+    if (id) {
+      fetchRoadmap();
+      fetchEditors();
+    }
   }, [id]);
 
   if (!roadmap) return <div className="text-center py-20">로딩 중...</div>;
@@ -135,26 +150,26 @@ export default function ShareMapDetail() {
           </section>
 
           <section className="w-[428px] border border-[var(--gray-50)] rounded-md p-4">
-            <h2 className="text-[15px] font-semibold mb-4">참여자 10</h2>
+            <h2 className="text-[15px] font-semibold mb-4">
+              참여자 {editors.length}
+            </h2>
 
             {/* 스크롤 가능한 참여자 리스트 */}
             <div className="space-y-[16px] max-h-[240px] overflow-y-auto pr-1">
-              {Array.from({ length: 10 }, (_, i) => `짱아${i + 1}`).map(
-                (name, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <Image
-                      src="/assets/userProfile.png"
-                      alt={name}
-                      width={34}
-                      height={34}
-                      className="w-[34px] h-[34px] rounded-full"
-                    />
-                    <span className="text-[15px] text-[var(--black)]">
-                      {name}
-                    </span>
-                  </div>
-                )
-              )}
+              {editors.map((editor) => (
+                <div key={editor.memberId} className="flex items-center gap-2">
+                  <Image
+                    src={editor.profileImage || '/assets/userProfile.png'}
+                    alt={editor.name}
+                    width={34}
+                    height={34}
+                    className="w-[34px] h-[34px] rounded-full"
+                  />
+                  <span className="text-[15px] text-[var(--black)]">
+                    {editor.name}
+                  </span>
+                </div>
+              ))}
             </div>
             <Link href={`/dashbord/sharemap/detail/${id}/preview/mapjoin`}>
               <Button className="w-full h-[38px] mt-4">참여하기</Button>
