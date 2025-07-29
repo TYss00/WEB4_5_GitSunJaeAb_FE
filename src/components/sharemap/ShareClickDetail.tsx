@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Heart,
   Siren,
@@ -17,52 +17,49 @@ import Button from '../ui/Button';
 import ReportModal from '../common/modal/ReportModal';
 import useSidebar from '@/utils/useSidebar';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import ShareLayerDetail from '../ui/layer/ShareLayerDetail';
-import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
+import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
+import axiosInstance from '@/libs/axios';
+import { RoadmapDetailResponse } from '@/types/share';
+import Image from 'next/image';
 
 export default function ShareClickDetail() {
   const router = useRouter();
+  const { id } = useParams();
+  const [roadmap, setRoadmap] = useState<RoadmapDetailResponse | null>(null);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const { isOpen, toggle, close } = useSidebar();
 
-  const layers = [
-    {
-      id: 1,
-      name: '맛집 레이어',
-      markers: [
-        {
-          id: 101,
-          name: '이태원 맛집',
-          address: '서울시 용산구 이태원로 123',
-          description: '수제버거가 맛있는 집',
-          lat: 37.534,
-          lng: 126.994,
-          color: '#FF5733',
-          imageUrl: '',
-          markerSeq: 0,
-          layer: 1,
-        },
-        {
-          id: 102,
-          name: '홍대 파스타',
-          address: '서울시 마포구 홍익로 45',
-          description: '해장 파스타가 맛있어요',
-          lat: 37.557,
-          lng: 126.923,
-          color: '#33A1FF',
-          imageUrl: '',
-          markerSeq: 1,
-          layer: 1,
-        },
-      ],
-    },
-  ];
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!,
   });
-  const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
+
   const mapRef = useRef<google.maps.Map | null>(null);
+  const [selectedLayerId, setSelectedLayerId] = useState<'all' | number>('all');
+  const isParticipationClosed =
+    roadmap && new Date(roadmap.participationEnd) < new Date();
+
+  useEffect(() => {
+    const fetchRoadmap = async () => {
+      try {
+        const res = await axiosInstance.get(`/roadmaps/${id}`);
+        setRoadmap(res.data.roadmap);
+      } catch (error) {
+        console.error('지도 상세 조회 실패:', error);
+      }
+    };
+
+    if (id) fetchRoadmap();
+  }, [id]);
+
+  if (!roadmap) return <div className="text-center py-20">로딩 중...</div>;
+
+  const filteredMarkers =
+    selectedLayerId === 'all'
+      ? roadmap.layers.flatMap((layer) => layer.markers)
+      : roadmap.layers.find((l) => l.layer.id === selectedLayerId)?.markers ??
+        [];
 
   return (
     <section className="relative w-full h-screen overflow-hidden">
@@ -71,21 +68,21 @@ export default function ShareClickDetail() {
         {isLoaded && (
           <GoogleMap
             mapContainerStyle={{ width: '100%', height: '100%' }}
-            center={center}
-            zoom={13}
+            center={{
+              lat: Number(roadmap.regionLatitude),
+              lng: Number(roadmap.regionLongitude),
+            }}
+            zoom={14}
             onLoad={(map) => {
               mapRef.current = map;
             }}
           >
-            {layers.flatMap((layer) =>
-              layer.markers.map((marker) => (
-                <Marker
-                  key={marker.id}
-                  position={{ lat: marker.lat, lng: marker.lng }}
-                  title={marker.name}
-                />
-              ))
-            )}
+            {filteredMarkers.map((marker) => (
+              <MarkerF
+                key={marker.id}
+                position={{ lat: marker.lat, lng: marker.lng }}
+              />
+            ))}
           </GoogleMap>
         )}
         {/* 왼쪽 상단 버튼 */}
@@ -103,15 +100,19 @@ export default function ShareClickDetail() {
           <div className="relative w-[140px]">
             <select
               className="w-full h-[34px] text-sm bg-white border-none rounded pl-3 appearance-none"
-              defaultValue=""
+              value={selectedLayerId ?? ''}
+              onChange={(e) => {
+                const value = e.target.value;
+                setSelectedLayerId(value === 'all' ? 'all' : Number(value));
+              }}
             >
-              <option value="" disabled hidden>
-                레이어 이름
-              </option>
-              <option>레이어 1</option>
-              <option>레이어 2</option>
+              <option value="all">전체 레이어</option>
+              {roadmap?.layers?.map((l) => (
+                <option key={l.layer.id} value={l.layer.id}>
+                  {l.layer.name}
+                </option>
+              ))}
             </select>
-
             <ChevronDown
               size={18}
               className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-black"
@@ -146,7 +147,7 @@ export default function ShareClickDetail() {
               onClick={close}
               className="cursor-pointer"
             />
-            <h1 className="font-semibold text-xl">공유지도 상세보기</h1>
+            <h1 className="font-semibold text-xl">공유지도 게시글 상세보기</h1>
           </div>
 
           {/* 위치/날짜/좋아요/조회수/신고 */}
@@ -154,22 +155,24 @@ export default function ShareClickDetail() {
             <div className="flex items-center gap-[12px] text-[13px] text-[var(--gray-200)]">
               <div className="flex items-center gap-[4px]">
                 <MapPin size={16} />
-                <span>Seoul</span>
+                <span>{roadmap.address}</span>
               </div>
               <div className="flex items-center gap-[4px]">
                 <Calendar size={16} />
-                <span>2025.07.14</span>
+                <span>
+                  {roadmap.participationEnd?.slice(0, 10).replace(/-/g, '.')}
+                </span>
               </div>
             </div>
 
             <div className="flex items-center gap-4 text-[15px] text-[var(--black)]">
               <div className="flex items-center gap-1">
                 <Heart size={18} />
-                <span>4</span>
+                <span>{roadmap.likeCount}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Eye size={18} />
-                <span>22</span>
+                <span>{roadmap.viewCount}</span>
               </div>
               <button>
                 <Siren
@@ -183,19 +186,22 @@ export default function ShareClickDetail() {
 
           {/* 제목, 설명, 태그 */}
           <div>
-            <h2 className="text-2xl font-semibold mb-2">
-              서울 대학로 맛집 추천좀
-            </h2>
-            <p className="text-[16px] text-black mb-2">
-              나 송지은인데 디자인 그만하고 대학로 갈거니까 맛집 알아와라
-            </p>
+            <h2 className="text-2xl font-semibold mb-2">{roadmap.title}</h2>
+            <p className="text-[16px] text-black mb-2">{roadmap.description}</p>
             <div className="flex gap-2 text-sm text-[#005C54] mb-2">
-              <span>#태그1</span>
-              <span>#태그2</span>
+              {roadmap.hashtags.map((tag) => (
+                <span key={tag.id}>#{tag.name}</span>
+              ))}
             </div>
             <div className="flex gap-[5px] items-center mb-5">
-              <div className="rounded-full bg-amber-950 size-[25px]"></div>
-              <span className="text-sm">작성자 닉네임</span>
+              <Image
+                src={roadmap?.member.profileImage || '/assets/useProfile.png'}
+                alt="작성자 프로필"
+                width={25}
+                height={25}
+                className="rounded-full object-cover size-[25px]"
+              />
+              <span className="text-sm">{roadmap?.member?.nickname}</span>
             </div>
           </div>
 
@@ -207,26 +213,44 @@ export default function ShareClickDetail() {
             </div>
 
             {/* 여기서 layers 배열을 기반으로 동적 렌더링 */}
-            {layers.map((layer) => (
+            {roadmap.layers.map((layer) => (
               <ShareLayerDetail
-                key={layer.id}
-                name={layer.name}
+                key={layer.layer.id}
+                name={layer.layer.name}
                 markers={layer.markers}
               />
             ))}
           </div>
 
-          {/* 참여하기 버튼 */}
-          <Link href="/dashbord/sharemap/detail/1/preview/mapjoin">
-            <div className="flex justify-end pt-6">
+          <div className="flex justify-end gap-3 mt-5">
+            {/* 나가기 버튼 */}
+            <Button
+              buttonStyle="white"
+              className="w-[114px] h-[40px] text-[18px] font-semibold cursor-pointer"
+            >
+              나가기
+            </Button>
+
+            {/* 참여하기 버튼 or 참여 마감 */}
+            {isParticipationClosed ? (
               <Button
                 buttonStyle="smGreen"
-                className="w-[114px] h-[40px] text-[18px] font-semibold"
+                className="w-[114px] h-[40px] text-[18px] font-semibold bg-gray-300 cursor-not-allowed"
+                disabled
               >
-                참여하기
+                참여 마감
               </Button>
-            </div>
-          </Link>
+            ) : (
+              <Link href={`/dashbord/sharemap/detail/${id}/preview/mapjoin`}>
+                <Button
+                  buttonStyle="smGreen"
+                  className="w-[114px] h-[40px] text-[18px] font-semibold"
+                >
+                  참여하기
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 

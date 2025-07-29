@@ -251,24 +251,6 @@ export type CategorySetting = {
   id: number;
   name: string;
 };
-export type Marker = {
-  id: number;
-  name: string;
-  description: string;
-  lat: number;
-  lng: number;
-  color: string;
-  imageUrl: string;
-  markerSeq: number;
-  layer: number;
-  member?: {
-    id: number;
-    name: string;
-    nickname: string;
-    email: string;
-    profileImage: string;
-  };
-};
 
 export type LandingCategories = {
   id: number;
