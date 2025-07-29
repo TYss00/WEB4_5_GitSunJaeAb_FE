@@ -52,13 +52,45 @@ export default function MypagePost({
             .reverse();
           setCards(mapped);
         } else if (activeTab === '참여글') {
-          const res = await axiosInstance.get('/quests/memberQuest/my');
-          const sorted = (res.data.memberQuests || []).sort(
-            (a: MemberQuest, b: MemberQuest) =>
-              new Date(b.submitAt || '').getTime() -
-              new Date(a.submitAt || '').getTime()
+          const [questRes, sharedMapRes] = await Promise.all([
+            axiosInstance.get('/quests/memberQuest/my'),
+            axiosInstance.get('/roadmaps/shared/participated'),
+          ]);
+
+          const quests = (questRes.data.memberQuests || []).map(
+            (q: MemberQuest) => ({
+              type: '퀘스트' as const,
+              id: q.id,
+              date: q.submitAt,
+              data: q,
+            })
           );
-          setQuests(sorted);
+
+          const sharedRoadmaps = (sharedMapRes.data.roadmaps || []).map(
+            (r: RoadmapResponse) => ({
+              type: '공유' as const,
+              id: r.id,
+              date: r.createdAt,
+              data: {
+                ...r,
+                isLiked: r.isBookmarked,
+                likeId: r.bookmarkId,
+              },
+            })
+          );
+
+          const merged = [...quests, ...sharedRoadmaps].sort(
+            (a, b) =>
+              new Date(b.date || '').getTime() -
+              new Date(a.date || '').getTime()
+          );
+
+          setCards(
+            merged.filter((item) => item.type === '공유').map((i) => i.data)
+          );
+          setQuests(
+            merged.filter((item) => item.type === '퀘스트').map((i) => i.data)
+          );
         } else {
           setCards([]);
           setQuests([]);
@@ -161,34 +193,78 @@ export default function MypagePost({
             ))}
         </div>
       ) : activeTab === '참여글' ? (
-        filteredQuests.length === 0 ? (
+        filteredCards.length === 0 && filteredQuests.length === 0 ? (
           <div className="text-center text-[var(--gray-300)] py-50">
             해당하는 참여한 글이 없습니다.
           </div>
         ) : (
           <div className="grid grid-cols-4 gap-6">
-            {filteredQuests.map((q) => (
-              <MypageCard
-                key={q.id}
-                id={q.id}
-                title={q.title}
-                date={q.submitAt?.split('T')[0] || ''}
-                type="퀘스트"
-                mapImageUrl={q.imageUrl || '/map.png'}
-                isLiked={false}
-                onToggleLike={() => {}}
-                author={
-                  q.member.id === member?.id
-                    ? member?.nickname
-                    : q.member.nickname
-                }
-                profileImgUrl={
-                  q.member.id === member?.id
-                    ? member?.profileImage || '/assets/defaultProfile.png'
-                    : q.member.profileImage || '/assets/defaultProfile.png'
-                }
-              />
-            ))}
+            {[
+              ...filteredCards.map((c) => ({
+                type: '공유' as const,
+                id: c.id,
+                date: c.createdAt,
+                data: c,
+              })),
+              ...filteredQuests.map((q) => ({
+                type: '퀘스트' as const,
+                id: q.id,
+                date: q.submitAt,
+                data: q,
+              })),
+            ]
+              .sort(
+                (a, b) =>
+                  new Date(b.date || '').getTime() -
+                  new Date(a.date || '').getTime()
+              )
+              .map((item) =>
+                item.type === '공유' ? (
+                  <MypageCard
+                    key={`shared-${item.id}`}
+                    id={item.data.id}
+                    title={item.data.title}
+                    date={item.data.createdAt?.split('T')[0] || ''}
+                    type="공유"
+                    mapImageUrl={item.data.thumbnail || '/map.png'}
+                    isLiked={item.data.isLiked}
+                    onToggleLike={() => toggleLike(item.data.id)}
+                    author={
+                      item.data.member?.id === member?.id
+                        ? member?.nickname
+                        : item.data.member?.nickname
+                    }
+                    profileImgUrl={
+                      item.data.member?.id === member?.id
+                        ? member?.profileImage || '/assets/defaultProfile.png'
+                        : item.data.member?.profileImage ||
+                          '/assets/defaultProfile.png'
+                    }
+                  />
+                ) : (
+                  <MypageCard
+                    key={`quest-${item.id}`}
+                    id={item.data.id}
+                    title={item.data.title}
+                    date={item.data.submitAt?.split('T')[0] || ''}
+                    type="퀘스트"
+                    mapImageUrl={item.data.imageUrl || '/map.png'}
+                    isLiked={false}
+                    onToggleLike={() => {}}
+                    author={
+                      item.data.member?.id === member?.id
+                        ? member?.nickname
+                        : item.data.member?.nickname
+                    }
+                    profileImgUrl={
+                      item.data.member?.id === member?.id
+                        ? member?.profileImage || '/assets/defaultProfile.png'
+                        : item.data.member?.profileImage ||
+                          '/assets/defaultProfile.png'
+                    }
+                  />
+                )
+              )}
           </div>
         )
       ) : filteredCards.length === 0 && filteredQuests.length === 0 ? (
