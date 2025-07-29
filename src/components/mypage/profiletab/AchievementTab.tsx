@@ -1,45 +1,28 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import axiosInstance from '@/libs/axios';
-import { Achievement } from '@/types/myprofile';
 import { Lock } from 'lucide-react';
 import AchievementSkeleton from '../skeleton/AchievementSkeleton';
+import { useAchievementStore } from '@/store/useAchievementStore';
+import {
+  useAchievements,
+  useMemberAchievements,
+} from '@/hooks/useAchievements';
 
 export default function AchievementTab() {
-  const [achievements, setAchievements] = useState<Achievement[]>([]);
-  const [achievedIds, setAchievedIds] = useState<number[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { allAchievements, achievedIds } = useAchievementStore();
 
-  useEffect(() => {
-    const fetchAchievements = async () => {
-      try {
-        const [allRes, memberRes] = await Promise.all([
-          axiosInstance.get('/achievements'),
-          axiosInstance.get('/achievements/member'),
-        ]);
+  const { isLoading: isLoadingAchievements } = useAchievements();
+  const { isLoading: isLoadingMember } = useMemberAchievements();
 
-        setAchievements(allRes.data.achievements || []);
-        setAchievedIds(
-          memberRes.data.memberAchievements?.map((a: { id: number }) => a.id) ||
-            []
-        );
-      } catch (err) {
-        console.error('업적 불러오기 실패:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const isLoading = isLoadingAchievements || isLoadingMember;
 
-    fetchAchievements();
-  }, []);
-
-  const achievedCount = achievements.filter((a) =>
+  const achievedCount = allAchievements.filter((a) =>
     achievedIds.includes(a.id)
   ).length;
-  const progress = achievements.length
-    ? Math.round((achievedCount / achievements.length) * 100)
+
+  const progress = allAchievements.length
+    ? Math.round((achievedCount / allAchievements.length) * 100)
     : 0;
 
   return (
@@ -53,7 +36,7 @@ export default function AchievementTab() {
           />
         </div>
         <p className="text-sm text-[var(--gray-400)]">
-          전체 업적 {achievements.length}개 중 {achievedCount}개 달성 (
+          전체 업적 {allAchievements.length}개 중 {achievedCount}개 달성 (
           {progress}%)
         </p>
       </div>
@@ -63,7 +46,7 @@ export default function AchievementTab() {
           ? Array.from({ length: 6 }).map((_, idx) => (
               <AchievementSkeleton key={idx} />
             ))
-          : achievements
+          : allAchievements
               .sort((a, b) => {
                 const aAch = achievedIds.includes(a.id);
                 const bAch = achievedIds.includes(b.id);

@@ -9,6 +9,7 @@ import { signupUser } from '@/libs/auth';
 import PasswordInput from '../ui/PasswrodInput';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
 export default function Register() {
   const router = useRouter();
@@ -21,25 +22,24 @@ export default function Register() {
   const { mutate: signupMutate, isPending } = useMutation({
     mutationFn: signupUser,
     onSuccess: () => {
-      alert('회원가입 성공!');
+      toast.success('회원가입 성공!');
       router.push('/login');
     },
     onError: (error) => {
       const err = error as AxiosError<{ code?: string; message?: string }>;
       const code = err.response?.data?.code;
-      const message = err.response?.data?.message;
       switch (code) {
         case '4092':
-          console.log('이미 가입된 이메일입니다.');
+          toast.error('이미 가입된 이메일입니다.');
           break;
         case '4091':
-          console.log('중복된 닉네임입니다.');
+          toast.error('중복된 닉네임입니다.');
           break;
         case '5000':
-          console.log('서버 내부 오류입니다.');
+          toast.error('서버 내부 오류입니다.');
           break;
         default:
-          console.log(message || '회원가입 실패');
+          toast.error('회원가입 실패');
       }
     },
   });
@@ -70,21 +70,21 @@ export default function Register() {
     const { name, nickname, email, password } = formData;
 
     if (!name || !nickname || !email || !password) {
-      return alert('모든 항목을 입력해주세요.');
+      return toast.error('모든 항목을 입력해주세요.');
     }
 
     if (!validateEmail(email)) {
-      return alert('올바른 이메일 형식을 입력해주세요.');
+      return toast.error('올바른 이메일 형식을 입력해주세요.');
     }
 
     if (!validatePassword(password)) {
-      return alert('비밀번호는 8~12자의 영문과 숫자를 포함해야 합니다.');
+      return toast.error('비밀번호는 8~12자의 영문과 숫자를 포함해야 합니다.');
     }
 
-    if (!agree) return alert('이용약관에 동의해주세요.');
+    if (!agree) return toast.error('이용약관에 동의해주세요.');
 
     if (password !== confirmPassword)
-      return alert('비밀번호가 일치하지 않습니다.');
+      return toast.error('비밀번호가 일치하지 않습니다.');
 
     signupMutate({ name, nickname, email, password });
   };

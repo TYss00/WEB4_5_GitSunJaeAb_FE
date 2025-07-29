@@ -1,3 +1,6 @@
+import { formatDistanceToNow } from 'date-fns';
+import { ko } from 'date-fns/locale';
+
 export const formatDate = (iso: string) => {
   const date = new Date(iso);
   return (
@@ -12,3 +15,9 @@ export const formatDate = (iso: string) => {
       .replace(/\.$/, '')
   );
 };
+
+export const formatRelativeTime = (date: string | Date) =>
+  formatDistanceToNow(new Date(date), {
+    addSuffix: true,
+    locale: ko,
+  });

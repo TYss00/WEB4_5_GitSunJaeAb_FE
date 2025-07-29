@@ -5,6 +5,7 @@ import { XCircle } from 'lucide-react';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import { AdminNoticeProps } from '@/types/admin';
+import { toast } from 'react-toastify';
 
 const typeMap: Record<string, string> = {
   시스템: 'SYSTEM',
@@ -52,7 +53,7 @@ export default function AdminNoticeModal({
       onClose();
     } catch (err) {
       console.error('공지 처리 실패:', err);
-      alert('공지 처리 중 오류 발생');
+      toast.error('공지 처리 중 오류 발생');
     }
   };
 

@@ -153,10 +153,10 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
         }
       }
 
-      alert('로드맵이 성공적으로 생성되었습니다.')
+      toast.success('로드맵이 성공적으로 생성되었습니다.')
     } catch (error) {
       console.error('로드맵 생성 실패', error)
-      alert('로드맵 생성 중 오류가 발생했습니다.')
+      toast.error('로드맵 생성 중 오류가 발생했습니다.')
     }
   }
 

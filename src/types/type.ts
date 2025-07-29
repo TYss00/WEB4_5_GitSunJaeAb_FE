@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react'
+import { DashboardShareMapCardProps } from './share'
 
 export type HeaderProps = {
   isAdmin?: boolean
 }
-
 
 export type CategoryAddCardProps = {
   type?: 'category' | 'marker'
@@ -11,6 +11,7 @@ export type CategoryAddCardProps = {
 }
 
 export type RoadMapCardProps = {
+  id?: number
   category: string
   mapImageUrl: string
   title: string
@@ -24,6 +25,7 @@ export type RoadMapCardProps = {
 }
 
 export type QuestCardProps = {
+  id?: number
   isInProgress?: boolean
   mapImageUrl: string
   title: string
@@ -35,6 +37,7 @@ export type QuestCardProps = {
 }
 
 export type ShareMapCardProps = {
+  id?: number
   isEvent?: boolean
   title: string
   mapImageUrl: string
@@ -44,6 +47,7 @@ export type ShareMapCardProps = {
 
 export type CardListProps = {
   type?: 'roadmap' | 'sharemap' | 'quest'
+  hotMaps?: DashboardShareMapCardProps[]
 }
 
 export type ButtonProps = {
@@ -93,10 +97,10 @@ export type LayerDetailProps = {
 }
 
 export type ShareLayerEditProps = {
-  title: string;
-  isTextArea?: boolean;
-  defaultOpen?: boolean;
-};
+  title: string
+  isTextArea?: boolean
+  defaultOpen?: boolean
+}
 
 export type ToggleProps = {
   label: '공개' | '경로' | '애니메이션'
@@ -217,23 +221,6 @@ export type MarkerInfo = {
 
 export type RoadmapWriteProps = {
   categories: CategoryInfo[]
-  // myZzimlayers: {
-  //   id: number
-  //   name: string
-  //   description: string
-  //   layerSeq: 2
-  //   layerTime: string | null
-  //   createdAt: string
-  //   updatedAt: string | null
-  //   deletedAt: string | null
-  //   member: Member
-  //   roadmap: {
-  //     id: number
-  //     categoryId: number
-  //     title: string
-  //     memberId: number
-  //   }
-  // }[]
 }
 
 export type RoadmapDetailProps = {
@@ -267,6 +254,7 @@ export type CategorySetting = {
   id: number
   name: string
 }
+
 export type Marker = {
   id: number
   name: string
