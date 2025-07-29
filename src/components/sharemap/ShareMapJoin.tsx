@@ -78,13 +78,21 @@ export default function ShareMapJoin() {
 
   if (!roadmap) return <div className="text-center py-20">로딩 중...</div>;
 
+  function getShortAddress(fullAddress: string): string {
+    const parts = fullAddress.split(' ');
+    if (parts.length >= 4) {
+      return `${parts[1]} ${parts[2]} ${parts[3]}`; // 도 시 구
+    }
+    return fullAddress;
+  }
+
   return (
     <section className="relative w-full h-screen overflow-hidden">
       {/* 지도 영역 */}
       <GoogleMapWrapper />
 
       {/* 지도 위 UI 요소들 */}
-      <div className="absolute top-2 left-[140px] flex items-center gap-3 px-4 py-2 z-20">
+      <div className="absolute top-2 left-[160px] flex items-center gap-3 px-4 py-2 z-20">
         <Button
           buttonStyle="white"
           onClick={() => router.back()}
@@ -151,7 +159,7 @@ export default function ShareMapJoin() {
             <div className="flex items-center gap-[12px] text-[13px] text-[var(--gray-200)]">
               <div className="flex items-center gap-[4px]">
                 <MapPin size={16} />
-                <span>{roadmap?.address}</span>
+                <span>{getShortAddress(roadmap?.address)}</span>
               </div>
               <div className="flex items-center gap-[4px]">
                 <Calendar size={16} />

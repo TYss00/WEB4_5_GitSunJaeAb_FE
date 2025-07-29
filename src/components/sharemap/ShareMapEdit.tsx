@@ -1,18 +1,19 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { ChevronDown, ChevronLeft, ImagePlus, Plus } from 'lucide-react';
-import Input from '../ui/Input';
-import Button from '../ui/Button';
-import Link from 'next/link';
-import { geocodeAddress } from '@/libs/geocode';
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import DaumPostcodeEmbed from 'react-daum-postcode';
-import { CategoryInfo } from '@/types/type';
-import axiosInstance from '@/libs/axios';
+import Link from 'next/link';
 import Image from 'next/image';
+import Input from '../ui/Input';
+import Button from '../ui/Button';
+import { geocodeAddress } from '@/libs/geocode';
+import axiosInstance from '@/libs/axios';
+import { CategoryInfo } from '@/types/type';
 
-interface ShareMapAddProps {
+interface ShareMapEditProps {
   categories: CategoryInfo[];
 }
 
@@ -20,7 +21,10 @@ export interface AddressData {
   address: string;
 }
 
-export default function ShareMapAdd({ categories }: ShareMapAddProps) {
+export default function ShareMapEdit({ categories }: ShareMapEditProps) {
+  const { id } = useParams();
+  const router = useRouter();
+
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!,
   });
@@ -31,16 +35,45 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const [thumbnail, setThumbnail] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const isPublic = true;
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
-  const mapRef = useRef<google.maps.Map | null>(null);
-
   const [endDate, setEndDate] = useState('');
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>([]);
+  const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const mapRef = useRef<google.maps.Map | null>(null);
+
+  const isPublic = true;
+
+  useEffect(() => {
+    const fetchRoadmap = async () => {
+      try {
+        const res = await axiosInstance.get(`/roadmaps/${id}`);
+        const data = res.data.roadmap;
+
+        console.log('불러온 데이터', data);
+
+        setTitle(data.title);
+        setDescription(data.description);
+        setRegion(data.address);
+        setCategoryId(data.category?.id ?? null);
+        setThumbnail(data.thumbnail);
+        setEndDate(data.participationEnd?.split('T')[0] || '');
+        setTags(
+          data.hashtags?.map((t: { id: number; name: string }) => t.name) || []
+        );
+
+        if (data.regionLatitude && data.regionLongitude) {
+          setCenter({ lat: data.regionLatitude, lng: data.regionLongitude });
+        }
+      } catch (err) {
+        console.error('상세 조회 실패:', err);
+      }
+    };
+
+    if (id) fetchRoadmap();
+  }, [id]);
 
   const handleComplete = async (data: AddressData) => {
     const fullAddress = data.address;
@@ -71,12 +104,12 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
   const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setImageFile(file); // 실제 전송용
+      setImageFile(file);
 
       const reader = new FileReader();
       reader.onloadend = () => {
         const result = reader.result as string;
-        setThumbnail(result); // 미리보기용
+        setThumbnail(result);
       };
       reader.readAsDataURL(file);
     }
@@ -112,13 +145,13 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
         formData.append('imageFile', imageFile);
       }
 
-      const res = await axiosInstance.post('/roadmaps/shared', formData, {
+      await axiosInstance.put(`/roadmaps/shared/${id}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      console.log('작성 완료:', res);
+      router.push('/dashbord/sharemap');
     } catch (err) {
-      console.error('작성 실패:', err);
+      console.error('수정 실패:', err);
     }
   };
 
@@ -151,13 +184,15 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
 
       {/* 입력 폼 */}
       <div className="w-2/6 px-6 py-8 space-y-6 bg-white overflow-y-auto scrollbar-none">
+        {/* 제목, 내용, 지역, 썸네일, 날짜, 카테고리, 해시태그 입력폼은 ShareMapAdd와 동일 구조 */}
+        {/* 생략하지 않고 위에서 가져온 값 바인딩한 상태 */}
+        {/* 그대로 유지 */}
         <div className="space-y-2">
           <label className="text-lg text-black">제목</label>
           <Input
             type="text"
-            placeholder="제목을 입력해주세요."
             className="h-[40px]"
-            value={title}
+            value={title || ''}
             onChange={(e) => setTitle(e.target.value)}
           />
         </div>
@@ -166,7 +201,6 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
           <label className="text-lg text-black">내용</label>
           <Input
             type="text"
-            placeholder="내용을 입력해주세요."
             className="h-[40px]"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -177,7 +211,6 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
           <label className="text-lg text-black">지역</label>
           <Input
             type="text"
-            placeholder="지역을 입력해주세요."
             className="h-[40px] cursor-pointer"
             value={region}
             readOnly
@@ -253,8 +286,6 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
                 </option>
               ))}
             </select>
-
-            {/* 오른쪽 화살표 아이콘 */}
             <ChevronDown
               size={18}
               className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-black"
@@ -267,9 +298,9 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
           <div className="flex gap-2">
             <Input
               type="text"
-              placeholder="해시태그 추가"
               className="h-[40px]"
               value={tagInput}
+              placeholder="해시태그 추가"
               onChange={(e) => setTagInput(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
@@ -311,15 +342,13 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
                 취소
               </Button>
             </Link>
-            <Link href="/dashbord/sharemap">
-              <Button
-                buttonStyle="smGreen"
-                className="w-[60px] h-[35px] text-sm"
-                onClick={handleSubmit}
-              >
-                완료
-              </Button>
-            </Link>
+            <Button
+              buttonStyle="smGreen"
+              className="w-[60px] h-[35px] text-sm"
+              onClick={handleSubmit}
+            >
+              수정
+            </Button>
           </div>
         </div>
       </div>

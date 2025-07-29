@@ -35,7 +35,12 @@ export default function ShareMapCard({
             {labelText}
           </span>
           <span className="text-[18px] font-semibold">{title}</span>
-          <span className="text-[14px] text-[#999]">{category}</span>
+          <span
+            className="w-fit max-w-full px-[10px] py-[4px] rounded-full text-white text-[13px] truncate"
+            style={{ backgroundColor: labelColor }}
+          >
+            {category}
+          </span>
         </div>
         <div
           className="flex-grow relative"

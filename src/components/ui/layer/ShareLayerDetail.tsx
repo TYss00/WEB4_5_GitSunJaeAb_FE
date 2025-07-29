@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp, Layers } from 'lucide-react';
 import ShareMarkerDetail from './ShareMarkerDetail';
-import { MarkerWithAddress } from '@/store/useShareStore';
+import { MarkerWithAddress } from '@/types/share';
 
 interface ShareLayerDetailProps {
   name: string;
@@ -54,7 +54,7 @@ export default function ShareLayerDetail({
       >
         <div className="p-[10px] max-h-[633px] overflow-y-auto rounded-b-[5px] flex flex-col gap-[15px]">
           {markers.map((marker) => (
-            <ShareMarkerDetail key={marker.id} marker={marker} />
+            <ShareMarkerDetail key={marker.markerTempId} marker={marker} />
           ))}
         </div>
       </div>

@@ -48,6 +48,7 @@ export interface LocalMarker extends Marker {
 export interface Layer {
   layerTempId: number;
   name: string;
+  layerSeq?: number;
 }
 
 /** ShareLayerEdit에 들어가는 props */
@@ -62,6 +63,10 @@ export interface DashboardShareMapCardProps {
   title: string;
   thumbnail: string;
   categoryName: string;
+  viewCount: number;
+  participants: number;
+  createdAt: string;
+  likeCount: number;
 }
 
 export interface DashboardCardListProps {
@@ -77,6 +82,33 @@ export interface ShareMapCardUIProps {
   isEvent?: boolean;
   participants?: number;
   className?: string;
+}
+
+export interface RawRoadmap {
+  id: number;
+  title: string;
+  description: string;
+  thumbnail: string | null;
+  viewCount: number;
+  likeCount: number;
+  createdAt: string;
+  roadmapType: 'SHARED' | 'PERSONAL';
+  isPublic: boolean;
+  isBookmarked?: boolean;
+  bookmarkId?: number;
+  category: {
+    id: number;
+    name: string;
+  } | null;
+  member: {
+    id: number;
+    name: string;
+    nickname: string;
+    email: string;
+    profileImage: string | null;
+    role: string;
+  };
+  hashtags: { id: number; name: string }[];
 }
 
 export interface RoadmapDetailResponse {
