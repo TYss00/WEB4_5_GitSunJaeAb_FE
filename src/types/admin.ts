@@ -4,6 +4,7 @@ export type Roadmap = {
   member: {
     nickname: string;
   };
+  editorCount: number;
 };
 
 export type CustomMarker = {
@@ -87,9 +88,10 @@ export type UserResponse = {
 };
 
 export interface ManageCardProps<T extends { id: number }> {
+  id?: number;
   name: string;
   image?: string | null;
-  type: 'category';
+  type?: 'category' | 'marker';
   item: T;
   description?: string;
   onEditClick?: (item: T) => void;

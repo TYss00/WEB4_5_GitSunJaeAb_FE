@@ -16,13 +16,14 @@ import {
 import Button from '../ui/Button';
 import ReportModal from '../common/modal/ReportModal';
 import useSidebar from '@/utils/useSidebar';
-import Input from '../ui/Input';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import GoogleMapWrapper from './GoogleMapWrapper';
 import ShareLayerEdit from '../ui/layer/ShareLayerEdit';
 import useShareStore from '@/store/useShareStore';
-import useHashStore from '@/store/useHashStore';
+import { RoadmapDetailResponse } from '@/types/share';
+import axiosInstance from '@/libs/axios';
+import Image from 'next/image';
 
 export default function ShareMapJoin() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function ShareMapJoin() {
 
   const [isReportOpen, setIsReportOpen] = useState(false);
   const { isOpen, toggle, close } = useSidebar();
-  const [input, setInput] = useState('');
+  const [roadmap, setRoadmap] = useState<RoadmapDetailResponse | null>(null);
 
   const addLayer = useShareStore((state) => state.addLayer);
   const selectedLayerId = useShareStore((state) => state.selectedLayerId);
@@ -48,34 +49,42 @@ export default function ShareMapJoin() {
     markerIds.forEach((id) => removeMarker(Number(id)));
   };
 
-  const hashtags = useHashStore((state) => state.hashtags);
-  const addHashtag = useHashStore((state) => state.addHashtag);
-  const removeHashtag = useHashStore((state) => state.removeHashtag);
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      if (!input.trim()) return;
-      if (hashtags.includes(input)) return; // 중복 방지
-      addHashtag(input.trim());
-      setInput('');
-    }
-  };
-
   const enterRoom = useShareStore((state) => state.liveblocks.enterRoom);
   const leaveRoom = useShareStore((state) => state.liveblocks.leaveRoom);
+  const setRoadmapId = useShareStore((state) => state.setRoadmapId);
   const mapRef = useRef<google.maps.Map | null>(null);
 
   useEffect(() => {
     if (!id) return;
 
-    const roomId = `sharemap-room-${id}`;
-    enterRoom(roomId);
+    setRoadmapId(Number(id));
+    enterRoom(`sharemap-room-${id}`);
+
+    const fetchRoadmap = async () => {
+      try {
+        const res = await axiosInstance.get(`/roadmaps/${id}`);
+        setRoadmap(res.data.roadmap);
+      } catch (error) {
+        console.error('공유지도 상세 조회 실패:', error);
+      }
+    };
+
+    fetchRoadmap();
 
     return () => {
       leaveRoom();
     };
-  }, [id, enterRoom, leaveRoom]);
+  }, [id, enterRoom, leaveRoom, setRoadmapId]);
+
+  if (!roadmap) return <div className="text-center py-20">로딩 중...</div>;
+
+  function getShortAddress(fullAddress: string): string {
+    const parts = fullAddress.split(' ');
+    if (parts.length >= 4) {
+      return `${parts[1]} ${parts[2]} ${parts[3]}`; // 도 시 구
+    }
+    return fullAddress;
+  }
 
   return (
     <section className="relative w-full h-screen overflow-hidden">
@@ -83,7 +92,7 @@ export default function ShareMapJoin() {
       <GoogleMapWrapper />
 
       {/* 지도 위 UI 요소들 */}
-      <div className="absolute top-2 left-[140px] flex items-center gap-3 px-4 py-2 z-20">
+      <div className="absolute top-2 left-[160px] flex items-center gap-3 px-4 py-2 z-20">
         <Button
           buttonStyle="white"
           onClick={() => router.back()}
@@ -105,7 +114,7 @@ export default function ShareMapJoin() {
           >
             <option value="all">전체 레이어</option>
             {layers.map((layer) => (
-              <option key={layer.id} value={layer.id}>
+              <option key={layer.layerTempId} value={layer.layerTempId}>
                 {layer.name}
               </option>
             ))}
@@ -142,7 +151,7 @@ export default function ShareMapJoin() {
               onClick={close}
               className="cursor-pointer"
             />
-            <h1 className="font-semibold text-xl">공유지도 수정하기</h1>
+            <h1 className="font-semibold text-xl">공유지도 참여하기</h1>
           </div>
 
           {/* 위치, 날짜, 좋아요 등 */}
@@ -150,21 +159,23 @@ export default function ShareMapJoin() {
             <div className="flex items-center gap-[12px] text-[13px] text-[var(--gray-200)]">
               <div className="flex items-center gap-[4px]">
                 <MapPin size={16} />
-                <span>Seoul</span>
+                <span>{getShortAddress(roadmap?.address)}</span>
               </div>
               <div className="flex items-center gap-[4px]">
                 <Calendar size={16} />
-                <span>2025.07.14</span>
+                <span>
+                  {roadmap?.participationEnd?.slice(0, 10).replace(/-/g, '.')}
+                </span>
               </div>
             </div>
             <div className="flex items-center gap-4 text-[15px] text-[var(--black)]">
               <div className="flex items-center gap-1">
                 <Heart size={18} />
-                <span>4</span>
+                <span>{roadmap?.likeCount}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Eye size={18} />
-                <span>22</span>
+                <span>{roadmap?.viewCount}</span>
               </div>
               <button onClick={() => setIsReportOpen(true)}>
                 <Siren size={18} />
@@ -174,85 +185,56 @@ export default function ShareMapJoin() {
 
           {/* 제목, 설명, 태그 등 */}
           <div>
-            <h2 className="text-2xl font-semibold mb-4">
-              서울 대학로 맛집 추천좀
-            </h2>
+            <h2 className="text-2xl font-semibold mb-4">{roadmap?.title}</h2>
             <p className="text-[16px] text-black mb-2">
-              나 송지은인데 디자인 그만하고 대학로 갈거니까 맛집 알아와라
+              {roadmap?.description}
             </p>
             {/* 태그 디자인 수정 */}
             <div className="flex gap-[5px] text-sm text-[#005C54] mb-2">
-              {hashtags.map((tag) => (
-                <span
-                  key={tag}
-                  className="relative pr-3 after:content-['×'] after:absolute after:right-0 after:top-0 after:cursor-pointer after:text-[12px] after:text-[#888] hover:after:text-red-500"
-                  onClick={() => removeHashtag(tag)}
-                >
-                  #{tag}
-                </span>
+              {roadmap?.hashtags?.map((tag) => (
+                <span key={tag.id}>#{tag.name}</span>
               ))}
             </div>
             <div className="flex gap-[5px] items-center mb-5">
-              <div className="rounded-full bg-amber-950 size-[25px]"></div>
-              <span className="text-sm">작성자 닉네임</span>
+              <Image
+                src={roadmap?.member.profileImage || '/assets/useProfile.png'}
+                alt="작성자 프로필"
+                width={25}
+                height={25}
+                className="rounded-full object-cover size-[25px]"
+              />
+              <span className="text-sm">{roadmap?.member?.nickname}</span>
             </div>
           </div>
 
           {/* 레이어 목록 */}
           <div className="border-t border-[var(--gray-50)] pt-[20px]">
-            <h3 className="text-xl text-black mb-[15px]">
-              레이어 및 마커 관리
-            </h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-xl text-black">레이어 및 마커 관리</h3>
 
-            <div className="flex gap-2 mb-3">
-              <Input
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="해시태그 추가"
-                className="h-[44px] border-[#E4E4E4] rounded-md"
-              />
-              <Button
-                buttonStyle="smGreen"
-                className="text-[10px]"
-                onClick={handleResetMarkers}
-              >
-                마커 전체 삭제
-              </Button>
-              <Button
-                buttonStyle="smGreen"
-                className="w-[76px] h-[44px] text-3xl font-medium"
-                onClick={addLayer}
-              >
-                <Plus size={30} />
-              </Button>
-            </div>
-
-            {/* 레이어 드롭다운 */}
-            <div className="relative mb-3">
-              <select
-                className="w-full h-[44px] text-sm border border-[#E4E4E4] rounded px-3 appearance-none"
-                defaultValue=""
-              >
-                <option value="" disabled hidden>
-                  레이어 선택
-                </option>
-                <option>게임</option>
-                <option>여행</option>
-                <option>맛집</option>
-              </select>
-              <ChevronDown
-                size={18}
-                className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-black"
-              />
+              <div className="flex gap-2">
+                <Button
+                  buttonStyle="smGreen"
+                  className="text-[14px]"
+                  onClick={handleResetMarkers}
+                >
+                  마커 전체 삭제
+                </Button>
+                <Button
+                  buttonStyle="smGreen"
+                  className="w-[140px] h-[44px] font-medium text-[14px]"
+                  onClick={addLayer}
+                >
+                  <Plus size={30} className="pr-2" />새 레이어 추가
+                </Button>
+              </div>
             </div>
 
             {/* 레이어 편집 컴포넌트 */}
             <div className="space-y-3">
               {layers.map((layer) => (
                 <ShareLayerEdit
-                  key={layer.id}
+                  key={layer.layerTempId}
                   title={layer.name}
                   layer={layer}
                   mapRef={mapRef}
@@ -262,20 +244,12 @@ export default function ShareMapJoin() {
 
             {/* 하단 버튼 */}
             <div className="flex justify-end mt-4 gap-5">
-              <Link href="/dashbord/sharemap/detail/1/preview">
-                <Button
-                  buttonStyle="white"
-                  className="text-[18px] w-[80px] h-[40px] text-[var(--black)] font-semibold"
-                >
-                  취소
-                </Button>
-              </Link>
-              <Link href="/dashbord/sharemap/detail/1">
+              <Link href={`/dashbord/sharemap/detail/${id}`}>
                 <Button
                   buttonStyle="smGreen"
                   className="text-[18px] w-[80px] h-[40px]"
                 >
-                  완료
+                  나가기
                 </Button>
               </Link>
             </div>

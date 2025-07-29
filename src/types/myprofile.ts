@@ -33,7 +33,7 @@ export type useProfileStores = {
 export type RoadmapResponse = {
   id: number;
   title: string;
-  bookmarkId?: number;
+  bookmarkId?: number | null;
   isBookmarked?: boolean;
   thumbnail: string | null;
   roadmapType: 'SHARED' | 'PERSONAL';
@@ -41,7 +41,7 @@ export type RoadmapResponse = {
   member?: ProfileMember;
   isLiked?: boolean;
   createdAt?: string;
-  likeId?: number;
+  likeId?: number | null;
 };
 
 export type Layer = {
@@ -101,7 +101,9 @@ export type ProfileEditState = {
 export type Achievement = {
   id: number;
   name: string;
-  image: string;
+  image: string | null;
+  description?: string;
+  achievedAt?: string;
 };
 
 export type CommentItem = {
@@ -111,4 +113,25 @@ export type CommentItem = {
   quest: number | null;
   postTitle: string;
   createdAt: string;
+};
+
+export type MemberQuest = {
+  id: number;
+  title: string;
+  imageUrl: string;
+  createdAt: string;
+  description: string;
+  submitAt: string;
+  member: {
+    id: number;
+    nickname: string;
+    profileImage: string | null;
+  };
+};
+
+export type ParticipatedItem = {
+  type: '퀘스트' | '공유로드맵';
+  id: number;
+  date: string;
+  data: MemberQuest | RoadmapResponse;
 };

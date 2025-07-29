@@ -5,6 +5,8 @@ import { Siren, Filter, MapPin, ClipboardList, Landmark } from 'lucide-react';
 import { DisplayReport, Report, ReportResponse } from '@/types/admin';
 import ReportDetailModal from './ReportDetailModal';
 import axiosInstance from '@/libs/axios';
+import LoadingSpener from '../common/LoadingSpener';
+import { toast } from 'react-toastify';
 
 const TABS = ['전체', '대기중', '완료'];
 
@@ -17,6 +19,7 @@ export default function ReportTable() {
   } | null>(null);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -27,18 +30,14 @@ export default function ReportTable() {
         const rawReports = data.reportSimpleDTOS;
 
         if (!Array.isArray(rawReports)) {
-          console.warn('서버에서 reports 배열이 안 옴:', data);
           setReports([]);
           return;
         }
 
         rawReports.sort((a, b) => {
-          // 대기순
           if (a.status !== b.status) {
             return a.status === 'REPORTED' ? -1 : 1;
           }
-
-          // 그다음 최신순
           return (
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
@@ -67,6 +66,8 @@ export default function ReportTable() {
         setReports(mapped);
       } catch (err) {
         console.error('신고 목록 불러오기 실패:', err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -74,16 +75,18 @@ export default function ReportTable() {
   }, []);
 
   const handleStatusUpdate = async (reportId: number) => {
+    const confirmUpdate = confirm('해당 신고 상태를 완료로 변경하시겠습니까?');
+    if (!confirmUpdate) return;
     try {
       await axiosInstance.get(`/reports/admin/${reportId}`, {});
 
       setReports((prev) =>
         prev.map((r) => (r.id === reportId ? { ...r, status: '완료' } : r))
       );
-      alert('상태가 완료되었습니다.');
+      toast.success('상태가 완료되었습니다.');
     } catch (err) {
       console.error('상태 업데이트 실패:', err);
-      alert('상태 변경에 실패했습니다.');
+      toast.error('상태 변경에 실패했습니다.');
     }
   };
 
@@ -94,7 +97,6 @@ export default function ReportTable() {
       return r.status === '완료';
     })
     .filter((r) => {
-      // 아무것도 선택 안 했으면 전체
       if (selectedTypes.length === 0) return true;
       return selectedTypes.includes(r.contentType);
     });
@@ -108,7 +110,7 @@ export default function ReportTable() {
     } else if (contentType === '퀘스트' && quest !== null) {
       deleteUrl = `/quests/${quest}`;
     } else {
-      alert('삭제할 게시글 ID가 없습니다.');
+      toast.error('삭제할 게시글 ID가 없습니다.');
       return;
     }
 
@@ -119,13 +121,21 @@ export default function ReportTable() {
       const res = await axiosInstance.delete(deleteUrl);
       if (res.status !== 200) throw new Error('삭제 실패');
 
-      alert('게시글이 삭제되었습니다.');
+      toast.success('게시글이 삭제되었습니다.');
       setReports((prev) => prev.filter((r) => r.id !== report.id));
     } catch (err) {
       console.error(err);
-      alert('삭제 중 오류가 발생했습니다.');
+      toast.error('삭제 중 오류가 발생했습니다.');
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-[600px] flex items-center justify-center">
+        <LoadingSpener />
+      </div>
+    );
+  }
 
   return (
     <div className="w-[1000px] bg-[var(--white)] rounded-lg p-4 flex flex-col justify-start border border-[var(--gray-50)]">
@@ -134,26 +144,34 @@ export default function ReportTable() {
         <span className="mt-1">신고 내역</span>
       </div>
 
-      {/* 탭과 필터 전체 감싸기 */}
       <div className="flex justify-between items-center mb-4">
-        {/* 왼쪽: 탭 */}
         <div className="flex gap-[26px] text-[15px] font-medium">
-          {TABS.map((tab) => (
-            <span
-              key={tab}
-              onClick={() => setSelectedTab(tab)}
-              className={`cursor-pointer pb-1 ${
-                selectedTab === tab
-                  ? 'text-[var(--primary-300)] border-b-2 border-[var(--primary-300)]'
-                  : 'text-[var(--gray-300)]'
-              }`}
-            >
-              {tab}
-            </span>
-          ))}
+          {TABS.map((tab) => {
+            let count = 0;
+            if (tab === '전체') {
+              count = reports.length;
+            } else if (tab === '대기중') {
+              count = reports.filter((r) => r.status === '대기').length;
+            } else if (tab === '완료') {
+              count = reports.filter((r) => r.status === '완료').length;
+            }
+
+            return (
+              <span
+                key={tab}
+                onClick={() => setSelectedTab(tab)}
+                className={`cursor-pointer pb-1 ${
+                  selectedTab === tab
+                    ? 'text-[var(--primary-300)] border-b-2 border-[var(--primary-300)]'
+                    : 'text-[var(--gray-300)]'
+                }`}
+              >
+                {tab} ({count})
+              </span>
+            );
+          })}
         </div>
 
-        {/* 오른쪽: 필터 버튼 */}
         <div className="relative">
           <button
             onClick={() => setIsFilterOpen((prev) => !prev)}
@@ -226,9 +244,10 @@ export default function ReportTable() {
         <table className="w-full text-left text-[14px]">
           <thead>
             <tr className="text-[var(--black)] border-b border-[var(--gray-50)]">
+              <th className="py-2">ID</th>
               <th className="py-2">피신고자</th>
               <th className="py-2">신고자</th>
-              <th className="py-2">유형</th>
+              <th className="py-2">내용</th>
               <th className="py-2">날짜</th>
               <th className="py-2 pl-2">상태</th>
               <th className="py-2 pl-3">조치</th>
@@ -252,6 +271,7 @@ export default function ReportTable() {
                   key={report.id}
                   className="border-b border-[var(--gray-50)]"
                 >
+                  <td className="py-2">{report.id}</td>
                   <td className="py-2">{report.reported}</td>
                   <td>{report.reporter}</td>
                   <td>{report.type}</td>

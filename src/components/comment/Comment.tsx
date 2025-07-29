@@ -1,28 +1,30 @@
-import { CommentInfo } from '@/types/type'
-import CommentCount from './CommentCount'
-import CommentForm from './CommentForm'
-import CommentList from './CommentList'
-import { useState } from 'react'
+'use client';
+
+import { CommentInfo } from '@/types/type';
+import CommentCount from './CommentCount';
+import CommentForm from './CommentForm';
+import CommentList from './CommentList';
+import { useState } from 'react';
 
 type Props = {
-  commentsInfo: CommentInfo[]
-  variant?: 'roadmap' | 'sharemap' | 'quest'
-}
+  commentsInfo: CommentInfo[];
+  variant?: 'roadmap' | 'sharemap' | 'quest';
+};
 
 const paddingMap = {
   roadmap: 'px-0',
   sharemap: 'px-4',
   quest: 'px-4',
-}
+};
 
 export default function Comment({ commentsInfo, variant = 'sharemap' }: Props) {
-  const paddingClass = paddingMap[variant]
-  const [comments, setComments] = useState<CommentInfo[]>(commentsInfo)
+  const paddingClass = paddingMap[variant];
+  const [comments, setComments] = useState<CommentInfo[]>(commentsInfo);
 
   //새 댓글 추가 핸들러
   const handleAddComment = (newComment: CommentInfo) => {
-    setComments((prev) => [newComment, ...prev])
-  }
+    setComments((prev) => [newComment, ...prev]);
+  };
 
   return (
     <div
@@ -34,5 +36,5 @@ export default function Comment({ commentsInfo, variant = 'sharemap' }: Props) {
       </div>
       <CommentForm variant={variant} onAddComment={handleAddComment} />
     </div>
-  )
+  );
 }

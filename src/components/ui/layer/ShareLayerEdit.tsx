@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { ChevronDown, ChevronUp, Layers, Plus, Trash2 } from 'lucide-react';
 import ShareMarkerEdit from './ShareMarkerEdit';
 import { ShareLayerEditProps } from '@/types/type';
-import useShareStore, { Layer } from '@/store/useShareStore';
+import useShareStore from '@/store/useShareStore';
+import { Layer } from '@/types/share';
 
 export default function ShareLayerEdit({
   layer,
@@ -26,17 +27,17 @@ export default function ShareLayerEdit({
 
   const removeMarker = useShareStore((state) => state.removeMarker);
   const markers = useShareStore((state) => state.markers);
-  const layerId = layer.id;
+  const layerId = layer.layerTempId;
   const removeLayer = useShareStore((state) => state.removeLayer);
   const renameLayer = useShareStore((state) => state.renameLayer);
 
   const handleRename = () => {
-    renameLayer(layer.id, name.trim() || '레이어');
+    renameLayer(layer.layerTempId, name.trim() || '레이어');
     setIsEditing(false);
   };
 
   const layerMarkers = Object.values(markers).filter(
-    (m) => m.layer === layerId
+    (m) => m.layerTempId === layerId
   );
 
   return (
@@ -107,11 +108,11 @@ export default function ShareLayerEdit({
         <div className="p-[10px] max-h-[633px] overflow-y-auto rounded-b-[5px] flex flex-col gap-[15px]">
           {layerMarkers.map((marker) => (
             <ShareMarkerEdit
-              key={marker.id}
+              key={marker.markerTempId}
               isTextArea={isTextArea}
               mapRef={mapRef}
               marker={marker}
-              onDelete={() => removeMarker(marker.id)}
+              onDelete={() => removeMarker(marker.markerTempId)}
             />
           ))}
 

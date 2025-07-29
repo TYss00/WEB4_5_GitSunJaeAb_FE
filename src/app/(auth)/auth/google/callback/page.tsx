@@ -7,6 +7,7 @@ import { socialLogin, getUser } from '@/libs/auth';
 import { setAccessTokenToStore } from '@/utils/setAccessTokenToStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { parseHashParams } from '@/utils/parseHashParams';
+import { toast } from 'react-toastify';
 
 export default function GoogleCallbackPage() {
   const router = useRouter();
@@ -17,7 +18,7 @@ export default function GoogleCallbackPage() {
     onSuccess: async (data) => {
       const accessToken = data.token?.accessToken;
       if (!accessToken) {
-        alert('accessToken 없음');
+        toast.error('로그인 실패');
         router.push('/login');
         return;
       }
@@ -30,10 +31,14 @@ export default function GoogleCallbackPage() {
       });
 
       useAuthStore.getState().setUser(user);
-      router.push('/');
+      if (user?.role === 'ROLE_ADMIN') {
+        router.push('/admin/report');
+      } else {
+        router.push('/dashbord');
+      }
     },
     onError: () => {
-      alert('소셜 로그인 실패');
+      toast.error('소셜 로그인 실패');
       router.push('/login');
     },
   });
@@ -49,10 +54,10 @@ export default function GoogleCallbackPage() {
     if (idToken) {
       mutate({ provider: 'google', token: idToken });
     } else {
-      alert('Google 로그인 토큰 없음');
+      toast.error('소셜 로그인 실패');
       router.push('/login');
     }
-  }, []);
+  }, [mutate, router]);
 
   return <p className="text-center mt-20">로그인 처리 중...</p>;
 }

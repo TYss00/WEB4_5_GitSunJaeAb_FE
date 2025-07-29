@@ -7,11 +7,18 @@ import ManageCard from './card/ManageCard';
 import ManageCardFormCard from './card/ManageCardFormCard';
 import ManageAddCard from './card/ManageAddCard';
 import ManageCardModal from './modal/ManageCardModal';
+import ManageCardSkeleton from './skeleton/ManageCardSkeleton';
+import { toast } from 'react-toastify';
 
-export default function CategoryManage() {
+export default function CategoryManage({
+  setCount,
+}: {
+  setCount: React.Dispatch<React.SetStateAction<number>>;
+}) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [editedCategory, setEditedCategory] = useState<{
     name: string;
     image: File | null;
@@ -20,14 +27,18 @@ export default function CategoryManage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        setIsLoading(true);
         const res = await axiosInstance.get('/categories');
         setCategories(res.data.categories);
+        setCount(res.data.categories.length);
       } catch (error) {
         console.error('카테고리 불러오기 실패:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchCategories();
-  }, []);
+  }, [setCount]);
 
   const handleSubmit = async ({
     name,
@@ -39,7 +50,7 @@ export default function CategoryManage() {
     description: string;
   }) => {
     if (!name.trim()) {
-      alert('카테고리 이름을 입력하세요');
+      toast.error('카테고리 이름을 입력하세요');
       return;
     }
 
@@ -69,10 +80,11 @@ export default function CategoryManage() {
 
       setCategories((prev) => [...prev, addedCategory]);
       setShowForm(false);
-      alert('카테고리가 성공적으로 추가되었습니다.');
+      setCount(categories.length + 1);
+      toast.success('카테고리가 성공적으로 추가되었습니다.');
     } catch (error) {
       console.error('POST 요청 실패:', error);
-      alert('카테고리 추가 중 오류가 발생했습니다.');
+      toast.error('카테고리 추가 중 오류가 발생했습니다.');
     }
   };
 
@@ -129,10 +141,10 @@ export default function CategoryManage() {
 
       setEditingId(null);
       setEditedCategory({ name: '', image: null });
-      alert('카테고리 수정이 완료되었습니다.');
+      toast.success('카테고리 수정이 완료되었습니다.');
     } catch (err) {
       console.error('카테고리 수정 실패:', err);
-      alert('카테고리 수정 중 오류가 발생했습니다.');
+      toast.error('카테고리 수정 중 오류가 발생했습니다.');
     }
   };
 
@@ -181,10 +193,10 @@ export default function CategoryManage() {
         )
       );
 
-      alert('카테고리 수정 완료!');
+      toast.success('카테고리 수정 완료!');
     } catch (err) {
       console.error(err);
-      alert('카테고리 수정 실패');
+      toast.error('카테고리 수정 실패');
     }
   };
 
@@ -196,65 +208,74 @@ export default function CategoryManage() {
       await axiosInstance.delete(`/categories/${id}`);
 
       setCategories((prev) => prev.filter((cat) => cat.id !== id));
-      alert('카테고리가 삭제되었습니다.');
+      setCount((prev) => prev - 1);
+      toast.success('카테고리가 삭제되었습니다.');
     } catch (error) {
       console.error('카테고리 삭제 실패:', error);
-      alert('카테고리 삭제 중 오류가 발생했습니다.');
+      toast.error('카테고리 삭제 중 오류가 발생했습니다.');
     }
   };
 
   return (
     <div className="w-[732px] mx-auto border border-[var(--gray-50)] rounded-[10px] px-[16px] py-[16px]">
       <div className="flex flex-wrap gap-[16px]">
-        {categories.map((category) =>
-          editingId === category.id ? (
-            <ManageCardFormCard
-              key={`edit-${category.id}`}
-              name={editedCategory.name}
-              image={editedCategory.image}
-              onNameChange={(name) =>
-                setEditedCategory((prev) => ({ ...prev, name }))
-              }
-              onImageChange={handleEditImageChange}
-              onSubmit={() => handleEditSubmit(category.id)}
-              onCancel={() => setEditingId(null)}
-            />
-          ) : (
-            <ManageCard
-              key={`view-${category.id}`}
-              name={category.name}
-              image={category.categoryImage}
-              item={category}
-              description={category.description}
-              onEditClick={(cat) => {
-                setEditingId(cat.id);
-                setEditedCategory({ name: cat.name, image: null });
-              }}
-              onEditSubmit={handleModalEditSubmit}
-              onDelete={() => handleDeleteCategory(category.id)}
+        {isLoading ? (
+          Array.from({ length: 1 }).map((_, idx) => (
+            <ManageCardSkeleton key={idx} />
+          ))
+        ) : (
+          <>
+            {categories.map((category) =>
+              editingId === category.id ? (
+                <ManageCardFormCard
+                  key={`edit-${category.id}`}
+                  name={editedCategory.name}
+                  image={editedCategory.image}
+                  onNameChange={(name) =>
+                    setEditedCategory((prev) => ({ ...prev, name }))
+                  }
+                  onImageChange={handleEditImageChange}
+                  onSubmit={() => handleEditSubmit(category.id)}
+                  onCancel={() => setEditingId(null)}
+                />
+              ) : (
+                <ManageCard
+                  key={`view-${category.id}`}
+                  name={category.name}
+                  image={category.categoryImage}
+                  item={category}
+                  description={category.description}
+                  onEditClick={(cat) => {
+                    setEditingId(cat.id);
+                    setEditedCategory({ name: cat.name, image: null });
+                  }}
+                  onEditSubmit={handleModalEditSubmit}
+                  onDelete={() => handleDeleteCategory(category.id)}
+                  type="category"
+                />
+              )
+            )}
+
+            {showForm && (
+              <ManageCardModal
+                name=""
+                image=""
+                description=""
+                item={{ id: 0 }}
+                onClose={() => setShowForm(false)}
+                onEditSubmit={({ name, image, description }) =>
+                  handleSubmit({ name, image, description })
+                }
+              />
+            )}
+
+            <ManageAddCard
+              key="category-add-button"
               type="category"
+              onClick={() => setShowForm(true)}
             />
-          )
+          </>
         )}
-
-        {showForm && (
-          <ManageCardModal
-            name=""
-            image=""
-            description=""
-            item={{ id: 0 }}
-            onClose={() => setShowForm(false)}
-            onEditSubmit={({ name, image, description }) =>
-              handleSubmit({ name, image, description })
-            }
-          />
-        )}
-
-        <ManageAddCard
-          key="category-add-button"
-          type="category"
-          onClick={() => setShowForm(true)}
-        />
       </div>
     </div>
   );

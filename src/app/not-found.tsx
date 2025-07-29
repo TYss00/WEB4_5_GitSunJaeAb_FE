@@ -5,9 +5,11 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Lottie from 'react-lottie-player';
 import searchAnimation from '../../public/assets/searchAnimation.json';
+import { useAuthStore } from '@/store/useAuthStore';
 
 export default function NotFound() {
   const router = useRouter();
+  const { accessToken, user } = useAuthStore();
 
   return (
     <div className="flex items-center justify-center min-h-screen px-6 py-10">
@@ -27,7 +29,17 @@ export default function NotFound() {
           <div className="flex items-center gap-[36px]">
             <Button
               buttonStyle="smGreen"
-              onClick={() => router.push('/')}
+              onClick={() => {
+                if (accessToken) {
+                  if (user && user.role === 'ROLE_ADMIN') {
+                    router.push('/admin/report');
+                  } else {
+                    router.push('/dashbord');
+                  }
+                } else {
+                  router.push('/landing');
+                }
+              }}
               className="w-[162px] h-[52px] text-[18px]"
             >
               홈페이지로 이동
