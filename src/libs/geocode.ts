@@ -16,17 +16,17 @@ export async function geocodeAddress(address: string) {
 
   const { lat, lng } = data.results[0].geometry.location;
 
-  const result = data.results[0];
+  const fullAddress = data.results[0].formatted_address;
   // 행정구역 (시) 추출
-  const cityComponent = result.address_components.find((comp: any) =>
-    comp.types.includes('administrative_area_level_1')
-  );
-  const city = cityComponent?.long_name || 'Unknown';
+  // const cityComponent = result.address_components.find((comp: any) =>
+  //   comp.types.includes('administrative_area_level_1')
+  // );
+  // const city = cityComponent?.long_name || 'Unknown';
   console.log('위도:', lat);
   console.log('경도:', lng);
-  console.log('시:', city);
+  console.log('시:', fullAddress);
 
-  return { lat, lng, city };
+  return { lat, lng, address: fullAddress };
 }
 
 export async function reverseGeocode(lat: number, lng: number) {

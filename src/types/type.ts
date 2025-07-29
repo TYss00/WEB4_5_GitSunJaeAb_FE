@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { DashboardShareMapCardProps } from './share';
 
 export type HeaderProps = {
   isAdmin?: boolean;
@@ -46,6 +47,7 @@ export type ShareMapCardProps = {
 
 export type CardListProps = {
   type?: 'roadmap' | 'sharemap' | 'quest';
+  hotMaps?: DashboardShareMapCardProps[];
 };
 
 export type ButtonProps = {

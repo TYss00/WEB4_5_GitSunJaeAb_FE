@@ -3,14 +3,23 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import Button from '@/components/ui/Button';
-import { Calendar, ChevronLeft, Eye, Heart, MapPin, Siren } from 'lucide-react';
+import {
+  Calendar,
+  ChevronLeft,
+  Eye,
+  Heart,
+  MapPin,
+  Siren,
+  PencilLine,
+} from 'lucide-react';
 import ReportModal from '../common/modal/ReportModal';
 // import Comment from '../comment/Comment';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import axiosInstance from '@/libs/axios';
 import { RoadmapDetailResponse } from '@/types/share';
 import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api';
+import { useAuthStore } from '@/store/useAuthStore';
 
 const containerStyle = {
   width: '100%',
@@ -18,9 +27,9 @@ const containerStyle = {
 };
 
 export default function ShareMapDetail() {
-  const router = useRouter();
   const { id } = useParams();
 
+  const currentUserId = useAuthStore((state) => state.user?.id);
   const [roadmap, setRoadmap] = useState<RoadmapDetailResponse | null>(null);
   const [editors, setEditors] = useState<
     { memberId: number; name: string; profileImage: string }[]
@@ -45,7 +54,7 @@ export default function ShareMapDetail() {
     const fetchEditors = async () => {
       try {
         const res = await axiosInstance.get(`/roadmaps/${id}/editors`);
-        setEditors(res.data.editors); // ← 상태에 맞게 수정
+        setEditors(res.data.editors);
       } catch (error) {
         console.error('참여자 목록 조회 실패:', error);
       }
@@ -59,19 +68,29 @@ export default function ShareMapDetail() {
 
   if (!roadmap) return <div className="text-center py-20">로딩 중...</div>;
 
+  function getShortAddress(fullAddress: string): string {
+    const parts = fullAddress.split(' ');
+    if (parts.length >= 4) {
+      return `${parts[1]} ${parts[2]} ${parts[3]}`; // 도 시 구
+    }
+    return fullAddress;
+  }
+
   return (
     <>
       <main className="max-w-[1100px] mx-auto mt-[24px] mb-[85px]">
         <div className="flex items-center text-[14px] text-[var(--primary-300)] cursor-pointer mb-[22px]">
           <ChevronLeft size={18} />
-          <span onClick={() => router.back()}>뒤로가기</span>
+          <Link href="/dashbord/sharemap/">
+            <span>뒤로가기</span>
+          </Link>
         </div>
 
         <div className="flex items-center justify-between text-[13px] text-[var(--gray-200)] mb-1">
           <div className="flex items-center gap-[12px]">
             <div className="flex items-center gap-[2px]">
               <MapPin size={16} />
-              <span>{roadmap.address}</span>
+              <span>{getShortAddress(roadmap.address)}</span>
             </div>
             <div className="flex items-center gap-[2px]">
               <Calendar size={16} />
@@ -89,11 +108,17 @@ export default function ShareMapDetail() {
               <Eye size={18} />
               <span>{roadmap.viewCount}</span>
             </div>
-            <Siren
-              size={18}
-              className="cursor-pointer"
-              onClick={() => setIsReportOpen(true)}
-            />
+            {currentUserId === roadmap.member.id ? (
+              <Link href={`/dashbord/sharemap/detail/${id}/edit`}>
+                <PencilLine size={18} className="cursor-pointer" />
+              </Link>
+            ) : (
+              <Siren
+                size={18}
+                className="cursor-pointer"
+                onClick={() => setIsReportOpen(true)}
+              />
+            )}
           </div>
         </div>
 

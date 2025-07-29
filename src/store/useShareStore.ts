@@ -39,6 +39,7 @@ type ShareState = {
   addLayer: () => void;
   removeLayer: (id: number) => void;
   renameLayer: (id: number, newName: string) => void;
+  layerSeqCounter: number;
 
   markers: Record<string, MarkerWithAddress>;
   selectedLayerId: number | null | 'all';
@@ -63,47 +64,45 @@ const useShareStore = create<WithLiveblocks<ShareState>>()(
     (set, get) => ({
       roadmapId: null,
       setRoadmapId: (id: number) => set({ roadmapId: id }),
-      // ✅ 초기 레이어
       layers: [],
+      layerSeqCounter: 0,
 
-      // ✅ 레이어 추가
       addLayer: () => {
-        const nextIndex =
-          get().layers.length > 0
-            ? Math.max(...get().layers.map((l) => l.layerTempId)) + 1
-            : 1;
+        const newTempId = Date.now() + Math.floor(Math.random() * 1000);
+        const nextSeq = get().layerSeqCounter + 1;
 
         const newLayer: Layer = {
-          layerTempId: nextIndex,
-          name: `레이어 ${nextIndex}`,
+          layerTempId: newTempId,
+          name: `레이어 ${nextSeq}`,
+          layerSeq: nextSeq,
         };
 
         set((state) => ({
           layers: [...state.layers, newLayer],
+          layerSeqCounter: nextSeq,
         }));
 
         const memberId = useAuthStore.getState().user?.id;
         if (!memberId) return;
 
         const log: LayerLogEntry = {
-          ...newLayer,
+          layerTempId: newTempId,
+          name: newLayer.name,
           action: 'add',
           memberId,
           roadmapId: get().roadmapId!,
-          layerSeq: newLayer.layerTempId,
+          layerSeq: nextSeq,
           description: '',
         };
 
         sendLayerLog(log);
       },
 
-      // ✅ 레이어 삭제
       removeLayer: (id: number) => {
         const { layers, markers, selectedLayerId } = get();
 
-        // 삭제 대상 레이어 찾아오기
-        const targetLayer = layers.find((layer) => layer.layerTempId === id);
-        if (!targetLayer) return; // 없으면 중단
+        const targetLayer = layers.find((l) => l.layerTempId === id);
+        if (!targetLayer) return;
 
         const newLayers = layers.filter((layer) => layer.layerTempId !== id);
         const newMarkers = Object.fromEntries(
@@ -124,11 +123,11 @@ const useShareStore = create<WithLiveblocks<ShareState>>()(
 
         const log: LayerLogEntry = {
           layerTempId: id,
-          name: targetLayer.name, // ✅ 여기!
+          name: targetLayer.name,
           action: 'delete',
           memberId,
           roadmapId: get().roadmapId!,
-          layerSeq: id,
+          layerSeq: targetLayer.layerSeq!,
           description: '',
         };
 
@@ -142,6 +141,9 @@ const useShareStore = create<WithLiveblocks<ShareState>>()(
         );
         set({ layers: updated });
 
+        const targetLayer = updated.find((l) => l.layerTempId === id);
+        if (!targetLayer) return;
+
         const memberId = useAuthStore.getState().user?.id;
         if (!memberId) return;
 
@@ -151,7 +153,7 @@ const useShareStore = create<WithLiveblocks<ShareState>>()(
           action: 'update',
           memberId,
           roadmapId: get().roadmapId!,
-          layerSeq: id,
+          layerSeq: targetLayer.layerSeq!,
           description: '',
         };
 
@@ -235,6 +237,7 @@ const useShareStore = create<WithLiveblocks<ShareState>>()(
         const marker = current[id];
         if (!marker) return;
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { [id]: _, ...rest } = current;
         set({ markers: rest });
 
