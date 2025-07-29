@@ -1,16 +1,18 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 if (!BASE_URL) {
   throw new Error('환경 변수 NEXT_PUBLIC_API_BASE_URL이 설정되지 않았습니다.');
 }
 
-interface RequestOptions extends RequestInit {
-  body?: any;
+interface RequestOptions<B extends BodyInit | null | undefined = undefined>
+  extends RequestInit {
+  body?: B;
 }
 
-export async function api<T>(
+export async function api<T, B extends BodyInit | null | undefined = undefined>(
   endpoint: string,
-  options: RequestOptions = {}
+  options: RequestOptions<B> = {}
 ): Promise<T> {
   const { body, headers, ...rest } = options;
 
@@ -20,7 +22,7 @@ export async function api<T>(
       'Content-Type': 'application/json',
       ...(headers || {}),
     },
-    body: body ? JSON.stringify(body) : undefined,
+    body,
     ...rest,
   });
 
@@ -32,4 +34,4 @@ export async function api<T>(
   return res.json();
 }
 
-export const APIUrl = 'http://34.47.121.164:80';
+export const APIUrl = `${API_URL}`;

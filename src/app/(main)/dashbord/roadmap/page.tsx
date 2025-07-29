@@ -3,6 +3,10 @@ import CardList from '@/components/dashboard/CardList';
 import WriteButton from '@/components/dashboard/WriteButton';
 import PopularLoadmap from '@/components/loadmapdashbord/PopularLoadmap';
 
+export const metadata = {
+  title: '로드맵',
+};
+
 export default async function page() {
   return (
     <>

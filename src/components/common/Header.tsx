@@ -59,7 +59,7 @@ export default function Header({ isAdmin = false }: HeaderProps) {
     <header className="w-full h-20 px-11 flex items-center justify-between bg-[var(--white)] relative">
       {/* 로고 */}
       <Link
-        href={!isAdmin ? '/' : '/'}
+        href={!isAdmin ? '/dashbord' : '/admin/report'}
         className="text-3xl text-[var(--primary-300)] font-[vitro-core]"
       >
         MAPICK

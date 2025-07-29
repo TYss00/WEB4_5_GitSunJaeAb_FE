@@ -5,6 +5,7 @@ import { ImagePlus } from 'lucide-react';
 import { ManageCardFormProps } from '@/types/admin';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import { useState } from 'react';
 
 export default function ManageCardFormCard({
   name,
@@ -14,6 +15,23 @@ export default function ManageCardFormCard({
   onSubmit,
   onCancel,
 }: ManageCardFormProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      await onSubmit();
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCancel = () => {
+    if (isSubmitting) return;
+    onCancel();
+  };
+
   return (
     <div className="w-[100px] h-[126px] p-2 rounded-md overflow-hidden border border-dashed border-[var(--gray-300)] bg-[var(--white)] flex flex-col justify-between">
       <div className="w-full h-[100px] flex items-center justify-center bg-gray-100 relative">
@@ -43,14 +61,16 @@ export default function ManageCardFormCard({
         <Button
           buttonStyle="smGreen"
           className="text-[12px] py-[2px] px-[8px] h-[24px] w-full"
-          onClick={onSubmit}
+          onClick={handleSubmit}
+          disabled={isSubmitting}
         >
           등록
         </Button>
         <Button
           buttonStyle="white"
           className="text-[12px] py-[2px] px-[8px] h-[24px] w-full"
-          onClick={onCancel}
+          onClick={handleCancel}
+          disabled={isSubmitting}
         >
           취소
         </Button>
