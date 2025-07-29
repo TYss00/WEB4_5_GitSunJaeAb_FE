@@ -52,7 +52,6 @@ export default function QuestDetailPlay() {
 
   //랭킹 탭 열기
   const [isRanking, setIsRanking] = useState(false)
-  const handleShowRanking = () => setIsRanking(true)
   const handleHideRanking = () => setIsRanking(false)
 
   return (
@@ -79,7 +78,6 @@ export default function QuestDetailPlay() {
           answers={dummyAnswers}
           onSelect={(answer) => setSelectedAnswer(answer)}
           onFormOpen={() => setIsFormOpen(true)}
-          onShowRanking={handleShowRanking}
         />
       )}
     </>
