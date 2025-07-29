@@ -130,11 +130,27 @@ export default function MypagePost({
 
     try {
       if (!wasLiked) {
-        await axiosInstance.post(`/bookmarks/${roadmapId}`);
+        const res = await axiosInstance.post(`/bookmarks/${roadmapId}`);
+        const newBookmarkId = res.data.bookmarkId;
+
+        setCards((prev) =>
+          prev.map((card) =>
+            card.id === roadmapId ? { ...card, likeId: newBookmarkId } : card
+          )
+        );
+
+        toast.success('좋아요를 하였습니다.');
       } else if (likeId) {
         await axiosInstance.delete(`/bookmarks/${likeId}`);
+        toast.success('좋아요취소를 하였습니다.');
         if (activeTab === '좋아요글') {
           setCards((prev) => prev.filter((c) => c.id !== roadmapId));
+        } else {
+          setCards((prev) =>
+            prev.map((card) =>
+              card.id === roadmapId ? { ...card, likeId: null } : card
+            )
+          );
         }
       } else {
         throw new Error('likeId가 없어 삭제할 수 없습니다.');
@@ -142,6 +158,7 @@ export default function MypagePost({
     } catch (err) {
       toast.error('좋아요 처리 중 오류가 발생했습니다.');
       console.error(err);
+      // 롤백
       setCards((prev) =>
         prev.map((card) =>
           card.id === roadmapId ? { ...card, isLiked: wasLiked } : card
