@@ -15,6 +15,7 @@ export type RoadmapResponse = {
 };
 
 export type RoadmapItem = {
+  editorCount: number;
   id: number;
   title: string;
   description: string;
@@ -74,6 +75,7 @@ export type Hashtag = {
 
 export type SearchCategoryGroupProps = {
   title: string;
+  category: string;
   cardType: 'sharemap' | 'roadmap' | 'quest';
   items: ShareMapCardProps[] | RoadMapCardProps[] | QuestCardProps[];
   query: string;
