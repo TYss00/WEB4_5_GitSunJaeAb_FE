@@ -62,8 +62,7 @@ export default function Loadmapdetail() {
     }
 
     fetchAll()
-    console.log(data)
-  }, [roadmapId, data])
+  }, [roadmapId])
 
   if (loading) return <div>로딩 중...</div>
   if (!data) return <div>데이터 없음</div>
