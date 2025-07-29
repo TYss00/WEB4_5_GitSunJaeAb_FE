@@ -8,6 +8,8 @@ export type NotificationType =
   | 'ANNOUNCEMENT'
   | 'ETC';
 
+export type AnnouncementType = 'SYSTEM' | 'EVENT' | 'UPDATE' | 'ETC' | null;
+
 export type NotificationResponse = {
   id: number;
   title: string;
@@ -22,10 +24,14 @@ export type NotificationResponse = {
     email: string;
     profileImage: string | null;
   } | null;
-  relatedRoadmap?: { id: number };
+  relatedRoadmap?: {
+    id: number;
+    mapType: 'PERSONAL' | 'SHARED';
+  };
   relatedLayer?: { id: number };
   relatedQuestId?: number;
   relatedCommentId?: number;
+  announcementType: AnnouncementType;
 };
 
 export type AppNotification = {
@@ -37,7 +43,10 @@ export type AppNotification = {
   senderProfileImage?: string | null;
   notificationType: NotificationType;
   type: '게시글' | '공지';
-  relatedRoadmap?: { id: number };
+  relatedRoadmap?: {
+    id: number;
+    mapType: 'PERSONAL' | 'SHARED';
+  };
   relatedLayer?: { id: number };
   relatedQuestId?: number;
   relatedCommentId?: number;

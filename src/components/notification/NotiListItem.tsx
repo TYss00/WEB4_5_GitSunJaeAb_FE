@@ -21,34 +21,24 @@ export default function NotiListItem({ noti, onClick }: NotiListItemProps) {
         {/* 프로필 이미지 / 공지 이미지 */}
         <div className="relative">
           {noti.type === '공지' ? (
-            <div className="size-[50px] overflow-hidden rounded-full">
+            <div className="size-[50px] overflow-hidden rounded-full relative">
               <Image
                 src={notiImg}
                 alt="공지 아이콘"
-                width={50}
-                height={50}
+                fill
+                sizes="100"
                 className="object-cover"
               />
             </div>
           ) : (
-            <div className="size-[50px] overflow-hidden rounded-full">
-              {noti.senderProfileImage ? (
-                <Image
-                  src={noti.senderProfileImage}
-                  alt="프로필 이미지"
-                  width={50}
-                  height={50}
-                  className="object-cover"
-                />
-              ) : (
-                <Image
-                  src={defaultProfileImg}
-                  alt="프로필 이미지"
-                  width={50}
-                  height={50}
-                  className="object-cover"
-                />
-              )}
+            <div className="size-[50px] overflow-hidden rounded-full relative">
+              <Image
+                src={noti.senderProfileImage || defaultProfileImg}
+                alt="프로필 이미지"
+                fill
+                sizes="100"
+                className="object-cover object-center rounded-full"
+              />
             </div>
           )}
           {!noti.isRead && (
