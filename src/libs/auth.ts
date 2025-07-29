@@ -56,6 +56,5 @@ export const socialLogin = async ({
     provider,
     token,
   });
-  console.log('소셜로그인 data : ', data);
   return data;
 };

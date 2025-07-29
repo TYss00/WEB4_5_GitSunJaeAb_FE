@@ -49,6 +49,10 @@ export default function Login() {
 
       useAuthStore.getState().setUser(user);
 
+      if (user.provider !== 'google') {
+        toast.success('로그인 성공');
+      }
+
       // 처음 로그인 시 카테고리 설정
       if (user.loginCount === 1) {
         router.push('/categories');
@@ -57,8 +61,6 @@ export default function Login() {
       } else {
         router.push('/dashbord');
       }
-
-      toast.success('로그인 성공');
     },
     onError: (error: unknown) => {
       const err = error as AxiosError<{ message?: string }>;
@@ -79,11 +81,12 @@ export default function Login() {
   // 구글 로그인
   const handleGoogleRedirectLogin = () => {
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!;
-    const redirectUri = 'http://localhost:3000/auth/google/callback';
+    const redirectUri = process.env.NEXT_PUBLIC_GOOGLE_REDIRECT_URI!;
+
     const scope = 'openid email profile';
     const responseType = 'id_token';
-    const state = crypto.randomUUID(); // CSRF 방지용 (선택)
-    const nonce = crypto.randomUUID(); // 보안 권장
+    const state = crypto.randomUUID();
+    const nonce = crypto.randomUUID();
 
     const googleUrl =
       `https://accounts.google.com/o/oauth2/v2/auth?` +
