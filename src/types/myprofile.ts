@@ -33,7 +33,7 @@ export type useProfileStores = {
 export type RoadmapResponse = {
   id: number;
   title: string;
-  bookmarkId?: number;
+  bookmarkId?: number | null;
   isBookmarked?: boolean;
   thumbnail: string | null;
   roadmapType: 'SHARED' | 'PERSONAL';
@@ -41,7 +41,7 @@ export type RoadmapResponse = {
   member?: ProfileMember;
   isLiked?: boolean;
   createdAt?: string;
-  likeId?: number;
+  likeId?: number | null;
 };
 
 export type Layer = {
