@@ -2,7 +2,7 @@
 
 import { reverseGeocode } from '@/libs/geocode';
 import useShareStore from '@/store/useShareStore';
-import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
+import { GoogleMap, MarkerF } from '@react-google-maps/api';
 import { useCallback, useRef } from 'react';
 
 const containerStyle = {
@@ -16,10 +16,6 @@ const center = {
 };
 
 export default function GoogleMapWrapper() {
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!,
-  });
-
   const addMarker = useShareStore((state) => state.addMarker);
   const selectedLayerId = useShareStore((state) => state.selectedLayerId);
   const getFilteredMarkers = useShareStore((state) => state.filteredMarkers); // 함수로 가져오기
@@ -63,8 +59,6 @@ export default function GoogleMapWrapper() {
     },
     [addMarker, selectedLayerId]
   );
-
-  if (!isLoaded) return <div>지도 불러오는 중...</div>;
 
   return (
     <div className="w-full h-full relative">

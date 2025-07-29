@@ -18,7 +18,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import axiosInstance from '@/libs/axios';
 import { RoadmapDetailResponse } from '@/types/share';
-import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api';
+import { GoogleMap, MarkerF } from '@react-google-maps/api';
 import { useAuthStore } from '@/store/useAuthStore';
 
 const containerStyle = {
@@ -37,9 +37,6 @@ export default function ShareMapDetail() {
   const [isReportOpen, setIsReportOpen] = useState(false);
 
   const mapRef = useRef<google.maps.Map | null>(null);
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!,
-  });
 
   useEffect(() => {
     const fetchRoadmap = async () => {
@@ -71,7 +68,7 @@ export default function ShareMapDetail() {
   function getShortAddress(fullAddress: string): string {
     const parts = fullAddress.split(' ');
     if (parts.length >= 4) {
-      return `${parts[1]} ${parts[2]} ${parts[3]}`; // 도 시 구
+      return `${parts[1]} ${parts[2]} ${parts[3]}`;
     }
     return fullAddress;
   }
@@ -129,43 +126,41 @@ export default function ShareMapDetail() {
           <p className="text-[16px] text-[#000000]">{roadmap.description}</p>
         </div>
 
-        {isLoaded && (
-          <div className="w-full h-[500px] rounded-[10px] overflow-hidden mb-[30px] relative">
-            <Link
-              href={`/dashbord/sharemap/detail/${id}/preview`}
-              className="absolute top-3 right-3 z-10"
-            >
-              <button className="bg-white text-sm text-black px-3 py-1 rounded shadow hover:bg-gray-100">
-                자세히 보기
-              </button>
-            </Link>
-            <GoogleMap
-              mapContainerStyle={containerStyle}
-              center={{
-                lat: Number(roadmap.regionLatitude),
-                lng: Number(roadmap.regionLongitude),
-              }}
-              zoom={14}
-              options={{
-                disableDefaultUI: true,
-                draggable: true,
-                scrollwheel: true,
-              }}
-              onLoad={(map) => {
-                mapRef.current = map;
-              }}
-            >
-              {roadmap.layers
-                .flatMap((layer) => layer.markers)
-                .map((marker) => (
-                  <MarkerF
-                    key={marker.id}
-                    position={{ lat: marker.lat, lng: marker.lng }}
-                  />
-                ))}
-            </GoogleMap>
-          </div>
-        )}
+        <div className="w-full h-[500px] rounded-[10px] overflow-hidden mb-[30px] relative">
+          <Link
+            href={`/dashbord/sharemap/detail/${id}/preview`}
+            className="absolute top-3 right-3 z-10"
+          >
+            <button className="bg-white text-sm text-black px-3 py-1 rounded shadow hover:bg-gray-100">
+              자세히 보기
+            </button>
+          </Link>
+          <GoogleMap
+            mapContainerStyle={containerStyle}
+            center={{
+              lat: Number(roadmap.regionLatitude),
+              lng: Number(roadmap.regionLongitude),
+            }}
+            zoom={14}
+            options={{
+              disableDefaultUI: true,
+              draggable: true,
+              scrollwheel: true,
+            }}
+            onLoad={(map) => {
+              mapRef.current = map;
+            }}
+          >
+            {roadmap.layers
+              .flatMap((layer) => layer.markers)
+              .map((marker) => (
+                <MarkerF
+                  key={marker.id}
+                  position={{ lat: marker.lat, lng: marker.lng }}
+                />
+              ))}
+          </GoogleMap>
+        </div>
 
         <div className="flex gap-6">
           <section className="flex-1">
