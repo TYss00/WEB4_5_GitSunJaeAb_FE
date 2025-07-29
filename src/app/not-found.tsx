@@ -9,7 +9,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 
 export default function NotFound() {
   const router = useRouter();
-  const { accessToken } = useAuthStore();
+  const { accessToken, user } = useAuthStore();
 
   return (
     <div className="flex items-center justify-center min-h-screen px-6 py-10">
@@ -31,7 +31,11 @@ export default function NotFound() {
               buttonStyle="smGreen"
               onClick={() => {
                 if (accessToken) {
-                  router.push('/dashbord');
+                  if (user && user.role === 'ROLE_ADMIN') {
+                    router.push('/admin/report');
+                  } else {
+                    router.push('/dashbord');
+                  }
                 } else {
                   router.push('/landing');
                 }
