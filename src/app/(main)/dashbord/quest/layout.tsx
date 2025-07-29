@@ -1,3 +1,7 @@
+export const metadata = {
+  title: '퀘스트',
+};
+
 export default function Layout({
   children,
   modal,
