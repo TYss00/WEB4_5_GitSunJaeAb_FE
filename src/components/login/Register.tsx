@@ -147,6 +147,7 @@ export default function Register() {
             value={confirmPassword}
             onChange={handleChange}
             name="confirmPassword"
+            label="비밀번호 확인"
           />
         </div>
 

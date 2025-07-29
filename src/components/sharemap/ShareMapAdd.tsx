@@ -11,6 +11,7 @@ import DaumPostcodeEmbed from 'react-daum-postcode';
 import { CategoryInfo } from '@/types/type';
 import axiosInstance from '@/libs/axios';
 import Image from 'next/image';
+import { toast } from 'react-toastify';
 
 interface ShareMapAddProps {
   categories: CategoryInfo[];
@@ -117,6 +118,16 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
       });
 
       console.log('작성 완료:', res);
+
+      // 작성 완료 되었을때 메시지에 업적있으면
+      // 업적o 업적 관련 토스트메시지 보여지도록
+      // 업적x 공유지도 생성 토스트 메시지
+      const message = res.data?.message ?? '';
+      if (message.includes('업적')) {
+        toast.success(message);
+      } else {
+        toast.success('공유지도가 성공적으로 생성되었습니다.');
+      }
     } catch (err) {
       console.error('작성 실패:', err);
     }
