@@ -1,10 +1,11 @@
-'use client';
+'use client'
 
-import { CommentInfo } from '@/types/type';
-import CommentCount from './CommentCount';
-import CommentForm from './CommentForm';
-import CommentList from './CommentList';
-import { useState } from 'react';
+import { CommentInfo } from '@/types/type'
+import CommentCount from './CommentCount'
+import CommentForm from './CommentForm'
+import CommentList from './CommentList'
+import { useState } from 'react'
+
 
 type Props = {
   commentsInfo: CommentInfo[];

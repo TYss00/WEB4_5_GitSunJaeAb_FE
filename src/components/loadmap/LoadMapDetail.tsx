@@ -48,6 +48,7 @@ export default function Loadmapdetail() {
           (item: BookmarksInfo) => String(item.id) === roadmapId
         )
         setIsBookmarked(matched)
+        console.log('matched', matched)
 
         setData({
           roadmap: roadmapRes.data.roadmap,
@@ -61,7 +62,6 @@ export default function Loadmapdetail() {
     }
 
     fetchAll()
-    console.log(data)
   }, [roadmapId])
 
   if (loading) return <div>로딩 중...</div>
@@ -87,9 +87,9 @@ export default function Loadmapdetail() {
         axiosInstance.post(`/layers/member?layerId=${item.layer.id}`)
       )
       await Promise.all(promises)
-      console.log('찜 완료')
+      console.log('일괄 찜 완료')
     } catch (err) {
-      console.log('레이어 찜 오류', err)
+      console.log('레이어 일괄 찜 오류', err)
     }
   }
 

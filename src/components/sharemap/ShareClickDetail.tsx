@@ -19,7 +19,7 @@ import useSidebar from '@/utils/useSidebar';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import ShareLayerDetail from '../ui/layer/ShareLayerDetail';
-import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
+import { GoogleMap, MarkerF } from '@react-google-maps/api';
 import axiosInstance from '@/libs/axios';
 import { RoadmapDetailResponse } from '@/types/share';
 import Image from 'next/image';
@@ -30,10 +30,6 @@ export default function ShareClickDetail() {
   const [roadmap, setRoadmap] = useState<RoadmapDetailResponse | null>(null);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const { isOpen, toggle, close } = useSidebar();
-
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!,
-  });
 
   const mapRef = useRef<google.maps.Map | null>(null);
   const [selectedLayerId, setSelectedLayerId] = useState<'all' | number>('all');
@@ -73,26 +69,25 @@ export default function ShareClickDetail() {
     <section className="relative w-full h-screen overflow-hidden">
       {/* 지도 영역 */}
       <div className="absolute inset-0 bg-gray-200 z-0">
-        {isLoaded && (
-          <GoogleMap
-            mapContainerStyle={{ width: '100%', height: '100%' }}
-            center={{
-              lat: Number(roadmap.regionLatitude),
-              lng: Number(roadmap.regionLongitude),
-            }}
-            zoom={14}
-            onLoad={(map) => {
-              mapRef.current = map;
-            }}
-          >
-            {filteredMarkers.map((marker) => (
-              <MarkerF
-                key={marker.id}
-                position={{ lat: marker.lat, lng: marker.lng }}
-              />
-            ))}
-          </GoogleMap>
-        )}
+        <GoogleMap
+          mapContainerStyle={{ width: '100%', height: '100%' }}
+          center={{
+            lat: Number(roadmap.regionLatitude),
+            lng: Number(roadmap.regionLongitude),
+          }}
+          zoom={14}
+          onLoad={(map) => {
+            mapRef.current = map;
+          }}
+        >
+          {filteredMarkers.map((marker) => (
+            <MarkerF
+              key={marker.id}
+              position={{ lat: marker.lat, lng: marker.lng }}
+            />
+          ))}
+        </GoogleMap>
+
         {/* 왼쪽 상단 버튼 */}
         <div className="absolute top-2 left-[160px] flex items-center gap-3 px-4 py-2 z-20">
           <Button
