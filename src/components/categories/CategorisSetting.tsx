@@ -7,6 +7,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { fetchCategories, postCategoryInterests } from '@/libs/category';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import LoadingSpener from '../common/LoadingSpener';
 
 export default function CategoriesSetting() {
   const router = useRouter();
@@ -47,7 +48,13 @@ export default function CategoriesSetting() {
     submitInterests(selected);
   };
 
-  if (isLoading) return <p>로딩 중...</p>;
+  if (isLoading) {
+    return (
+      <div className="w-full h-[600px] flex items-center justify-center">
+        <LoadingSpener />
+      </div>
+    );
+  }
   if (isError) return <p>카테고리를 불러오지 못했습니다.</p>;
 
   return (

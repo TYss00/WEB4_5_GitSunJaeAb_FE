@@ -124,7 +124,7 @@ export default function UserManagement() {
 
   if (isLoading) {
     return (
-      <div className="w-full h-[500px] flex items-center justify-center">
+      <div className="w-full h-[600px] flex items-center justify-center">
         <LoadingSpener />
       </div>
     );

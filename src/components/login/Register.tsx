@@ -28,19 +28,18 @@ export default function Register() {
     onError: (error) => {
       const err = error as AxiosError<{ code?: string; message?: string }>;
       const code = err.response?.data?.code;
-      const message = err.response?.data?.message;
       switch (code) {
         case '4092':
-          console.log('이미 가입된 이메일입니다.');
+          toast.error('이미 가입된 이메일입니다.');
           break;
         case '4091':
-          console.log('중복된 닉네임입니다.');
+          toast.error('중복된 닉네임입니다.');
           break;
         case '5000':
-          console.log('서버 내부 오류입니다.');
+          toast.error('서버 내부 오류입니다.');
           break;
         default:
-          console.log(message || '회원가입 실패');
+          toast.error('회원가입 실패');
       }
     },
   });
