@@ -1,15 +1,16 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { ChevronDown, ChevronLeft, Plus } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ImagePlus, Plus } from 'lucide-react';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
-import { api } from '@/libs/api';
 import Link from 'next/link';
 import { geocodeAddress } from '@/libs/geocode';
 import { GoogleMap, useLoadScript } from '@react-google-maps/api';
 import DaumPostcodeEmbed from 'react-daum-postcode';
 import { CategoryInfo } from '@/types/type';
+import axiosInstance from '@/libs/axios';
+import Image from 'next/image';
 
 interface ShareMapAddProps {
   categories: CategoryInfo[];
@@ -28,14 +29,16 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
   const [description, setDescription] = useState('');
   const [region, setRegion] = useState('');
   const [categoryId, setCategoryId] = useState<number | null>(null);
-  const thumbnail =
-    'https://cdn.pixabay.com/photo/2023/06/04/20/21/cat-8040862_1280.jpg';
+  const [thumbnail, setThumbnail] = useState<string | null>(null); // 미리보기용
+  const [imageFile, setImageFile] = useState<File | null>(null); // 서버 전송용
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const isPublic = true;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
   const mapRef = useRef<google.maps.Map | null>(null);
 
+  const [endDate, setEndDate] = useState('');
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>([]);
 
@@ -47,7 +50,6 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
     try {
       const coords = await geocodeAddress(fullAddress);
       if (!coords) return;
-
       setCenter({ lat: coords.lat, lng: coords.lng });
       mapRef.current?.panTo({ lat: coords.lat, lng: coords.lng });
     } catch (err) {
@@ -66,6 +68,20 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
+  const handleThumbnailUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file); // 실제 전송용
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        setThumbnail(result); // 미리보기용
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!title || !description || !categoryId) {
       console.log('필수 값을 입력해주세요.');
@@ -73,19 +89,31 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
     }
 
     try {
-      const res = await api('/roadmaps/shared', {
-        method: 'POST',
-        body: {
-          categoryId,
-          title,
-          description,
-          thumbnail,
-          isPublic,
-          region,
-          lat: center.lat,
-          lng: center.lng,
-          hashtags: tags.map((tag) => ({ name: tag })),
-        },
+      const { lat, lng, city } = await geocodeAddress(region);
+
+      const payload = {
+        categoryId,
+        title,
+        description,
+        address: city,
+        regionLatitude: lat,
+        regionLongitude: lng,
+        participationEnd: new Date(endDate).toISOString(),
+        hashtags: tags.map((tag) => ({ name: tag })),
+        isPublic,
+      };
+
+      const formData = new FormData();
+      formData.append(
+        'request',
+        new Blob([JSON.stringify(payload)], { type: 'application/json' })
+      );
+      if (imageFile) {
+        formData.append('imageFile', imageFile);
+      }
+
+      const res = await axiosInstance.post('/roadmaps/shared', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
 
       console.log('작성 완료:', res);
@@ -96,6 +124,7 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
 
   return (
     <section className="flex h-screen overflow-hidden">
+      {/* 지도 */}
       <div className="w-4/6 bg-gray-200 relative">
         {isLoaded && (
           <GoogleMap
@@ -107,76 +136,82 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
             }}
           />
         )}
-        <div className="absolute top-2 left-[140px] flex items-center gap-3 px-4 py-2 z-20">
-          <Button
-            buttonStyle="white"
-            icon={<ChevronLeft size={18} />}
-            className="text-sm"
-          >
-            뒤로가기
-          </Button>
-
-          <div className="relative w-[140px]">
-            <select
-              className="w-full h-[34px] text-sm bg-white border-none rounded pl-3 appearance-none"
-              defaultValue=""
+        <div className="absolute top-2 left-[160px] flex items-center gap-3 px-4 py-2 z-20">
+          <Link href="/dashbord/sharemap">
+            <Button
+              buttonStyle="white"
+              icon={<ChevronLeft size={18} />}
+              className="text-sm"
             >
-              <option value="" disabled hidden>
-                레이어 이름
-              </option>
-              <option>레이어 1</option>
-              <option>레이어 2</option>
-            </select>
-
-            <ChevronDown
-              size={18}
-              className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-black"
-            />
-          </div>
+              뒤로가기
+            </Button>
+          </Link>
         </div>
       </div>
 
+      {/* 입력 폼 */}
       <div className="w-2/6 px-6 py-8 space-y-6 bg-white overflow-y-auto scrollbar-none">
-        {/* 제목 title */}
         <div className="space-y-2">
           <label className="text-lg text-black">제목</label>
           <Input
             type="text"
             placeholder="제목을 입력해주세요."
-            className="h-[40px] border-[#E4E4E4] rounded-md"
+            className="h-[40px]"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
         </div>
 
-        {/* 내용 description */}
         <div className="space-y-2">
           <label className="text-lg text-black">내용</label>
           <Input
             type="text"
             placeholder="내용을 입력해주세요."
-            className="h-[40px] border-[#E4E4E4] rounded-md"
+            className="h-[40px]"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
 
-        {/* 지역 지오코딩으로 입력받기 */}
         <div className="space-y-2">
           <label className="text-lg text-black">지역</label>
-          <div className="flex gap-2">
-            <Input
-              type="text"
-              placeholder="지역을 입력해주세요."
-              className="h-[40px] border-[#E4E4E4] rounded-md cursor-pointer"
-              value={region}
-              readOnly
-              onClick={() => setIsModalOpen(true)}
-            />
-          </div>
+          <Input
+            type="text"
+            placeholder="지역을 입력해주세요."
+            className="h-[40px] cursor-pointer"
+            value={region}
+            readOnly
+            onClick={() => setIsModalOpen(true)}
+          />
         </div>
 
-        {/* 주소찾기 모달 */}
+        <div className="space-y-2">
+          <label className="text-lg text-black">썸네일</label>
+          <div
+            className="w-[200px] h-[120px] bg-gray-100 rounded overflow-hidden relative cursor-pointer"
+            onClick={() => fileInputRef.current?.click()}
+          >
+            {thumbnail ? (
+              <Image
+                src={thumbnail}
+                alt="썸네일"
+                fill
+                unoptimized
+                className="object-cover"
+              />
+            ) : (
+              <ImagePlus className="text-gray-300 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
+            )}
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            className="hidden"
+            onChange={handleThumbnailUpload}
+          />
+        </div>
+
         {isModalOpen && (
           <div className="fixed inset-0 bg-black/25 flex justify-center items-center z-50">
             <div className="bg-white p-4 rounded-lg w-[450px] relative">
@@ -191,50 +226,49 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
           </div>
         )}
 
-        {/* 기간 */}
         <div className="space-y-2">
           <label className="text-lg text-black">기간</label>
           <Input
             type="date"
-            placeholder="기간을 입력해주세요."
-            className="h-[40px] border-[#E4E4E4] rounded-md"
+            className="h-[40px]"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
           />
         </div>
 
-        {/* 카테고리(로드맵꺼 복사) */}
         <div className="space-y-2">
           <label className="text-lg text-black">카테고리</label>
           <div className="relative">
             <select
-              className="w-full h-[40px] text-sm border border-[#E4E4E4] rounded px-3 appearance-none"
+              className="w-full h-[40px] border border-[#E4E4E4] rounded px-3 appearance-none"
               value={categoryId ?? ''}
               onChange={(e) => setCategoryId(Number(e.target.value))}
             >
               <option value="" disabled hidden>
                 카테고리를 선택해주세요.
               </option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
                 </option>
               ))}
             </select>
 
+            {/* 오른쪽 화살표 아이콘 */}
             <ChevronDown
               size={18}
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-black"
+              className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-black"
             />
           </div>
         </div>
 
-        {/* 해시태그 */}
         <div className="space-y-2">
           <label className="text-lg text-black">해시태그</label>
           <div className="flex gap-2">
             <Input
               type="text"
               placeholder="해시태그 추가"
-              className="h-[40px] border-[#E4E4E4] rounded-md"
+              className="h-[40px]"
               value={tagInput}
               onChange={(e) => setTagInput(e.target.value)}
               onKeyDown={(e) => {
@@ -246,13 +280,13 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
             />
             <Button
               buttonStyle="smGreen"
-              className="w-[80px] h-[40px] text-3xl font-medium"
+              className="w-[40px] h-[40px]"
               onClick={handleAddTag}
             >
-              <Plus size={25} />
+              <Plus size={20} />
             </Button>
           </div>
-          <div className="flex flex-wrap gap-2 text-sm text-[#005C54] mt-1">
+          <div className="flex flex-wrap gap-2">
             {tags.map((tag) => (
               <span
                 key={tag}
@@ -270,16 +304,17 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
           </div>
         </div>
 
-        {/* 취소, 완료 버튼 */}
-        <div className="border-t border-gray-300 pt-6">
-          <div className="flex justify-end mt-4 gap-2">
-            <Button buttonStyle="white" className="text-sm w-[60px] h-[35px]">
-              취소
-            </Button>
+        <div className="border-t pt-6">
+          <div className="flex justify-end gap-2">
+            <Link href="/dashbord/sharemap">
+              <Button buttonStyle="white" className="w-[60px] h-[35px] text-sm">
+                취소
+              </Button>
+            </Link>
             <Link href="/dashbord/sharemap">
               <Button
                 buttonStyle="smGreen"
-                className="text-sm w-[60px] h-[35px]"
+                className="w-[60px] h-[35px] text-sm"
                 onClick={handleSubmit}
               >
                 완료

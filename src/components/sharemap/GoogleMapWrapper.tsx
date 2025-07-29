@@ -57,8 +57,8 @@ export default function GoogleMapWrapper() {
         description: '',
         address,
         color: '#FF0000',
-        imageUrl: '',
-        layer: Number(selectedLayerId),
+        customImageId: '',
+        layerTempId: Number(selectedLayerId),
       });
     },
     [addMarker, selectedLayerId]
@@ -79,7 +79,7 @@ export default function GoogleMapWrapper() {
       >
         {filteredMarkers.map((marker) => (
           <MarkerF
-            key={marker.id}
+            key={marker.markerTempId}
             position={{ lat: marker.lat, lng: marker.lng }}
           />
         ))}

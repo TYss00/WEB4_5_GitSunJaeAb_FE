@@ -5,7 +5,8 @@ import { MapPin, Trash2 } from 'lucide-react';
 import Button from '../Button';
 import DaumPostcodeEmbed from 'react-daum-postcode';
 import { geocodeAddress } from '@/libs/geocode';
-import useShareStore, { MarkerWithAddress } from '@/store/useShareStore';
+import useShareStore from '@/store/useShareStore';
+import { MarkerWithAddress } from '@/types/share';
 
 export interface AddressData {
   address: string;
@@ -59,8 +60,8 @@ export default function ShareMarkerEdit({
         name: '',
         description: '',
         color: '#FF0000',
-        imageUrl: '',
-        layer: typeof selectedLayerId === 'number' ? selectedLayerId : 0,
+        customImageId: '',
+        layerTempId: typeof selectedLayerId === 'number' ? selectedLayerId : 0,
       });
     } catch (err) {
       console.error('지오코딩 실패:', err);
@@ -72,14 +73,14 @@ export default function ShareMarkerEdit({
     if (e.key === 'Enter') {
       setIsEditingName(false);
 
-      if (marker?.id) {
-        updateMarker(marker.id, { name: placeName });
+      if (marker?.markerTempId) {
+        updateMarker(marker.markerTempId, { name: placeName });
       }
     }
   };
   const handleDescriptionBlur = () => {
-    if (marker?.id) {
-      updateMarker(marker.id, { description });
+    if (marker?.markerTempId) {
+      updateMarker(marker.markerTempId, { description });
     }
   };
 

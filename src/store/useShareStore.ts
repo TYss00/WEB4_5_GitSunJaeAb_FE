@@ -2,18 +2,36 @@ import { create } from 'zustand';
 import { createClient } from '@liveblocks/client';
 import { liveblocks } from '@liveblocks/zustand';
 import type { WithLiveblocks } from '@liveblocks/zustand';
-import type { Marker } from '@/types/type';
-
-export type MarkerWithAddress = Marker & {
-  address?: string;
-};
-export type NewMarkerInput = Omit<
+import {
+  Layer,
+  Marker,
   MarkerWithAddress,
-  'id' | 'markerSeq' | 'member'
->;
-export interface Layer {
-  id: number;
-  name: string;
+  MarkerLogEntry,
+  NewMarkerInput,
+  LayerLogEntry,
+} from '@/types/share';
+import { useAuthStore } from './useAuthStore';
+import axiosInstance from '@/libs/axios';
+
+// 로그 전송 함수들 (실제 전송은 주석 처리)
+async function sendMarkerLog(log: MarkerLogEntry) {
+  console.log('마커 로그 전송:', log);
+  try {
+    await axiosInstance.post('/markers/sync', log);
+    console.log('✅ 마커 로그 전송 성공');
+  } catch (error) {
+    console.error('❌ 마커 로그 전송 실패:', error);
+  }
+}
+
+async function sendLayerLog(log: LayerLogEntry) {
+  console.log('레이어 로그 전송:', log);
+  try {
+    await axiosInstance.post('/layers/sync', log);
+    console.log('✅ 레이어 로그 전송 성공');
+  } catch (error) {
+    console.error('❌ 레이어 로그 전송 실패:', error);
+  }
 }
 
 type ShareState = {
@@ -24,12 +42,16 @@ type ShareState = {
 
   markers: Record<string, MarkerWithAddress>;
   selectedLayerId: number | null | 'all';
+  setSelectedLayerId: (layerId: number | 'all') => void;
+
+  roadmapId: number | null; // ✅ 추가
+  setRoadmapId: (id: number) => void; //
+
   addMarker: (marker: NewMarkerInput) => void;
   addMarkerDirect: (marker: Marker) => void;
-  removeMarker: (id: number) => void;
-  setSelectedLayerId: (layerId: number | 'all') => void;
-  filteredMarkers: () => Marker[];
   updateMarker: (id: number, fields: Partial<MarkerWithAddress>) => void;
+  removeMarker: (id: number) => void;
+  filteredMarkers: () => MarkerWithAddress[];
 };
 
 const client = createClient({
@@ -39,87 +61,193 @@ const client = createClient({
 const useShareStore = create<WithLiveblocks<ShareState>>()(
   liveblocks(
     (set, get) => ({
-      layers: [
-        { id: 1, name: '레이어 1' },
-        { id: 2, name: '레이어 2' },
-        { id: 3, name: '레이어 3' },
-      ],
+      roadmapId: null,
+      setRoadmapId: (id: number) => set({ roadmapId: id }),
+      // ✅ 초기 레이어
+      layers: [],
 
+      // ✅ 레이어 추가
       addLayer: () => {
-        const nextIndex = get().layers.length + 1;
-        const newLayer = {
-          id: nextIndex,
+        const nextIndex =
+          get().layers.length > 0
+            ? Math.max(...get().layers.map((l) => l.layerTempId)) + 1
+            : 1;
+
+        const newLayer: Layer = {
+          layerTempId: nextIndex,
           name: `레이어 ${nextIndex}`,
         };
+
         set((state) => ({
           layers: [...state.layers, newLayer],
         }));
+
+        const memberId = useAuthStore.getState().user?.id;
+        if (!memberId) return;
+
+        const log: LayerLogEntry = {
+          ...newLayer,
+          action: 'add',
+          memberId,
+          roadmapId: get().roadmapId!,
+          layerSeq: newLayer.layerTempId,
+          description: '',
+        };
+
+        sendLayerLog(log);
       },
 
+      // ✅ 레이어 삭제
       removeLayer: (id: number) => {
-        const currentLayers = get().layers;
-        const currentMarkers = get().markers;
-        const selectedLayerId = get().selectedLayerId;
+        const { layers, markers, selectedLayerId } = get();
 
-        const newLayers = currentLayers.filter((layer) => layer.id !== id);
+        // 삭제 대상 레이어 찾아오기
+        const targetLayer = layers.find((layer) => layer.layerTempId === id);
+        if (!targetLayer) return; // 없으면 중단
 
+        const newLayers = layers.filter((layer) => layer.layerTempId !== id);
         const newMarkers = Object.fromEntries(
-          Object.entries(currentMarkers).filter(
-            ([_, marker]) => marker.layer !== id
+          Object.entries(markers).filter(
+            ([, marker]) => marker.layerTempId !== id
           )
         );
-
-        const newSelectedId =
-          selectedLayerId === id.toString() ? 'all' : selectedLayerId;
+        const newSelected = selectedLayerId === id ? 'all' : selectedLayerId;
 
         set({
           layers: newLayers,
           markers: newMarkers,
-          selectedLayerId: newSelectedId,
+          selectedLayerId: newSelected,
         });
+
+        const memberId = useAuthStore.getState().user?.id;
+        if (!memberId) return;
+
+        const log: LayerLogEntry = {
+          layerTempId: id,
+          name: targetLayer.name, // ✅ 여기!
+          action: 'delete',
+          memberId,
+          roadmapId: get().roadmapId!,
+          layerSeq: id,
+          description: '',
+        };
+
+        sendLayerLog(log);
       },
 
+      // ✅ 레이어 이름 수정
       renameLayer: (id: number, newName: string) => {
-        const currentLayers = get().layers;
-        const updatedLayers = currentLayers.map((layer) =>
-          layer.id === id ? { ...layer, name: newName } : layer
+        const updated = get().layers.map((l) =>
+          l.layerTempId === id ? { ...l, name: newName } : l
         );
-        set({ layers: updatedLayers });
+        set({ layers: updated });
+
+        const memberId = useAuthStore.getState().user?.id;
+        if (!memberId) return;
+
+        const log: LayerLogEntry = {
+          layerTempId: id,
+          name: newName,
+          action: 'update',
+          memberId,
+          roadmapId: get().roadmapId!,
+          layerSeq: id,
+          description: '',
+        };
+
+        sendLayerLog(log);
       },
 
-      setSelectedLayerId: (layerId: number | 'all') => {
+      // ✅ 선택된 레이어
+      selectedLayerId: 'all',
+      setSelectedLayerId: (layerId) => {
         set({ selectedLayerId: layerId });
       },
 
-      selectedLayerId: 'all',
-
+      // ✅ 마커 관련
       markers: {},
+
       addMarker: (markerData) => {
-        const id = Date.now();
+        const markerTempId = Date.now();
         const markerSeq = Object.keys(get().markers).length + 1;
 
         const marker: Marker = {
-          id,
-          markerSeq,
           ...markerData,
+          markerTempId,
+          markerSeq,
         };
 
-        const current = get().markers;
-        if (current[id.toString()]) return;
+        const memberId = useAuthStore.getState().user?.id;
+        if (!memberId) return;
 
-        set({ markers: { ...current, [id.toString()]: marker } });
+        const log: MarkerLogEntry = {
+          ...marker,
+          action: 'add',
+          memberId,
+        };
+
+        set((prev) => ({
+          markers: {
+            ...prev.markers,
+            [markerTempId.toString()]: marker,
+          },
+        }));
+
+        sendMarkerLog(log);
       },
 
       addMarkerDirect: (marker) => {
-        const currentMarkers = get().markers;
-        if (currentMarkers[marker.id]) return;
-        set({ markers: { ...currentMarkers, [marker.id]: marker } });
+        const current = get().markers;
+        if (current[marker.markerTempId]) return;
+        set({
+          markers: { ...current, [marker.markerTempId]: marker },
+        });
       },
 
-      removeMarker: (id: number) => {
+      updateMarker: (id, fields) => {
         const current = get().markers;
+        const marker = current[id];
+        if (!marker) return;
+
+        const updated = { ...marker, ...fields };
+
+        set({
+          markers: {
+            ...current,
+            [id]: updated,
+          },
+        });
+
+        const memberId = useAuthStore.getState().user?.id;
+        if (!memberId) return;
+
+        const log: MarkerLogEntry = {
+          ...updated,
+          action: 'update',
+          memberId,
+        };
+
+        sendMarkerLog(log);
+      },
+
+      removeMarker: (id) => {
+        const current = get().markers;
+        const marker = current[id];
+        if (!marker) return;
+
         const { [id]: _, ...rest } = current;
         set({ markers: rest });
+
+        const memberId = useAuthStore.getState().user?.id;
+        if (!memberId) return;
+
+        const log: MarkerLogEntry = {
+          ...marker,
+          action: 'delete',
+          memberId,
+        };
+
+        sendMarkerLog(log);
       },
 
       filteredMarkers: () => {
@@ -128,25 +256,16 @@ const useShareStore = create<WithLiveblocks<ShareState>>()(
           return Object.values(markers);
         }
         return Object.values(markers).filter(
-          (m) => m.layer === selectedLayerId
+          (m) => m.layerTempId === selectedLayerId
         );
-      },
-      updateMarker: (id, fields) => {
-        const current = get().markers;
-        const marker = current[id];
-        if (!marker) return;
-
-        set({
-          markers: {
-            ...current,
-            [id]: { ...marker, ...fields },
-          },
-        });
       },
     }),
     {
       client,
-      storageMapping: { markers: true, layers: true },
+      storageMapping: {
+        markers: true,
+        layers: true,
+      },
     }
   )
 );
