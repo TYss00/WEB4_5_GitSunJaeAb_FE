@@ -54,7 +54,6 @@ export default function UserManagement() {
       )
     );
 
-  // 블랙리스트 토글
   const toggleBlacklist = async (id: number, currentStatus: boolean) => {
     setLoadingUserId(id);
     try {
@@ -79,7 +78,6 @@ export default function UserManagement() {
     }
   };
 
-  // 관리자 권한 토글
   const toggleAdminRole = async (
     id: number,
     currentRole: 'ROLE_ADMIN' | 'ROLE_USER'
@@ -132,28 +130,37 @@ export default function UserManagement() {
 
   return (
     <div className="w-[1000px] h-[530px] bg-[var(--white)] rounded-lg p-4 flex flex-col justify-start border border-[var(--gray-50)]">
-      {/* 상단 타이틀 */}
       <div className="flex items-center gap-2 text-[var(--primary-300)] font-bold text-xl mb-[16px]">
         <UserCog size={25} className="mr-1" />
         사용자 관리
       </div>
 
       <div className="flex justify-between items-center mb-4">
-        {/* 탭 영역 */}
         <div className="flex gap-[26px] text-[15px] font-medium">
-          {TABS.map((tab) => (
-            <span
-              key={tab}
-              onClick={() => setSelectedTab(tab)}
-              className={`cursor-pointer pb-1 ${
-                selectedTab === tab
-                  ? 'text-[var(--primary-300)] border-b-2 border-[var(--primary-300)]'
-                  : 'text-[var(--gray-300)]'
-              }`}
-            >
-              {tab}
-            </span>
-          ))}
+          {TABS.map((tab) => {
+            let count = 0;
+            if (tab === '전체 사용자') {
+              count = members.length;
+            } else if (tab === '관리자') {
+              count = members.filter((m) => m.role === 'ROLE_ADMIN').length;
+            } else if (tab === '블랙 리스트') {
+              count = members.filter((m) => m.blacklisted).length;
+            }
+
+            return (
+              <span
+                key={tab}
+                onClick={() => setSelectedTab(tab)}
+                className={`cursor-pointer pb-1 ${
+                  selectedTab === tab
+                    ? 'text-[var(--primary-300)] border-b-2 border-[var(--primary-300)]'
+                    : 'text-[var(--gray-300)]'
+                }`}
+              >
+                {tab} ({count})
+              </span>
+            );
+          })}
         </div>
 
         <SearchInputs
@@ -163,7 +170,6 @@ export default function UserManagement() {
         />
       </div>
 
-      {/* 테이블 wrapper */}
       <div className="relative w-full border border-[var(--gray-100)] text-[14px]">
         <div className="max-h-[360px] overflow-y-auto pr-[8px]">
           <table className="w-full text-left table-fixed">

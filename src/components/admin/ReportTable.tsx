@@ -30,18 +30,14 @@ export default function ReportTable() {
         const rawReports = data.reportSimpleDTOS;
 
         if (!Array.isArray(rawReports)) {
-          console.warn('서버에서 reports 배열이 안 옴:', data);
           setReports([]);
           return;
         }
 
         rawReports.sort((a, b) => {
-          // 대기순
           if (a.status !== b.status) {
             return a.status === 'REPORTED' ? -1 : 1;
           }
-
-          // 그다음 최신순
           return (
             new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
           );
@@ -99,7 +95,6 @@ export default function ReportTable() {
       return r.status === '완료';
     })
     .filter((r) => {
-      // 아무것도 선택 안 했으면 전체
       if (selectedTypes.length === 0) return true;
       return selectedTypes.includes(r.contentType);
     });
@@ -147,26 +142,34 @@ export default function ReportTable() {
         <span className="mt-1">신고 내역</span>
       </div>
 
-      {/* 탭과 필터 전체 감싸기 */}
       <div className="flex justify-between items-center mb-4">
-        {/* 왼쪽: 탭 */}
         <div className="flex gap-[26px] text-[15px] font-medium">
-          {TABS.map((tab) => (
-            <span
-              key={tab}
-              onClick={() => setSelectedTab(tab)}
-              className={`cursor-pointer pb-1 ${
-                selectedTab === tab
-                  ? 'text-[var(--primary-300)] border-b-2 border-[var(--primary-300)]'
-                  : 'text-[var(--gray-300)]'
-              }`}
-            >
-              {tab}
-            </span>
-          ))}
+          {TABS.map((tab) => {
+            let count = 0;
+            if (tab === '전체') {
+              count = reports.length;
+            } else if (tab === '대기중') {
+              count = reports.filter((r) => r.status === '대기').length;
+            } else if (tab === '완료') {
+              count = reports.filter((r) => r.status === '완료').length;
+            }
+
+            return (
+              <span
+                key={tab}
+                onClick={() => setSelectedTab(tab)}
+                className={`cursor-pointer pb-1 ${
+                  selectedTab === tab
+                    ? 'text-[var(--primary-300)] border-b-2 border-[var(--primary-300)]'
+                    : 'text-[var(--gray-300)]'
+                }`}
+              >
+                {tab} ({count})
+              </span>
+            );
+          })}
         </div>
 
-        {/* 오른쪽: 필터 버튼 */}
         <div className="relative">
           <button
             onClick={() => setIsFilterOpen((prev) => !prev)}

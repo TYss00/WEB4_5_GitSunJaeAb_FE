@@ -10,7 +10,11 @@ import ManageCardModal from './modal/ManageCardModal';
 import ManageCardSkeleton from './skeleton/ManageCardSkeleton';
 import { toast } from 'react-toastify';
 
-export default function CategoryManage() {
+export default function CategoryManage({
+  setCount,
+}: {
+  setCount: React.Dispatch<React.SetStateAction<number>>;
+}) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -26,6 +30,7 @@ export default function CategoryManage() {
         setIsLoading(true);
         const res = await axiosInstance.get('/categories');
         setCategories(res.data.categories);
+        setCount(res.data.categories.length);
       } catch (error) {
         console.error('카테고리 불러오기 실패:', error);
       } finally {
@@ -33,7 +38,7 @@ export default function CategoryManage() {
       }
     };
     fetchCategories();
-  }, []);
+  }, [setCount]);
 
   const handleSubmit = async ({
     name,
@@ -75,6 +80,7 @@ export default function CategoryManage() {
 
       setCategories((prev) => [...prev, addedCategory]);
       setShowForm(false);
+      setCount(categories.length + 1);
       toast.success('카테고리가 성공적으로 추가되었습니다.');
     } catch (error) {
       console.error('POST 요청 실패:', error);
@@ -202,6 +208,7 @@ export default function CategoryManage() {
       await axiosInstance.delete(`/categories/${id}`);
 
       setCategories((prev) => prev.filter((cat) => cat.id !== id));
+      setCount((prev) => prev - 1);
       toast.success('카테고리가 삭제되었습니다.');
     } catch (error) {
       console.error('카테고리 삭제 실패:', error);

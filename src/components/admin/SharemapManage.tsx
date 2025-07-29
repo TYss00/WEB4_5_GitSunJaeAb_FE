@@ -32,7 +32,6 @@ export default function SharemapManage() {
         const res = await axiosInstance.get('/roadmaps/shared');
         const roadmapList = res.data.roadmaps;
 
-        // 각 로드맵의 참여자 수 가져오기
         const withEditors = await Promise.all(
           roadmapList.map(async (roadmap: Roadmap) => {
             try {
@@ -104,6 +103,9 @@ export default function SharemapManage() {
         <div className="flex items-center text-xl text-[var(--primary-300)] font-bold">
           <Map size={25} className="mr-1" />
           공유지도 관리
+          <span className="ml-1 text-xl text-[var(--gray-500)]">
+            ({roadmaps.length})
+          </span>
         </div>
       </div>
 

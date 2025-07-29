@@ -9,7 +9,11 @@ import { CustomMarker } from '@/types/admin';
 import ManageCardSkeleton from './skeleton/ManageCardSkeleton';
 import { toast } from 'react-toastify';
 
-export default function MarkerManage() {
+export default function MarkerManage({
+  setCount,
+}: {
+  setCount: React.Dispatch<React.SetStateAction<number>>;
+}) {
   const [markers, setMarkers] = useState<CustomMarker[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -37,6 +41,7 @@ export default function MarkerManage() {
           markerCustomImages: CustomMarker[];
         }>('/markers/customImages');
         setMarkers(res.data.markerCustomImages);
+        setCount(res.data.markerCustomImages.length);
       } catch (err) {
         console.error('마커 이미지 목록 불러오기 실패:', err);
       } finally {
@@ -45,7 +50,7 @@ export default function MarkerManage() {
     };
 
     fetchMarkers();
-  }, []);
+  }, [setCount]);
 
   const handleSubmit = async () => {
     if (!newMarker.name.trim()) {
@@ -73,6 +78,7 @@ export default function MarkerManage() {
       };
 
       setMarkers((prev) => [...prev, addedMarker]);
+      setCount(markers.length + 1);
       setNewMarker({ name: '', image: null });
       setShowForm(false);
       toast.success('마커가 성공적으로 추가되었습니다.');
@@ -130,6 +136,7 @@ export default function MarkerManage() {
     try {
       await axiosInstance.delete(`/markers/customImage/${id}`);
       setMarkers((prev) => prev.filter((m) => m.id !== id));
+      setCount((prev) => prev - 1);
       toast.success('마커 삭제 완료');
     } catch (err) {
       console.error('마커 삭제 실패:', err);
