@@ -18,7 +18,7 @@ export default function useLayerMarkers(layers: string[]) {
       })
       return updated
     })
-  }, [layers])
+  }, [layers, selectedLayer])
 
   // 지도 클릭 -> 좌표 -> 주소 변환 -> 마커 추가
   const addMarkerByLatLng = useCallback(
