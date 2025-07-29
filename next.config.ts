@@ -64,6 +64,11 @@ const nextConfig: NextConfig = {
         destination: '/landing',
         permanent: false,
       },
+      {
+        source: '/admin',
+        destination: '/admin/report',
+        permanent: false,
+      },
     ];
   },
 };
