@@ -22,6 +22,7 @@ export default function MarkerDetail({
         setAddress(result)
       } catch (err) {
         setAddress('주소 변환 실패')
+        console.error(err)
       }
     }
 

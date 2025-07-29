@@ -1,18 +1,19 @@
-'use client';
-import { useState } from 'react';
-import QuestPlayList from './QuestPlayList';
-import QuestPlayView from './QuestPlayView';
-import QuestPlayForm from './QuestPlayForm';
+'use client'
+import { useState } from 'react'
+import QuestPlayList from './QuestPlayList'
+import QuestPlayView from './QuestPlayView'
+import QuestPlayForm from './QuestPlayForm'
+import QuestDeatilRanking from './QuestDeatilRanking'
 
 type Answer = {
-  id: number;
-  title: string;
-  user: string;
-  date: string;
-  type: '정답' | '오답' | '참여';
-  content: string;
-  profileImage?: string;
-};
+  id: number
+  title: string
+  user: string
+  date: string
+  type: '정답' | '오답' | '참여'
+  content: string
+  profileImage?: string
+}
 
 // 임시 더미데이터
 const dummyAnswers: Answer[] = [
@@ -40,18 +41,33 @@ const dummyAnswers: Answer[] = [
     type: '참여',
     content: '저는 여기인 것 같아서 찍어봤어요.',
   },
-];
+]
 
 export default function QuestDetailPlay() {
   // 퀘스트리스트 -> 상세
-  const [selectedAnswer, setSelectedAnswer] = useState<Answer | null>(null);
+  const [selectedAnswer, setSelectedAnswer] = useState<Answer | null>(null)
 
   // 참여하기폼열기
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false)
+
+  //랭킹 탭 열기
+  const [isRanking, setIsRanking] = useState(false)
+  const handleShowRanking = () => setIsRanking(true)
+  const handleHideRanking = () => setIsRanking(false)
 
   return (
     <>
-      {selectedAnswer ? (
+      {isRanking ? (
+        <>
+          <QuestDeatilRanking />
+          <button
+            onClick={handleHideRanking}
+            className="mt-2 text-sm text-blue-500 underline"
+          >
+            참여 내역으로 돌아가기
+          </button>
+        </>
+      ) : selectedAnswer ? (
         <QuestPlayView
           answer={selectedAnswer}
           onBack={() => setSelectedAnswer(null)}
@@ -63,8 +79,9 @@ export default function QuestDetailPlay() {
           answers={dummyAnswers}
           onSelect={(answer) => setSelectedAnswer(answer)}
           onFormOpen={() => setIsFormOpen(true)}
+          onShowRanking={handleShowRanking}
         />
       )}
     </>
-  );
+  )
 }
