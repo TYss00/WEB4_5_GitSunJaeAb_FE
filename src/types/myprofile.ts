@@ -101,7 +101,9 @@ export type ProfileEditState = {
 export type Achievement = {
   id: number;
   name: string;
-  image: string;
+  image: string | null;
+  description?: string;
+  achievedAt?: string;
 };
 
 export type CommentItem = {
