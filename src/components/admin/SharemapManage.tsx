@@ -113,6 +113,7 @@ export default function SharemapManage() {
         <table className="w-full text-[14px] border-t border-[var(--gray-100)]">
           <thead>
             <tr className="text-left border-b border-[var(--gray-100)]">
+              <th className="py-2 px-3">ID</th>
               <th className="py-2 px-3">제목</th>
               <th className="py-2 px-3">작성자</th>
               <th className="py-2 px-3">참여율</th>
@@ -126,6 +127,7 @@ export default function SharemapManage() {
                     key={roadmap.id}
                     className="border-b border-[var(--gray-50)]"
                   >
+                    <td className="py-2 px-3">{roadmap.id}</td>
                     <td className="py-2 px-3">{roadmap.title}</td>
                     <td className="py-2 px-3">{roadmap.member.nickname}</td>
                     <td className="py-2 px-3 w-[200px]">

@@ -75,6 +75,8 @@ export default function ReportTable() {
   }, []);
 
   const handleStatusUpdate = async (reportId: number) => {
+    const confirmUpdate = confirm('해당 신고 상태를 완료로 변경하시겠습니까?');
+    if (!confirmUpdate) return;
     try {
       await axiosInstance.get(`/reports/admin/${reportId}`, {});
 
@@ -242,9 +244,10 @@ export default function ReportTable() {
         <table className="w-full text-left text-[14px]">
           <thead>
             <tr className="text-[var(--black)] border-b border-[var(--gray-50)]">
+              <th className="py-2">ID</th>
               <th className="py-2">피신고자</th>
               <th className="py-2">신고자</th>
-              <th className="py-2">유형</th>
+              <th className="py-2">내용</th>
               <th className="py-2">날짜</th>
               <th className="py-2 pl-2">상태</th>
               <th className="py-2 pl-3">조치</th>
@@ -268,6 +271,7 @@ export default function ReportTable() {
                   key={report.id}
                   className="border-b border-[var(--gray-50)]"
                 >
+                  <td className="py-2">{report.id}</td>
                   <td className="py-2">{report.reported}</td>
                   <td>{report.reporter}</td>
                   <td>{report.type}</td>

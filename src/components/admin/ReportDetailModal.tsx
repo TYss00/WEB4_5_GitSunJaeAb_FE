@@ -17,6 +17,7 @@ export default function ReportDetailModal({
   const [data, setData] = useState<{
     title: string;
     description?: string;
+    reportdescription?: string;
     imageUrl?: string;
     lat?: number;
     lng?: number;
@@ -45,17 +46,20 @@ export default function ReportDetailModal({
           setData({
             title: detail.quest.title,
             description: detail.quest.description,
+            reportdescription: detail.description,
             imageUrl: detail.quest.questImage,
           });
         } else if (contentType === '지도' && detail.roadmap) {
           setData({
             title: detail.roadmap.title,
             description: detail.roadmap.description,
+            reportdescription: detail.description,
           });
         } else if (contentType === '마커' && detail?.marker) {
           setData({
             title: detail.marker.name,
             description: detail.marker.description,
+            reportdescription: detail.description,
             lat: detail.marker.lat,
             lng: detail.marker.lng,
             markerId: detail.marker.id,
@@ -114,7 +118,7 @@ export default function ReportDetailModal({
     try {
       await axiosInstance.delete(`/markers/${data.markerId}`);
       toast.success('마커가 삭제되었습니다.');
-      onClose(); // 모달 닫기
+      onClose();
     } catch (err) {
       console.error('마커 삭제 실패:', err);
       toast.error('마커 삭제에 실패했습니다.');
@@ -139,7 +143,14 @@ export default function ReportDetailModal({
             <XCircle size={24} />
           </button>
 
-          <h2 className="text-xl font-semibold mb-4">신고 상세 정보</h2>
+          <h2 className="text-xl font-semibold mb-2">신고 상세 정보</h2>
+
+          {data?.reportdescription && (
+            <p className="text-sm text-gray-600 mb-4">
+              <span className="font-semibold text-gray-700">신고내용 : </span>
+              <span className="underline">{data.reportdescription}</span>
+            </p>
+          )}
 
           {loading ? (
             <ReportDetailSkeleton contentType={contentType} />
