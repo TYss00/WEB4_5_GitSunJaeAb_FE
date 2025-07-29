@@ -83,7 +83,7 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
           password,
         });
 
-        if (verifyRes.data.code !== '2004') {
+        if (verifyRes.data.message !== '비밀번호 검증 성공') {
           toast.error('현재 비밀번호가 일치하지 않습니다.');
           setIsSaving(false);
           return;
