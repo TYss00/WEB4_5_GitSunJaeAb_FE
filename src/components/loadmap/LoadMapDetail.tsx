@@ -34,7 +34,7 @@ export default function Loadmapdetail() {
   const roadmapId = params?.id as string
   const [selectedLayerId, setSelectedLayerId] = useState<number | 'all'>('all')
   const [isBookmarked, setIsBookmarked] = useState(false)
-  const [likeId, setLikeId] = useState<number | null>(null)
+  const [bookmarkerId, setBookmarkerId] = useState<number | null>(null)
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -49,8 +49,13 @@ export default function Loadmapdetail() {
         const matched = bookmarks.some(
           (item: BookmarksInfo) => String(item.id) === roadmapId
         )
+        if (matched) {
+          const bookmarkId = bookmarks.filter(
+            (item: BookmarksInfo) => String(item.id) === roadmapId
+          )[0].bookmarkId
+          setBookmarkerId(bookmarkId)
+        }
         setIsBookmarked(matched)
-        console.log('matched', matched)
 
         setData({
           roadmap: roadmapRes.data.roadmap,
@@ -73,15 +78,14 @@ export default function Loadmapdetail() {
     try {
       if (!isBookmarked) {
         const res = await axiosInstance.post(`/bookmarks/${roadmapId}`)
-        const likeId = res.data.bookmarkId
+        const bookmarkId = await res.data.bookmarkId
         setIsBookmarked(true)
-        setLikeId(likeId)
+        setBookmarkerId(bookmarkId)
       } else {
-        const res = await axiosInstance.delete(`/bookmarks/${likeId}`)
-        console.log(likeId)
+        const res = await axiosInstance.delete(`/bookmarks/${bookmarkerId}`)
         console.log(res)
         setIsBookmarked(false)
-        setLikeId(null)
+        setBookmarkerId(null)
       }
     } catch (error) {
       console.error('북마크 처리 오류', error)
