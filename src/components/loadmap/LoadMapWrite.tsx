@@ -5,7 +5,6 @@ import Button from '../ui/Button'
 import Input from '../ui/Input'
 import Toggle from '../ui/Toggle'
 import LayerEdit from '../ui/layer/LayerEdit'
-
 import useLayerAdd from '@/hooks/useLayerAdd'
 import { useEffect, useState } from 'react'
 import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
@@ -15,6 +14,7 @@ import RoadMapGoogleWrite from './RoadMapGoogleWrite'
 import axiosInstance from '@/libs/axios'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
   const { layers, setLayers, newLayerName, setNewLayerName, handleAddLayer } =
@@ -79,7 +79,6 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
   }
 
   const handleSubmit = async () => {
-    const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL
     try {
       const formData = new FormData()
 
@@ -100,7 +99,7 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
       }
       // 1. 로드맵 생성
       const roadmapRes = await axiosInstance.post(
-        `${baseURL}/roadmaps/personal`,
+        `/roadmaps/personal`,
         formData,
         {
           headers: {
