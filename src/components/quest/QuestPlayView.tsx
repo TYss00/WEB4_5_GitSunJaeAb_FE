@@ -1,23 +1,23 @@
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react'
 
 type Answer = {
-  id: number;
-  title: string;
-  user: string;
-  date: string;
-  type: '정답' | '오답' | '참여';
-  content: string;
-  profileImage?: string;
-};
+  id: number
+  title: string
+  user: string
+  date: string
+  type: '정답' | '오답' | '참여'
+  content: string
+  profileImage?: string
+}
 
 type Props = {
-  answer: Answer;
-  onBack: () => void;
-};
+  answer: Answer
+  onBack: () => void
+}
 
 export default function QuestPlayView({ answer, onBack }: Props) {
   return (
-    <div className="w-[428px] border border-[var(--gray-200)] rounded-[10px] p-4">
+    <div className="w-full border border-[var(--gray-200)] rounded-[10px] p-4">
       {/* 뒤로가기버튼 */}
       <button
         onClick={onBack}
@@ -43,5 +43,5 @@ export default function QuestPlayView({ answer, onBack }: Props) {
         <div className="h-[200px] bg-gray-300 rounded-lg" />
       </div>
     </div>
-  );
+  )
 }

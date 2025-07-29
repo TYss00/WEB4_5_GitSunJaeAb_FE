@@ -39,11 +39,12 @@ export default function CommentForm({
     else return toast.error('유효하지 않은 variant');
 
     try {
-      const res = await axiosInstance.post(url, body);
-      console.log(res);
-      //백앤드의 응답형식 수정 후 정상 동작 예정입니다.
-      onAddComment(res.data.comment);
-      setContent('');
+      const res = await axiosInstance.post(url, body)
+      console.log(res)
+
+      onAddComment(res.data.comment)
+      setContent('')
+
     } catch (err) {
       console.log('댓글 등록 실패', err);
       toast.error('댓글 등록 오류');

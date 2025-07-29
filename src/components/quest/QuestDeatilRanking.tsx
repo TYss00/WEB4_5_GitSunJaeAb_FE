@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
-import { Crown } from 'lucide-react';
-import Button from '../ui/Button';
-import { useState } from 'react';
+import { Crown } from 'lucide-react'
+import Button from '../ui/Button'
+import { useState } from 'react'
 
 export default function QuestDeatilRanking() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
   return (
-    <div className="mt-[30px] w-[428px] p-4 border border-[var(--gray-200)] rounded-[10px]">
+    <>
       {/* 1~3등 영역 */}
       <div className="py-4 flex justify-around">
         {/* 2등 */}
@@ -61,6 +61,6 @@ export default function QuestDeatilRanking() {
       >
         {isOpen ? '닫기' : '전체 랭킹 보기'}
       </Button>
-    </div>
-  );
+    </>
+  )
 }
