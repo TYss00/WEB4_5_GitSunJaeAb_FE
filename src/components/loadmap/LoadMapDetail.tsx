@@ -34,6 +34,8 @@ export default function Loadmapdetail() {
   const roadmapId = params?.id as string
   const [selectedLayerId, setSelectedLayerId] = useState<number | 'all'>('all')
   const [isBookmarked, setIsBookmarked] = useState(false)
+  const [likeId, setLikeId] = useState<number | null>(null)
+
   useEffect(() => {
     const fetchAll = async () => {
       try {
@@ -70,8 +72,16 @@ export default function Loadmapdetail() {
   const toggleBookmark = async () => {
     try {
       if (!isBookmarked) {
-        await axiosInstance.post(`/bookmarks/${roadmapId}`)
+        const res = await axiosInstance.post(`/bookmarks/${roadmapId}`)
+        const likeId = res.data.bookmarkId
         setIsBookmarked(true)
+        setLikeId(likeId)
+      } else {
+        const res = await axiosInstance.delete(`/bookmarks/${likeId}`)
+        console.log(likeId)
+        console.log(res)
+        setIsBookmarked(false)
+        setLikeId(null)
       }
     } catch (error) {
       console.error('북마크 처리 오류', error)
