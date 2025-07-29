@@ -30,7 +30,7 @@ export default function Notification({
       ? notifications
       : notifications.filter((n) => n.type === activeTab);
 
-  // 탭별 알림 수 - 읽지 않은 알림 수만 카운트
+  // 탭별 읽지 않은 알림 수
   const tabCounts = {
     전체: notifications.filter((n) => !n.isRead).length,
     게시글: notifications.filter((n) => n.type === '게시글' && !n.isRead)
@@ -38,36 +38,39 @@ export default function Notification({
     공지: notifications.filter((n) => n.type === '공지' && !n.isRead).length,
   };
 
-  // 전체읽음 처리 함수
+  // 전체읽음 처리
   const handleAllRead = () => {
     const unreadNotis = filteredNotis.filter((n) => !n.isRead);
     unreadNotis.forEach((noti) => mutate(noti.id));
   };
 
-  // 클릭 시 라우팅 처리
+  // 알림 클릭 시 라우팅 처리
   const handleNotificationClick = (noti: AppNotification) => {
     if (!noti.isRead) {
       mutate(noti.id);
     }
 
+    // 공유지도인지 개인 로드맵인지
+    const isSharedMap = noti.relatedRoadmap?.mapType === 'SHARED';
+    const roadmapRoute = isSharedMap
+      ? '/dashbord/sharemap/detail'
+      : '/dashbord/roadmap/detail';
+
     switch (noti.notificationType) {
       case 'COMMENT':
         if (noti.relatedQuestId) {
           router.push(`/dashbord/quests/detail/${noti.relatedQuestId}`);
-        } else if (noti.relatedRoadmap?.id && noti.relatedLayer?.id) {
-          router.push(`/dashbord/roadmap/detail/${noti.relatedRoadmap.id}`);
         } else if (noti.relatedRoadmap?.id) {
-          router.push(`/dashbord/roadmap/detail/${noti.relatedRoadmap.id}`);
+          router.push(`${roadmapRoute}/${noti.relatedRoadmap.id}`);
         }
+        console.log(`${roadmapRoute}/${noti.relatedRoadmap!.id}`);
         break;
       case 'ZZIM':
       case 'FORK':
-        if (noti.relatedRoadmap?.id && noti.relatedLayer?.id) {
-          router.push(`/dashbord/roadmap/detail/${noti.relatedRoadmap.id}`);
-        }
-        break;
       case 'BOOKMARK':
-        router.push(`/dashbord/roadmap/detail/${noti.relatedRoadmap?.id}`);
+        if (noti.relatedRoadmap?.id) {
+          router.push(`${roadmapRoute}/${noti.relatedRoadmap.id}`);
+        }
         break;
       case 'QUEST':
       case 'QUEST_DEADLINE':
@@ -75,8 +78,10 @@ export default function Notification({
         break;
       case 'ANNOUNCEMENT':
       case 'ETC':
-        break;
+        return;
     }
+    // 클릭 시 알림창 닫기
+    onClose();
   };
 
   return (
@@ -147,13 +152,15 @@ export default function Notification({
             알림이 없습니다
           </p>
         ) : (
-          filteredNotis.map((noti) => (
-            <NotiListItem
-              key={noti.id}
-              noti={noti}
-              onClick={handleNotificationClick}
-            />
-          ))
+          [...filteredNotis]
+            .sort((a, b) => Number(a.isRead) - Number(b.isRead))
+            .map((noti) => (
+              <NotiListItem
+                key={noti.id}
+                noti={noti}
+                onClick={handleNotificationClick}
+              />
+            ))
         )}
       </div>
     </div>

@@ -7,6 +7,22 @@ import {
 } from '@/types/notiType';
 import { formatRelativeTime } from '@/utils/formatDate';
 
+// 관리자 공지
+const getAnnouncementType = (type: string | null): string => {
+  switch (type) {
+    case 'SYSTEM':
+      return '[시스템] ';
+    case 'EVENT':
+      return '[이벤트] ';
+    case 'UPDATE':
+      return '[업데이트] ';
+    case 'ETC':
+      return '[안내사항] ';
+    default:
+      return '';
+  }
+};
+
 const mapNotificationTab = (type: NotificationType): '게시글' | '공지' => {
   return [
     'COMMENT',
@@ -26,14 +42,22 @@ export const getNotifications = async (): Promise<AppNotification[]> => {
 
   return notifications.map((noti) => ({
     id: noti.id,
-    title: noti.title,
+    title:
+      noti.notificationType === 'ANNOUNCEMENT'
+        ? `${getAnnouncementType(noti.announcementType)}${noti.title}`
+        : noti.title,
     message: noti.content,
     time: formatRelativeTime(noti.createdAt),
     isRead: noti.read,
     senderProfileImage: noti.sender?.profileImage ?? null,
     notificationType: noti.notificationType,
     type: mapNotificationTab(noti.notificationType),
-    relatedRoadmap: noti.relatedRoadmap,
+    relatedRoadmap: noti.relatedRoadmap
+      ? {
+          id: noti.relatedRoadmap.id,
+          mapType: noti.relatedRoadmap.mapType,
+        }
+      : undefined,
     relatedLayer: noti.relatedLayer,
     relatedQuestId: noti.relatedQuestId,
     relatedCommentId: noti.relatedCommentId,
