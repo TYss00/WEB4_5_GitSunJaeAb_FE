@@ -19,14 +19,14 @@ import LayerDetail from '../ui/layer/LayerDetail'
 import MarkerDetail from '../ui/layer/MarkerDetail'
 import useSidebar from '@/utils/useSidebar'
 import { useParams, useRouter } from 'next/navigation'
-import { BookmarksInfo, HashtagProps, RoadmapDetailData } from '@/types/type'
+import { BookmarksInfo, HashtagProps, RoadmapDetailProps } from '@/types/type'
 import RoadMapGoogleDetail from './RoadMapGoogleDetail'
 import axiosInstance from '@/libs/axios'
 import Image from 'next/image'
 
 export default function Loadmapdetail() {
   const [loading, setLoading] = useState(true)
-  const [data, setData] = useState<RoadmapDetailData>()
+  const [data, setData] = useState<RoadmapDetailProps>()
   const router = useRouter()
   const [isReportOpen, setIsReportOpen] = useState(false)
   const { isOpen, toggle, close } = useSidebar()
