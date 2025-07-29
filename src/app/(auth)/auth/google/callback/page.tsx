@@ -31,7 +31,11 @@ export default function GoogleCallbackPage() {
       });
 
       useAuthStore.getState().setUser(user);
-      router.push('/');
+      if (user?.role === 'ROLE_ADMIN') {
+        router.push('/admin/report');
+      } else {
+        router.push('/dashbord');
+      }
     },
     onError: () => {
       toast.error('소셜 로그인 실패');
