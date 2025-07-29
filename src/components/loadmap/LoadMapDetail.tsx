@@ -215,10 +215,10 @@ export default function Loadmapdetail() {
               <div className="relative  w-full h-[300px] bg-gray-100 rounded-[5px] mb-2 overflow-hidden">
                 {/* 기본 썸네일 이미지 제작 시 교체 예정 */}
                 <Image
-                  src={roadMapInfo.thumbnail ?? '/next.svg'}
+                  src={roadMapInfo.thumbnail ?? '/assets/MAPICK.png'}
                   alt="썸네일 이미지"
                   fill
-                  className="object-cover"
+                  className="object-fill"
                 />
               </div>
               <p className="text-[16px] text-black mb-2">
