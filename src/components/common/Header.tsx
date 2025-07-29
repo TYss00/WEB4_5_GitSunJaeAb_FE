@@ -2,7 +2,7 @@
 
 import { Bell, Search, X } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import SearchModal from '../search/SearchModal';
 import { useClickOut } from '@/hooks/useClickOut';
 import Notification from '../notification/Notification';
@@ -13,12 +13,6 @@ import { useAuthStore } from '@/store/useAuthStore';
 import defaultProfile from '../../../public/assets/defaultProfile.png';
 import Image from 'next/image';
 import { useNotifications } from '@/libs/notification';
-import {
-  useAchievements,
-  useMemberAchievements,
-} from '@/hooks/useAchievements';
-import { useAchievementStore } from '@/store/useAchievementStore';
-import { toast, ToastContainer } from 'react-toastify';
 
 export default function Header({ isAdmin = false }: HeaderProps) {
   const pathname = usePathname();
@@ -35,48 +29,8 @@ export default function Header({ isAdmin = false }: HeaderProps) {
   const { data: notifications = [] } = useNotifications();
   const hasUnread = notifications.some((n) => !n.isRead);
 
-  const { data: allAchievements = [], isLoading: isLoadingAchievements } =
-    useAchievements();
-  const { data: memberAchievedIds = [], isLoading: isLoadingMember } =
-    useMemberAchievements();
-
-  const { setAchievements, setAchievedIds } = useAchievementStore();
-  const prevAchievedIds = useRef<number[]>([]);
-
   const user = useAuthStore((state) => state.user);
   const profileImage = user?.profileImage ?? defaultProfile;
-
-  useEffect(() => {
-    if (!user) return;
-    if (isLoadingAchievements || isLoadingMember) return;
-
-    // 상태 저장
-    setAchievements(allAchievements);
-    setAchievedIds(memberAchievedIds);
-
-    // 신규 업적 감지
-    const newIds = memberAchievedIds.filter(
-      (id) => !prevAchievedIds.current.includes(id)
-    );
-    const newAchievements = allAchievements.filter((a) =>
-      newIds.includes(a.id)
-    );
-
-    newAchievements.forEach((a) => {
-      toast.success(`'${a.name}' 업적을 달성했어요!`);
-    });
-
-    // 이전 업적 갱신
-    prevAchievedIds.current = memberAchievedIds;
-  }, [
-    allAchievements,
-    memberAchievedIds,
-    isLoadingAchievements,
-    isLoadingMember,
-    user,
-    setAchievedIds,
-    setAchievements,
-  ]);
 
   useClickOut(searchRef, () => setIsSearchOpen(false));
   useClickOut(notiRef, () => setIsNotiOpen(false));
@@ -103,7 +57,6 @@ export default function Header({ isAdmin = false }: HeaderProps) {
 
   return (
     <>
-      <ToastContainer />
       <header className="w-full h-20 px-11 flex items-center justify-between bg-[var(--white)] relative">
         {/* 로고 */}
         <Link
