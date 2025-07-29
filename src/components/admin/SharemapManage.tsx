@@ -5,14 +5,17 @@ import { Map } from 'lucide-react';
 import Button from '../ui/Button';
 import { Roadmap } from '@/types/admin';
 import axiosInstance from '@/libs/axios';
+import LoadingSpener from '../common/LoadingSpener';
 
 export default function SharemapManage() {
   const [roadmaps, setRoadmaps] = useState<Roadmap[]>([]);
   const [totalMemberCount, setTotalMemberCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchMembers = async () => {
       try {
+        setIsLoading(true);
         const res = await axiosInstance.get('/members/list');
         setTotalMemberCount(res.data.members.length);
       } catch (err) {
@@ -51,6 +54,8 @@ export default function SharemapManage() {
       } catch (err) {
         console.error('공유지도 목록 불러오기 실패:', err);
         setRoadmaps([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -86,6 +91,13 @@ export default function SharemapManage() {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="w-full h-[500px] flex items-center justify-center">
+        <LoadingSpener />
+      </div>
+    );
+  }
   return (
     <section className="w-[1000px] bg-[var(--white)] rounded-[10px] p-4 border border-[var(--gray-50)]">
       <div className="flex items-center justify-between font-semibold text-[var(--primary-300)] mb-[24px]">

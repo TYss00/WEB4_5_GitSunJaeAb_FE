@@ -6,11 +6,13 @@ import ManageCard from './card/ManageCard';
 import ManageCardFormCard from './card/ManageCardFormCard';
 import ManageAddCard from './card/ManageAddCard';
 import { CustomMarker } from '@/types/admin';
+import ManageCardSkeleton from './skeleton/ManageCardSkeleton';
 
 export default function MarkerManage() {
   const [markers, setMarkers] = useState<CustomMarker[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [newMarker, setNewMarker] = useState<{
     name: string;
     image: File | null;
@@ -29,12 +31,15 @@ export default function MarkerManage() {
   useEffect(() => {
     const fetchMarkers = async () => {
       try {
+        setIsLoading(true);
         const res = await axiosInstance.get<{
           markerCustomImages: CustomMarker[];
         }>('/markers/customImages');
         setMarkers(res.data.markerCustomImages);
       } catch (err) {
         console.error('마커 이미지 목록 불러오기 실패:', err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -146,54 +151,64 @@ export default function MarkerManage() {
   return (
     <div className="w-[732px] mx-auto border border-[var(--gray-50)] rounded-[10px] px-[16px] py-[16px]">
       <div className="flex flex-wrap gap-[16px]">
-        {markers.map((marker) =>
-          editingId === marker.id ? (
-            <ManageCardFormCard
-              key={`edit-${marker.id}`}
-              name={editedMarker.name}
-              image={editedMarker.image}
-              onNameChange={(name) =>
-                setEditedMarker((prev) => ({ ...prev, name }))
-              }
-              onImageChange={handleEditImageChange}
-              onSubmit={() => handleEditSubmit(marker.id)}
-              onCancel={() => setEditingId(null)}
-            />
-          ) : (
-            <ManageCard
-              key={`view-${marker.id}`}
-              id={marker.id}
-              name={marker.name}
-              image={marker.markerImage}
-              item={marker}
-              onEditClick={(marker) => {
-                setEditingId(marker.id);
-                setEditedMarker({ name: marker.name, image: null });
-              }}
-              onDelete={(marker) => handleDelete(marker.id)}
-            />
-          )
-        )}
-
-        {showForm ? (
-          <ManageCardFormCard
-            key="new-marker-form"
-            name={newMarker.name}
-            image={newMarker.image}
-            onNameChange={(name) => setNewMarker((prev) => ({ ...prev, name }))}
-            onImageChange={handleImageChange}
-            onSubmit={handleSubmit}
-            onCancel={() => {
-              setShowForm(false);
-              setNewMarker({ name: '', image: null });
-            }}
-          />
+        {isLoading ? (
+          Array.from({ length: 1 }).map((_, idx) => (
+            <ManageCardSkeleton key={idx} />
+          ))
         ) : (
-          <ManageAddCard
-            key="marker-add-button"
-            type="marker"
-            onClick={() => setShowForm(true)}
-          />
+          <>
+            {markers.map((marker) =>
+              editingId === marker.id ? (
+                <ManageCardFormCard
+                  key={`edit-${marker.id}`}
+                  name={editedMarker.name}
+                  image={editedMarker.image}
+                  onNameChange={(name) =>
+                    setEditedMarker((prev) => ({ ...prev, name }))
+                  }
+                  onImageChange={handleEditImageChange}
+                  onSubmit={() => handleEditSubmit(marker.id)}
+                  onCancel={() => setEditingId(null)}
+                />
+              ) : (
+                <ManageCard
+                  key={`view-${marker.id}`}
+                  id={marker.id}
+                  name={marker.name}
+                  image={marker.markerImage}
+                  item={marker}
+                  onEditClick={(marker) => {
+                    setEditingId(marker.id);
+                    setEditedMarker({ name: marker.name, image: null });
+                  }}
+                  onDelete={(marker) => handleDelete(marker.id)}
+                />
+              )
+            )}
+
+            {showForm ? (
+              <ManageCardFormCard
+                key="new-marker-form"
+                name={newMarker.name}
+                image={newMarker.image}
+                onNameChange={(name) =>
+                  setNewMarker((prev) => ({ ...prev, name }))
+                }
+                onImageChange={handleImageChange}
+                onSubmit={handleSubmit}
+                onCancel={() => {
+                  setShowForm(false);
+                  setNewMarker({ name: '', image: null });
+                }}
+              />
+            ) : (
+              <ManageAddCard
+                key="marker-add-button"
+                type="marker"
+                onClick={() => setShowForm(true)}
+              />
+            )}
+          </>
         )}
       </div>
     </div>

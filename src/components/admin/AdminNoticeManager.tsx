@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button';
 import { AdminNoticePayload, Notice } from '@/types/admin';
 import axiosInstance from '@/libs/axios';
 import { Megaphone } from 'lucide-react';
+import LoadingSpener from '../common/LoadingSpener';
 
 export default function AdminNoticeManager() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,6 +28,8 @@ export default function AdminNoticeManager() {
   const [selectedTypeTab, setSelectedTypeTab] = useState('전체');
 
   const [notices, setNotices] = useState<Notice[]>([]);
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const filteredNotices =
     selectedTypeTab === '전체'
@@ -54,10 +57,13 @@ export default function AdminNoticeManager() {
 
   const fetchNotices = async () => {
     try {
+      setIsLoading(true);
       const res = await axiosInstance.get('/admin/announcements');
       setNotices(res.data.announcements);
     } catch (err) {
       console.error('공지사항 불러오기 실패:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -107,6 +113,13 @@ export default function AdminNoticeManager() {
     fetchNotices();
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="w-full h-[500px] flex items-center justify-center">
+        <LoadingSpener />
+      </div>
+    );
+  }
   return (
     <section className="w-[900px] h-[420px] space-y-6">
       <div className="border border-[var(--gray-100)] rounded-lg p-6 space-y-4">

@@ -5,6 +5,7 @@ import { Siren, Filter, MapPin, ClipboardList, Landmark } from 'lucide-react';
 import { DisplayReport, Report, ReportResponse } from '@/types/admin';
 import ReportDetailModal from './ReportDetailModal';
 import axiosInstance from '@/libs/axios';
+import LoadingSpener from '../common/LoadingSpener';
 
 const TABS = ['전체', '대기중', '완료'];
 
@@ -17,6 +18,7 @@ export default function ReportTable() {
   } | null>(null);
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -67,6 +69,8 @@ export default function ReportTable() {
         setReports(mapped);
       } catch (err) {
         console.error('신고 목록 불러오기 실패:', err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -126,6 +130,14 @@ export default function ReportTable() {
       alert('삭제 중 오류가 발생했습니다.');
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-[500px] flex items-center justify-center">
+        <LoadingSpener />
+      </div>
+    );
+  }
 
   return (
     <div className="w-[1000px] bg-[var(--white)] rounded-lg p-4 flex flex-col justify-start border border-[var(--gray-50)]">

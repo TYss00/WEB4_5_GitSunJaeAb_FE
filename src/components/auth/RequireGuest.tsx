@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/useAuthStore';
+import LoadingSpener from '../common/LoadingSpener';
 
 export default function RequireGuest({
   children,
@@ -22,7 +23,9 @@ export default function RequireGuest({
     }
   }, [accessToken, loading, user, router]);
 
-  if (loading) return null;
+  if (loading) {
+    return <LoadingSpener />;
+  }
   if (accessToken) return null;
 
   return <>{children}</>;

@@ -7,6 +7,7 @@ import UserActionButtons from './UserActionButtons';
 import { useAuthStore } from '@/store/useAuthStore';
 import axiosInstance from '@/libs/axios';
 import SearchInputs from '../ui/SearchInputs';
+import LoadingSpener from '../common/LoadingSpener';
 
 const TABS = ['전체 사용자', '관리자', '블랙 리스트'];
 
@@ -16,10 +17,12 @@ export default function UserManagement() {
   const [loadingUserId, setLoadingUserId] = useState<number | null>(null);
   const [members, setMembers] = useState<User[]>([]);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchMembers = async () => {
       try {
+        setIsLoading(true);
         const res = await axiosInstance.get<UserResponse>('members/list');
         if (Array.isArray(res.data.members)) {
           setMembers(res.data.members);
@@ -29,6 +32,8 @@ export default function UserManagement() {
         }
       } catch (err) {
         console.error('회원 목록 불러오기 실패:', err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -115,6 +120,14 @@ export default function UserManagement() {
       alert('회원 삭제 중 오류가 발생했습니다.');
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-[500px] flex items-center justify-center">
+        <LoadingSpener />
+      </div>
+    );
+  }
 
   return (
     <div className="w-[1000px] h-[530px] bg-[var(--white)] rounded-lg p-4 flex flex-col justify-start border border-[var(--gray-50)]">
