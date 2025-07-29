@@ -76,7 +76,8 @@ export default function ShareMap() {
                     isEvent={false}
                     title={roadmap.title}
                     mapImageUrl={roadmap.thumbnail || '/sharemapmap.svg'}
-                    participants={roadmap.likeCount}
+                    participants={roadmap.editorCount}
+                    category={roadmap.category?.name}
                   />
                 </SwiperSlide>
               ))}

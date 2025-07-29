@@ -14,9 +14,23 @@ export const getRoadmapCount = async (categoryId: number): Promise<number> => {
 // 메인대시보드 공유지도 불러오기
 export const getPopularShared = async (): Promise<Roadmap[]> => {
   const res = await axiosInstance.get<{ roadmaps: Roadmap[] }>('/roadmaps');
-  return res.data.roadmaps.filter(
+  const shared = res.data.roadmaps.filter(
     (r) => r.roadmapType === 'SHARED' && r.isPublic
   );
+
+  const withEditorCount = await Promise.all(
+    shared.map(async (r) => {
+      try {
+        const editorsRes = await axiosInstance.get(`/roadmaps/${r.id}/editors`);
+        return { ...r, editorCount: editorsRes.data.count };
+      } catch (err) {
+        console.error(`로드맵 ${r.id} 참여자 수 실패`, err);
+        return { ...r, editorCount: 0 };
+      }
+    })
+  );
+
+  return withEditorCount;
 };
 
 // 메인대시보드 퀘스트 불러오기

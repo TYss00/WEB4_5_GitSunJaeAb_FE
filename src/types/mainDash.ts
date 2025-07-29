@@ -43,6 +43,7 @@ export type Roadmap = {
   citationCount: number;
   createdAt: string;
   isBookmarked: boolean;
+  editorCount?: number;
 };
 
 export type RoadmapResponse = {
