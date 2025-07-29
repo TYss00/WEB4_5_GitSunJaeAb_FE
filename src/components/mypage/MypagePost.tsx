@@ -11,6 +11,7 @@ import {
 } from '@/types/myprofile';
 import axiosInstance from '@/libs/axios';
 import { useProfileStore } from '@/store/profileStore';
+import { toast } from 'react-toastify';
 
 export default function MypagePost({
   activeTab,
@@ -96,7 +97,7 @@ export default function MypagePost({
           setQuests([]);
         }
       } catch (err) {
-        alert('데이터 불러오는 중 오류가 발생했습니다.');
+        toast.error('데이터 불러오는 중 오류가 발생했습니다.');
         console.error(err);
         setCards([]);
         setQuests([]);
@@ -139,7 +140,7 @@ export default function MypagePost({
         throw new Error('likeId가 없어 삭제할 수 없습니다.');
       }
     } catch (err) {
-      alert('좋아요 처리 중 오류가 발생했습니다.');
+      toast.error('좋아요 처리 중 오류가 발생했습니다.');
       console.error(err);
       setCards((prev) =>
         prev.map((card) =>

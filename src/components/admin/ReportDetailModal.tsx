@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Script from 'next/script';
 import ReportDetailSkeleton from './ReportDetailSkeleton';
 import { ReportModal } from '@/types/admin';
+import { toast } from 'react-toastify';
 
 export default function ReportDetailModal({
   isOpen,
@@ -112,11 +113,11 @@ export default function ReportDetailModal({
 
     try {
       await axiosInstance.delete(`/markers/${data.markerId}`);
-      alert('마커가 삭제되었습니다.');
+      toast.success('마커가 삭제되었습니다.');
       onClose(); // 모달 닫기
     } catch (err) {
       console.error('마커 삭제 실패:', err);
-      alert('마커 삭제에 실패했습니다.');
+      toast.error('마커 삭제에 실패했습니다.');
     }
   };
 

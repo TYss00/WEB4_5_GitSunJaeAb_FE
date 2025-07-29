@@ -7,6 +7,7 @@ import ManageCardFormCard from './card/ManageCardFormCard';
 import ManageAddCard from './card/ManageAddCard';
 import { CustomMarker } from '@/types/admin';
 import ManageCardSkeleton from './skeleton/ManageCardSkeleton';
+import { toast } from 'react-toastify';
 
 export default function MarkerManage() {
   const [markers, setMarkers] = useState<CustomMarker[]>([]);
@@ -48,7 +49,7 @@ export default function MarkerManage() {
 
   const handleSubmit = async () => {
     if (!newMarker.name.trim()) {
-      alert('마커 이름을 입력하세요');
+      toast.error('마커 이름을 입력하세요');
       return;
     }
 
@@ -74,10 +75,10 @@ export default function MarkerManage() {
       setMarkers((prev) => [...prev, addedMarker]);
       setNewMarker({ name: '', image: null });
       setShowForm(false);
-      alert('마커가 성공적으로 추가되었습니다.');
+      toast.success('마커가 성공적으로 추가되었습니다.');
     } catch (err) {
       console.error('마커 추가 실패:', err);
-      alert('마커 추가 중 오류 발생');
+      toast.error('마커 추가 중 오류 발생');
     }
   };
 
@@ -116,10 +117,10 @@ export default function MarkerManage() {
       );
       setEditingId(null);
       setEditedMarker({ name: '', image: null });
-      alert('마커 수정 완료');
+      toast.success('마커 수정 완료');
     } catch (err) {
       console.error('마커 수정 실패:', err);
-      alert('마커 수정 중 오류 발생');
+      toast.error('마커 수정 중 오류 발생');
     }
   };
 
@@ -129,10 +130,10 @@ export default function MarkerManage() {
     try {
       await axiosInstance.delete(`/markers/customImage/${id}`);
       setMarkers((prev) => prev.filter((m) => m.id !== id));
-      alert('마커 삭제 완료');
+      toast.success('마커 삭제 완료');
     } catch (err) {
       console.error('마커 삭제 실패:', err);
-      alert('마커 삭제 중 오류 발생');
+      toast.error('마커 삭제 중 오류 발생');
     }
   };
 

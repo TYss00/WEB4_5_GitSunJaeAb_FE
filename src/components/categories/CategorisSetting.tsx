@@ -6,6 +6,7 @@ import Button from '../ui/Button';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { fetchCategories, postCategoryInterests } from '@/libs/category';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export default function CategoriesSetting() {
   const router = useRouter();
@@ -29,17 +30,17 @@ export default function CategoriesSetting() {
   const { mutate: submitInterests, isPending } = useMutation({
     mutationFn: postCategoryInterests,
     onSuccess: () => {
-      alert('관심 분야 등록 완료!');
+      toast.success('관심 분야 등록 완료!');
       router.push('/dashbord');
     },
     onError: () => {
-      alert('등록 중 오류가 발생했습니다.');
+      toast.error('등록 중 오류가 발생했습니다.');
     },
   });
 
   const handleSubmit = () => {
     if (selected.length === 0) {
-      alert('1개 이상 선택해주세요.');
+      toast.error('1개 이상 선택해주세요.');
       return;
     }
 

@@ -8,6 +8,7 @@ import { useAuthStore } from '@/store/useAuthStore';
 import axiosInstance from '@/libs/axios';
 import SearchInputs from '../ui/SearchInputs';
 import LoadingSpener from '../common/LoadingSpener';
+import { toast } from 'react-toastify';
 
 const TABS = ['전체 사용자', '관리자', '블랙 리스트'];
 
@@ -69,10 +70,10 @@ export default function UserManagement() {
         )
       );
 
-      alert(data.message || '블랙리스트 상태가 변경되었습니다.');
+      toast.success(data.message || '블랙리스트 상태가 변경되었습니다.');
     } catch (err) {
       console.error('블랙리스트 업데이트 실패:', err);
-      alert('블랙리스트 상태를 변경할 수 없습니다.');
+      toast.error('블랙리스트 상태를 변경할 수 없습니다.');
     } finally {
       setLoadingUserId(null);
     }
@@ -97,10 +98,10 @@ export default function UserManagement() {
         prev.map((u) => (u.id === id ? { ...u, role: newRole } : u))
       );
 
-      alert(data.message || '관리자 권한이 변경되었습니다.');
+      toast.success(data.message || '관리자 권한이 변경되었습니다.');
     } catch (err) {
       console.error('권한 변경 실패:', err);
-      alert('관리자 권한을 변경할 수 없습니다.');
+      toast.error('관리자 권한을 변경할 수 없습니다.');
     } finally {
       setLoadingUserId(null);
     }
@@ -114,10 +115,10 @@ export default function UserManagement() {
       await axiosInstance.delete(`/members/${id}`);
 
       setMembers((prev) => prev.filter((user) => user.id !== id));
-      alert('사용자가 성공적으로 삭제되었습니다.');
+      toast.success('사용자가 성공적으로 삭제되었습니다.');
     } catch (err) {
       console.error('회원 삭제 실패:', err);
-      alert('회원 삭제 중 오류가 발생했습니다.');
+      toast.error('회원 삭제 중 오류가 발생했습니다.');
     }
   };
 

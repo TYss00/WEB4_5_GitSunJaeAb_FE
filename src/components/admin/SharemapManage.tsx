@@ -5,6 +5,7 @@ import { Map } from 'lucide-react';
 import { Roadmap } from '@/types/admin';
 import axiosInstance from '@/libs/axios';
 import LoadingSpener from '../common/LoadingSpener';
+import { toast } from 'react-toastify';
 
 export default function SharemapManage() {
   const [roadmaps, setRoadmaps] = useState<Roadmap[]>([]);
@@ -83,10 +84,10 @@ export default function SharemapManage() {
     try {
       await axiosInstance.delete(`/roadmaps/${id}`);
       setRoadmaps((prev) => prev.filter((roadmap) => roadmap.id !== id));
-      alert('삭제되었습니다.');
+      toast.success('삭제되었습니다.');
     } catch (err) {
       console.error('삭제 실패:', err);
-      alert('삭제 중 오류가 발생했습니다.');
+      toast.error('삭제 중 오류가 발생했습니다.');
     }
   };
 

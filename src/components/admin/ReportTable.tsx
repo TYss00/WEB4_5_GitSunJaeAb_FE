@@ -6,6 +6,7 @@ import { DisplayReport, Report, ReportResponse } from '@/types/admin';
 import ReportDetailModal from './ReportDetailModal';
 import axiosInstance from '@/libs/axios';
 import LoadingSpener from '../common/LoadingSpener';
+import { toast } from 'react-toastify';
 
 const TABS = ['전체', '대기중', '완료'];
 
@@ -84,10 +85,10 @@ export default function ReportTable() {
       setReports((prev) =>
         prev.map((r) => (r.id === reportId ? { ...r, status: '완료' } : r))
       );
-      alert('상태가 완료되었습니다.');
+      toast.success('상태가 완료되었습니다.');
     } catch (err) {
       console.error('상태 업데이트 실패:', err);
-      alert('상태 변경에 실패했습니다.');
+      toast.error('상태 변경에 실패했습니다.');
     }
   };
 
@@ -112,7 +113,7 @@ export default function ReportTable() {
     } else if (contentType === '퀘스트' && quest !== null) {
       deleteUrl = `/quests/${quest}`;
     } else {
-      alert('삭제할 게시글 ID가 없습니다.');
+      toast.error('삭제할 게시글 ID가 없습니다.');
       return;
     }
 
@@ -123,11 +124,11 @@ export default function ReportTable() {
       const res = await axiosInstance.delete(deleteUrl);
       if (res.status !== 200) throw new Error('삭제 실패');
 
-      alert('게시글이 삭제되었습니다.');
+      toast.success('게시글이 삭제되었습니다.');
       setReports((prev) => prev.filter((r) => r.id !== report.id));
     } catch (err) {
       console.error(err);
-      alert('삭제 중 오류가 발생했습니다.');
+      toast.error('삭제 중 오류가 발생했습니다.');
     }
   };
 

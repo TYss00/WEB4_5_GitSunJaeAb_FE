@@ -8,6 +8,7 @@ import ManageCardFormCard from './card/ManageCardFormCard';
 import ManageAddCard from './card/ManageAddCard';
 import ManageCardModal from './modal/ManageCardModal';
 import ManageCardSkeleton from './skeleton/ManageCardSkeleton';
+import { toast } from 'react-toastify';
 
 export default function CategoryManage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -44,7 +45,7 @@ export default function CategoryManage() {
     description: string;
   }) => {
     if (!name.trim()) {
-      alert('카테고리 이름을 입력하세요');
+      toast.error('카테고리 이름을 입력하세요');
       return;
     }
 
@@ -74,10 +75,10 @@ export default function CategoryManage() {
 
       setCategories((prev) => [...prev, addedCategory]);
       setShowForm(false);
-      alert('카테고리가 성공적으로 추가되었습니다.');
+      toast.success('카테고리가 성공적으로 추가되었습니다.');
     } catch (error) {
       console.error('POST 요청 실패:', error);
-      alert('카테고리 추가 중 오류가 발생했습니다.');
+      toast.error('카테고리 추가 중 오류가 발생했습니다.');
     }
   };
 
@@ -134,10 +135,10 @@ export default function CategoryManage() {
 
       setEditingId(null);
       setEditedCategory({ name: '', image: null });
-      alert('카테고리 수정이 완료되었습니다.');
+      toast.success('카테고리 수정이 완료되었습니다.');
     } catch (err) {
       console.error('카테고리 수정 실패:', err);
-      alert('카테고리 수정 중 오류가 발생했습니다.');
+      toast.error('카테고리 수정 중 오류가 발생했습니다.');
     }
   };
 
@@ -186,10 +187,10 @@ export default function CategoryManage() {
         )
       );
 
-      alert('카테고리 수정 완료!');
+      toast.success('카테고리 수정 완료!');
     } catch (err) {
       console.error(err);
-      alert('카테고리 수정 실패');
+      toast.error('카테고리 수정 실패');
     }
   };
 
@@ -201,10 +202,10 @@ export default function CategoryManage() {
       await axiosInstance.delete(`/categories/${id}`);
 
       setCategories((prev) => prev.filter((cat) => cat.id !== id));
-      alert('카테고리가 삭제되었습니다.');
+      toast.success('카테고리가 삭제되었습니다.');
     } catch (error) {
       console.error('카테고리 삭제 실패:', error);
-      alert('카테고리 삭제 중 오류가 발생했습니다.');
+      toast.error('카테고리 삭제 중 오류가 발생했습니다.');
     }
   };
 

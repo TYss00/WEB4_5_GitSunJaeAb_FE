@@ -2,6 +2,8 @@ import TanstackProvider from '@/providers/TanstackProvider';
 import '../styles/index.css';
 import InitAuthProvider from '@/providers/InitAuthProvider';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata = {
   title: {
@@ -26,7 +28,17 @@ export default function RootLayout({
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
         >
           <TanstackProvider>
-            <InitAuthProvider>{children}</InitAuthProvider>
+            <InitAuthProvider>
+              {children}
+              <ToastContainer
+                position="top-center"
+                autoClose={1000}
+                hideProgressBar={false}
+                closeOnClick
+                pauseOnHover
+                draggable
+              />
+            </InitAuthProvider>
           </TanstackProvider>
         </GoogleOAuthProvider>
       </body>
