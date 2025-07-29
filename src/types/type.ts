@@ -4,7 +4,6 @@ export type HeaderProps = {
   isAdmin?: boolean
 }
 
-
 export type CategoryAddCardProps = {
   type?: 'category' | 'marker'
   onClick?: () => void
@@ -24,6 +23,7 @@ export type RoadMapCardProps = {
 }
 
 export type QuestCardProps = {
+  id: number
   isInProgress?: boolean
   mapImageUrl: string
   title: string
@@ -93,10 +93,10 @@ export type LayerDetailProps = {
 }
 
 export type ShareLayerEditProps = {
-  title: string;
-  isTextArea?: boolean;
-  defaultOpen?: boolean;
-};
+  title: string
+  isTextArea?: boolean
+  defaultOpen?: boolean
+}
 
 export type ToggleProps = {
   label: '공개' | '경로' | '애니메이션'
@@ -214,11 +214,32 @@ export type MarkerInfo = {
   member: Member
 }
 
+export type QuestInfo = {
+  id: number
+  title: string
+  questImage: string
+  description: string
+  hint: string
+  deadline: string
+  createdAt: string
+  completedAt: string
+  updatedAt: string
+  deletedAt: string
+  member: Member
+  viewCount: number
+  isActive: true
+}
+
+export type QuestDetailData = {
+  quest: QuestInfo
+  comments: CommentInfo[]
+}
+
 export type RoadmapWriteProps = {
   categories: CategoryInfo[]
 }
 
-export type RoadmapDetailProps = {
+export type RoadmapDetailData = {
   roadmap: RoadmapInfo
   comments: CommentInfo[]
 }

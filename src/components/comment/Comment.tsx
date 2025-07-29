@@ -1,3 +1,5 @@
+'use client'
+
 import { CommentInfo } from '@/types/type'
 import CommentCount from './CommentCount'
 import CommentForm from './CommentForm'

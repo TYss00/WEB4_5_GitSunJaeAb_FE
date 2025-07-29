@@ -8,7 +8,7 @@ type Props = {
 
 export default function QuestPlayForm({ onBack }: Props) {
   return (
-    <div className="w-[428px] border border-[var(--gray-200)] rounded-[10px] p-4">
+    <div className="w-full border border-[var(--gray-200)] rounded-[10px] p-4">
       {/* 뒤로가기 */}
       <button
         onClick={onBack}

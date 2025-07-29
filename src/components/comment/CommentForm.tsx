@@ -40,7 +40,7 @@ export default function CommentForm({
     try {
       const res = await axiosInstance.post(url, body)
       console.log(res)
-      //백앤드의 응답형식 수정 후 정상 동작 예정입니다.
+
       onAddComment(res.data.comment)
       setContent('')
     } catch (err) {
