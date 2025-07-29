@@ -4,6 +4,7 @@ import { reverseGeocode } from '@/libs/geocode';
 import useShareStore from '@/store/useShareStore';
 import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
 import { useCallback, useRef } from 'react';
+import { toast } from 'react-toastify';
 
 const containerStyle = {
   width: '100%',
@@ -39,7 +40,7 @@ export default function GoogleMapWrapper() {
         selectedLayerId === 'all' ||
         isNaN(Number(selectedLayerId))
       ) {
-        alert('마커를 추가하려면 먼저 레이어를 선택하세요.');
+        toast.error('마커를 추가하려면 먼저 레이어를 선택하세요.');
         return;
       }
 
@@ -57,8 +58,8 @@ export default function GoogleMapWrapper() {
         description: '',
         address,
         color: '#FF0000',
-        imageUrl: '',
-        layer: Number(selectedLayerId),
+        customImageId: '',
+        layerTempId: Number(selectedLayerId),
       });
     },
     [addMarker, selectedLayerId]
@@ -79,7 +80,7 @@ export default function GoogleMapWrapper() {
       >
         {filteredMarkers.map((marker) => (
           <MarkerF
-            key={marker.id}
+            key={marker.markerTempId}
             position={{ lat: marker.lat, lng: marker.lng }}
           />
         ))}

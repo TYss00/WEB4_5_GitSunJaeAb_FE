@@ -6,6 +6,8 @@ import Button from '@/components/ui/Button';
 import { AdminNoticePayload, Notice } from '@/types/admin';
 import axiosInstance from '@/libs/axios';
 import { Megaphone } from 'lucide-react';
+import LoadingSpener from '../common/LoadingSpener';
+import { toast } from 'react-toastify';
 
 export default function AdminNoticeManager() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,6 +29,8 @@ export default function AdminNoticeManager() {
   const [selectedTypeTab, setSelectedTypeTab] = useState('전체');
 
   const [notices, setNotices] = useState<Notice[]>([]);
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const filteredNotices =
     selectedTypeTab === '전체'
@@ -54,10 +58,13 @@ export default function AdminNoticeManager() {
 
   const fetchNotices = async () => {
     try {
+      setIsLoading(true);
       const res = await axiosInstance.get('/admin/announcements');
       setNotices(res.data.announcements);
     } catch (err) {
       console.error('공지사항 불러오기 실패:', err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -68,11 +75,11 @@ export default function AdminNoticeManager() {
   }) => {
     try {
       await axiosInstance.post('/admin/announcements', payload);
-      alert('공지 등록 완료');
+      toast.success('공지 등록 완료');
       fetchNotices();
     } catch (err) {
       console.error('공지 등록 실패:', err);
-      alert('공지 등록 중 오류 발생');
+      toast.error('공지 등록 중 오류 발생');
     }
   };
 
@@ -82,11 +89,11 @@ export default function AdminNoticeManager() {
   ) => {
     try {
       await axiosInstance.put(`/admin/announcements/${id}`, payload);
-      alert('공지 수정 완료');
+      toast.success('공지 수정 완료');
       fetchNotices();
     } catch (err) {
       console.error('공지 수정 실패:', err);
-      alert('공지 수정 중 오류 발생');
+      toast.error('공지 수정 중 오류 발생');
     }
   };
 
@@ -94,11 +101,11 @@ export default function AdminNoticeManager() {
     if (confirm(`공지 "${title}"를 삭제하시겠습니까?`)) {
       try {
         await axiosInstance.delete(`/admin/announcements/${id}`);
-        alert('공지 삭제 완료');
+        toast.success('공지 삭제 완료');
         fetchNotices();
       } catch (err) {
         console.error('공지 삭제 실패:', err);
-        alert('공지 삭제 중 오류 발생');
+        toast.error('공지 삭제 중 오류 발생');
       }
     }
   };
@@ -107,6 +114,13 @@ export default function AdminNoticeManager() {
     fetchNotices();
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="w-full h-[600px] flex items-center justify-center">
+        <LoadingSpener />
+      </div>
+    );
+  }
   return (
     <section className="w-[900px] h-[420px] space-y-6">
       <div className="border border-[var(--gray-100)] rounded-lg p-6 space-y-4">

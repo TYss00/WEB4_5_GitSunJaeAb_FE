@@ -1,6 +1,5 @@
 'use client';
 
-// import Image from 'next/image';
 import Input from '../ui/Input';
 import Link from 'next/link';
 import Button from '../ui/Button';
@@ -13,6 +12,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/useAuthStore';
 import { setAccessTokenToStore } from '@/utils/setAccessTokenToStore';
 import Image from 'next/image';
+import { toast } from 'react-toastify';
 
 export default function Login() {
   const router = useRouter();
@@ -34,7 +34,7 @@ export default function Login() {
     onSuccess: async (data) => {
       const accessToken = data.token?.accessToken;
       if (!accessToken) {
-        alert('AccessToken 없음');
+        toast.error('로그인 실패');
         return;
       }
 
@@ -49,20 +49,20 @@ export default function Login() {
 
       useAuthStore.getState().setUser(user);
 
-      // 토스트 메시지로 변경
-      alert('로그인 성공');
-
       // 처음 로그인 시 카테고리 설정
       if (user.loginCount === 1) {
         router.push('/categories');
+      } else if (user.role === 'ROLE_ADMIN') {
+        router.push('/admin/report');
       } else {
-        // 아니면 메인대시보드로 이동
         router.push('/dashbord');
       }
+
+      toast.success('로그인 성공');
     },
     onError: (error: unknown) => {
       const err = error as AxiosError<{ message?: string }>;
-      alert(err.response?.data?.message || '로그인 실패');
+      toast.error(err.response?.data?.message || '로그인 실패');
     },
   });
 
@@ -70,7 +70,7 @@ export default function Login() {
     e.preventDefault();
 
     if (!form.email || !form.password) {
-      return alert('이메일과 비밀번호를 입력해주세요.');
+      return toast.error('이메일과 비밀번호를 입력해주세요.');
     }
 
     loginMutate(form);

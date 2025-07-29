@@ -1,7 +1,7 @@
 'use client';
 
+import { MarkerWithAddress } from '@/types/share';
 import { MapPin } from 'lucide-react';
-import { MarkerWithAddress } from '@/store/useShareStore';
 
 interface ShareMarkerDetailProps {
   marker: MarkerWithAddress;

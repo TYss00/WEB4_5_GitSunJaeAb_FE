@@ -11,6 +11,7 @@ import { useProfileEditStore } from '@/store/profileeditStore';
 import axiosInstance from '@/libs/axios';
 import { useProfileStore } from '@/store/profileStore';
 import { useAuthStore } from '@/store/useAuthStore';
+import { toast } from 'react-toastify';
 
 const TABS = ['프로필', '비밀번호', '관심 분야', '업적'];
 
@@ -30,11 +31,11 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
 
     try {
       await axiosInstance.delete('/members/withdraw');
-      alert('회원탈퇴가 완료되었습니다.');
+      toast.success('회원탈퇴가 완료되었습니다.');
       handleClose();
     } catch (err) {
       console.error(err);
-      alert('회원탈퇴 중 오류가 발생했습니다.');
+      toast.error('회원탈퇴 중 오류가 발생했습니다.');
     }
   };
 
@@ -61,19 +62,19 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
 
         await fetchMember();
 
-        alert('저장 완료');
+        toast.success('저장 완료');
       } else if (activeTab === '비밀번호') {
         const { password, newPassword, confirmPassword } =
           useProfileEditStore.getState();
 
         if (!password || !newPassword || !confirmPassword) {
-          alert('모든 비밀번호 필드를 입력해주세요.');
+          toast.error('모든 비밀번호 필드를 입력해주세요.');
           setIsSaving(false);
           return;
         }
 
         if (newPassword !== confirmPassword) {
-          alert('새 비밀번호와 확인이 일치하지 않습니다.');
+          toast.error('새 비밀번호와 확인이 일치하지 않습니다.');
           setIsSaving(false);
           return;
         }
@@ -83,7 +84,7 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
         });
 
         if (verifyRes.data.code !== '2004') {
-          alert('현재 비밀번호가 일치하지 않습니다.');
+          toast.error('현재 비밀번호가 일치하지 않습니다.');
           setIsSaving(false);
           return;
         }
@@ -92,20 +93,20 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
           password: newPassword,
         });
 
-        alert('비밀번호가 성공적으로 변경되었습니다.');
+        toast.success('비밀번호가 성공적으로 변경되었습니다.');
       } else if (activeTab === '관심 분야') {
         const { selectedCategoryIds } = useProfileEditStore.getState();
         await axiosInstance.put('/members/interests', {
           categoryId: selectedCategoryIds,
         });
         await fetchMember();
-        alert('관심 분야가 저장되었습니다.');
+        toast.success('관심 분야가 저장되었습니다.');
       }
 
       handleClose();
     } catch (err) {
       console.error(err);
-      alert('저장 실패');
+      toast.error('저장 실패');
     } finally {
       setIsSaving(false);
     }

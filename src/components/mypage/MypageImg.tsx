@@ -8,7 +8,7 @@ export default function MypageImg() {
       {/* 나중에 이미지 어울리는거 넣기 */}
       <div className="w-full h-[300px] bg-gray-300 relative">
         <Image
-          src="/mypageimg.svg"
+          src="/mypagemapimg.png"
           alt="배경 이미지"
           fill
           priority

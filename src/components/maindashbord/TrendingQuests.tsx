@@ -149,7 +149,7 @@ export default function TrendingQuests() {
                           onError={() => setImgError(true)}
                           alt="title"
                           fill
-                          sizes="100vw"
+                          sizes="100vw, 260px"
                           className="object-cover"
                         />
                       </div>
