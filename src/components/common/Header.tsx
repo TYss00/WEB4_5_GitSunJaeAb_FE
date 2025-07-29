@@ -74,6 +74,8 @@ export default function Header({ isAdmin = false }: HeaderProps) {
     isLoadingAchievements,
     isLoadingMember,
     user,
+    setAchievedIds,
+    setAchievements,
   ]);
 
   useClickOut(searchRef, () => setIsSearchOpen(false));
