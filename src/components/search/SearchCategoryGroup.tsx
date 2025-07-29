@@ -13,31 +13,28 @@ type SearchCategoryGroupProps = {
   title: string;
   cardType: 'sharemap' | 'roadmap' | 'quest';
   items: ShareMapCardProps[] | RoadMapCardProps[] | QuestCardProps[];
+  query: string;
 };
+
 export default function SearchCategoryGroup({
   title,
   cardType,
   items,
+  query,
 }: SearchCategoryGroupProps) {
   const searchParams = useSearchParams();
-  const query = searchParams.get('q') || '';
   const category = searchParams.get('category');
   const isCategoryPage = category === cardType;
 
-  // 개수 제한은 전체보기 페이지가 아닐 때만 적용
-  const limitedItems = !isCategoryPage
-    ? cardType === 'sharemap'
-      ? items.slice(0, 4)
-      : items.slice(0, 3)
-    : items;
+  const columnCount = cardType === 'sharemap' ? 4 : 3;
 
-  if (limitedItems.length === 0) return null;
+  const limitedItems = !isCategoryPage ? items.slice(0, columnCount) : items;
 
-  // 결과 없으면 렌더링x
-  if (items.length === 0) return null;
+  const emptySlotCount =
+    limitedItems.length < columnCount ? columnCount - limitedItems.length : 0;
 
   return (
-    <section className="mb-13 group">
+    <section className="mb-13 group px-2.5">
       <div className="flex justify-between items-center mb-2.5">
         <h2 className="text-lg font-medium">{title}</h2>
         {!isCategoryPage ? (
@@ -57,22 +54,39 @@ export default function SearchCategoryGroup({
         )}
       </div>
 
-      <div className="flex justify-between flex-wrap gap-y-4">
-        {limitedItems.map((item, idx) => {
-          switch (cardType) {
-            case 'roadmap':
-              return <RoadMapCard key={idx} {...(item as RoadMapCardProps)} />;
-            case 'sharemap':
-              return (
-                <ShareMapCard key={idx} {...(item as ShareMapCardProps)} />
-              );
-            case 'quest':
-              return <QuestCard key={idx} {...(item as QuestCardProps)} />;
-            default:
-              return null;
-          }
-        })}
-      </div>
+      {limitedItems.length === 0 ? (
+        <p className="text-sm text-[var(--gray-300)]">
+          &lsquo;{query}&rsquo; 관련 {title} 검색 결과가 없습니다.
+        </p>
+      ) : (
+        <div
+          className={`grid gap-x-6 gap-y-4 ${
+            columnCount === 4 ? 'grid-cols-4' : 'grid-cols-3'
+          }`}
+        >
+          {limitedItems.map((item, idx) => {
+            switch (cardType) {
+              case 'roadmap':
+                return (
+                  <RoadMapCard key={idx} {...(item as RoadMapCardProps)} />
+                );
+              case 'sharemap':
+                return (
+                  <ShareMapCard key={idx} {...(item as ShareMapCardProps)} />
+                );
+              case 'quest':
+                return <QuestCard key={idx} {...(item as QuestCardProps)} />;
+              default:
+                return null;
+            }
+          })}
+
+          {/* 빈 칸 채우기 */}
+          {Array.from({ length: emptySlotCount }).map((_, idx) => (
+            <div key={`empty-${idx}`} />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

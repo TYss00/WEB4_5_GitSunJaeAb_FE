@@ -3,9 +3,11 @@
 import { RoadMapCardProps } from '@/types/type';
 import { truncateText } from '@/utils/truncateText';
 import { Heart, Eye, Share2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 export default function RoadMapCard({
+  id,
   category,
   mapImageUrl,
   title,
@@ -23,9 +25,16 @@ export default function RoadMapCard({
   };
   const truncatedTitle = truncateText(title, 16);
   const truncatedDescription = truncateText(description, 22);
+
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push(`/dashbord/roadmap/detail/${id}`);
+  };
   return (
     <>
       <div
+        onClick={handleClick}
         className={`flex flex-col w-[330px] h-[278px] border border-[var(--gray-100)] rounded-[10px] overflow-hidden cursor-pointer vtransition-all duration-300 ease-in-out 
              hover:shadow-lg hover:-translate-y-1 ${className}`}
       >
@@ -64,8 +73,14 @@ export default function RoadMapCard({
             <div className="flex items-center gap-[5px]">
               <span
                 className="size-[20px] rounded-full"
-                style={{ backgroundImage: `url(${profileImgUrl})` }}
+                style={{
+                  backgroundImage: `url(${profileImgUrl})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+                }}
               />
+
               <span className="text-[10px] text-[var(--gray-200)]">
                 {author}
               </span>

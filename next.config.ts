@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
       'lyrvpfgoxwppqtuuolav.supabase.co',
       'example.com',
       'mapick.cedartodo.uk',
+      'cdn.example.com',
       'localhost',
     ],
     // 이미지 테스트용
@@ -40,6 +41,9 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+    // SVG 허용 추가
+    dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 };
 

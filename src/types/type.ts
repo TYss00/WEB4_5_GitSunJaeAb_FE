@@ -4,6 +4,7 @@ export type HeaderProps = {
   isAdmin?: boolean
 }
 
+
 export type CategoryAddCardProps = {
   type?: 'category' | 'marker'
   onClick?: () => void
@@ -90,6 +91,12 @@ export type LayerDetailProps = {
   children: ReactNode
   defaultOpen?: boolean
 }
+
+export type ShareLayerEditProps = {
+  title: string;
+  isTextArea?: boolean;
+  defaultOpen?: boolean;
+};
 
 export type ToggleProps = {
   label: '공개' | '경로' | '애니메이션'
@@ -254,11 +261,6 @@ export type MapProps = {
   layerMarkers: LayerMarkers
   onMapClick: (lat: number, lng: number) => void
   onMarkerDelete: (layer: string, id: number) => void
-}
-
-export type SearchRecord = {
-  term: string
-  date: string
 }
 
 export type CategorySetting = {

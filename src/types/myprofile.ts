@@ -33,26 +33,28 @@ export type useProfileStores = {
 export type RoadmapResponse = {
   id: number;
   title: string;
+  bookmarkId?: number;
   isBookmarked?: boolean;
   thumbnail: string | null;
   roadmapType: 'SHARED' | 'PERSONAL';
   isPublic?: boolean;
-  member?: {
-    nickname: string;
-    profileImage: string | null;
-  };
+  member?: ProfileMember;
   isLiked?: boolean;
   createdAt?: string;
+  likeId?: number;
 };
 
 export type Layer = {
   id: number;
   name: string;
-  title: string;
   member: {
+    id: number;
     nickname: string;
   };
-  roadmap: number;
+  roadmap: {
+    id: number;
+    title: string;
+  } | null;
 };
 
 export type LayerWithTitle = Layer & {
@@ -77,7 +79,7 @@ export type MypagePostProps = {
 
 export type ProfileEditState = {
   nickname: string;
-  profileImage: string | null;
+  profileImage: string | File | null;
 
   password: string;
   newPassword: string;
@@ -87,11 +89,26 @@ export type ProfileEditState = {
   setSelectedCategoryIds: (ids: number[]) => void;
 
   setNickname: (nickname: string) => void;
-  setProfileImage: (image: string | null) => void;
+  setProfileImage: (image: string | File | null) => void;
 
   setPassword: (v: string) => void;
   setNewPassword: (v: string) => void;
   setConfirmPassword: (v: string) => void;
 
   reset: () => void;
+};
+
+export type Achievement = {
+  id: number;
+  name: string;
+  image: string;
+};
+
+export type CommentItem = {
+  id: number;
+  content: string;
+  roadmap: number | null;
+  quest: number | null;
+  postTitle: string;
+  createdAt: string;
 };

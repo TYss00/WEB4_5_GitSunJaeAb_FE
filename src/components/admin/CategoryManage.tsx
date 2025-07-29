@@ -1,20 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import CategoryAddCard from '@/components/admin/CategoryAddCard';
 import { Category } from '@/types/admin';
-import CategoryCard from './CategoryCard';
 import axiosInstance from '@/libs/axios';
-import CategoryFormCard from './CategoryFormCard';
+import ManageCard from './card/ManageCard';
+import ManageCardFormCard from './card/ManageCardFormCard';
+import ManageAddCard from './card/ManageAddCard';
+import ManageCardModal from './modal/ManageCardModal';
 
 export default function CategoryManage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [newCategory, setNewCategory] = useState<{
-    name: string;
-    image: File | null;
-  }>({ name: '', image: null });
   const [editedCategory, setEditedCategory] = useState<{
     name: string;
     image: File | null;
@@ -32,18 +29,26 @@ export default function CategoryManage() {
     fetchCategories();
   }, []);
 
-  const handleSubmit = async () => {
-    if (!newCategory.name.trim()) {
+  const handleSubmit = async ({
+    name,
+    image,
+    description,
+  }: {
+    name: string;
+    image: File | null;
+    description: string;
+  }) => {
+    if (!name.trim()) {
       alert('카테고리 이름을 입력하세요');
       return;
     }
 
     try {
       const formData = new FormData();
-      formData.append('name', newCategory.name);
-      formData.append('description', '설명 미구현');
-      if (newCategory.image) {
-        formData.append('image', newCategory.image);
+      formData.append('name', name);
+      formData.append('description', description || '');
+      if (image) {
+        formData.append('imageFile', image);
       }
 
       const res = await axiosInstance.post('/categories', formData, {
@@ -52,24 +57,22 @@ export default function CategoryManage() {
         },
       });
 
+      const imageUrl =
+        res.data.categoryImage || (image && URL.createObjectURL(image));
+
       const addedCategory = {
         ...res.data,
-        name: res.data.name || newCategory.name,
+        name: res.data.name || name,
+        description: res.data.description || description,
+        categoryImage: imageUrl,
       };
 
       setCategories((prev) => [...prev, addedCategory]);
-      setNewCategory({ name: '', image: null });
       setShowForm(false);
       alert('카테고리가 성공적으로 추가되었습니다.');
     } catch (error) {
       console.error('POST 요청 실패:', error);
       alert('카테고리 추가 중 오류가 발생했습니다.');
-    }
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) {
-      setNewCategory((prev) => ({ ...prev, image: e.target.files![0] }));
     }
   };
 
@@ -86,9 +89,12 @@ export default function CategoryManage() {
         formData.append('imageFile', editedCategory.image);
       }
 
+      const existingDescription =
+        categories.find((cat) => cat.id === id)?.description || '';
+
       const params = new URLSearchParams();
       params.append('name', editedCategory.name);
-      params.append('description', '설명 미구현');
+      params.append('description', existingDescription);
 
       const res = await axiosInstance.put(
         `/categories/${id}?${params.toString()}`,
@@ -101,6 +107,11 @@ export default function CategoryManage() {
       );
 
       const updatedCategory = res.data;
+      const imageUrl =
+        updatedCategory.categoryImage ||
+        (editedCategory.image && URL.createObjectURL(editedCategory.image)) ||
+        categories.find((cat) => cat.id === id)?.categoryImage ||
+        '';
 
       setCategories((prev) =>
         prev.map((cat) =>
@@ -109,6 +120,8 @@ export default function CategoryManage() {
                 ...cat,
                 ...updatedCategory,
                 name: updatedCategory.name || editedCategory.name,
+                description: existingDescription,
+                categoryImage: imageUrl,
               }
             : cat
         )
@@ -120,6 +133,58 @@ export default function CategoryManage() {
     } catch (err) {
       console.error('카테고리 수정 실패:', err);
       alert('카테고리 수정 중 오류가 발생했습니다.');
+    }
+  };
+
+  const handleModalEditSubmit = async ({
+    id,
+    name,
+    image,
+    description,
+  }: {
+    id: number;
+    name: string;
+    image: File | null;
+    description: string;
+  }) => {
+    try {
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('description', description);
+      if (image) {
+        formData.append('imageFile', image);
+      }
+
+      const res = await axiosInstance.put(`/categories/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const updated = res.data;
+      const imageUrl =
+        updated.categoryImage ||
+        (image && URL.createObjectURL(image)) ||
+        categories.find((c) => c.id === id)?.categoryImage ||
+        '';
+
+      setCategories((prev) =>
+        prev.map((cat) =>
+          cat.id === id
+            ? {
+                ...cat,
+                name: updated.name || name,
+                description: updated.description || description,
+                categoryImage: imageUrl,
+              }
+            : cat
+        )
+      );
+
+      alert('카테고리 수정 완료!');
+    } catch (err) {
+      console.error(err);
+      alert('카테고리 수정 실패');
     }
   };
 
@@ -143,7 +208,7 @@ export default function CategoryManage() {
       <div className="flex flex-wrap gap-[16px]">
         {categories.map((category) =>
           editingId === category.id ? (
-            <CategoryFormCard
+            <ManageCardFormCard
               key={`edit-${category.id}`}
               name={editedCategory.name}
               image={editedCategory.image}
@@ -155,40 +220,41 @@ export default function CategoryManage() {
               onCancel={() => setEditingId(null)}
             />
           ) : (
-            <CategoryCard
+            <ManageCard
               key={`view-${category.id}`}
-              category={category}
+              name={category.name}
+              image={category.categoryImage}
+              item={category}
+              description={category.description}
               onEditClick={(cat) => {
                 setEditingId(cat.id);
                 setEditedCategory({ name: cat.name, image: null });
               }}
+              onEditSubmit={handleModalEditSubmit}
               onDelete={() => handleDeleteCategory(category.id)}
+              type="category"
             />
           )
         )}
 
-        {showForm ? (
-          <CategoryFormCard
-            key="new-category-form"
-            name={newCategory.name}
-            image={newCategory.image}
-            onNameChange={(name) =>
-              setNewCategory((prev) => ({ ...prev, name }))
+        {showForm && (
+          <ManageCardModal
+            name=""
+            image=""
+            description=""
+            item={{ id: 0 }}
+            onClose={() => setShowForm(false)}
+            onEditSubmit={({ name, image, description }) =>
+              handleSubmit({ name, image, description })
             }
-            onImageChange={handleImageChange}
-            onSubmit={handleSubmit}
-            onCancel={() => {
-              setShowForm(false);
-              setNewCategory({ name: '', image: null });
-            }}
-          />
-        ) : (
-          <CategoryAddCard
-            key="category-add-button"
-            type="category"
-            onClick={() => setShowForm(true)}
           />
         )}
+
+        <ManageAddCard
+          key="category-add-button"
+          type="category"
+          onClick={() => setShowForm(true)}
+        />
       </div>
     </div>
   );
