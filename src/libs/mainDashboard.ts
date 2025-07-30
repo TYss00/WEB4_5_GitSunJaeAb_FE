@@ -13,10 +13,13 @@ export const getRoadmapCount = async (categoryId: number): Promise<number> => {
 
 // 메인대시보드 공유지도 불러오기
 export const getPopularShared = async (): Promise<Roadmap[]> => {
-  const res = await axiosInstance.get<{ roadmaps: Roadmap[] }>('/roadmaps');
-  const shared = res.data.roadmaps.filter(
-    (r) => r.roadmapType === 'SHARED' && r.isPublic
+  const res = await axiosInstance.get<{ roadmaps: Roadmap[] }>(
+    '/roadmaps/shared'
   );
+  const shared = res.data.roadmaps
+    .filter((r) => r.isPublic) // 공개된 지도만
+    .sort((a, b) => b.viewCount - a.viewCount) // 조회수 내림차순
+    .slice(0, 8); // 상위 6~8개만
 
   const withEditorCount = await Promise.all(
     shared.map(async (r) => {
@@ -35,6 +38,30 @@ export const getPopularShared = async (): Promise<Roadmap[]> => {
 
 // 메인대시보드 퀘스트 불러오기
 export const getTrendingQuests = async (): Promise<TrendingQuest[]> => {
-  const res = await axiosInstance.get('/quests');
-  return res.data.quests;
+  const res = await axiosInstance.get<{ quests: TrendingQuest[] }>(
+    '/quests?isActive=true'
+  );
+
+  const quests = res.data.quests;
+
+  const detailedQuests = await Promise.all(
+    quests.map(async (quest) => {
+      try {
+        const detailRes = await axiosInstance.get(`/quests/${quest.id}/detail`);
+        const viewCount = detailRes.data.quest.viewCount ?? 0;
+        return {
+          ...quest,
+          viewCount,
+        };
+      } catch (err) {
+        console.error(`퀘스트 ${quest.id} 상세 조회 실패`, err);
+        return {
+          ...quest,
+          viewCount: 0,
+        };
+      }
+    })
+  );
+
+  return detailedQuests.sort((a, b) => b.viewCount - a.viewCount).slice(0, 6);
 };
