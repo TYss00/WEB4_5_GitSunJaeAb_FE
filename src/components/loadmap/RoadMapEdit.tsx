@@ -223,6 +223,7 @@ export default function RoadMapEdit() {
       const roadmap = await roadmapRes.data
       console.log(roadmap)
       toast.success('로드맵 수정 완료')
+      router.push('/dashbord/roadmap')
     } catch (error) {
       console.error('로드맵 수정 실패', error)
       toast.error('로드맵 수정 중 오류가 발생했습니다.')
