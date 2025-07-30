@@ -215,7 +215,9 @@ export default function ShareClickDetail() {
             </div>
             <div className="flex gap-[5px] items-center mb-5">
               <Image
-                src={roadmap?.member.profileImage || '/assets/useProfile.png'}
+                src={
+                  roadmap?.member.profileImage || '/assets/defaultProfile.png'
+                }
                 alt="작성자 프로필"
                 width={25}
                 height={25}
