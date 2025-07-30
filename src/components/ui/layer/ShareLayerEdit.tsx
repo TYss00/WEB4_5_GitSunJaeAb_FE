@@ -12,6 +12,7 @@ export default function ShareLayerEdit({
   isTextArea = true,
   defaultOpen = true,
   mapRef,
+  onSelect,
 }: ShareLayerEditProps & {
   mapRef: React.RefObject<google.maps.Map | null>;
   layer: Layer;
@@ -48,7 +49,12 @@ export default function ShareLayerEdit({
             ? 'bg-[#EBF2F2] rounded-t-[5px]'
             : 'bg-[var(--gray-40)] rounded-[5px]'
         }`}
-        onClick={() => setIsOpen((prev) => !prev)}
+        onClick={() => {
+          setIsOpen((prev) => !prev);
+          if (!isOpen && onSelect) {
+            onSelect();
+          }
+        }}
       >
         <div className="flex gap-[10px] items-center">
           <Layers
@@ -66,10 +72,14 @@ export default function ShareLayerEdit({
                 className="text-[18px] bg-transparent border-b border-[var(--primary-300)] focus:outline-none"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                onBlur={() => {
+                  setTimeout(() => {
+                    handleRename();
+                  }, 100);
+                }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleRename();
                 }}
-                onBlur={handleRename}
               />
             ) : (
               <span

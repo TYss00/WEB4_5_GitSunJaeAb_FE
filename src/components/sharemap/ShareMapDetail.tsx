@@ -11,15 +11,20 @@ import {
   MapPin,
   Siren,
   PencilLine,
+  Trash2,
+  Ellipsis,
 } from 'lucide-react';
 import ReportModal from '../common/modal/ReportModal';
 // import Comment from '../comment/Comment';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import axiosInstance from '@/libs/axios';
 import { RoadmapDetailResponse } from '@/types/share';
 import { GoogleMap, MarkerF } from '@react-google-maps/api';
 import { useAuthStore } from '@/store/useAuthStore';
+import ConfirmModal from '../common/modal/ConfirmModal';
+import { CommentInfo } from '@/types/type';
+import Comment from '../comment/Comment';
 
 const containerStyle = {
   width: '100%',
@@ -32,11 +37,16 @@ export default function ShareMapDetail() {
   const currentUserId = useAuthStore((state) => state.user?.id);
   const [roadmap, setRoadmap] = useState<RoadmapDetailResponse | null>(null);
   const [editors, setEditors] = useState<
-    { memberId: number; name: string; profileImage: string }[]
+    { memberId: number; nickname: string; profileImage: string }[]
   >([]);
   const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [commentsInfo, setCommentsInfo] = useState<CommentInfo[]>([]);
+  const router = useRouter();
 
   const mapRef = useRef<google.maps.Map | null>(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const fetchRoadmap = async () => {
@@ -57,11 +67,39 @@ export default function ShareMapDetail() {
       }
     };
 
+    const fetchComments = async () => {
+      try {
+        const res = await axiosInstance.get(
+          `/comments/roadmaps?roadmapId=${id}`
+        );
+        setCommentsInfo(res.data.comments);
+      } catch (error) {
+        console.error('댓글 불러오기 실패:', error);
+      }
+    };
+
     if (id) {
       fetchRoadmap();
       fetchEditors();
+      fetchComments();
     }
   }, [id]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   if (!roadmap) return <div className="text-center py-20">로딩 중...</div>;
 
@@ -72,6 +110,18 @@ export default function ShareMapDetail() {
     }
     return fullAddress;
   }
+
+  const handleDelete = async () => {
+    try {
+      await axiosInstance.delete(`/roadmaps/${id}`);
+      router.push('/dashbord/sharemap');
+    } catch (error) {
+      console.error('삭제 실패: ', error);
+      alert('삭제 권한이 없거나 실패했습니다.');
+    } finally {
+      setIsDeleteOpen(false);
+    }
+  };
 
   return (
     <>
@@ -106,13 +156,43 @@ export default function ShareMapDetail() {
               <span>{roadmap.viewCount}</span>
             </div>
             {currentUserId === roadmap.member.id ? (
-              <Link href={`/dashbord/sharemap/detail/${id}/edit`}>
-                <PencilLine size={18} className="cursor-pointer" />
-              </Link>
+              // 작성자일 경우: 점 3개 메뉴 (수정/삭제)
+              <div className="relative" ref={dropdownRef}>
+                <Ellipsis
+                  size={20}
+                  className="cursor-pointer"
+                  onClick={() => setIsMenuOpen((prev) => !prev)}
+                />
+                {isMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow z-50">
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        router.push(`/dashbord/sharemap/detail/${id}/edit`);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2"
+                    >
+                      <PencilLine size={18} />
+                      수정하기
+                    </button>
+                    <div className="border-t border-gray-200 mx-2" />
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setIsDeleteOpen(true);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2 text-red-500"
+                    >
+                      <Trash2 size={18} />
+                      삭제하기
+                    </button>
+                  </div>
+                )}
+              </div>
             ) : (
               <Siren
                 size={18}
-                className="cursor-pointer"
+                className="cursor-pointer text-red-500"
                 onClick={() => setIsReportOpen(true)}
               />
             )}
@@ -123,7 +203,9 @@ export default function ShareMapDetail() {
           <h1 className="text-[20px] font-bold text-[var(--black)] mb-[11px]">
             {roadmap.title}
           </h1>
-          <p className="text-[16px] text-[#000000]">{roadmap.description}</p>
+          <p className="text-[16px] text-[#000000] mb-[11px]">
+            {roadmap.description}
+          </p>
         </div>
 
         <div className="w-full h-[500px] rounded-[10px] overflow-hidden mb-[30px] relative">
@@ -165,32 +247,34 @@ export default function ShareMapDetail() {
         <div className="flex gap-6">
           <section className="flex-1">
             <div className="w-full h-[360px] py-4 rounded-md flex items-center justify-center">
-              {/* <Comment postId="adf" /> */}
+              <Comment variant="sharemap" commentsInfo={commentsInfo} />
             </div>
           </section>
 
-          <section className="w-[428px] border border-[var(--gray-50)] rounded-md p-4">
+          <section className="w-[428px] border border-[var(--gray-50)] rounded-md p-4 flex flex-col h-[360px]">
             <h2 className="text-[15px] font-semibold mb-4">
               참여자 {editors.length}
             </h2>
 
             {/* 스크롤 가능한 참여자 리스트 */}
-            <div className="space-y-[16px] max-h-[240px] overflow-y-auto pr-1">
+            <div className="space-y-[16px] pr-1 overflow-y-auto flex-grow">
               {editors.map((editor) => (
                 <div key={editor.memberId} className="flex items-center gap-2">
                   <Image
-                    src={editor.profileImage || '/assets/userProfile.png'}
-                    alt={editor.name}
+                    src={editor.profileImage || '/assets/defaultProfile.png'}
+                    alt={editor.nickname}
                     width={34}
                     height={34}
                     className="w-[34px] h-[34px] rounded-full"
                   />
                   <span className="text-[15px] text-[var(--black)]">
-                    {editor.name}
+                    {editor.nickname}
                   </span>
                 </div>
               ))}
             </div>
+
+            {/* 하단 고정 버튼 */}
             <Link href={`/dashbord/sharemap/detail/${id}/preview/mapjoin`}>
               <Button className="w-full h-[38px] mt-4">참여하기</Button>
             </Link>
@@ -198,6 +282,14 @@ export default function ShareMapDetail() {
         </div>
       </main>
       {isReportOpen && <ReportModal onClose={() => setIsReportOpen(false)} />}
+      {isDeleteOpen && (
+        <ConfirmModal
+          isOpen={isDeleteOpen}
+          onClose={() => setIsDeleteOpen(false)}
+          onDelete={handleDelete}
+          confirmType="post"
+        />
+      )}
     </>
   );
 }
