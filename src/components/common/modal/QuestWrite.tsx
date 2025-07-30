@@ -62,19 +62,21 @@ export default function QuestWrite() {
       formData.append('questRequest', RequestBlob);
       formData.append('imageFile', imageFile);
 
-      await axiosInstance.post('/quests', formData, {
+      const res = await axiosInstance.post('/quests', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
       // toast.success('퀘스트가 성공적으로 등록되었습니다.')
-      // const message = res.data?.message ?? '';
+      const message =
+        typeof res.data?.message === 'string' ? res.data.message : '';
 
-      // if (message.includes('업적')) {
-      //   toast.success(message); // "탐험의 시작 업적을 달성했어요!" 같은 메시지
-      // } else {
-      //   toast.success('퀘스트가 성공적으로 등록되었습니다.');
-      // }
+      if (message.includes('업적')) {
+        toast.success(message); // "탐험의 시작 업적을 달성했어요!" 같은 메시지
+      } else {
+        toast.success('퀘스트가 성공적으로 등록되었습니다.');
+      }
+
       handleCancel();
     } catch (err) {
       console.error('퀘스트 등록 실패', err);
