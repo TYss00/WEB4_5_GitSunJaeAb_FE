@@ -194,11 +194,8 @@ export default function ShareClickDetail() {
               <button>
                 <Siren
                   size={18}
-                  className="cursor-pointer"
-                  onClick={() => {
-                    console.log('신고 대상 ID:', id);
-                    setIsReportOpen(true);
-                  }}
+                  className="cursor-pointer text-red-500"
+                  onClick={() => setIsReportOpen(true)}
                 />
               </button>
             </div>
@@ -215,7 +212,9 @@ export default function ShareClickDetail() {
             </div>
             <div className="flex gap-[5px] items-center mb-5">
               <Image
-                src={roadmap?.member.profileImage || '/assets/useProfile.png'}
+                src={
+                  roadmap?.member.profileImage || '/assets/defaultProfile.png'
+                }
                 alt="작성자 프로필"
                 width={25}
                 height={25}

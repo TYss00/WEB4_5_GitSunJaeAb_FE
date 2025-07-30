@@ -10,11 +10,22 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
+// 재발급 관련 상태 변수들
+let isRefreshing = false;
+let failedQueue: ((token: string | null) => void)[] = [];
+
+const processQueue = (token: string | null) => {
+  failedQueue.forEach((cb) => cb(token));
+  failedQueue = [];
+};
+
 // 요청 시 accessToken 헤더 추가
 axiosInstance.interceptors.request.use((config) => {
   const token =
     typeof window !== 'undefined' && localStorage.getItem('accessToken');
+
   if (token) {
+    config.headers = config.headers || {};
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -35,21 +46,50 @@ axiosInstance.interceptors.response.use(
     const code = error.response?.data?.code;
 
     if (code === '2199' && !originalRequest._retry) {
-      originalRequest._retry = true;
-
-      const { accessToken } = parseRefreshTokenResponse(error.response);
-      if (!accessToken) {
-        return Promise.reject(error);
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push((token) => {
+            if (token) {
+              originalRequest.headers = {
+                ...originalRequest.headers,
+                Authorization: `Bearer ${token}`,
+              };
+              resolve(axiosInstance(originalRequest));
+            } else {
+              reject(error);
+            }
+          });
+        });
       }
-      applyTokensToState(accessToken);
 
-      originalRequest.headers = {
-        ...originalRequest.headers,
-        Authorization: `Bearer ${accessToken}`,
-      };
+      originalRequest._retry = true;
+      isRefreshing = true;
 
-      // 일반 요청 재시도
-      return axiosInstance(originalRequest);
+      try {
+        // refresh 응답에서 새 accessToken 파싱
+        const { accessToken } = parseRefreshTokenResponse(error.response);
+
+        if (!accessToken) {
+          throw new Error('No accessToken returned');
+        }
+
+        // 상태 및 localStorage에 저장
+        applyTokensToState(accessToken);
+        processQueue(accessToken);
+
+        // 실패했던 요청 재시도
+        originalRequest.headers = {
+          ...originalRequest.headers,
+          Authorization: `Bearer ${accessToken}`,
+        };
+
+        return axiosInstance(originalRequest);
+      } catch (err) {
+        processQueue(null);
+        return Promise.reject(err);
+      } finally {
+        isRefreshing = false;
+      }
     }
 
     return Promise.reject(error);

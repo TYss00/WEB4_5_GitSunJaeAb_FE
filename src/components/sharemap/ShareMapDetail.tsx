@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import Button from '@/components/ui/Button';
 import {
   Calendar,
   ChevronLeft,
@@ -15,7 +14,6 @@ import {
   Ellipsis,
 } from 'lucide-react';
 import ReportModal from '../common/modal/ReportModal';
-// import Comment from '../comment/Comment';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import axiosInstance from '@/libs/axios';
@@ -235,7 +233,7 @@ export default function ShareMapDetail() {
             className="absolute top-3 right-3 z-10"
           >
             <button className="bg-white text-sm text-black px-3 py-1 rounded shadow hover:bg-gray-100">
-              자세히 보기
+              지도 자세히 보기
             </button>
           </Link>
           <GoogleMap
@@ -294,11 +292,6 @@ export default function ShareMapDetail() {
                 </div>
               ))}
             </div>
-
-            {/* 하단 고정 버튼 */}
-            <Link href={`/dashbord/sharemap/detail/${id}/preview/mapjoin`}>
-              <Button className="w-full h-[38px] mt-4">참여하기</Button>
-            </Link>
           </section>
         </div>
       </main>
