@@ -56,6 +56,11 @@ export const socialLogin = async ({
     provider,
     token,
   });
-  console.log('소셜로그인 data : ', data);
+
+  const accessToken = data.token?.accessToken;
+  if (accessToken) {
+    const mod = await import('@/utils/setAccessTokenToStore');
+    await mod.setAccessTokenToStore(accessToken);
+  }
   return data;
 };

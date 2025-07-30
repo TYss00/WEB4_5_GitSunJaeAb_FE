@@ -9,15 +9,21 @@ export default function RequireLogin({
 }: {
   children: React.ReactNode;
 }) {
-  const { accessToken, loading } = useAuthStore();
+  const { accessToken, user, loading, initUser } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (!accessToken && !loading) {
+    if (!accessToken) {
       router.replace('/login');
+    } else if (accessToken && !user) {
+      // accessToken은 있지만 user는 없는 경우 → user 요청
+      initUser();
     }
-  }, [accessToken, loading, router]);
+  }, [accessToken, user, router, initUser]);
 
-  if (!accessToken) return null;
+  // 로딩 중이거나 유저 정보가 아직 없는 경우
+  if (!accessToken || !user || loading) {
+    return null; // 또는 <LoadingSpinner />
+  }
   return <>{children}</>;
 }

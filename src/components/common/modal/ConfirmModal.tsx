@@ -7,7 +7,14 @@ type ConfirmModalProps = {
   confirmType: DeleteType;
 };
 
-type DeleteType = 'post' | 'comment' | 'account';
+type DeleteType =
+  | 'post'
+  | 'comment'
+  | 'account'
+  | 'notice'
+  | 'marker'
+  | 'category'
+  | 'layer';
 
 const deleteMessages: Record<
   DeleteType,
@@ -24,6 +31,22 @@ const deleteMessages: Record<
   account: {
     title: '회원 탈퇴하시겠습니까?',
     description: '탈퇴 시 계정 정보는 복구할 수 없습니다.',
+  },
+  notice: {
+    title: '공지사항을 삭제하시겠습니까?',
+    description: '삭제된 공지사항은 복구할 수 없습니다.',
+  },
+  marker: {
+    title: '마커를 삭제하시겠습니까?',
+    description: '삭제된 마커는 복구할 수 없습니다.',
+  },
+  category: {
+    title: '카테고리를 삭제하시겠습니까?',
+    description: '삭제된 카테고리는 복구할 수 없습니다.',
+  },
+  layer: {
+    title: '찜한 레이어를 삭제하시겠습니까?',
+    description: '삭제된 레이어는 복구할 수 없습니다.',
   },
 };
 

@@ -33,6 +33,7 @@ export type useProfileStores = {
 export type RoadmapResponse = {
   id: number;
   title: string;
+  description?: string;
   bookmarkId?: number | null;
   isBookmarked?: boolean;
   thumbnail: string | null;
@@ -42,6 +43,12 @@ export type RoadmapResponse = {
   isLiked?: boolean;
   createdAt?: string;
   likeId?: number | null;
+  category?: {
+    name: string;
+  };
+  hashtags?: { name: string }[];
+  viewCount?: number;
+  citationCount?: number;
 };
 
 export type Layer = {
@@ -55,6 +62,11 @@ export type Layer = {
     id: number;
     title: string;
   } | null;
+  forkHistories: {
+    forkedRoadmap: {
+      title: string;
+    };
+  }[];
 };
 
 export type LayerWithTitle = Layer & {
@@ -118,10 +130,12 @@ export type CommentItem = {
 export type MemberQuest = {
   id: number;
   title: string;
-  imageUrl: string;
-  createdAt: string;
+  questImage: string;
   description: string;
-  submitAt: string;
+  deadline: string;
+  isActive: boolean;
+  createdAt: string;
+  completedAt?: string | null;
   member: {
     id: number;
     nickname: string;

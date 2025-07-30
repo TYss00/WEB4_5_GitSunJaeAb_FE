@@ -6,11 +6,14 @@ import { Roadmap } from '@/types/admin';
 import axiosInstance from '@/libs/axios';
 import LoadingSpener from '../common/LoadingSpener';
 import { toast } from 'react-toastify';
+import ConfirmModal from '../common/modal/ConfirmModal';
 
 export default function SharemapManage() {
   const [roadmaps, setRoadmaps] = useState<Roadmap[]>([]);
   const [totalMemberCount, setTotalMemberCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -76,17 +79,21 @@ export default function SharemapManage() {
     fetchRoadmaps();
   }, []);
 
-  const handleDelete = async (id: number) => {
-    const confirmDelete = confirm('정말 삭제하시겠습니까?');
-    if (!confirmDelete) return;
+  const handleDelete = async () => {
+    if (deleteTargetId === null) return;
 
     try {
-      await axiosInstance.delete(`/roadmaps/${id}`);
-      setRoadmaps((prev) => prev.filter((roadmap) => roadmap.id !== id));
+      await axiosInstance.delete(`/roadmaps/${deleteTargetId}`);
+      setRoadmaps((prev) =>
+        prev.filter((roadmap) => roadmap.id !== deleteTargetId)
+      );
       toast.success('삭제되었습니다.');
     } catch (err) {
       console.error('삭제 실패:', err);
       toast.error('삭제 중 오류가 발생했습니다.');
+    } finally {
+      setDeleteTargetId(null);
+      setIsModalOpen(false);
     }
   };
 
@@ -167,7 +174,10 @@ export default function SharemapManage() {
                     <td className="py-2 text-[13px] text-center text-[var(--red)]">
                       <button
                         className="underline cursor-pointer"
-                        onClick={() => handleDelete(roadmap.id)}
+                        onClick={() => {
+                          setDeleteTargetId(roadmap.id);
+                          setIsModalOpen(true);
+                        }}
                       >
                         삭제
                       </button>
@@ -177,6 +187,15 @@ export default function SharemapManage() {
               : null}
           </tbody>
         </table>
+        <ConfirmModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            setDeleteTargetId(null);
+            setIsModalOpen(false);
+          }}
+          onDelete={handleDelete}
+          confirmType="post"
+        />
       </div>
     </section>
   );

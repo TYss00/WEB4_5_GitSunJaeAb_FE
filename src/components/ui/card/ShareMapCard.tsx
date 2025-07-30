@@ -17,8 +17,6 @@ export default function ShareMapCard({
   const labelColor = isEvent ? 'var(--blue)' : 'var(--primary-300)';
   const router = useRouter();
 
-  console.log(participants);
-
   const handleClick = () => {
     router.push(`/dashbord/sharemap/detail/${id}`);
   };

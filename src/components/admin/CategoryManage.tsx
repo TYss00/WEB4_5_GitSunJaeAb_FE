@@ -9,6 +9,7 @@ import ManageAddCard from './card/ManageAddCard';
 import ManageCardModal from './modal/ManageCardModal';
 import ManageCardSkeleton from './skeleton/ManageCardSkeleton';
 import { toast } from 'react-toastify';
+import ConfirmModal from '../common/modal/ConfirmModal';
 
 export default function CategoryManage({
   setCount,
@@ -23,6 +24,8 @@ export default function CategoryManage({
     name: string;
     image: File | null;
   }>({ name: '', image: null });
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -201,18 +204,24 @@ export default function CategoryManage({
   };
 
   const handleDeleteCategory = async (id: number) => {
-    const confirmDelete = confirm('정말로 이 카테고리를 삭제하시겠습니까?');
-    if (!confirmDelete) return;
+    setDeleteTargetId(id);
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteTargetId === null) return;
 
     try {
-      await axiosInstance.delete(`/categories/${id}`);
-
-      setCategories((prev) => prev.filter((cat) => cat.id !== id));
+      await axiosInstance.delete(`/categories/${deleteTargetId}`);
+      setCategories((prev) => prev.filter((cat) => cat.id !== deleteTargetId));
       setCount((prev) => prev - 1);
       toast.success('카테고리가 삭제되었습니다.');
     } catch (error) {
       console.error('카테고리 삭제 실패:', error);
       toast.error('카테고리 삭제 중 오류가 발생했습니다.');
+    } finally {
+      setDeleteTargetId(null);
+      setIsConfirmOpen(false);
     }
   };
 
@@ -276,6 +285,12 @@ export default function CategoryManage({
             />
           </>
         )}
+        <ConfirmModal
+          isOpen={isConfirmOpen}
+          onClose={() => setIsConfirmOpen(false)}
+          onDelete={handleConfirmDelete}
+          confirmType="category"
+        />
       </div>
     </div>
   );

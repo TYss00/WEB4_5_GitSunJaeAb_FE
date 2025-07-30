@@ -202,8 +202,14 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
           console.log('마커 생성 응답:', markerRes.data)
         }
       }
-
-      toast.success('로드맵이 성공적으로 생성되었습니다.')
+      // toast.success('로드맵이 성공적으로 생성되었습니다.');
+      // 업적 메시지 토스트 띄우기
+      const message = roadmap.message ?? '';
+      if (message.includes('업적')) {
+        toast.success(message);
+      } else {
+        toast.success('로드맵이 성공적으로 생성되었습니다.');
+      }
     } catch (error) {
       console.error('로드맵 생성 실패', error)
       toast.error('로드맵 생성 중 오류가 발생했습니다.')
