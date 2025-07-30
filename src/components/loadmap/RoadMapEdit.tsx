@@ -4,18 +4,30 @@ import { ChevronDown, ImagePlus, Plus } from 'lucide-react'
 import Button from '../ui/Button'
 import Input from '../ui/Input'
 import Toggle from '../ui/Toggle'
-import LayerEdit from '../ui/layer/LayerEdit'
 import useLayerAdd from '@/hooks/useLayerAdd'
 import { useEffect, useState } from 'react'
 import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
-import { MyZzimLayersInfo } from '@/types/type'
+import { CategoryInfo, MyZzimLayersInfo } from '@/types/type'
 import useHashtags from '@/hooks/useHashtags'
 import RoadMapGoogleWrite from './RoadMapGoogleWrite'
 import axiosInstance from '@/libs/axios'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import { reverseGeocode } from '@/libs/geocode'
+import LayerUpdate from '../ui/layer/LayerUpdate'
+
+type layers = {
+  layer: {
+    name: string
+  }
+  markers: {
+    name: string
+    description: string
+    lat: number
+    lng: number
+  }[]
+}
 
 export default function RoadMapEdit() {
   const { layers, setLayers, newLayerName, setNewLayerName, handleAddLayer } =
@@ -34,6 +46,7 @@ export default function RoadMapEdit() {
   } = useLayerMarkersAdd(layers)
 
   const {
+    setHashtags,
     hashtagInput,
     setHashtagInput,
     hashtags,
@@ -42,7 +55,35 @@ export default function RoadMapEdit() {
     handleKeyDown,
   } = useHashtags()
 
+  const params = useParams()
+  const roadmapId = params?.id as string
+
   useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const res = await axiosInstance.get(`/categories`)
+        const categories = await res.data
+        setCategories(categories.categories)
+      } catch (err) {
+        console.error('카테고리 조회 오류', err)
+      }
+    }
+    const getRoadMapInfo = async () => {
+      try {
+        const res = await axiosInstance.get(`/roadmaps/${roadmapId}`)
+        const roadmapInfo = res.data.roadmap
+        setTitle(roadmapInfo.title)
+        setDescription(roadmapInfo.description)
+        setThumbnailPreview(roadmapInfo.thumbnail)
+        setHashtags(roadmapInfo.hashtags)
+        const layerList = roadmapInfo.layers.map(
+          (item: layers) => item.layer.name
+        )
+        setLayers(layerList)
+      } catch (err) {
+        console.error('로드맵 조회 실패', err)
+      }
+    }
     const getMyZzimLayers = async () => {
       try {
         const res = await axiosInstance.get(`/layers/member`)
@@ -52,8 +93,10 @@ export default function RoadMapEdit() {
         console.log('회원 찜 레이어 조회 오류', err)
       }
     }
+    getCategories()
+    getRoadMapInfo()
     getMyZzimLayers()
-  }, [])
+  }, [roadmapId, setHashtags, setLayers])
 
   const handleDeleteLayer = (index: number) => {
     const layerName = layers[index]
@@ -70,8 +113,10 @@ export default function RoadMapEdit() {
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [categories, setCategories] = useState<CategoryInfo[]>([])
   const [categoryId, setCategoryId] = useState<number | null>(null)
   const [thumbnail, setThumbnail] = useState<File | null>(null)
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null)
   const [isPublic, setIsPublic] = useState(true)
   const [myZzimLayers, setMyZzimLayers] = useState<MyZzimLayersInfo[]>([])
   const router = useRouter()
@@ -80,6 +125,23 @@ export default function RoadMapEdit() {
     setIsPublic(value)
   }
 
+  const handleUpdateLayerTitle = (oldName: string, newName: string) => {
+    // 1. 레이어 이름 배열 변경
+    setLayers((prev) => prev.map((name) => (name === oldName ? newName : name)))
+
+    // 2. 마커 상태 객체 키 변경
+    setLayerMarkers((prev) => {
+      const updated = { ...prev }
+      updated[newName] = updated[oldName]
+      delete updated[oldName]
+      return updated
+    })
+
+    // 3. 선택된 레이어가 바뀐 이름일 경우 갱신
+    if (selectedLayer === oldName) {
+      setSelectedLayer(newName)
+    }
+  }
   //레이어 fork
   const handleZzimLayerSelect = async (
     e: React.ChangeEvent<HTMLSelectElement>
@@ -129,7 +191,7 @@ export default function RoadMapEdit() {
     }
   }
 
-  const handleSubmit = async () => {
+  const handleRoadmapUpdate = async () => {
     try {
       const formData = new FormData()
 
@@ -148,9 +210,9 @@ export default function RoadMapEdit() {
       if (thumbnail instanceof File) {
         formData.append('imageFile', thumbnail)
       }
-      // 1. 로드맵 생성
-      const roadmapRes = await axiosInstance.post(
-        `/roadmaps/personal`,
+
+      const roadmapRes = await axiosInstance.put(
+        `/roadmaps/personal/${roadmapId}`,
         formData,
         {
           headers: {
@@ -160,53 +222,10 @@ export default function RoadMapEdit() {
       )
       const roadmap = await roadmapRes.data
       console.log(roadmap)
-      const roadMapId = roadmap.roadmapId
-
-      //2. 레이어 생성 및 마커 생성
-      for (let i = 0; i < layers.length; i++) {
-        const layerName = layers[i]
-
-        const layerRes = await axiosInstance.post(
-          `/layers?roadmapId=${roadMapId}`,
-          {
-            name: layerName,
-            description: '',
-            layerSeq: i + 1,
-            layerTime: null,
-          }
-        )
-
-        const layerId = layerRes.data.layer.id
-        console.log('생성된 레이어:', layerRes.data.layer.id)
-
-        //3. 해당 레이어에 속한 마커들 추출
-        const markers = layerMarkers[layerName] || []
-
-        // 4. 마커 생성 요청
-        for (let j = 0; j < markers.length; j++) {
-          const marker = markers[j]
-          const markerReqBody = {
-            name: marker.name || '이름 없음',
-            description: marker.description || '설명없음',
-            address: marker.address || '주소없음',
-            lat: marker.lat,
-            lng: marker.lng,
-            color: marker.color || '#000000',
-            customImageId: marker.customImageId,
-            tempUUID: crypto.randomUUID(),
-            markerSeq: j + 1,
-            layerId: layerId,
-          }
-
-          const markerRes = await axiosInstance.post('/markers', markerReqBody)
-          console.log('마커 생성 응답:', markerRes.data)
-        }
-      }
-
-      toast.success('로드맵이 성공적으로 생성되었습니다.')
+      toast.success('로드맵 수정 완료')
     } catch (error) {
-      console.error('로드맵 생성 실패', error)
-      toast.error('로드맵 생성 중 오류가 발생했습니다.')
+      console.error('로드맵 수정 실패', error)
+      toast.error('로드맵 수정 중 오류가 발생했습니다.')
     }
   }
 
@@ -247,7 +266,7 @@ export default function RoadMapEdit() {
       {/* 사이드 바 */}
       <div className="w-2/6 px-6 py-8 space-y-6 bg-white h-full overflow-y-auto scrollbar-none">
         {/* 화면 위치 */}
-        <h1 className="font-semibold text-2xl">로드맵 작성하기</h1>
+        <h1 className="font-semibold text-2xl">로드맵 수정하기</h1>
 
         {/* 카테고리 */}
         <div className="space-y-2">
@@ -261,11 +280,11 @@ export default function RoadMapEdit() {
               <option value="" disabled hidden>
                 카테고리를 선택해주세요.
               </option>
-              {/* {categories.map((category) => (
+              {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
                 </option>
-              ))} */}
+              ))}
             </select>
 
             <ChevronDown
@@ -282,22 +301,27 @@ export default function RoadMapEdit() {
           accept="image/*"
           className="hidden"
           onChange={(e) => {
-            if (e.target.files?.[0]) {
-              setThumbnail(e.target.files[0])
+            const file = e.target.files?.[0]
+            if (file) {
+              setThumbnail(file)
+              setThumbnailPreview(URL.createObjectURL(file))
             }
           }}
         />
         <label className="text-lg text-black">썸네일 이미지</label>
         <label
           htmlFor="thumbnail"
-          className="flex justify-center items-center w-full h-[300px] bg-gray-100 rounded-[5px] cursor-pointer"
+          className="relative flex justify-center items-center w-full h-[300px] bg-gray-100 rounded-[5px] cursor-pointer"
         >
-          {thumbnail ? (
+          {thumbnailPreview ? (
             // 썸네일이 있을 경우: 이미지 미리보기
             <Image
-              src={URL.createObjectURL(thumbnail)}
+              src={thumbnailPreview}
               alt="썸네일 미리보기"
-              className="object-cover w-full h-full"
+              priority
+              unoptimized
+              fill
+              className="object-fill"
             />
           ) : (
             // 썸네일 없을 경우: 기본 업로드 아이콘
@@ -371,6 +395,15 @@ export default function RoadMapEdit() {
         </div>
 
         <Toggle label="공개" onChange={handleIsPublic} />
+        <div className="flex justify-end">
+          <Button
+            onClick={handleRoadmapUpdate}
+            buttonStyle="smGreen"
+            className=" h-[35px] text-sm "
+          >
+            로드맵 수정
+          </Button>
+        </div>
 
         {/* 레이어  */}
         <div className="border-t border-gray-300 pt-6">
@@ -400,7 +433,7 @@ export default function RoadMapEdit() {
               onChange={handleZzimLayerSelect}
               className="w-full h-[40px] text-sm border border-[#E4E4E4] rounded px-3 appearance-none"
             >
-              <option value="">레이어 선택</option>
+              <option value="">찜한 레이어 선택</option>
               {myZzimLayers?.map((layer: MyZzimLayersInfo) => (
                 <option key={layer.id} value={layer.name}>
                   {layer.name}
@@ -416,7 +449,7 @@ export default function RoadMapEdit() {
 
           <div className="space-y-3">
             {layers.map((layerName, index) => (
-              <LayerEdit
+              <LayerUpdate
                 key={index}
                 title={layerName}
                 markers={layerMarkers[layerName] || []}
@@ -425,6 +458,7 @@ export default function RoadMapEdit() {
                 addMarkerByAddress={addMarkerByAddress}
                 addManualMarker={addManualMarker}
                 updateMarkerData={updateMarkerData}
+                onUpdateLayerTitle={handleUpdateLayerTitle}
               />
             ))}
           </div>
@@ -438,7 +472,6 @@ export default function RoadMapEdit() {
               취소
             </Button>
             <Button
-              onClick={handleSubmit}
               buttonStyle="smGreen"
               className="w-[71px] h-[40px] text-lg font-medium"
             >
