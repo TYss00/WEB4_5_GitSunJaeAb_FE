@@ -59,7 +59,7 @@ export default function CategoriesSetting() {
 
   return (
     <div className="flex flex-col items-center px-4 py-8 pt-30 2xl:pt-50">
-      <h1 className="text-[#005C54] text-4xl font-bold mb-10">
+      <h1 className="text-[var(--primary-300)] text-4xl font-bold mb-10">
         관심 분야를 설정해주세요
       </h1>
 
@@ -70,7 +70,7 @@ export default function CategoriesSetting() {
             onClick={() => toggleCategory(category.id)}
             className={`border px-4 py-2.5 rounded-[12px] text-sm font-medium transition-all duration-150 ${
               selected.includes(category.id)
-                ? 'bg-[#005C54] text-white border-[#005C54]'
+                ? 'bg-[var(--primary-300)] text-[var(--white)] border-[var(--primary-300)]'
                 : 'border-gray-300 text-gray-800'
             }`}
           >
@@ -91,7 +91,7 @@ export default function CategoriesSetting() {
       {/* 나중에 경로수정 */}
       <Link
         href="/dashbord"
-        className="text-[#005C54] cursor-pointer hover:underline"
+        className="text-[var(--primary-300)] cursor-pointer hover:underline"
       >
         → 다음에 할게요
       </Link>
