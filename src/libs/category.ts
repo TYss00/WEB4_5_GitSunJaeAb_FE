@@ -6,18 +6,13 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // 전체 카테고리 조회
 export const fetchCategories = async (): Promise<CategorySetting[]> => {
-  const res = await fetch(`${BASE_URL}/categories`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+  const { data } = await axiosInstance.get('/categories');
 
-  if (!res.ok) {
-    throw new Error('카테고리 목록을 불러오는 데 실패했습니다.');
+  // 예외 처리
+  if (!data?.categories) {
+    throw new Error('카테고리 목록이 비어 있습니다.');
   }
 
-  const data = await res.json();
   return data.categories;
 };
 
