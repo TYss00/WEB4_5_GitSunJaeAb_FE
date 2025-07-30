@@ -4,7 +4,7 @@ import { MapPin, Trash2 } from 'lucide-react'
 import Button from '../Button'
 import DaumPostcodeEmbed from 'react-daum-postcode'
 import { useState } from 'react'
-import { MarkerEditProps } from '@/types/type'
+import { MarkerUpdateProps } from '@/types/type'
 
 export interface AddressData {
   address: string
@@ -20,7 +20,7 @@ export default function MarkerUpdate({
   onAddByAddress,
   onChangeName,
   onChangeDescription,
-}: MarkerEditProps) {
+}: MarkerUpdateProps) {
   const [isModalOpen, setIsModalOpen] = useState(false)
 
   const [isEditingName, setIsEditingName] = useState(false)
@@ -73,12 +73,6 @@ export default function MarkerUpdate({
             onClick={onDelete}
             className="cursor-pointer"
           />
-          <Button
-            buttonStyle="smGreen"
-            className="w-[71px] h-[40px] text-lg font-medium"
-          >
-            마커 수정
-          </Button>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-[13px] text-[var(--primary-100)]">

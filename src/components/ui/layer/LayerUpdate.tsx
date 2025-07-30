@@ -3,7 +3,6 @@
 import { LayerEditProps, MarkerData } from '@/types/type'
 import { ChevronDown, ChevronUp, Layers, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
-import Button from '../Button'
 import MarkerUpdate from './MarkerUpdate'
 
 export default function LayerUpdate({
@@ -43,7 +42,6 @@ export default function LayerUpdate({
               ? 'bg-[#EBF2F2] rounded-t-[5px]'
               : 'bg-[var(--gray-40)] rounded-[5px]'
           }`}
-          onClick={() => setIsOpen((prev) => !prev)}
         >
           <div className="flex gap-[10px] items-center">
             <Layers
@@ -76,11 +74,15 @@ export default function LayerUpdate({
             )}
           </div>
           <div className="flex gap-[10px] items-center">
-            <Button buttonStyle="smGreen" className=" h-[35px] text-sm ">
-              레이어 수정
-            </Button>
             <Trash2 size={18} color="red" onClick={onDelete} />
-            {isOpen ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+            {isOpen ? (
+              <ChevronUp size={24} onClick={() => setIsOpen((prev) => !prev)} />
+            ) : (
+              <ChevronDown
+                size={24}
+                onClick={() => setIsOpen((prev) => !prev)}
+              />
+            )}
           </div>
         </div>
         <div
@@ -94,12 +96,12 @@ export default function LayerUpdate({
             {markers.map((marker) => (
               <MarkerUpdate
                 key={marker.id}
-                id={marker.id}
+                id={marker.id ?? Date.now()}
                 isTextArea={true}
                 address={marker.address}
                 name={marker.name}
                 description={marker.description}
-                onDelete={() => deleteMarker(title, marker.id)}
+                onDelete={() => deleteMarker(title, marker.id ?? Date.now())}
                 onAddByAddress={(address) => {
                   addMarkerByAddress(title, address)
                 }}

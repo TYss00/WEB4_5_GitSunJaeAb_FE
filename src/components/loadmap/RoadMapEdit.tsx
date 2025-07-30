@@ -7,7 +7,7 @@ import Toggle from '../ui/Toggle'
 import useLayerAdd from '@/hooks/useLayerAdd'
 import { useEffect, useState } from 'react'
 import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
-import { CategoryInfo, MyZzimLayersInfo } from '@/types/type'
+import { CategoryInfo, LayerMarkers, MyZzimLayersInfo } from '@/types/type'
 import useHashtags from '@/hooks/useHashtags'
 import RoadMapGoogleWrite from './RoadMapGoogleWrite'
 import axiosInstance from '@/libs/axios'
@@ -17,16 +17,62 @@ import { toast } from 'react-toastify'
 import { reverseGeocode } from '@/libs/geocode'
 import LayerUpdate from '../ui/layer/LayerUpdate'
 
-type layers = {
-  layer: {
-    name: string
-  }
-  markers: {
-    name: string
-    description: string
-    lat: number
-    lng: number
+type RoadmapResponse = {
+  category: { id: number }
+  title: string
+  description: string
+  isPublic: boolean
+  thumbnail: string
+  hashtags: { name: string }[]
+  layers: {
+    layer: {
+      id: number
+      name: string
+      description: string
+      layerSeq: number
+    }
+    markers: {
+      id: number | null
+      name: string
+      description: string
+      address: string
+      lat: number
+      lng: number
+      color: string
+      markerSeq: number
+    }[]
   }[]
+}
+
+type ServerMarker = {
+  markerId: number | null
+  name: string
+  description: string
+  address: string
+  lat: number
+  lng: number
+  color: string
+  markerSeq: number
+}
+
+type ServerLayer = {
+  layerId: number | null
+  name: string
+  description: string
+  layerSeq: number
+  markers: ServerMarker[]
+}
+
+type ClientMarker = {
+  id: number | null
+  name: string
+  description: string
+  lat: number
+  lng: number
+  address: string
+  color: string
+  customImageId: string | null
+  layerId?: number
 }
 
 export default function RoadMapEdit() {
@@ -57,6 +103,15 @@ export default function RoadMapEdit() {
 
   const params = useParams()
   const roadmapId = params?.id as string
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [categories, setCategories] = useState<CategoryInfo[]>([])
+  const [categoryId, setCategoryId] = useState<number | null>(null)
+  const [thumbnail, setThumbnail] = useState<File | null>(null)
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null)
+  const [isPublic, setIsPublic] = useState(true)
+  const [myZzimLayers, setMyZzimLayers] = useState<MyZzimLayersInfo[]>([])
+  const router = useRouter()
 
   useEffect(() => {
     const getCategories = async () => {
@@ -71,15 +126,41 @@ export default function RoadMapEdit() {
     const getRoadMapInfo = async () => {
       try {
         const res = await axiosInstance.get(`/roadmaps/${roadmapId}`)
-        const roadmapInfo = res.data.roadmap
+        const roadmapInfo: RoadmapResponse = res.data.roadmap
+
+        setCategoryId(roadmapInfo.category.id)
         setTitle(roadmapInfo.title)
         setDescription(roadmapInfo.description)
         setThumbnailPreview(roadmapInfo.thumbnail)
         setHashtags(roadmapInfo.hashtags)
+        setIsPublic(roadmapInfo.isPublic)
+
         const layerList = roadmapInfo.layers.map(
-          (item: layers) => item.layer.name
+          (item: RoadmapResponse['layers'][number]) => item.layer.name
         )
         setLayers(layerList)
+
+        const markersByLayer = roadmapInfo.layers.reduce<
+          Record<string, ClientMarker[]>
+        >((acc, item) => {
+          const layerName = item.layer.name
+          const layerId = item.layer.id
+
+          acc[layerName] = item.markers.map((marker) => ({
+            id: marker.id ?? null,
+            name: marker.name,
+            description: marker.description,
+            lat: marker.lat,
+            lng: marker.lng,
+            address: marker.address,
+            color: '#000000',
+            customImageId: null,
+            layerId,
+          }))
+          return acc
+        }, {})
+
+        setLayerMarkers(markersByLayer as unknown as LayerMarkers)
       } catch (err) {
         console.error('로드맵 조회 실패', err)
       }
@@ -90,13 +171,13 @@ export default function RoadMapEdit() {
         const MyZzimLayers = await res.data
         setMyZzimLayers(MyZzimLayers.layers)
       } catch (err) {
-        console.log('회원 찜 레이어 조회 오류', err)
+        console.error('회원 찜 레이어 조회 오류', err)
       }
     }
     getCategories()
     getRoadMapInfo()
     getMyZzimLayers()
-  }, [roadmapId, setHashtags, setLayers])
+  }, [roadmapId, setHashtags, setLayers, setLayerMarkers])
 
   const handleDeleteLayer = (index: number) => {
     const layerName = layers[index]
@@ -110,16 +191,6 @@ export default function RoadMapEdit() {
       setSelectedLayer(layers[0]) // 첫 번째 레이어 자동 선택
     }
   }, [layers, setSelectedLayer, selectedLayer])
-
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [categories, setCategories] = useState<CategoryInfo[]>([])
-  const [categoryId, setCategoryId] = useState<number | null>(null)
-  const [thumbnail, setThumbnail] = useState<File | null>(null)
-  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null)
-  const [isPublic, setIsPublic] = useState(true)
-  const [myZzimLayers, setMyZzimLayers] = useState<MyZzimLayersInfo[]>([])
-  const router = useRouter()
 
   const handleIsPublic = (value: boolean) => {
     setIsPublic(value)
@@ -171,7 +242,7 @@ export default function RoadMapEdit() {
             description: '',
             lat: m.lat,
             lng: m.lng,
-            address, // 변환된 주소
+            address,
             color: '#000000',
             customImageId: null,
           }
@@ -191,15 +262,12 @@ export default function RoadMapEdit() {
     }
   }
 
-  const handleRoadmapUpdate = async () => {
-    if (!categoryId) {
-      toast.warn('카테고리를 선택해주세요.')
-      return
-    }
+  const handleUpdateRoadmapWithLayers = async () => {
     try {
       const formData = new FormData()
 
-      const requestData = {
+      // 1. roadmapRequest 구성
+      const roadmapRequest = {
         categoryId,
         title,
         description,
@@ -207,30 +275,64 @@ export default function RoadMapEdit() {
         hashtags,
       }
       formData.append(
-        'request',
-        new Blob([JSON.stringify(requestData)], { type: 'application/json' })
+        'roadmapRequest',
+        new Blob([JSON.stringify(roadmapRequest)], { type: 'application/json' })
       )
 
+      // 2. layerRequests 구성
+      const layerRequests: ServerLayer[] = layers.map(
+        (layerName, layerIndex) => {
+          const markers = layerMarkers[layerName] || []
+
+          const formattedMarkers: ServerMarker[] = markers.map(
+            (marker, markerIndex) => {
+              const isTemp =
+                marker.id !== null && marker.id >= 1_000_000_000_000
+              return {
+                markerId: isTemp ? null : marker.id,
+                name: marker.name ?? '',
+                description: marker.description ?? '',
+                address: marker.address ?? '',
+                lat: marker.lat,
+                lng: marker.lng,
+                color: marker.color ?? '#000000',
+                markerSeq: markerIndex,
+              }
+            }
+          )
+
+          return {
+            layerId: (markers[0] as ClientMarker)?.layerId ?? null,
+            name: layerName,
+            description: '',
+            layerSeq: layerIndex,
+            markers: formattedMarkers,
+          }
+        }
+      )
+
+      formData.append(
+        'layerRequests',
+        new Blob([JSON.stringify(layerRequests)], { type: 'application/json' })
+      )
+
+      // 3. 이미지가 있으면 추가
       if (thumbnail instanceof File) {
         formData.append('imageFile', thumbnail)
       }
 
-      const roadmapRes = await axiosInstance.put(
-        `/roadmaps/personal/${roadmapId}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      )
-      const roadmap = await roadmapRes.data
-      console.log(roadmap)
-      toast.success('로드맵 수정 완료')
+      // 4. 요청
+      await axiosInstance.put(`/roadmaps/personal/${roadmapId}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+
+      toast.success('로드맵 + 레이어 수정 완료!')
       router.push('/dashbord/roadmap')
     } catch (error) {
-      console.error('로드맵 수정 실패', error)
-      toast.error('로드맵 수정 중 오류가 발생했습니다.')
+      console.error('수정 실패:', error)
+      toast.error('로드맵/레이어 수정 중 오류가 발생했습니다.')
     }
   }
 
@@ -400,15 +502,6 @@ export default function RoadMapEdit() {
         </div>
 
         <Toggle label="공개" onChange={handleIsPublic} />
-        <div className="flex justify-end">
-          <Button
-            onClick={handleRoadmapUpdate}
-            buttonStyle="smGreen"
-            className=" h-[35px] text-sm "
-          >
-            로드맵 수정
-          </Button>
-        </div>
 
         {/* 레이어  */}
         <div className="border-t border-gray-300 pt-6">
@@ -477,6 +570,7 @@ export default function RoadMapEdit() {
               취소
             </Button>
             <Button
+              onClick={handleUpdateRoadmapWithLayers}
               buttonStyle="smGreen"
               className="w-[71px] h-[40px] text-lg font-medium"
             >

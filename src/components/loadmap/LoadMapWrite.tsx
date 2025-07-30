@@ -59,7 +59,7 @@ export default function LoadMapWrite() {
         const MyZzimLayers = await res.data
         setMyZzimLayers(MyZzimLayers.layers)
       } catch (err) {
-        console.log('회원 찜 레이어 조회 오류', err)
+        console.error('회원 찜 레이어 조회 오류', err)
       }
     }
     getCategories()
@@ -194,7 +194,6 @@ export default function LoadMapWrite() {
         //찜한 레이어인지 확인
         const matchedZzimLayer = myZzimLayers.find((l) => l.name === layerName)
         const originalLayerId = matchedZzimLayer?.id ?? null
-        console.log(originalLayerId)
 
         const layerRes = await axiosInstance.post(
           `/layers?targetRoadmapId=${roadMapId}`,
