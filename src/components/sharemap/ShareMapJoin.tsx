@@ -276,7 +276,13 @@ export default function ShareMapJoin() {
       </div>
 
       {/* 신고 모달 */}
-      {isReportOpen && <ReportModal onClose={() => setIsReportOpen(false)} />}
+      {isReportOpen && (
+        <ReportModal
+          reportType="map"
+          targetId={Number(id)}
+          onClose={() => setIsReportOpen(false)}
+        />
+      )}
     </section>
   );
 }

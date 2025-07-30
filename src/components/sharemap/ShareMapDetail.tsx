@@ -296,7 +296,13 @@ export default function ShareMapDetail() {
           </section>
         </div>
       </main>
-      {isReportOpen && <ReportModal onClose={() => setIsReportOpen(false)} />}
+      {isReportOpen && (
+        <ReportModal
+          reportType="map"
+          targetId={Number(id)}
+          onClose={() => setIsReportOpen(false)}
+        />
+      )}
       {isDeleteOpen && (
         <ConfirmModal
           isOpen={isDeleteOpen}

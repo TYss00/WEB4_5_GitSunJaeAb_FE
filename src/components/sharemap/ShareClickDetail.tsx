@@ -195,7 +195,10 @@ export default function ShareClickDetail() {
                 <Siren
                   size={18}
                   className="cursor-pointer"
-                  onClick={() => setIsReportOpen(true)}
+                  onClick={() => {
+                    console.log('신고 대상 ID:', id);
+                    setIsReportOpen(true);
+                  }}
                 />
               </button>
             </div>
@@ -288,7 +291,13 @@ export default function ShareClickDetail() {
       </div>
 
       {/* 신고 모달 */}
-      {isReportOpen && <ReportModal onClose={() => setIsReportOpen(false)} />}
+      {isReportOpen && (
+        <ReportModal
+          reportType="map"
+          targetId={Number(id)}
+          onClose={() => setIsReportOpen(false)}
+        />
+      )}
     </section>
   );
 }
