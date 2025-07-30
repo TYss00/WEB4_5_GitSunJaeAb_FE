@@ -127,7 +127,7 @@ export default function QuestDetailHeader({
                     <button
                       onClick={() => {
                         setIsMenuOpen(false)
-                        router.push(`/dashbord/sharemap/detail/${id}/edit`)
+                        router.push(`/dashbord/quest/edit/${id}`)
                       }}
                       className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2"
                     >
