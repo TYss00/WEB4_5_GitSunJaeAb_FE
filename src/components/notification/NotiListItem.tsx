@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import notiImg from '../../../public/assets/notiImg.svg';
-import defaultProfileImg from '../../../public/assets/defaultProfile_white.png';
+import defaultProfileImg from '../../../public/assets/defaultProfile.png';
 import { AppNotification } from '@/types/notiType';
 
 type NotiListItemProps = {
