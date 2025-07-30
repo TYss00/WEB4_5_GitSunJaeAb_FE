@@ -194,11 +194,8 @@ export default function ShareClickDetail() {
               <button>
                 <Siren
                   size={18}
-                  className="cursor-pointer"
-                  onClick={() => {
-                    console.log('신고 대상 ID:', id);
-                    setIsReportOpen(true);
-                  }}
+                  className="cursor-pointer text-red-500"
+                  onClick={() => setIsReportOpen(true)}
                 />
               </button>
             </div>
