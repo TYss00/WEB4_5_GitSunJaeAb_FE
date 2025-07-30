@@ -240,6 +240,7 @@ export type QuestInfo = {
 };
 
 export type SubmissionInfo = {
+  questId?: string;
   title: string;
   description: string;
   profileImage: string;
@@ -252,6 +253,7 @@ export type SubmissionInfo = {
 
 export type RankingInfo = {
   rank: number;
+  memberProfileImageUrl: string;
   memberName: string;
   profileImageUrl: string;
 };

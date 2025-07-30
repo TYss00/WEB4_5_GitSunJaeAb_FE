@@ -45,6 +45,7 @@ export default function QuestPlayView({ submission, onBack, onJudge }: Props) {
         <ChevronLeft size={18} />
         뒤로가기
       </button>
+
       {/* 작성자 정보 */}
       <div className="mt-3 flex items-center gap-2.5">
         <div className="relative bg-gray-500 rounded-full size-9.5">
@@ -62,6 +63,7 @@ export default function QuestPlayView({ submission, onBack, onJudge }: Props) {
           </p>
         </div>
       </div>
+
       {/* 내용 + 이미지 */}
       <div className="mt-2">
         <h2 className="text-[18px] font-medium mb-2">{submission.title}</h2>
@@ -74,6 +76,7 @@ export default function QuestPlayView({ submission, onBack, onJudge }: Props) {
           />
         </div>
       </div>
+
       {/* 정답/오답 버튼 */}
       <div className="mt-5 flex justify-center gap-20">
         <Button

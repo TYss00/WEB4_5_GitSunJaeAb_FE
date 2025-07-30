@@ -4,6 +4,8 @@ import QuestPlayList from './QuestPlayList';
 import QuestPlayView from './QuestPlayView';
 import QuestPlayForm from './QuestPlayForm';
 import { SubmissionInfo } from '@/types/type';
+import axiosInstance from '@/libs/axios';
+import { useParams } from 'next/navigation';
 
 export default function QuestDetailPlay({
   submissionInfo,
@@ -24,6 +26,23 @@ export default function QuestDetailPlay({
     setSubmissions((prev) =>
       prev.map((s) => (s.id === id ? { ...s, recognized: isRecognized } : s))
     );
+  // const [submissions, setSubmissions] =
+  //   useState<SubmissionInfo[]>(submissionInfo);
+  // const [selectedSubmission, setSelectedSubmission] =
+  //   useState<SubmissionInfo | null>(null);
+  // const [isFormOpen, setIsFormOpen] = useState(false);
+
+  const params = useParams();
+  const questId = params?.id as string;
+
+  const handleNewSubmission = async () => {
+    try {
+      const res = await axiosInstance.get(`/quests/${questId}/detail`);
+      setSubmissions(res.data.submission ?? []);
+      setIsFormOpen(false);
+    } catch (err) {
+      console.error('새 제출 후 데이터 갱신 실패', err);
+    }
   };
 
   return (
@@ -35,7 +54,7 @@ export default function QuestDetailPlay({
           onJudge={updateRecognizedStatus}
         />
       ) : isFormOpen ? (
-        <QuestPlayForm onBack={() => setIsFormOpen(false)} />
+        <QuestPlayForm onBack={handleNewSubmission} />
       ) : (
         <QuestPlayList
           submission={submissions}

@@ -1,35 +1,37 @@
-'use client'
+'use client';
 
-import { Crown } from 'lucide-react'
-import Button from '../ui/Button'
-import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
-import axiosInstance from '@/libs/axios'
-import { RankingInfo } from '@/types/type'
-import Image from 'next/image'
+import { Crown } from 'lucide-react';
+import Button from '../ui/Button';
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import axiosInstance from '@/libs/axios';
+import { RankingInfo } from '@/types/type';
+import Image from 'next/image';
 
 export default function QuestDeatilRanking() {
-  const [isOpen, setIsOpen] = useState(false)
-  const params = useParams()
-  const questId = params?.id as string
+  const [isOpen, setIsOpen] = useState(false);
+  const params = useParams();
+  const questId = params?.id as string;
 
-  const [ranking, setRanking] = useState<RankingInfo[]>([])
+  const [ranking, setRanking] = useState<RankingInfo[]>([]);
+
   useEffect(() => {
     const fetch = async () => {
       try {
         const ranking = await axiosInstance.get(
           `/quests/${questId}/correctRanking`
-        )
-        setRanking(ranking.data)
+        );
+        setRanking(ranking.data);
       } catch (err) {
-        console.error('랭킹 데이터 불러오기 실패', err)
+        console.error('랭킹 데이터 불러오기 실패', err);
       }
-    }
-    fetch()
-  }, [questId])
+    };
+    fetch();
+  }, [questId]);
 
-  const top3 = ranking.slice(0, 3)
-  const rest = ranking.slice(3)
+  const top3 = ranking.slice(0, 3);
+  const rest = ranking.slice(3);
+
   return (
     <>
       {/* 1~3등 영역 */}
@@ -40,7 +42,9 @@ export default function QuestDeatilRanking() {
             <p className="pt-4.5 font-medium">2</p>
             <div className="bg-gray-400 rounded-full size-20 overflow-hidden">
               <Image
-                src={top3[1].profileImageUrl ?? '/assets/defaultProfile.png'}
+                src={
+                  top3[1].memberProfileImageUrl ?? '/assets/defaultProfile.png'
+                }
                 alt="프로필 이미지"
                 width={80}
                 height={80}
@@ -56,7 +60,10 @@ export default function QuestDeatilRanking() {
             <div className="relative inline-block">
               <div className="bg-gray-400 rounded-full size-25">
                 <Image
-                  src={top3[0].profileImageUrl ?? '/assets/defaultProfile.png'}
+                  src={
+                    top3[0].memberProfileImageUrl ??
+                    '/assets/defaultProfile.png'
+                  }
                   alt="프로필 이미지"
                   width={100}
                   height={100}
@@ -68,7 +75,7 @@ export default function QuestDeatilRanking() {
                 fill="#FFC107"
               />
             </div>
-            <h4>{top3[1].memberName}</h4>
+            <h4>{top3[0].memberName}</h4>
           </div>
         )}
 
@@ -76,9 +83,11 @@ export default function QuestDeatilRanking() {
         {top3[2] && (
           <div className="text-center">
             <p className="pt-4.5 font-medium">3</p>
-            <div className="bg-gray-400 rounded-full size-20">
+            <div className="bg-gray-400 rounded-full size-20 overflow-hidden">
               <Image
-                src={top3[2].profileImageUrl ?? '/assets/defaultProfile.png'}
+                src={
+                  top3[2].memberProfileImageUrl ?? '/assets/defaultProfile.png'
+                }
                 alt="프로필 이미지"
                 width={80}
                 height={80}
@@ -88,6 +97,7 @@ export default function QuestDeatilRanking() {
           </div>
         )}
       </div>
+
       {/* 4등 이하 영역 */}
       {isOpen && (
         <div className="mt-4.5 transition-all duration-300 ease-in-out">
@@ -97,9 +107,11 @@ export default function QuestDeatilRanking() {
               className="flex gap-4 items-center border border-[var(--gray-50)] px-4 py-2 bg-[var(--gray-40)] rounded-[8px] mb-4"
             >
               <p className="font-medium text-[15px]">{ranker.rank}</p>
-              <div className="bg-gray-800 rounded-full size-10">
+              <div className="bg-gray-800 rounded-full size-10 overflow-hidden">
                 <Image
-                  src={ranker.profileImageUrl ?? '/assets/defaultProfile.png'}
+                  src={
+                    ranker.memberProfileImageUrl ?? '/assets/defaultProfile.png'
+                  }
                   alt="프로필 이미지"
                   width={40}
                   height={40}
@@ -120,5 +132,5 @@ export default function QuestDeatilRanking() {
         {isOpen ? '닫기' : '전체 랭킹 보기'}
       </Button>
     </>
-  )
+  );
 }
