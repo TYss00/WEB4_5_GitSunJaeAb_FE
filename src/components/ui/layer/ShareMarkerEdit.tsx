@@ -63,19 +63,24 @@ export default function ShareMarkerEdit({
         customImageId: '',
         layerTempId: typeof selectedLayerId === 'number' ? selectedLayerId : 0,
       });
+
+      onDelete();
     } catch (err) {
       console.error('지오코딩 실패:', err);
     }
   };
   const updateMarker = useShareStore((state) => state.updateMarker);
 
+  const handleNameSave = () => {
+    setIsEditingName(false);
+    if (marker?.markerTempId) {
+      updateMarker(marker.markerTempId, { name: placeName });
+    }
+  };
+
   const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      setIsEditingName(false);
-
-      if (marker?.markerTempId) {
-        updateMarker(marker.markerTempId, { name: placeName });
-      }
+      handleNameSave();
     }
   };
   const handleDescriptionBlur = () => {
@@ -88,7 +93,17 @@ export default function ShareMarkerEdit({
     <div className="flex flex-col justify-between px-[15px] py-[13px] w-full rounded-[5px] border border-[var(--primary-100)] bg-[var(--white)]">
       <div className="flex justify-between items-center mb-[3px]">
         <div className="flex gap-[10px] items-center">
-          <MapPin size={24} color="var(--primary-100)" />
+          <MapPin
+            size={24}
+            color="var(--primary-100)"
+            onClick={() => {
+              console.log('클릭 마커:', marker);
+              console.log('맵ref:', mapRef.current);
+              if (marker) {
+                mapRef.current?.panTo({ lat: marker.lat, lng: marker.lng });
+              }
+            }}
+          />
           {isEditingName ? (
             <input
               autoFocus
@@ -96,13 +111,15 @@ export default function ShareMarkerEdit({
               value={placeName}
               onChange={(e) => setPlaceName(e.target.value)}
               onKeyDown={handleNameKeyDown}
-              onBlur={() => setIsEditingName(false)}
+              onBlur={handleNameSave}
               placeholder="장소 이름을 입력해주세요."
             />
           ) : (
             <span
               className="text-[18px] text-[var(--primary-100)] font-semibold cursor-pointer"
-              onClick={() => setIsEditingName(true)}
+              onClick={() => {
+                setIsEditingName(true);
+              }}
             >
               {placeName || '장소 이름을 입력해주세요.'}
             </span>

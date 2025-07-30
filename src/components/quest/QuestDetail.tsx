@@ -21,6 +21,7 @@ export default function QuestDetail() {
         ])
         setData({
           quest: questRes.data.quest,
+          submission: questRes.data.submission,
           comments: commentsRes.data.comments,
         })
         console.log(questRes.data.quest)
@@ -33,7 +34,11 @@ export default function QuestDetail() {
 
   if (!data) return null
 
-  const { quest: questInfo, comments: commentsInfo } = data
+  const {
+    quest: questInfo,
+    submission: submissionInfo,
+    comments: commentsInfo,
+  } = data
   return (
     <>
       {/* 퀘스트 정보 */}
@@ -45,8 +50,10 @@ export default function QuestDetail() {
             <Comment variant="quest" commentsInfo={commentsInfo} />
           </div>
           <div className="w-1/2">
-            {/* 참여 */}
-            <QuestDetailPlay />
+            {/* 참여 + 랭킹*/}
+            <QuestDetailPlay
+              submissionInfo={submissionInfo}
+            />
           </div>
         </div>
       </div>

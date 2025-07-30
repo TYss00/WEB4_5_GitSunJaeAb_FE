@@ -3,25 +3,16 @@
 import { useState } from 'react'
 import Button from '../ui/Button'
 import QuestDeatilRanking from './QuestDeatilRanking'
-
-type Answer = {
-  id: number
-  title: string
-  user: string
-  date: string
-  type: '정답' | '오답' | '참여'
-  content: string
-  profileImage?: string
-}
+import { SubmissionInfo } from '@/types/type'
 
 type Props = {
-  answers: Answer[]
-  onSelect: (answer: Answer) => void
+  submission: SubmissionInfo[]
+  onSelect: (answer: SubmissionInfo) => void
   onFormOpen: () => void
 }
 
 export default function QuestPlayList({
-  answers,
+  submission,
   onSelect,
   onFormOpen,
 }: Props) {
@@ -30,8 +21,19 @@ export default function QuestPlayList({
 
   const filtered =
     activeTab === '전체'
-      ? answers
-      : answers.filter((item) => item.type === activeTab)
+      ? submission
+      : submission.filter((item) => {
+          switch (activeTab) {
+            case '전체':
+              return true
+            case '정답':
+              return item.recognized === true
+            case '오답':
+              return item.recognized === false
+            default:
+              return false
+          }
+        })
 
   return (
     <div className="w-full border border-[var(--gray-200)] rounded-[10px] p-4">
@@ -73,28 +75,36 @@ export default function QuestPlayList({
           {filtered.map((item) => (
             <div
               onClick={() => onSelect(item)}
-              key={item.id}
+              key={item.submittedAt}
               className="flex gap-3 mb-4 cursor-pointer"
             >
-              <div className="bg-gray-600 relative w-[160px] h-[100px] rounded-[10px]">
+              <div
+                className="bg-gray-600 relative w-[160px] h-[100px] rounded-[10px]"
+                style={{
+                  backgroundImage: `url(${item.imageUrl})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  backgroundRepeat: 'no-repeat',
+                }}
+              >
                 <span
                   className={`absolute bottom-1.5 left-1.5 text-white rounded-[10px] ${
-                    item.type === '정답'
+                    item.recognized === true
                       ? 'bg-[var(--primary-200)] px-2.5 py-1'
-                      : item.type === '오답'
+                      : item.recognized === false
                       ? 'bg-[var(--red)] px-2.5 py-1'
                       : 'hidden'
                   }`}
                 >
-                  {item.type}
+                  {item.recognized ? '정답' : '오답'}
                 </span>
               </div>
               <div className="py-2.5 flex flex-col justify-between">
                 <h4 className="text-[18px] font-medium">{item.title}</h4>
                 <div>
-                  <p className="font-medium text-sm">{item.user}</p>
+                  <p className="font-medium text-sm">{item.nickname}</p>
                   <p className="text-[13px] text-[var(--gray-200)]">
-                    {item.date}
+                    {item.submittedAt.slice(0,10)}
                   </p>
                 </div>
               </div>
