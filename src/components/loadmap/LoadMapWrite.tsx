@@ -237,6 +237,7 @@ export default function LoadMapWrite() {
         toast.success(message)
       } else {
         toast.success('로드맵이 성공적으로 생성되었습니다.')
+        router.push('/dashboard/roadmap')
       }
     } catch (error) {
       console.error('로드맵 생성 실패', error)
