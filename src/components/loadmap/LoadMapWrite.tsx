@@ -6,7 +6,7 @@ import Input from '../ui/Input'
 import Toggle from '../ui/Toggle'
 import LayerEdit from '../ui/layer/LayerEdit'
 import useLayerAdd from '@/hooks/useLayerAdd'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
 import { CategoryInfo, MyZzimLayersInfo } from '@/types/type'
 import useHashtags from '@/hooks/useHashtags'
@@ -141,6 +141,19 @@ export default function LoadMapWrite() {
     }
   }
 
+  // 썸네일 미리보기 URL 메모이제이션
+  const thumbnailPreview = useMemo(() => {
+    return thumbnail ? URL.createObjectURL(thumbnail) : null
+  }, [thumbnail])
+
+  useEffect(() => {
+    return () => {
+      if (thumbnailPreview) {
+        URL.revokeObjectURL(thumbnailPreview)
+      }
+    }
+  }, [thumbnailPreview])
+
   const handleSubmit = async () => {
     try {
       const formData = new FormData()
@@ -186,7 +199,7 @@ export default function LoadMapWrite() {
             description: '',
             layerSeq: i + 1,
             originalLayerId: null,
-            roadmapId:roadMapId,
+            roadmapId: roadMapId,
             Zzimed: false,
           }
         )
@@ -312,10 +325,10 @@ export default function LoadMapWrite() {
           htmlFor="thumbnail"
           className="relative flex justify-center items-center w-full h-[300px] bg-gray-100 rounded-[5px] cursor-pointer"
         >
-          {thumbnail ? (
+          {thumbnailPreview ? (
             // 썸네일이 있을 경우: 이미지 미리보기
             <Image
-              src={URL.createObjectURL(thumbnail)}
+              src={thumbnailPreview}
               alt="썸네일 미리보기"
               fill
               className="object-cover"
