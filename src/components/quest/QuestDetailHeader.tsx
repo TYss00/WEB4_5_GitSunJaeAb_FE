@@ -38,21 +38,23 @@ export default function QuestDetailHeader({
 
       {/* 진행/마감 */}
       <div className="mt-4 flex items-center gap-2.5">
-        <p className="text-[11px] text-[var(--white)] p-[5px] rounded-[8px] bg-[var(--primary-300)]">
+        <p className="text-[13px] text-[var(--white)] p-[5px] rounded-[8px] bg-[var(--primary-300)]">
           {questInfo.isActive ? '진행중' : '마감'}
         </p>
-        {remainingDays >= 0 ? (
-          <p className="text-sm text-[var(--gray-300)]">
-            마감까지 {remainingDays}일전
+        <div>
+          {/* 마감일 */}
+          <p className="flex gap-[5px] items-center text-xs text-[var(--gray-200)]">
+            <CalendarDays size={15} color="var(--gray-200)" />~
+            {questInfo.deadline.slice(0, 10)}
           </p>
-        ) : (
-          ''
-        )}
-        {/* 마감일 */}
-        <p className="flex gap-[5px] items-center text-xs text-[var(--gray-200)]">
-          <CalendarDays size={15} color="var(--gray-200)" />~
-          {questInfo.deadline.slice(0, 10)}
-        </p>
+          {remainingDays >= 0 ? (
+            <p className="text-sm text-[var(--gray-300)]">
+              마감까지 {remainingDays}일전
+            </p>
+          ) : (
+            ''
+          )}
+        </div>
       </div>
 
       {/* 제목 + 좋아요/조회수/메뉴or신고 */}
