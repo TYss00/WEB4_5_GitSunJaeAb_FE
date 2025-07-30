@@ -8,9 +8,15 @@ import axiosInstance from '@/libs/axios';
 import { Megaphone } from 'lucide-react';
 import LoadingSpener from '../common/LoadingSpener';
 import { toast } from 'react-toastify';
+import ConfirmModal from '../common/modal/ConfirmModal';
 
 export default function AdminNoticeManager() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<{
+    id: number;
+    title: string;
+  } | null>(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const TYPE_LABELS: Record<string, string> = {
     SYSTEM: '시스템',
@@ -67,16 +73,23 @@ export default function AdminNoticeManager() {
     }
   };
 
-  const handleDeleteNotice = async (id: number, title: string) => {
-    if (confirm(`공지 "${title}"를 삭제하시겠습니까?`)) {
-      try {
-        await axiosInstance.delete(`/admin/announcements/${id}`);
-        toast.success('공지 삭제 완료');
-        fetchNotices();
-      } catch (err) {
-        console.error('공지 삭제 실패:', err);
-        toast.error('공지 삭제 중 오류 발생');
-      }
+  const handleDeleteNoticeClick = (id: number, title: string) => {
+    setDeleteTarget({ id, title });
+    setIsConfirmOpen(true);
+  };
+
+  const handleDeleteNotice = async () => {
+    if (!deleteTarget) return;
+    try {
+      await axiosInstance.delete(`/admin/announcements/${deleteTarget.id}`);
+      toast.success('공지 삭제 완료');
+      fetchNotices();
+    } catch (err) {
+      console.error('공지 삭제 실패:', err);
+      toast.error('공지 삭제 중 오류 발생');
+    } finally {
+      setIsConfirmOpen(false);
+      setDeleteTarget(null);
     }
   };
 
@@ -154,7 +167,7 @@ export default function AdminNoticeManager() {
                   <Button
                     buttonStyle="withIcon"
                     className="text-[var(--red)] text-sm"
-                    onClick={() => handleDeleteNotice(n.id, n.title)}
+                    onClick={() => handleDeleteNoticeClick(n.id, n.title)}
                   >
                     삭제
                   </Button>
@@ -171,6 +184,15 @@ export default function AdminNoticeManager() {
           onSubmit={handleCreateNotice}
         />
       )}
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => {
+          setIsConfirmOpen(false);
+          setDeleteTarget(null);
+        }}
+        onDelete={handleDeleteNotice}
+        confirmType="notice"
+      />
     </section>
   );
 }

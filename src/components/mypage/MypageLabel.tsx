@@ -78,7 +78,7 @@ export default function MypageLabel() {
             className="w-[180px] h-[38px] px-6 mt-1"
             onClick={() => setIsEditOpen(true)}
           >
-            프로필 수정
+            프로필 정보
           </Button>
         </div>
       </div>

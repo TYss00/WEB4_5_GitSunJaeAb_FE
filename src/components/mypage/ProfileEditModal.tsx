@@ -12,13 +12,14 @@ import axiosInstance from '@/libs/axios';
 import { useProfileStore } from '@/store/profileStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { toast } from 'react-toastify';
-
-const TABS = ['프로필', '비밀번호', '관심 분야', '업적'];
+import ConfirmModal from '../common/modal/ConfirmModal';
 
 export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
   const [activeTab, setActiveTab] = useState('프로필');
   const [isSaving, setIsSaving] = useState(false);
   const fetchMember = useProfileStore((state) => state.fetchMember);
+  const user = useAuthStore((state) => state.user);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const handleClose = () => {
     useProfileEditStore.getState().reset();
@@ -26,9 +27,6 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
   };
 
   const handleWithdraw = async () => {
-    const confirmed = window.confirm('정말로 회원탈퇴 하시겠습니까?');
-    if (!confirmed) return;
-
     try {
       await axiosInstance.delete('/members/withdraw');
       toast.success('회원탈퇴가 완료되었습니다.');
@@ -59,7 +57,6 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
 
         const res = await axiosInstance.get('/members');
         useAuthStore.getState().setUser(res.data.memberDetailDto);
-
         await fetchMember();
 
         toast.success('저장 완료');
@@ -112,6 +109,13 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
     }
   };
 
+  const visibleTabs = [
+    '프로필',
+    ...(user?.provider === null ? ['비밀번호'] : []),
+    '관심 분야',
+    '업적',
+  ];
+
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
       <div className="w-[500px] h-[700px] px-[25px] pt-[20px] pb-[20px] flex flex-col justify-between items-center gap-[15px] bg-[var(--gray-40)] shadow-[rgba(0,0,0,0.1)_0px_4px_20px] rounded-xl">
@@ -124,7 +128,7 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className="w-full flex justify-center gap-[15px] mb-2">
-          {TABS.map((tab) => (
+          {visibleTabs.map((tab) => (
             <button
               key={tab}
               className={`text-sm font-medium px-3 py-[6px] rounded-full transition-all
@@ -141,12 +145,14 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
         </div>
 
         <div
-          className={`flex-1 w-full bg-white rounded-lg p-4 ${
-            activeTab !== '업적' ? 'p-10 pt-10' : ''
+          className={`flex-1 w-full bg-white rounded-lg ${
+            activeTab !== '업적' ? 'p-10 pt-10' : 'p-4'
           }`}
         >
           {activeTab === '프로필' && <ProfileTab />}
-          {activeTab === '비밀번호' && <PasswordTab />}
+          {activeTab === '비밀번호' && user?.provider === null && (
+            <PasswordTab />
+          )}
           {activeTab === '관심 분야' && <InterestTab />}
           {activeTab === '업적' && <AchievementTab />}
         </div>
@@ -168,7 +174,7 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
               {activeTab === '프로필' && (
                 <button
                   className="text-sm text-[var(--gray-200)] underline underline-offset-2 cursor-pointer h-[40px] flex items-center"
-                  onClick={handleWithdraw}
+                  onClick={() => setIsConfirmOpen(true)}
                 >
                   회원탈퇴
                 </button>
@@ -176,6 +182,12 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
             </div>
           </div>
         )}
+        <ConfirmModal
+          isOpen={isConfirmOpen}
+          onClose={() => setIsConfirmOpen(false)}
+          onDelete={handleWithdraw}
+          confirmType="account"
+        />
       </div>
     </div>
   );

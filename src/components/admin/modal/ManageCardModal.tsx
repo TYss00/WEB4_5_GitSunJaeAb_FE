@@ -98,7 +98,8 @@ export default function ManageCardModal<T extends { id: number }>({
               <Folder size={20} /> 카테고리 이름
             </div>
             <input
-              className="w-full border px-3 py-1 rounded text-sm text-gray-700"
+              className="w-full border px-3 py-1 rounded text-sm text-gray-700
+             focus:outline-none focus:ring-2 focus:ring-[var(--primary-300)]"
               value={editedName}
               onChange={(e) => setEditedName(e.target.value)}
             />
@@ -110,7 +111,8 @@ export default function ManageCardModal<T extends { id: number }>({
               <FileText size={20} /> 카테고리 설명
             </div>
             <textarea
-              className="w-full border px-3 py-1 rounded text-sm text-gray-700 resize-none h-24"
+              className="w-full border px-3 py-1 rounded text-sm text-gray-700 resize-none h-24
+             focus:outline-none focus:ring-2 focus:ring-[var(--primary-300)]"
               value={editedDescription}
               onChange={(e) => setEditedDescription(e.target.value)}
               placeholder="설명을 입력하세요"

@@ -45,7 +45,7 @@ type ShareState = {
   selectedLayerId: number | null | 'all';
   setSelectedLayerId: (layerId: number | 'all') => void;
 
-  roadmapId: number | null; // ✅ 추가
+  roadmapId: number | null;
   setRoadmapId: (id: number) => void; //
 
   addMarker: (marker: NewMarkerInput) => void;
@@ -134,7 +134,6 @@ const useShareStore = create<WithLiveblocks<ShareState>>()(
         sendLayerLog(log);
       },
 
-      // ✅ 레이어 이름 수정
       renameLayer: (id: number, newName: string) => {
         const updated = get().layers.map((l) =>
           l.layerTempId === id ? { ...l, name: newName } : l
@@ -160,13 +159,11 @@ const useShareStore = create<WithLiveblocks<ShareState>>()(
         sendLayerLog(log);
       },
 
-      // ✅ 선택된 레이어
       selectedLayerId: 'all',
       setSelectedLayerId: (layerId) => {
         set({ selectedLayerId: layerId });
       },
 
-      // ✅ 마커 관련
       markers: {},
 
       addMarker: (markerData) => {
