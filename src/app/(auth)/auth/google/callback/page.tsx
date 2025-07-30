@@ -23,7 +23,7 @@ export default function GoogleCallbackPage() {
       const accessToken = data.token?.accessToken;
       if (!accessToken) {
         toast.error('로그인 실패');
-        // router.push('/login');
+        router.push('/login');
         return;
       }
 
@@ -46,7 +46,7 @@ export default function GoogleCallbackPage() {
     },
     onError: () => {
       toast.error('소셜 로그인 실패');
-      // router.push('/login');
+      router.push('/login');
     },
   });
 
@@ -63,7 +63,7 @@ export default function GoogleCallbackPage() {
       mutate({ provider: 'google', token: idToken });
     } else {
       toast.error('소셜 로그인 실패');
-      // router.push('/login');
+      router.push('/login');
     }
   }, [mutate, router]);
 
