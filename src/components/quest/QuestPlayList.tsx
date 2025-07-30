@@ -30,7 +30,7 @@ export default function QuestPlayList({
           switch (activeTab) {
             case '정답':
               return item.recognized === true;
-            case '대기':
+            case '오답':
               return item.recognized === false;
             case '대기':
               return item.recognized === null;
