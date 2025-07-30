@@ -1,29 +1,29 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import { ChevronDown } from 'lucide-react';
-import axiosInstance from '@/libs/axios';
-import RoadMapCard from '../ui/card/RoadMapCard';
-import QuestCard from '../ui/card/QuestCard';
-import { CardListProps } from '@/types/type';
-import { RoadmapResponse, MemberQuest } from '@/types/myprofile';
-import SkeletonCard from './skeleton/SkeletonCard';
+import { useEffect, useState } from 'react'
+import { ChevronDown } from 'lucide-react'
+import axiosInstance from '@/libs/axios'
+import RoadMapCard from '../ui/card/RoadMapCard'
+import QuestCard from '../ui/card/QuestCard'
+import { CardListProps } from '@/types/type'
+import { RoadmapResponse, MemberQuest } from '@/types/myprofile'
+import SkeletonCard from './skeleton/SkeletonCard'
 
 export default function CardList({ type }: CardListProps) {
-  const [sort, setSort] = useState<'recent' | 'popular'>('recent');
-  const [roadmaps, setRoadmaps] = useState<RoadmapResponse[]>([]);
-  const [quests, setQuests] = useState<MemberQuest[]>([]);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [selectedFilter, setSelectedFilter] = useState<string>('전체');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [sort, setSort] = useState<'recent' | 'popular'>('recent')
+  const [roadmaps, setRoadmaps] = useState<RoadmapResponse[]>([])
+  const [quests, setQuests] = useState<MemberQuest[]>([])
+  const [categories, setCategories] = useState<string[]>([])
+  const [selectedFilter, setSelectedFilter] = useState<string>('전체')
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
+      setIsLoading(true)
       try {
         if (type === 'roadmap') {
-          const res = await axiosInstance.get('/roadmaps/personal');
-          const data: RoadmapResponse[] = res.data.roadmaps;
+          const res = await axiosInstance.get('/roadmaps/personal')
+          const data: RoadmapResponse[] = res.data.roadmaps
 
           const sorted =
             sort === 'popular'
@@ -34,81 +34,81 @@ export default function CardList({ type }: CardListProps) {
                   return (
                     new Date(b.createdAt ?? '').getTime() -
                     new Date(a.createdAt ?? '').getTime()
-                  );
-                });
+                  )
+                })
 
-          setRoadmaps(sorted);
+          setRoadmaps(sorted)
         } else if (type === 'quest') {
-          const res = await axiosInstance.get('/quests');
-          const rawQuests: MemberQuest[] = res.data.quests;
+          const res = await axiosInstance.get('/quests')
+          const rawQuests: MemberQuest[] = res.data.quests
 
           if (sort === 'popular') {
             const questsWithViews = await Promise.all(
               rawQuests.map(async (quest) => {
-                const detail = await axiosInstance.get(`/quests/${quest.id}`);
+                const detail = await axiosInstance.get(`/quests/${quest.id}`)
                 return {
                   ...quest,
                   viewCount: detail.data.viewCount ?? 0,
-                };
+                }
               })
-            );
+            )
 
             const sorted = questsWithViews.sort(
               (a, b) => b.viewCount - a.viewCount
-            );
-            setQuests(sorted);
+            )
+            setQuests(sorted)
           } else {
             const sorted = rawQuests.sort(
               (a, b) =>
                 new Date(b.createdAt).getTime() -
                 new Date(a.createdAt).getTime()
-            );
-            setQuests(sorted);
+            )
+            setQuests(sorted)
           }
         }
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
+    }
 
-    fetchData();
-  }, [type, sort]);
+    fetchData()
+  }, [type, sort])
 
   useEffect(() => {
     const fetchCategories = async () => {
       if (type === 'roadmap') {
         try {
-          const res = await axiosInstance.get('/categories');
+          const res = await axiosInstance.get('/categories')
           const categoryNames = res.data.categories.map(
             (c: { name: string }) => c.name
-          );
-          setCategories(categoryNames);
+          )
+          setCategories(categoryNames)
         } catch (err) {
-          console.error('카테고리 불러오기 실패:', err);
+          console.error('카테고리 불러오기 실패:', err)
         }
       }
-    };
+    }
 
-    fetchCategories();
-  }, [type]);
+    fetchCategories()
+  }, [type])
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedFilter(e.target.value);
-  };
+    setSelectedFilter(e.target.value)
+  }
 
   const filteredRoadmaps =
     selectedFilter === '전체'
       ? roadmaps
-      : roadmaps.filter((roadmap) => roadmap.category?.name === selectedFilter);
+      : roadmaps.filter((roadmap) => roadmap.category?.name === selectedFilter)
 
   const filteredQuests =
     selectedFilter === '전체'
       ? quests
       : quests.filter((quest) => {
           const isInProgress =
-            quest.isActive && new Date(quest.deadline) > new Date();
-          return selectedFilter === '진행중' ? isInProgress : !isInProgress;
-        });
+            quest.isActive && new Date(quest.deadline) > new Date()
+          return selectedFilter === '진행중' ? isInProgress : !isInProgress
+        })
 
   return (
     <section className="w-full max-w-[1100px] mx-auto mt-[146px] px-4 pb-[186px]">
@@ -174,7 +174,9 @@ export default function CardList({ type }: CardListProps) {
                   title={roadmap.title}
                   description={roadmap.description ?? ''}
                   hashtags={roadmap.hashtags?.map((h) => h.name).sort() ?? []}
-                  mapImageUrl={roadmap.thumbnail ?? '/map.png'}
+                  mapImageUrl={
+                    roadmap.thumbnail ?? '/assets/defaultProfile.png'
+                  }
                   profileImgUrl={
                     roadmap.member?.profileImage ?? '/assets/defaultProfile.png'
                   }
@@ -206,5 +208,5 @@ export default function CardList({ type }: CardListProps) {
             ))}
       </div>
     </section>
-  );
+  )
 }
