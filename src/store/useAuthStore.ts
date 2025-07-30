@@ -41,16 +41,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       // return null;
       const axiosError = err as AxiosError<ErrorResponse>;
 
-      // ✅ accessToken 만료일 뿐이면 axios 인터셉터가 재요청 처리하므로 logout 금지
+      // accessToken 만료일 뿐이면 axios 인터셉터가 재요청 처리하므로 logout 금지
       const errorCode = axiosError?.response?.data?.code;
       if (errorCode === '2199') {
-        console.warn(
-          '🔁 fetchUser에서 accessToken 만료. 인터셉터가 재시도 처리 예정'
-        );
         return null; // 인터셉터가 토큰 재발급 → 재시도 중일 수 있음
       }
 
-      console.warn('🚨 fetchUser 실패. 로그아웃 처리:', err);
+      // console.warn('fetchUser 실패. 로그아웃 처리:', err);
       get().logout();
       return null;
     }
