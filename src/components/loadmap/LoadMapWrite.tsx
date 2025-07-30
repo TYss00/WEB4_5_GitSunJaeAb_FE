@@ -173,17 +173,20 @@ export default function LoadMapWrite() {
       const roadmap = await roadmapRes.data
       console.log(roadmap)
       const roadMapId = roadmap.roadmapId
+      console.log(roadMapId)
 
       //2. 레이어 생성 및 마커 생성
       for (let i = 0; i < layers.length; i++) {
         const layerName = layers[i]
 
         const layerRes = await axiosInstance.post(
-          `/layers?roadmapId=${roadMapId}`,
+          `/layers?targetRoadmapId=${roadMapId}`,
           {
             name: layerName,
             description: '',
             layerSeq: i + 1,
+            originalLayerId: null,
+            roadmapId:roadMapId,
             Zzimed: false,
           }
         )
@@ -214,13 +217,12 @@ export default function LoadMapWrite() {
           console.log('마커 생성 응답:', markerRes.data)
         }
       }
-      // toast.success('로드맵이 성공적으로 생성되었습니다.');
       // 업적 메시지 토스트 띄우기
-      const message = roadmap.message ?? '';
+      const message = roadmap.message ?? ''
       if (message.includes('업적')) {
-        toast.success(message);
+        toast.success(message)
       } else {
-        toast.success('로드맵이 성공적으로 생성되었습니다.');
+        toast.success('로드맵이 성공적으로 생성되었습니다.')
       }
     } catch (error) {
       console.error('로드맵 생성 실패', error)
