@@ -29,7 +29,7 @@ export default function MypageCard({
 
   const handleClick = () => {
     if (type === '공개' || type === '비공개') {
-      router.push(`/dashbord/roadmap/detail/${id}`);
+      router.push(`/dashbord/roadmap/detail/${id}/preview`);
     } else if (type === '공유') {
       router.push(`/dashbord/sharemap/detail/${id}`);
     } else if (type === '퀘스트') {
