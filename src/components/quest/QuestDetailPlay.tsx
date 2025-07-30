@@ -26,6 +26,7 @@ export default function QuestDetailPlay({
     setSubmissions((prev) =>
       prev.map((s) => (s.id === id ? { ...s, recognized: isRecognized } : s))
     );
+  };
   // const [submissions, setSubmissions] =
   //   useState<SubmissionInfo[]>(submissionInfo);
   // const [selectedSubmission, setSelectedSubmission] =
