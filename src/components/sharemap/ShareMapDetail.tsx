@@ -26,6 +26,7 @@ import ConfirmModal from '../common/modal/ConfirmModal';
 import { CommentInfo } from '@/types/type';
 import Comment from '../comment/Comment';
 import { useBookmarkStore } from '@/store/useBookmarkStore';
+import LoadingSpinner from '../common/LoadingSpener';
 
 const containerStyle = {
   width: '100%',
@@ -110,7 +111,12 @@ export default function ShareMapDetail() {
     }
   }, [id, initBookmark, roadmap]);
 
-  if (!roadmap) return <div className="text-center py-20">로딩 중...</div>;
+  if (!roadmap)
+    return (
+      <div className="text-center py-20">
+        <LoadingSpinner />
+      </div>
+    );
 
   function getShortAddress(fullAddress: string): string {
     const parts = fullAddress.split(' ');

@@ -10,37 +10,42 @@ import ConfirmModal from '../common/modal/ConfirmModal';
 
 export default function CommentItem({
   commentInfo,
+  onDelete,
+  onUpdate,
 }: {
   commentInfo: CommentInfo;
+  onDelete?: (commentId: number) => void;
+  onUpdate?: (updated: CommentInfo) => void;
 }) {
   const currentUserId = useAuthStore((state) => state.user?.id);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-
-  // ✅ 수정 UI 관련
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(commentInfo.content);
 
-  // ✅ 댓글 수정 API
   const handleUpdate = async () => {
     try {
       await axiosInstance.put(`/comments/${commentInfo.id}`, {
         content: editContent,
       });
+
+      onUpdate?.({
+        ...commentInfo,
+        content: editContent,
+      });
+
       setIsEditing(false);
-      // TODO: 필요시 목록 갱신 or 로컬 상태 업데이트
     } catch (error) {
       console.error('댓글 수정 실패:', error);
       alert('댓글 수정에 실패했습니다.');
     }
   };
 
-  // ✅ 댓글 삭제 API
   const handleDelete = async () => {
     try {
       await axiosInstance.delete(`/comments/${commentInfo.id}`);
-      // TODO: 필요시 목록 갱신 or 로컬 상태 업데이트
+      onDelete?.(commentInfo.id);
     } catch (error) {
       console.error('댓글 삭제 실패:', error);
       alert('삭제 권한이 없거나 실패했습니다.');
@@ -82,8 +87,8 @@ export default function CommentItem({
                       <div
                         onClick={() => {
                           setIsMenuOpen(false);
-                          setIsEditing(true); // ✅ 수정모드 진입
-                          setEditContent(commentInfo.content); // ✅ 기존 댓글 내용 세팅
+                          setIsEditing(true);
+                          setEditContent(commentInfo.content);
                         }}
                         className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2 cursor-pointer"
                       >
@@ -94,7 +99,7 @@ export default function CommentItem({
                       <div
                         onClick={() => {
                           setIsMenuOpen(false);
-                          setIsDeleteOpen(true); // ✅ 삭제 모달 열기
+                          setIsDeleteOpen(true);
                         }}
                         className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2 text-red-500 cursor-pointer"
                       >
@@ -112,7 +117,7 @@ export default function CommentItem({
           </div>
         </div>
 
-        {/* ✅ 댓글 내용 or 수정 UI */}
+        {/* 댓글 내용 or 수정 UI */}
         {isEditing ? (
           <div className="mt-1 px-1.5">
             <textarea
@@ -140,7 +145,7 @@ export default function CommentItem({
         )}
       </li>
 
-      {/* ✅ 삭제 확인 모달 */}
+      {/* 삭제 확인 모달 */}
       {isDeleteOpen && (
         <ConfirmModal
           isOpen={isDeleteOpen}
