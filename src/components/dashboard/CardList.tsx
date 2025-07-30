@@ -96,6 +96,8 @@ export default function CardList({ type }: CardListProps) {
                   mapImageUrl="/map.png"
                   participants={50}
                   isEvent={i % 2 === 0}
+                  id={0}
+                  category={''}
                 />
               </div>
             );

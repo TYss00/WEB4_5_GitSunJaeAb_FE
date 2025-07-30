@@ -150,13 +150,11 @@ export type AdminNoticePayload = {
 
 export type AdminNoticeProps = {
   onClose: () => void;
-  initialData?: {
-    id: number;
-    type?: '시스템' | '이벤트' | '업데이트' | '안내사항';
+  onSubmit: (payload: {
     title: string;
     content: string;
-  };
-  onSubmit: (payload: AdminNoticePayload, id?: number) => Promise<void>;
+    announcementType: 'SYSTEM' | 'EVENT' | 'UPDATE' | 'ETC';
+  }) => Promise<void>;
 };
 
 export type ManageCardModalProps<T> = {

@@ -8,14 +8,31 @@ import {
   useAchievements,
   useMemberAchievements,
 } from '@/hooks/useAchievements';
+import { useEffect } from 'react';
 
 export default function AchievementTab() {
-  const { allAchievements, achievedIds } = useAchievementStore();
+  const { allAchievements, achievedIds, setAchievements, setAchievedIds } =
+    useAchievementStore();
 
-  const { isLoading: isLoadingAchievements } = useAchievements();
-  const { isLoading: isLoadingMember } = useMemberAchievements();
+  const { data: fetchedAchievements = [], isLoading: isLoadingAchievements } =
+    useAchievements();
+
+  const { data: fetchedAchievedIds = [], isLoading: isLoadingMember } =
+    useMemberAchievements();
 
   const isLoading = isLoadingAchievements || isLoadingMember;
+
+  useEffect(() => {
+    if (fetchedAchievements.length > 0) {
+      setAchievements(fetchedAchievements);
+    }
+  }, [fetchedAchievements, setAchievements]);
+
+  useEffect(() => {
+    if (fetchedAchievedIds.length > 0) {
+      setAchievedIds(fetchedAchievedIds);
+    }
+  }, [fetchedAchievedIds, setAchievedIds]);
 
   const achievedCount = allAchievements.filter((a) =>
     achievedIds.includes(a.id)

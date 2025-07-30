@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import AdminNoticeModal from './AdminNoticeModal';
 import Button from '@/components/ui/Button';
-import { AdminNoticePayload, Notice } from '@/types/admin';
+import { Notice } from '@/types/admin';
 import axiosInstance from '@/libs/axios';
 import { Megaphone } from 'lucide-react';
 import LoadingSpener from '../common/LoadingSpener';
@@ -11,11 +11,6 @@ import { toast } from 'react-toastify';
 
 export default function AdminNoticeManager() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editData, setEditData] = useState<null | {
-    id: number;
-    title: string;
-    content: string;
-  }>(null);
 
   const TYPE_LABELS: Record<string, string> = {
     SYSTEM: '시스템',
@@ -38,21 +33,10 @@ export default function AdminNoticeManager() {
       : notices.filter((n) => n.announcementType === selectedTypeTab);
 
   const handleOpenModal = () => {
-    setEditData(null);
-    setIsModalOpen(true);
-  };
-
-  const handleEditModal = (notice: {
-    id: number;
-    title: string;
-    content: string;
-  }) => {
-    setEditData(notice);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    setEditData(null);
     setIsModalOpen(false);
   };
 
@@ -83,20 +67,6 @@ export default function AdminNoticeManager() {
     }
   };
 
-  const handleUpdateNotice = async (
-    payload: AdminNoticePayload,
-    id?: number
-  ) => {
-    try {
-      await axiosInstance.put(`/admin/announcements/${id}`, payload);
-      toast.success('공지 수정 완료');
-      fetchNotices();
-    } catch (err) {
-      console.error('공지 수정 실패:', err);
-      toast.error('공지 수정 중 오류 발생');
-    }
-  };
-
   const handleDeleteNotice = async (id: number, title: string) => {
     if (confirm(`공지 "${title}"를 삭제하시겠습니까?`)) {
       try {
@@ -121,6 +91,7 @@ export default function AdminNoticeManager() {
       </div>
     );
   }
+
   return (
     <section className="w-[900px] h-[420px] space-y-6">
       <div className="border border-[var(--gray-100)] rounded-lg p-6 space-y-4">
@@ -181,19 +152,6 @@ export default function AdminNoticeManager() {
                 </span>
                 <div className="flex gap-2">
                   <Button
-                    buttonStyle="green"
-                    className="text-sm"
-                    onClick={() =>
-                      handleEditModal({
-                        id: n.id,
-                        title: n.title,
-                        content: n.content,
-                      })
-                    }
-                  >
-                    수정
-                  </Button>
-                  <Button
                     buttonStyle="withIcon"
                     className="text-[var(--red)] text-sm"
                     onClick={() => handleDeleteNotice(n.id, n.title)}
@@ -209,9 +167,8 @@ export default function AdminNoticeManager() {
 
       {isModalOpen && (
         <AdminNoticeModal
-          initialData={editData ?? undefined}
           onClose={handleCloseModal}
-          onSubmit={editData ? handleUpdateNotice : handleCreateNotice}
+          onSubmit={handleCreateNotice}
         />
       )}
     </section>

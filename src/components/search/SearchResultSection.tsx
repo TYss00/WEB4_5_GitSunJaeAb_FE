@@ -10,6 +10,7 @@ import {
   QuestCardProps,
 } from '@/types/type';
 import { RoadmapItem, QuestItem } from '@/types/search';
+import LoadingSpinner from '../common/LoadingSpener';
 
 export default function SearchResultSection() {
   const searchParams = useSearchParams();
@@ -24,6 +25,7 @@ export default function SearchResultSection() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
+
         const [roadmapRes, questRes] = await Promise.all([
           axiosInstance.get<{ roadmaps: RoadmapItem[] }>('/roadmaps'),
           axiosInstance.get<{ quests: QuestItem[] }>('/quests'),
@@ -39,18 +41,53 @@ export default function SearchResultSection() {
         });
 
         const personal: RoadMapCardProps[] = [];
-        const shared: ShareMapCardProps[] = [];
+
+        const shared: ShareMapCardProps[] = await Promise.all(
+          matchedRoadmaps
+            .filter((r) => r.roadmapType === 'SHARED')
+            .map(async (r) => {
+              const common = {
+                id: r.id,
+                title: r.title,
+                mapImageUrl: r.thumbnail ?? '/map.png',
+              };
+
+              try {
+                const editorsRes = await axiosInstance.get(
+                  `/roadmaps/${r.id}/editors`
+                );
+                const participants =
+                  typeof editorsRes.data?.count === 'number'
+                    ? editorsRes.data.count
+                    : 0;
+
+                return {
+                  ...common,
+                  isEvent: false,
+                  participants,
+                  category: r.category?.name ?? '',
+                };
+              } catch (error) {
+                console.error(
+                  `Failed to fetch editors for roadmap ${r.id}`,
+                  error
+                );
+                return {
+                  ...common,
+                  isEvent: false,
+                  participants: 0,
+                  category: r.category?.name ?? '',
+                };
+              }
+            })
+        );
 
         matchedRoadmaps.forEach((r) => {
-          const common = {
-            title: r.title,
-            mapImageUrl: r.thumbnail ?? '/map.png',
-          };
-
           if (r.roadmapType === 'PERSONAL') {
             personal.push({
               id: r.id,
-              ...common,
+              title: r.title,
+              mapImageUrl: r.thumbnail ?? '/map.png',
               category: r.category.name,
               description: r.description,
               hashtags: r.hashtags.map((h) => `#${h.name}`),
@@ -60,18 +97,8 @@ export default function SearchResultSection() {
               viewCount: r.viewCount,
               shareCount: r.citationCount,
             });
-          } else if (r.roadmapType === 'SHARED') {
-            shared.push({
-              id: r.id,
-              ...common,
-              isEvent: false,
-              participants: r.likeCount,
-            });
           }
         });
-
-        setRoadmaps(personal);
-        setSharemaps(shared);
 
         const matchedQuests = questRes.data.quests
           .filter((q) => q.title.includes(query))
@@ -88,6 +115,8 @@ export default function SearchResultSection() {
             deadLine: q.createdAt.slice(0, 10).replace(/-/g, '.'),
           }));
 
+        setRoadmaps(personal);
+        setSharemaps(shared);
         setQuests(matchedQuests);
       } catch (err) {
         console.error('검색 결과 불러오기 실패:', err);
@@ -101,9 +130,9 @@ export default function SearchResultSection() {
 
   if (isLoading) {
     return (
-      <p className="text-center text-lg text-[var(--gray-300)]">
-        검색 중입니다...
-      </p>
+      <div className="flex flex-col">
+        <LoadingSpinner />
+      </div>
     );
   }
 
@@ -115,6 +144,7 @@ export default function SearchResultSection() {
           cardType="roadmap"
           items={roadmaps}
           query={query}
+          category={''}
         />
       )}
       {(category === null || category === 'sharemap') && (
@@ -123,6 +153,7 @@ export default function SearchResultSection() {
           cardType="sharemap"
           items={sharemaps}
           query={query}
+          category={''}
         />
       )}
       {(category === null || category === 'quest') && (
@@ -131,6 +162,7 @@ export default function SearchResultSection() {
           cardType="quest"
           items={quests}
           query={query}
+          category={''}
         />
       )}
     </div>

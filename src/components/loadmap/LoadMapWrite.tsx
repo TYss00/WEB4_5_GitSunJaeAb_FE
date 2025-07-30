@@ -5,7 +5,6 @@ import Button from '../ui/Button'
 import Input from '../ui/Input'
 import Toggle from '../ui/Toggle'
 import LayerEdit from '../ui/layer/LayerEdit'
-
 import useLayerAdd from '@/hooks/useLayerAdd'
 import { useEffect, useState } from 'react'
 import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
@@ -15,10 +14,12 @@ import RoadMapGoogleWrite from './RoadMapGoogleWrite'
 import axiosInstance from '@/libs/axios'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
+
 
 export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
   const { layers, setLayers, newLayerName, setNewLayerName, handleAddLayer } =
-    useLayerAdd()
+    useLayerAdd();
   const {
     selectedLayer,
     setSelectedLayer,
@@ -29,7 +30,7 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
     updateMarkerData,
     addManualMarker,
     deleteLayer,
-  } = useLayerMarkersAdd(layers)
+  } = useLayerMarkersAdd(layers);
 
   const {
     hashtagInput,
@@ -38,50 +39,49 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
     addHashtag,
     deleteHashtag,
     handleKeyDown,
-  } = useHashtags()
+  } = useHashtags();
 
   useEffect(() => {
     const getMyZzimLayers = async () => {
       try {
-        const res = await axiosInstance.get(`/layers/member`)
-        const MyZzimLayers = await res.data
-        setMyZzimLayers(MyZzimLayers.layers)
+        const res = await axiosInstance.get(`/layers/member`);
+        const MyZzimLayers = await res.data;
+        setMyZzimLayers(MyZzimLayers.layers);
       } catch (err) {
-        console.log('회원 찜 레이어 조회 오류', err)
+        console.log('회원 찜 레이어 조회 오류', err);
       }
-    }
-    getMyZzimLayers()
-  }, [])
+    };
+    getMyZzimLayers();
+  }, []);
 
   const handleDeleteLayer = (index: number) => {
-    const layerName = layers[index]
+    const layerName = layers[index];
 
-    setLayers((prev) => prev.filter((_, i) => i !== index))
-    deleteLayer(layerName) // layerMarkers에서도 삭제
-  }
+    setLayers((prev) => prev.filter((_, i) => i !== index));
+    deleteLayer(layerName); // layerMarkers에서도 삭제
+  };
 
   useEffect(() => {
     if (layers.length > 0 && !selectedLayer) {
-      setSelectedLayer(layers[0]) // 첫 번째 레이어 자동 선택
+      setSelectedLayer(layers[0]); // 첫 번째 레이어 자동 선택
     }
-  }, [layers, setSelectedLayer, selectedLayer])
+  }, [layers, setSelectedLayer, selectedLayer]);
 
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [categoryId, setCategoryId] = useState<number | null>(null)
-  const [thumbnail, setThumbnail] = useState<File | null>(null)
-  const [isPublic, setIsPublic] = useState(true)
-  const [myZzimLayers, setMyZzimLayers] = useState([])
-  const router = useRouter()
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [categoryId, setCategoryId] = useState<number | null>(null);
+  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [isPublic, setIsPublic] = useState(true);
+  const [myZzimLayers, setMyZzimLayers] = useState([]);
+  const router = useRouter();
 
   const handleIsPublic = (value: boolean) => {
-    setIsPublic(value)
-  }
+    setIsPublic(value);
+  };
 
   const handleSubmit = async () => {
-    const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL
     try {
-      const formData = new FormData()
+      const formData = new FormData();
 
       const requestData = {
         categoryId,
@@ -89,32 +89,32 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
         description,
         isPublic,
         hashtags,
-      }
+      };
       formData.append(
         'request',
         new Blob([JSON.stringify(requestData)], { type: 'application/json' })
-      )
+      );
 
       if (thumbnail instanceof File) {
-        formData.append('imageFile', thumbnail)
+        formData.append('imageFile', thumbnail);
       }
       // 1. 로드맵 생성
       const roadmapRes = await axiosInstance.post(
-        `${baseURL}/roadmaps/personal`,
+        `/roadmaps/personal`,
         formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         }
-      )
-      const roadmap = await roadmapRes.data
-      console.log(roadmap)
-      const roadMapId = roadmap.roadmapId
+      );
+      const roadmap = await roadmapRes.data;
+      console.log(roadmap);
+      const roadMapId = roadmap.roadmapId;
 
       //2. 레이어 생성 및 마커 생성
       for (let i = 0; i < layers.length; i++) {
-        const layerName = layers[i]
+        const layerName = layers[i];
 
         const layerRes = await axiosInstance.post(
           `/layers?roadmapId=${roadMapId}`,
@@ -124,17 +124,17 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
             layerSeq: i + 1,
             layerTime: null,
           }
-        )
+        );
 
-        const layerId = layerRes.data.layer.id
-        console.log('생성된 레이어:', layerRes.data.layer.id)
+        const layerId = layerRes.data.layer.id;
+        console.log('생성된 레이어:', layerRes.data.layer.id);
 
         //3. 해당 레이어에 속한 마커들 추출
-        const markers = layerMarkers[layerName] || []
+        const markers = layerMarkers[layerName] || [];
 
         // 4. 마커 생성 요청
         for (let j = 0; j < markers.length; j++) {
-          const marker = markers[j]
+          const marker = markers[j];
           const markerReqBody = {
             name: marker.name || '이름 없음',
             description: marker.description || '설명없음',
@@ -146,19 +146,19 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
             tempUUID: crypto.randomUUID(),
             markerSeq: j + 1,
             layerId: layerId,
-          }
+          };
 
-          const markerRes = await axiosInstance.post('/markers', markerReqBody)
-          console.log('마커 생성 응답:', markerRes.data)
+          const markerRes = await axiosInstance.post('/markers', markerReqBody);
+          console.log('마커 생성 응답:', markerRes.data);
         }
       }
 
-      toast.success('로드맵이 성공적으로 생성되었습니다.')
+      toast.success('로드맵이 성공적으로 생성되었습니다.');
     } catch (error) {
-      console.error('로드맵 생성 실패', error)
-      toast.error('로드맵 생성 중 오류가 발생했습니다.')
+      console.error('로드맵 생성 실패', error);
+      toast.error('로드맵 생성 중 오류가 발생했습니다.');
     }
-  }
+  };
 
   return (
     <section className="flex w-full h-screen overflow-hidden">
@@ -233,7 +233,7 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
           className="hidden"
           onChange={(e) => {
             if (e.target.files?.[0]) {
-              setThumbnail(e.target.files[0])
+              setThumbnail(e.target.files[0]);
             }
           }}
         />
@@ -244,6 +244,7 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
         >
           {thumbnail ? (
             // 썸네일이 있을 경우: 이미지 미리보기
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={URL.createObjectURL(thumbnail)}
               alt="썸네일 미리보기"
@@ -398,5 +399,5 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
         </div>
       </div>
     </section>
-  )
+  );
 }
