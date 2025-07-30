@@ -1,43 +1,82 @@
-'use client';
+'use client'
 
-import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
-import { ChevronLeft, ImagePlus } from 'lucide-react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
+import Button from '@/components/ui/Button'
+import Input from '@/components/ui/Input'
+import axiosInstance from '@/libs/axios'
+import { ChevronLeft, ImagePlus } from 'lucide-react'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useRef, useState } from 'react'
+import { toast } from 'react-toastify'
 
 export default function QuestWrite() {
-  const router = useRouter();
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [deadline, setDeadline] = useState('');
-  const [title, setTitle] = useState('');
-  const [hint, setHint] = useState('');
+  const router = useRouter()
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
+  const [deadline, setDeadline] = useState('')
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [hint, setHint] = useState('')
+  const isActive = true
 
   const handleContentClick = () => {
-    fileInputRef.current?.click();
-  };
+    fileInputRef.current?.click()
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onloadend = () => {
-        setPreviewImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+        setPreviewImage(reader.result as string)
+      }
+      reader.readAsDataURL(file)
     }
-  };
+  }
 
   const handleCancel = () => {
-    router.back();
-  };
+    router.back()
+  }
 
-  const handleSubmit = () => {};
+  const handleSubmit = async () => {
+    try {
+      const formData = new FormData()
+      const imageFile = fileInputRef.current?.files?.[0]
+      if (!imageFile) {
+        toast('이미지를 선택해주세요')
+        return
+      }
+
+      const requestData = {
+        title,
+        description,
+        hint,
+        deadline: deadline + 'T23:59:59+09:00',
+        isActive,
+      }
+
+      const RequestBlob = new Blob([JSON.stringify(requestData)], {
+        type: 'application/json',
+      })
+
+      formData.append('questRequest', RequestBlob)
+      formData.append('imageFile', imageFile)
+
+      await axiosInstance.post('/quests', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      toast.success('퀘스트가 성공적으로 등록되었습니다.')
+      handleCancel()
+    } catch (err) {
+      console.error('퀘스트 등록 실패', err)
+      toast.error('퀘스트 등록 실패')
+    }
+  }
 
   return (
-    <div className="max-w-xl w-full h-[760px] mx-auto mt-10 p-6 bg-white rounded-xl border border-gray-200 shadow-sm">
+    <div className="max-w-xl w-full h-[760px] mx-auto mt-10 p-6 bg-white rounded-xl border border-gray-200 shadow-sm overflow-y-scroll">
       {/* 뒤로가기 */}
       <button
         onClick={() => router.back()}
@@ -99,6 +138,17 @@ export default function QuestWrite() {
         />
       </div>
 
+      {/* 내용 */}
+      <div className="mb-6 flex flex-col gap-1 w-full">
+        <label className="block text-base text-[var(--black)]">내용</label>
+        <textarea
+          placeholder="내용을 입력해주세요"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="w-full h-[150px] rounded-sm border border-[var(--gray-50)] px-3 py-2  outline-none focus:border-[var(--primary-300)] focus:ring-1 focus:ring-[var(--primary-300)] placeholder:text-sm placeholder:text-[var(--gray-200)]"
+        />
+      </div>
+
       {/* 힌트 */}
       <div className="mb-11">
         <Input
@@ -123,11 +173,11 @@ export default function QuestWrite() {
           buttonStyle="smGreen"
           onClick={handleSubmit}
           className="w-[152px] h-[48px]"
-          disabled={!title || !deadline || !hint || !previewImage}
+          disabled={!title || !deadline || !previewImage || !description}
         >
           등록하기
         </Button>
       </div>
     </div>
-  );
+  )
 }

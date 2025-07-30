@@ -38,29 +38,29 @@ export default function QuestDetailHeader({
 
       {/* 진행/마감 */}
       <div className="mt-4 flex items-center gap-2.5">
-        <p className="text-[11px] text-[var(--white)] p-[5px] rounded-[8px] bg-[var(--primary-300)]">
+        <p className="text-[13px] text-[var(--white)] p-[5px] rounded-[8px] bg-[var(--primary-300)]">
           {questInfo.isActive ? '진행중' : '마감'}
         </p>
-        {remainingDays >= 0 ? (
-          <p className="text-sm text-[var(--gray-300)]">
-            마감까지 {remainingDays}일전
+        <div>
+          {/* 마감일 */}
+          <p className="flex gap-[5px] items-center text-xs text-[var(--gray-200)]">
+            <CalendarDays size={15} color="var(--gray-200)" />~
+            {questInfo.deadline.slice(0, 10)}
           </p>
-        ) : (
-          ''
-        )}
-        {/* 마감일 */}
-        <p className="flex gap-[5px] items-center text-xs text-[var(--gray-200)]">
-          <CalendarDays size={15} color="var(--gray-200)" />~
-          {questInfo.deadline.slice(0, 10)}
-        </p>
+          {remainingDays >= 0 ? (
+            <p className="text-sm text-[var(--gray-300)]">
+              마감까지 {remainingDays}일전
+            </p>
+          ) : (
+            ''
+          )}
+        </div>
       </div>
 
       {/* 제목 + 좋아요/조회수/메뉴or신고 */}
       <div className="mt-4 flex justify-between items-start">
-        <div className="flex flex-col gap-[10px]">
-          <h2 className="font-semibold text-[25px]">{questInfo.title}</h2>
-          <p className="text-[18px]">{questInfo.description}</p>
-        </div>
+        <h2 className="font-semibold text-[25px]">{questInfo.title}</h2>
+
         {/* 좋아요/조회수/메뉴or신고 */}
         <div className="flex gap-4">
           {/* 조회수 */}
@@ -76,7 +76,7 @@ export default function QuestDetailHeader({
           </button>
         </div>
       </div>
-
+      <p className="text-[18px] mt-4">{questInfo.description}</p>
       {/* 작성자 */}
       <div className="mt-4 flex gap-2 items-center">
         {/* 프로필 이미지 */}
@@ -91,7 +91,6 @@ export default function QuestDetailHeader({
         {/* 닉네임 */}
         <p className="text-[15px]">{questInfo.member.nickname}</p>
       </div>
-
       {/* 퀘스트 이미지 */}
       <div
         className="mt-4 bg-gray-400 w-[1100px] h-[500px] rounded-[10px] relative bg-cover bg-center bg-no-repeat"
