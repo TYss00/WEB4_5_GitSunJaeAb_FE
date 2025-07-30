@@ -15,7 +15,7 @@ type SubmissionRaw = {
   imageUrl: string;
   nickname: string;
   submittedAt: string;
-  recognized: boolean;
+  isRecognized: boolean;
 };
 
 type MemberQuest = {
@@ -77,6 +77,7 @@ export default function QuestDetail() {
             return {
               ...submission,
               id: matched?.id ?? null,
+              isRecognized: submission.isRecognized,
             };
           }
         );

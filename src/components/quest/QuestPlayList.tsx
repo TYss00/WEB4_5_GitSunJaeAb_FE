@@ -18,7 +18,7 @@ export default function QuestPlayList({
   onFormOpen,
 }: Props) {
   const [activeTab, setActiveTab] = useState('전체');
-  const tabs = ['전체', '정답', '오답'];
+  const tabs = ['전체', '정답', '오답', '대기'];
 
   const { user } = useAuthStore();
   const hasParticipated = submission.some((s) => s.nickname === user?.nickname);
@@ -29,11 +29,11 @@ export default function QuestPlayList({
       : submission.filter((item) => {
           switch (activeTab) {
             case '정답':
-              return item.recognized === true;
+              return item.isRecognized === true;
             case '오답':
-              return item.recognized === false;
+              return item.isRecognized === false;
             case '대기':
-              return item.recognized === null;
+              return item.isRecognized === null;
             default:
               return true;
           }
@@ -95,17 +95,17 @@ export default function QuestPlayList({
                 {/* 대기중인거 나중에 오답으로해줘야해 빨간색 */}
                 <span
                   className={`absolute bottom-1.5 left-1.5 text-white rounded-[10px] px-2.5 py-1 ${
-                    item.recognized === true
+                    item.isRecognized === true
                       ? 'bg-[var(--primary-200)]'
-                      : item.recognized === false
-                      ? 'bg-[var(--gray-300)]'
+                      : item.isRecognized === false
+                      ? 'bg-[var(--red)]'
                       : 'bg-[var(--gray-300)]'
                   }`}
                 >
-                  {item.recognized === true
+                  {item.isRecognized === true
                     ? '정답'
-                    : item.recognized === false
-                    ? '대기'
+                    : item.isRecognized === false
+                    ? '오답'
                     : '대기'}
                 </span>
               </div>
