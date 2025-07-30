@@ -48,7 +48,9 @@ export default function ShareMapCard({
         <div
           className="relative h-[260px] w-full"
           style={{
-            backgroundImage: `url(${mapImageUrl})`,
+            backgroundImage: `url(${
+              mapImageUrl || '/assets/defaultProfile.png'
+            })`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
