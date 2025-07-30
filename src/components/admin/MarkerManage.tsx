@@ -8,6 +8,7 @@ import ManageAddCard from './card/ManageAddCard';
 import { CustomMarker } from '@/types/admin';
 import ManageCardSkeleton from './skeleton/ManageCardSkeleton';
 import { toast } from 'react-toastify';
+import ConfirmModal from '../common/modal/ConfirmModal';
 
 export default function MarkerManage({
   setCount,
@@ -32,6 +33,8 @@ export default function MarkerManage({
     name: '',
     image: null,
   });
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchMarkers = async () => {
@@ -130,17 +133,25 @@ export default function MarkerManage({
     }
   };
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('정말로 이 마커를 삭제하시겠습니까?')) return;
+  const handleDelete = (id: number) => {
+    setDeleteTargetId(id);
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deleteTargetId === null) return;
 
     try {
-      await axiosInstance.delete(`/markers/customImage/${id}`);
-      setMarkers((prev) => prev.filter((m) => m.id !== id));
+      await axiosInstance.delete(`/markers/customImage/${deleteTargetId}`);
+      setMarkers((prev) => prev.filter((m) => m.id !== deleteTargetId));
       setCount((prev) => prev - 1);
       toast.success('마커 삭제 완료');
     } catch (err) {
       console.error('마커 삭제 실패:', err);
       toast.error('마커 삭제 중 오류 발생');
+    } finally {
+      setIsConfirmOpen(false);
+      setDeleteTargetId(null);
     }
   };
 
@@ -218,6 +229,12 @@ export default function MarkerManage({
             )}
           </>
         )}
+        <ConfirmModal
+          isOpen={isConfirmOpen}
+          onClose={() => setIsConfirmOpen(false)}
+          onDelete={handleConfirmDelete}
+          confirmType="marker"
+        />
       </div>
     </div>
   );
