@@ -42,7 +42,7 @@ export default function QuestDetail() {
   return (
     <>
       {/* 퀘스트 정보 */}
-      <QuestDetailHeader questInfo={questInfo} />
+      <QuestDetailHeader questInfo={questInfo} questId={Number(questId)} />
       <div className="mt-[30px] mx-auto w-[1100px] pb-[50px]">
         <div className="flex w-full">
           <div className="w-1/2">

@@ -1,16 +1,25 @@
-import { CommentInfo } from '@/types/type'
-import CommentItem from './CommentItem'
+import { CommentInfo } from '@/types/type';
+import CommentItem from './CommentItem';
 
 type Props = {
-  comments: CommentInfo[]
-}
+  comments: CommentInfo[];
+  onDelete?: (id: number) => void;
+  onUpdate?: (updated: CommentInfo) => void;
+};
 
-export default function CommentList({ comments }: Props) {
+export default function CommentList({ comments, onDelete, onUpdate }: Props) {
   return (
     <ul className="divide-y divide-[var(--gray-100)] max-h-[240px] overflow-y-auto">
       {comments.map((comment: CommentInfo) => {
-        return <CommentItem key={comment.id} commentInfo={comment} />
+        return (
+          <CommentItem
+            key={comment.id}
+            commentInfo={comment}
+            onDelete={onDelete}
+            onUpdate={onUpdate}
+          />
+        );
       })}
     </ul>
-  )
+  );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ChevronDown, ChevronLeft, ImagePlus, Plus } from 'lucide-react';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
@@ -14,20 +14,17 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
-interface ShareMapAddProps {
-  categories: CategoryInfo[];
-}
-
 export interface AddressData {
   address: string;
 }
 
-export default function ShareMapAdd({ categories }: ShareMapAddProps) {
+export default function ShareMapAdd() {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [region, setRegion] = useState('');
   const [categoryId, setCategoryId] = useState<number | null>(null);
+  const [categories, setCategories] = useState<CategoryInfo[]>([]);
   const [thumbnail, setThumbnail] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -40,6 +37,26 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
   const [endDate, setEndDate] = useState('');
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axiosInstance.get('/categories');
+        const data = res.data;
+        if (Array.isArray(data.categories)) {
+          setCategories(data.categories);
+        } else {
+          console.error('카테고리 데이터 형식이 잘못되었습니다:', data);
+          toast.error('카테고리 목록을 불러오지 못했어요.');
+        }
+      } catch (error) {
+        console.error('카테고리 요청 실패:', error);
+        toast.error('카테고리 요청 중 오류가 발생했어요.');
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleComplete = async (data: AddressData) => {
     const fullAddress = data.address;
@@ -128,7 +145,6 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
       } else {
         toast.success('공유지도가 성공적으로 생성되었습니다.');
       }
-
     } catch (err) {
       console.error('작성 실패:', err);
       alert('작성에 실패했습니다.');
