@@ -12,6 +12,7 @@ import Button from '../ui/Button';
 import { geocodeAddress } from '@/libs/geocode';
 import axiosInstance from '@/libs/axios';
 import { CategoryInfo } from '@/types/type';
+import { toast } from 'react-toastify';
 
 export interface AddressData {
   address: string;
@@ -49,8 +50,6 @@ export default function ShareMapEdit() {
       try {
         const res = await axiosInstance.get(`/roadmaps/${id}`);
         const data = res.data.roadmap;
-
-        console.log('불러온 데이터', data);
 
         setTitle(data.title);
         setDescription(data.description);
@@ -133,7 +132,7 @@ export default function ShareMapEdit() {
 
   const handleSubmit = async () => {
     if (!title || !description || !categoryId) {
-      console.log('필수 값을 입력해주세요.');
+      toast.error('필수 값을 입력해주세요.');
       return;
     }
 
@@ -166,14 +165,15 @@ export default function ShareMapEdit() {
       });
 
       router.push('/dashbord/sharemap');
+      toast.success('공유지도가 성공적으로 수정되었습니다.');
     } catch (err) {
       console.error('수정 실패:', err);
+      toast.error('공유 지도 수정에 실패했습니다.');
     }
   };
 
   return (
     <section className="flex h-screen overflow-hidden">
-      {/* 지도 */}
       <div className="w-4/6 bg-gray-200 relative">
         {isLoaded && (
           <GoogleMap
@@ -198,11 +198,7 @@ export default function ShareMapEdit() {
         </div>
       </div>
 
-      {/* 입력 폼 */}
       <div className="w-2/6 px-6 py-8 space-y-6 bg-white overflow-y-auto scrollbar-none">
-        {/* 제목, 내용, 지역, 썸네일, 날짜, 카테고리, 해시태그 입력폼은 ShareMapAdd와 동일 구조 */}
-        {/* 생략하지 않고 위에서 가져온 값 바인딩한 상태 */}
-        {/* 그대로 유지 */}
         <div className="space-y-2">
           <label className="text-lg text-black">제목</label>
           <Input
