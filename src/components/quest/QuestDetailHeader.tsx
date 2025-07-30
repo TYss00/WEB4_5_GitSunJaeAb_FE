@@ -1,6 +1,5 @@
-
-'use client'
-import { useParams, useRouter } from 'next/navigation'
+'use client';
+import { useParams, useRouter } from 'next/navigation';
 
 import {
   ChevronLeft,
@@ -12,16 +11,16 @@ import {
   PencilLine,
   Trash2,
   Siren,
-} from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
-import { QuestInfo } from '@/types/type'
-import Image from 'next/image'
-import { differenceInDays } from 'date-fns'
-import axiosInstance from '@/libs/axios'
-import { useAuthStore } from '@/store/useAuthStore'
-import ReportModal from '../common/modal/ReportModal'
-import ConfirmModal from '../common/modal/ConfirmModal'
-
+  MoreVertical,
+} from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { QuestInfo } from '@/types/type';
+import Image from 'next/image';
+import { differenceInDays } from 'date-fns';
+import axiosInstance from '@/libs/axios';
+import { useAuthStore } from '@/store/useAuthStore';
+import ReportModal from '../common/modal/ReportModal';
+import ConfirmModal from '../common/modal/ConfirmModal';
 
 export default function QuestDetailHeader({
   questInfo,
@@ -30,22 +29,21 @@ export default function QuestDetailHeader({
   questInfo: QuestInfo;
   questId: number;
 }) {
+  const { id } = useParams();
+  const currentUserId = useAuthStore((state) => state.user?.id);
 
-  const { id } = useParams()
-  const currentUserId = useAuthStore((state) => state.user?.id)
+  const router = useRouter();
+  const [isHintOpen, setIsHintOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
-  const router = useRouter()
-  const [isHintOpen, setIsHintOpen] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
+  const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  const [isReportOpen, setIsReportOpen] = useState(false)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement | null>(null)
-
-  const deadline = new Date(questInfo.deadline.slice(0, 10))
-  const today = new Date()
-  const remainingDays = differenceInDays(deadline, today)
+  const deadline = new Date(questInfo.deadline.slice(0, 10));
+  const today = new Date();
+  const remainingDays = differenceInDays(deadline, today);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -53,27 +51,27 @@ export default function QuestDetailHeader({
         dropdownRef.current &&
         !dropdownRef.current.contains(e.target as Node)
       ) {
-        setIsMenuOpen(false)
+        setIsMenuOpen(false);
       }
-    }
+    };
 
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleDelete = async () => {
     try {
-      await axiosInstance.delete(`/quests/${id}`)
-      router.push('/dashbord/quest')
+      await axiosInstance.delete(`/quests/${id}`);
+      router.push('/dashbord/quest');
     } catch (error) {
-      console.error('삭제 실패: ', error)
-      alert('삭제 권한이 없거나 실패했습니다.')
+      console.error('삭제 실패: ', error);
+      alert('삭제 권한이 없거나 실패했습니다.');
     } finally {
-      setIsDeleteOpen(false)
+      setIsDeleteOpen(false);
     }
-  }
+  };
 
   return (
     <>
@@ -133,8 +131,8 @@ export default function QuestDetailHeader({
                   <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow z-50">
                     <button
                       onClick={() => {
-                        setIsMenuOpen(false)
-                        router.push(`/dashbord/quest/edit/${id}`)
+                        setIsMenuOpen(false);
+                        router.push(`/dashbord/quest/edit/${id}`);
                       }}
                       className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2"
                     >
@@ -144,8 +142,8 @@ export default function QuestDetailHeader({
                     <div className="border-t border-gray-200 mx-2" />
                     <button
                       onClick={() => {
-                        setIsMenuOpen(false)
-                        setIsDeleteOpen(true)
+                        setIsMenuOpen(false);
+                        setIsDeleteOpen(true);
                       }}
                       className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2 text-red-500"
                     >
@@ -187,7 +185,6 @@ export default function QuestDetailHeader({
               </div>
             )}
           </div>
-
         </div>
         <p className="text-[18px] mt-4">{questInfo.description}</p>
         {/* 작성자 */}
@@ -262,5 +259,5 @@ export default function QuestDetailHeader({
         />
       )}
     </>
-  )
+  );
 }
