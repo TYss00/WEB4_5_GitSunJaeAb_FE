@@ -9,7 +9,6 @@ import Notification from '../notification/Notification';
 import { usePathname } from 'next/navigation';
 import { HeaderProps } from '@/types/type';
 import UserModal from './modal/UserModal';
-// import { useAuthStore } from '@/store/useAuthStore';
 import defaultProfile from '../../../public/assets/defaultProfile.png';
 import Image from 'next/image';
 import { useNotifications } from '@/libs/notification';
@@ -30,18 +29,8 @@ export default function Header({ isAdmin = false }: HeaderProps) {
   const { data: notifications = [] } = useNotifications();
   const hasUnread = notifications.some((n) => !n.isRead);
 
-  // const user = useAuthStore((state) => state.user);
   const { data: user, isLoading } = useProfile();
-  console.log('[Header] 현재 user 상태:', user);
   const profileImage = user?.profileImage ?? defaultProfile;
-  // const fetchUser = useAuthStore((state) => state.fetchUser);
-  // user 없을 경우 자동 fetch
-  // useEffect(() => {
-  //   if (!user) {
-  //     console.log('[Header] user 정보 없음 → fetchUser 실행');
-  //     fetchUser();
-  //   }
-  // }, [user, fetchUser]);
 
   useClickOut(searchRef, () => setIsSearchOpen(false));
   useClickOut(notiRef, () => setIsNotiOpen(false));
@@ -66,7 +55,6 @@ export default function Header({ isAdmin = false }: HeaderProps) {
 
   const navItems = isAdmin ? adminNavItems : userNavItems;
 
-  // ✅ 로딩 중이면 아무것도 렌더링하지 않음 (필요시 스켈레톤 처리 가능)
   if (isLoading) return null;
 
   return (

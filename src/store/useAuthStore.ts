@@ -8,7 +8,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   loading: false,
 
   setAccessToken: (token) => {
-    console.log('[zustand] setAccessToken 호출:', token);
     if (typeof window !== 'undefined') {
       localStorage.setItem('accessToken', token);
     }
@@ -16,7 +15,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   setUser: (user) => {
-    console.log('[zustand] setUser 호출:', user);
     set({ user });
   },
 
@@ -32,7 +30,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       return user;
     } catch (err) {
-      console.warn('[zustand] fetchUser 실패:', err);
+      console.warn(err);
       get().logout();
       return null;
     }
