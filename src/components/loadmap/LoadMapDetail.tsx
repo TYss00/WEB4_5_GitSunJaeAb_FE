@@ -29,6 +29,7 @@ import { useAuthStore } from '@/store/useAuthStore'
 import ConfirmModal from '../common/modal/ConfirmModal'
 import { useBookmarkStore } from '@/store/useBookmarkStore'
 import LoadingSpinner from '../common/LoadingSpener'
+import { toast } from 'react-toastify'
 
 export default function Loadmapdetail() {
   const currentUserId = useAuthStore((state) => state.user?.id)
@@ -103,9 +104,9 @@ export default function Loadmapdetail() {
         axiosInstance.post(`/layers/member?layerId=${item.layer.id}`)
       )
       await Promise.all(promises)
-      console.log('일괄 찜 완료')
-    } catch (err) {
-      console.log('레이어 일괄 찜 오류', err)
+      toast.success('레이어 일괄 찜 완료!')
+    } catch {
+      toast.error('레이어 일괄 찜 오류')
     }
   }
 
