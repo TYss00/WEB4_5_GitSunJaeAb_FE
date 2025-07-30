@@ -4,12 +4,17 @@ import { useState, useMemo } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { DashboardShareMapCardProps } from '@/types/share';
 import ShareMapCard from '../ui/card/ShareMapCard';
+import ShareMapSkeletonCard from '../dashboard/skeleton/ShareMapSkeletonCard';
 
 interface ShareMapCardListProps {
   data: DashboardShareMapCardProps[];
+  isLoading?: boolean;
 }
 
-export default function ShareMapCardList({ data }: ShareMapCardListProps) {
+export default function ShareMapCardList({
+  data,
+  isLoading: isLoading,
+}: ShareMapCardListProps) {
   const [sort, setSort] = useState<'recent' | 'popular'>('recent');
   const [categoryFilter, setCategoryFilter] = useState('전체');
 
@@ -79,16 +84,20 @@ export default function ShareMapCardList({ data }: ShareMapCardListProps) {
 
       {/* 카드 리스트 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[31px]">
-        {filteredAndSorted.map((item) => (
-          <ShareMapCard
-            key={item.id}
-            id={item.id}
-            title={item.title}
-            mapImageUrl={item.thumbnail}
-            category={item.categoryName}
-            participants={item.participants}
-          />
-        ))}
+        {isLoading
+          ? Array.from({ length: 8 }).map((_, idx) => (
+              <ShareMapSkeletonCard key={idx} />
+            ))
+          : filteredAndSorted.map((item) => (
+              <ShareMapCard
+                key={item.id}
+                id={item.id}
+                title={item.title}
+                mapImageUrl={item.thumbnail}
+                category={item.categoryName}
+                participants={item.participants}
+              />
+            ))}
       </div>
     </section>
   );

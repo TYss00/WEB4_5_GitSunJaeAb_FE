@@ -117,8 +117,6 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
     '업적',
   ];
 
-  console.log(user?.provider);
-
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
       <div className="w-[500px] h-[700px] px-[25px] pt-[20px] pb-[20px] flex flex-col justify-between items-center gap-[15px] bg-[var(--gray-40)] shadow-[rgba(0,0,0,0.1)_0px_4px_20px] rounded-xl">

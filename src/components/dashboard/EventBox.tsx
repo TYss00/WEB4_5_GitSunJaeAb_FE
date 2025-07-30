@@ -9,19 +9,28 @@ import axiosInstance from '@/libs/axios';
 import { DashboardShareMapCardProps } from '@/types/share';
 import { RoadmapResponse } from '@/types/myprofile';
 import SkeletonCard from './skeleton/SkeletonCard';
+import ShareMapSkeletonCard from './skeleton/ShareMapSkeletonCard';
 
 interface EventBoxProps extends CardListProps {
   data?: DashboardShareMapCardProps[];
+  isLoading?: boolean;
 }
 
-export default function EventBox({ type, data }: EventBoxProps) {
+export default function EventBox({
+  type,
+  data,
+  isLoading: isLoadingProp,
+}: EventBoxProps) {
   const [topQuests, setTopQuests] = useState<QuestSummary[]>([]);
   const [topRoadmaps, setTopRoadmaps] = useState<RoadmapResponse[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingInternal, setIsLoadingInternal] = useState(false);
+
+  const finalIsLoading =
+    type === 'sharemap' ? isLoadingProp : isLoadingInternal;
 
   useEffect(() => {
     const fetchTopQuests = async () => {
-      setIsLoading(true);
+      setIsLoadingInternal(true);
       try {
         const res = await axiosInstance.get('/quests');
         const allQuests: QuestSummary[] = res.data.quests;
@@ -48,12 +57,12 @@ export default function EventBox({ type, data }: EventBoxProps) {
       } catch (err) {
         console.error('퀘스트 조회 실패:', err);
       } finally {
-        setIsLoading(false);
+        setIsLoadingInternal(false);
       }
     };
 
     const fetchTopRoadmaps = async () => {
-      setIsLoading(true);
+      setIsLoadingInternal(true);
       try {
         const res = await axiosInstance.get('/roadmaps/personal');
         const allRoadmaps: RoadmapResponse[] = res.data.roadmaps;
@@ -66,7 +75,7 @@ export default function EventBox({ type, data }: EventBoxProps) {
       } catch (err) {
         console.error('로드맵 조회 실패:', err);
       } finally {
-        setIsLoading(false);
+        setIsLoadingInternal(false);
       }
     };
 
@@ -85,10 +94,14 @@ export default function EventBox({ type, data }: EventBoxProps) {
         </h2>
         <div className="mx-auto mt-[19px] mb-[31px] w-[136px] h-[2px] bg-[#005C54] rounded-full" />
         <div className="flex gap-[18px] justify-center">
-          {isLoading
-            ? Array.from({ length: 3 }).map((_, idx) => (
-                <SkeletonCard key={idx} />
-              ))
+          {finalIsLoading
+            ? Array.from({ length: 3 }).map((_, idx) =>
+                type === 'sharemap' ? (
+                  <ShareMapSkeletonCard key={idx} />
+                ) : (
+                  <SkeletonCard key={idx} />
+                )
+              )
             : type === 'sharemap' && data
             ? data.map((item) => (
                 <ShareMapCard
