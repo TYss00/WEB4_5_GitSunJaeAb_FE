@@ -10,10 +10,14 @@ export default function RequireGuest({
 }: {
   children: React.ReactNode;
 }) {
-  const { accessToken, loading, user } = useAuthStore();
+  const { accessToken, loading, user, initUser } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
+    if (accessToken && !user) {
+      initUser();
+    }
+
     if (!loading && accessToken && user) {
       if (user.role === 'ROLE_ADMIN') {
         router.replace('/admin/report');
@@ -21,12 +25,14 @@ export default function RequireGuest({
         router.replace('/dashbord');
       }
     }
-  }, [accessToken, loading, user, router]);
+  }, [accessToken, loading, user, router, initUser]);
 
-  if (loading) {
+  if (loading || (accessToken && !user)) {
     return <LoadingSpener />;
   }
-  if (accessToken) return null;
+
+  // 로그인된 사용자는 null, 나머지는 children
+  if (accessToken && user) return null;
 
   return <>{children}</>;
 }

@@ -13,17 +13,26 @@ export default function RequireLogin({
   const router = useRouter();
 
   useEffect(() => {
+    // accessToken 없으면 로그인으로
     if (!accessToken) {
       router.replace('/login');
-    } else if (accessToken && !user) {
-      // accessToken은 있지만 user는 없는 경우 → user 요청
-      initUser();
+      return;
+    }
+
+    // accessToken만 있고 user는 없으면 사용자 초기화 시도
+    if (accessToken && !user) {
+      initUser().then((result) => {
+        if (!result) {
+          router.replace('/login'); // 유저 초기화 실패 시
+        }
+      });
     }
   }, [accessToken, user, router, initUser]);
 
   // 로딩 중이거나 유저 정보가 아직 없는 경우
   if (!accessToken || !user || loading) {
-    return null; // 또는 <LoadingSpinner />
+    return null;
   }
+
   return <>{children}</>;
 }
