@@ -3,7 +3,7 @@
 import { reverseGeocode } from '@/libs/geocode';
 import useShareStore from '@/store/useShareStore';
 import { GoogleMap, MarkerF } from '@react-google-maps/api';
-import { useCallback, useRef } from 'react';
+import { useCallback } from 'react';
 import { toast } from 'react-toastify';
 
 const containerStyle = {
@@ -16,14 +16,16 @@ const center = {
   lng: 126.978,
 };
 
-export default function GoogleMapWrapper() {
+interface GoogleMapWrapperProps {
+  mapRef: React.RefObject<google.maps.Map | null>;
+}
+
+export default function GoogleMapWrapper({ mapRef }: GoogleMapWrapperProps) {
   const addMarker = useShareStore((state) => state.addMarker);
   const selectedLayerId = useShareStore((state) => state.selectedLayerId);
   const getFilteredMarkers = useShareStore((state) => state.filteredMarkers); // 함수로 가져오기
 
   const filteredMarkers = getFilteredMarkers(); // 여기서 호출
-
-  const mapRef = useRef<google.maps.Map | null>(null);
 
   const handleClick = useCallback(
     async (e: google.maps.MapMouseEvent) => {

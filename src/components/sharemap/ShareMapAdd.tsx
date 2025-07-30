@@ -6,11 +6,13 @@ import Input from '../ui/Input';
 import Button from '../ui/Button';
 import Link from 'next/link';
 import { geocodeAddress } from '@/libs/geocode';
-import { GoogleMap, useLoadScript } from '@react-google-maps/api';
+import { GoogleMap } from '@react-google-maps/api';
 import DaumPostcodeEmbed from 'react-daum-postcode';
 import { CategoryInfo } from '@/types/type';
 import axiosInstance from '@/libs/axios';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 interface ShareMapAddProps {
   categories: CategoryInfo[];
@@ -21,10 +23,7 @@ export interface AddressData {
 }
 
 export default function ShareMapAdd({ categories }: ShareMapAddProps) {
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!,
-  });
-
+  const router = useRouter();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [region, setRegion] = useState('');
@@ -117,8 +116,22 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
       });
 
       console.log('작성 완료:', res);
+
+      router.push('/dashbord/sharemap');
+      router.refresh();
+      // 작성 완료 되었을때 메시지에 업적있으면
+      // 업적o 업적 관련 토스트메시지 보여지도록
+      // 업적x 공유지도 생성 토스트 메시지
+      const message = res.data?.message ?? '';
+      if (message.includes('업적')) {
+        toast.success(message);
+      } else {
+        toast.success('공유지도가 성공적으로 생성되었습니다.');
+      }
+
     } catch (err) {
       console.error('작성 실패:', err);
+      alert('작성에 실패했습니다.');
     }
   };
 
@@ -126,16 +139,15 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
     <section className="flex h-screen overflow-hidden">
       {/* 지도 */}
       <div className="w-4/6 bg-gray-200 relative">
-        {isLoaded && (
-          <GoogleMap
-            mapContainerStyle={{ width: '100%', height: '100%' }}
-            center={center}
-            zoom={13}
-            onLoad={(map) => {
-              mapRef.current = map;
-            }}
-          />
-        )}
+        <GoogleMap
+          mapContainerStyle={{ width: '100%', height: '100%' }}
+          center={center}
+          zoom={13}
+          onLoad={(map) => {
+            mapRef.current = map;
+          }}
+        />
+
         <div className="absolute top-2 left-[160px] flex items-center gap-3 px-4 py-2 z-20">
           <Link href="/dashbord/sharemap">
             <Button
@@ -311,15 +323,13 @@ export default function ShareMapAdd({ categories }: ShareMapAddProps) {
                 취소
               </Button>
             </Link>
-            <Link href="/dashbord/sharemap">
-              <Button
-                buttonStyle="smGreen"
-                className="w-[60px] h-[35px] text-sm"
-                onClick={handleSubmit}
-              >
-                완료
-              </Button>
-            </Link>
+            <Button
+              buttonStyle="smGreen"
+              className="w-[60px] h-[35px] text-sm"
+              onClick={handleSubmit}
+            >
+              완료
+            </Button>
           </div>
         </div>
       </div>

@@ -79,7 +79,7 @@ export default function Login() {
   // 구글 로그인
   const handleGoogleRedirectLogin = () => {
     const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!;
-    const redirectUri = 'http://localhost:3000/auth/google/callback';
+    const redirectUri = 'https://mapick.netlify.app/auth/google/callback';
     const scope = 'openid email profile';
     const responseType = 'id_token';
     const state = crypto.randomUUID(); // CSRF 방지용 (선택)

@@ -17,6 +17,8 @@ export default function ShareMapCard({
   const labelColor = isEvent ? 'var(--blue)' : 'var(--primary-300)';
   const router = useRouter();
 
+  console.log(participants);
+
   const handleClick = () => {
     router.push(`/dashbord/sharemap/detail/${id}`);
   };
@@ -27,23 +29,27 @@ export default function ShareMapCard({
         className={`flex flex-col w-[252px] h-[350px] border border-[var(--gray-100)] rounded-[10px] overflow-hidden cursor-pointer transition-all duration-300 ease-in-out 
              hover:shadow-lg hover:-translate-y-1 bg-white ${className}`}
       >
-        <div className="flex flex-col gap-[20px] justify-start m-[20px]">
-          <span
-            className="text-[14px] font-semibold"
-            style={{ color: labelColor }}
-          >
-            {labelText}
-          </span>
-          <span className="text-[18px] font-semibold">{title}</span>
-          <span
-            className="w-fit max-w-full px-[10px] py-[4px] rounded-full text-white text-[13px] truncate"
-            style={{ backgroundColor: labelColor }}
-          >
-            {category}
+        <div className="flex flex-col gap-[10px] justify-start m-[20px]">
+          <div className="flex items-center justify-between">
+            <span
+              className="text-[16px] font-semibold"
+              style={{ color: labelColor }}
+            >
+              {labelText}
+            </span>
+            <span
+              className="translate-x-2 px-[10px] py-[4px] rounded-full text-white text-[13px] truncate"
+              style={{ backgroundColor: labelColor }}
+            >
+              {category}
+            </span>
+          </div>
+          <span className="font-semibold leading-tight text-[clamp(10px,1vw,16px)] overflow-hidden text-ellipsis break-words max-h-[3em]">
+            {title}
           </span>
         </div>
         <div
-          className="flex-grow relative"
+          className="relative h-[260px] w-full"
           style={{
             backgroundImage: `url(${mapImageUrl})`,
             backgroundSize: 'cover',
