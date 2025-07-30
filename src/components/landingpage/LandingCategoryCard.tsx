@@ -72,10 +72,14 @@ export default function LandingCategoryCard({
           flex flex-col items-center justify-center transition-all duration-500"
         style={{ backgroundColor: bgColor }}
       >
-        <p className="text-white text-2xl font-semibold transform transition-all duration-500 group-hover:-translate-y-4">
+        <p className="text-[var(--white)] text-2xl font-semibold transform transition-all duration-500 group-hover:-translate-y-4">
           {name}
         </p>
-        <p className="text-white mt-1 opacity-0 translate-y-4 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+        <p
+          className="text-[var(--white)] mt-1 px-8 opacity-0 translate-y-4 
+            group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500
+            text-sm leading-[1.5rem] line-clamp-2 whitespace-pre-wrap break-words"
+        >
           {description}
         </p>
       </div>

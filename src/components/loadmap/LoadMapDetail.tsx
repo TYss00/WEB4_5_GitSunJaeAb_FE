@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+
+import { useEffect, useRef, useState } from 'react'
 import {
   Heart,
   Siren,
@@ -10,31 +11,39 @@ import {
   ChevronLeft,
   ChevronsRight,
   ChevronsLeft,
-} from 'lucide-react';
-import Button from '../ui/Button';
-import ReportModal from '../common/modal/ReportModal';
-import Comment from '../comment/Comment';
-import Toggle from '../ui/Toggle';
-import LayerDetail from '../ui/layer/LayerDetail';
-import MarkerDetail from '../ui/layer/MarkerDetail';
-import useSidebar from '@/utils/useSidebar';
-import { useParams, useRouter } from 'next/navigation';
-import { BookmarksInfo, HashtagProps, RoadmapDetailProps } from '@/types/type';
-import RoadMapGoogleDetail from './RoadMapGoogleDetail';
-import axiosInstance from '@/libs/axios';
-import Image from 'next/image';
+  Ellipsis,
+  PencilLine,
+  Trash2,
+} from 'lucide-react'
+import Button from '../ui/Button'
+import ReportModal from '../common/modal/ReportModal'
+import Comment from '../comment/Comment'
+import LayerDetail from '../ui/layer/LayerDetail'
+import MarkerDetail from '../ui/layer/MarkerDetail'
+import useSidebar from '@/utils/useSidebar'
+import { useParams, useRouter } from 'next/navigation'
+import { BookmarksInfo, HashtagProps, RoadmapDetailProps } from '@/types/type'
+import RoadMapGoogleDetail from './RoadMapGoogleDetail'
+import axiosInstance from '@/libs/axios'
+import Image from 'next/image'
+import { useAuthStore } from '@/store/useAuthStore'
+import ConfirmModal from '../common/modal/ConfirmModal'
 
 export default function Loadmapdetail() {
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<RoadmapDetailProps>();
-  const router = useRouter();
-  const [isReportOpen, setIsReportOpen] = useState(false);
-  const { isOpen, toggle, close } = useSidebar();
-  const params = useParams();
-  const roadmapId = params?.id as string;
-  const [selectedLayerId, setSelectedLayerId] = useState<number | 'all'>('all');
-  const [isBookmarked, setIsBookmarked] = useState(false);
-  const [bookmarkerId, setBookmarkerId] = useState<number | null>(null);
+  const currentUserId = useAuthStore((state) => state.user?.id)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [data, setData] = useState<RoadmapDetailProps>()
+  const router = useRouter()
+  const [isReportOpen, setIsReportOpen] = useState(false)
+  const { isOpen, toggle, close } = useSidebar()
+  const params = useParams()
+  const roadmapId = params?.id as string
+  const [selectedLayerId, setSelectedLayerId] = useState<number | 'all'>('all')
+  const [isBookmarked, setIsBookmarked] = useState(false)
+  const [bookmarkerId, setBookmarkerId] = useState<number | null>(null)
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -71,8 +80,26 @@ export default function Loadmapdetail() {
     fetchAll();
   }, [roadmapId]);
 
-  if (loading) return <div>로딩 중...</div>;
-  if (!data) return <div>데이터 없음</div>;
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setIsMenuOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
+
+  if (loading) return <div>로딩 중...</div>
+  if (!data) return <div>데이터 없음</div>
+
 
   const toggleBookmark = async () => {
     try {
@@ -119,7 +146,20 @@ export default function Loadmapdetail() {
   const center =
     filteredMarkers.length > 0
       ? { lat: filteredMarkers[0].lat, lng: filteredMarkers[0].lng }
-      : defaultCenter;
+      : defaultCenter
+
+  const handleDelete = async () => {
+    try {
+      await axiosInstance.delete(`/roadmaps/${roadmapId}`)
+      router.push('/dashbord/roadmap')
+    } catch (error) {
+      console.error('삭제 실패: ', error)
+      alert('삭제 권한이 없거나 실패했습니다.')
+    } finally {
+      setIsDeleteOpen(false)
+    }
+  }
+
   return (
     <>
       <section className="relative w-full h-screen overflow-hidden">
@@ -212,12 +252,49 @@ export default function Loadmapdetail() {
                   <Eye size={16} strokeWidth={3} /> {roadMapInfo.viewCount}
                 </span>
                 <span className="flex items-center gap-1">
-                  <Siren
-                    size={16}
-                    strokeWidth={3}
-                    className="cursor-pointer"
-                    onClick={() => setIsReportOpen(true)}
-                  />
+                  {currentUserId === roadMapInfo.member.id ? (
+                    // 작성자일 경우: 점 3개 메뉴 (수정/삭제)
+                    <div className="relative" ref={dropdownRef}>
+                      <Ellipsis
+                        size={20}
+                        className="cursor-pointer"
+                        onClick={() => setIsMenuOpen((prev) => !prev)}
+                      />
+                      {isMenuOpen && (
+                        <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow z-50">
+                          <button
+                            onClick={() => {
+                              setIsMenuOpen(false)
+                              router.push(
+                                `/dashbord/sharemap/detail/${roadmapId}/edit`
+                              )
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2"
+                          >
+                            <PencilLine size={18} />
+                            수정하기
+                          </button>
+                          <div className="border-t border-gray-200 mx-2" />
+                          <button
+                            onClick={() => {
+                              setIsMenuOpen(false)
+                              setIsDeleteOpen(true)
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2 text-red-500"
+                          >
+                            <Trash2 size={18} />
+                            삭제하기
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <Siren
+                      size={18}
+                      className="cursor-pointer text-red-500"
+                      onClick={() => setIsReportOpen(true)}
+                    />
+                  )}
                 </span>
               </div>
             </div>
@@ -268,12 +345,6 @@ export default function Loadmapdetail() {
               </span>
             </div>
 
-            {/* 토글 */}
-            <div className="space-y-3 border-t border-gray-300 pt-6 mb-6">
-              <Toggle label="경로" />
-              <Toggle label="애니메이션" />
-            </div>
-
             {/* 레이어 */}
             <div className="border-t border-gray-300 space-y-[15px]">
               <div className="flex items-center justify-between mt-6 mb-3 mr-3">
@@ -318,6 +389,15 @@ export default function Loadmapdetail() {
           reportType="map"
           targetId={Number(roadmapId)}
           onClose={() => setIsReportOpen(false)}
+       />
+      )}
+      {isDeleteOpen && (
+        <ConfirmModal
+          isOpen={isDeleteOpen}
+          onClose={() => setIsDeleteOpen(false)}
+          onDelete={handleDelete}
+          confirmType="post"
+
         />
       )}
     </>

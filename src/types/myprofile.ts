@@ -136,6 +136,8 @@ export type MemberQuest = {
   isActive: boolean;
   createdAt: string;
   completedAt?: string | null;
+  submitAt?: string | null;
+  imageUrl?: string | null;
   member: {
     id: number;
     nickname: string;

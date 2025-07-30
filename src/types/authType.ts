@@ -3,7 +3,6 @@ export type User = {
   name: string;
   nickname: string;
   email: string;
-  provider?: string;
   loginType: string;
   role: string;
   profileImage?: string | null;
@@ -11,7 +10,7 @@ export type User = {
   updatedAt?: string | null;
   deletedAt?: string | null;
   loginCount: number;
-  provider: string | null;
+  provider?: string | null;
 };
 
 export type SignupFormData = {

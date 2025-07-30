@@ -148,6 +148,7 @@ export default function useLayerMarkers(layers: string[]) {
     layerMarkers,
 
     /* actions */
+    setLayerMarkers,
     addMarkerByLatLng,
     addMarkerByAddress,
     addManualMarker,
