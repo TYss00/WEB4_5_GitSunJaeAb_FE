@@ -1,39 +1,39 @@
-'use client';
+'use client'
 
-import { SubmissionInfo } from '@/types/type';
-import { ChevronLeft } from 'lucide-react';
-import Image from 'next/image';
-import Button from '../ui/Button';
-import axiosInstance from '@/libs/axios';
-import { toast } from 'react-toastify';
+import { SubmissionInfo } from '@/types/type'
+import { ChevronLeft } from 'lucide-react'
+import Image from 'next/image'
+import Button from '../ui/Button'
+import axiosInstance from '@/libs/axios'
+import { toast } from 'react-toastify'
 type Props = {
-  submission: SubmissionInfo;
-  onBack: () => void;
-  onJudge: (id: number, isRecognized: boolean) => void;
-};
+  submission: SubmissionInfo
+  onBack: () => void
+  onJudge: (id: number, isRecognized: boolean) => void
+}
 export default function QuestPlayView({ submission, onBack, onJudge }: Props) {
   const handleJudge = async (isRecognized: boolean) => {
     if (!submission.id) {
-      toast.error('memberQuestId가 없습니다.');
-      return;
+      toast.error('memberQuestId가 없습니다.')
+      return
     }
 
     try {
       await axiosInstance.put('/quests/memberQuest/judge', {
         memberQuestId: submission.id,
         isRecognized,
-      });
-      toast.success(isRecognized ? '정답 처리 완료' : '오답 처리 완료');
+      })
+      toast.success(isRecognized ? '정답 처리 완료' : '오답 처리 완료')
 
       // 업뎃요청
-      onJudge(submission.id, isRecognized);
+      onJudge(submission.id, isRecognized)
       // 리스트로 돌아가도록
-      onBack();
+      onBack()
     } catch (err) {
-      console.error('판정 실패', err);
-      toast.error('판정 처리 중 오류 발생');
+      console.error('판정 실패', err)
+      toast.error('판정 처리 중 오류 발생')
     }
-  };
+  }
 
   return (
     <div className="w-full border border-[var(--gray-200)] rounded-[10px] p-4">
@@ -59,7 +59,7 @@ export default function QuestPlayView({ submission, onBack, onJudge }: Props) {
         <div>
           <p className="text-[15px] font-medium">{submission.nickname}</p>
           <p className="text-xs text-[var(--gray-200)]">
-            {submission.submittedAt.slice(0, 10)}
+            {submission.submittedAt?.slice(0, 10)}
           </p>
         </div>
       </div>
@@ -95,5 +95,5 @@ export default function QuestPlayView({ submission, onBack, onJudge }: Props) {
         </Button>
       </div>
     </div>
-  );
+  )
 }
