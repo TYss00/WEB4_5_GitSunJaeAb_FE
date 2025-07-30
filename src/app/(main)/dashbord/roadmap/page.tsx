@@ -1,7 +1,7 @@
 import Banner from '@/components/dashboard/Banner';
 import CardList from '@/components/dashboard/CardList';
+import EventBox from '@/components/dashboard/EventBox';
 import WriteButton from '@/components/dashboard/WriteButton';
-import PopularLoadmap from '@/components/loadmapdashbord/PopularLoadmap';
 
 export const metadata = {
   title: '로드맵',
@@ -10,8 +10,9 @@ export const metadata = {
 export default async function page() {
   return (
     <>
-      <Banner title="로드맵" subtitle="로드맵 설명글" />
-      <PopularLoadmap />
+      <Banner title="로드맵" subtitle="당신만의 로드맵을 만들어보세요" />
+      {/* <PopularLoadmap /> */}
+      <EventBox type="roadmap" />
       <CardList type="roadmap" />
       <WriteButton type="roadmap" />
     </>
