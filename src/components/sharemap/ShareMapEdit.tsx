@@ -37,6 +37,7 @@ export default function ShareMapEdit() {
   const [tags, setTags] = useState<string[]>([]);
   const [center, setCenter] = useState({ lat: 37.5665, lng: 126.978 });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isComposing, setIsComposing] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const mapRef = useRef<google.maps.Map | null>(null);
@@ -313,12 +314,14 @@ export default function ShareMapEdit() {
           <div className="flex gap-2">
             <Input
               type="text"
+              placeholder="해시태그 추가"
               className="h-[40px]"
               value={tagInput}
-              placeholder="해시태그 추가"
               onChange={(e) => setTagInput(e.target.value)}
+              onCompositionStart={() => setIsComposing(true)}
+              onCompositionEnd={() => setIsComposing(false)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
+                if (e.key === 'Enter' && !isComposing) {
                   e.preventDefault();
                   handleAddTag();
                 }
