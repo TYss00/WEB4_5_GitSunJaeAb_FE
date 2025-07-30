@@ -55,9 +55,11 @@ export default function MypageLayer({
   const filteredLayers = layers.filter((layer) => {
     const keyword = searchKeyword.toLowerCase();
     return (
-      layer.member.nickname.toLowerCase().includes(keyword) ||
       layer.name.toLowerCase().includes(keyword) ||
-      layer.roadmap?.title?.toLowerCase().includes(keyword)
+      layer.roadmap?.title?.toLowerCase().includes(keyword) ||
+      layer.forkHistories?.some((f) =>
+        f.forkedRoadmap?.title?.toLowerCase().includes(keyword)
+      )
     );
   });
 
@@ -66,8 +68,7 @@ export default function MypageLayer({
       <table className="min-w-full text-sm text-left border-t border-[#606060]">
         <thead className="text-[var(--black)] text-base font-medium">
           <tr>
-            <th className="py-3 px-4">작성자</th>
-            <th className="py-3 px-4">레이어명</th>
+            <th className="py-3 px-4">레어이명</th>
             <th className="py-3 px-4">가져온 게시글</th>
             <th className="py-3 px-4">적용된 게시글</th>
             <th className="py-3 px-4">삭제</th>
@@ -112,7 +113,6 @@ export default function MypageLayer({
                 key={layer.id}
                 className="border-t border-b border-[#606060] text-sm"
               >
-                <td className="py-3 px-4">{layer.member.nickname}</td>
                 <td className="py-3 px-4">{layer.name}</td>
                 <td className="py-3 px-4">
                   {layer.roadmap?.title ?? '제목 없음'}

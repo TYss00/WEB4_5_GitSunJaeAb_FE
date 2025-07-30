@@ -1,85 +1,84 @@
-'use client'
-import { ChevronLeft, ImagePlus } from 'lucide-react'
-import Input from '../ui/Input'
-import Button from '../ui/Button'
-import axiosInstance from '@/libs/axios'
-import { useRef, useState } from 'react'
-import Image from 'next/image'
-import { useParams } from 'next/navigation'
-import { toast } from 'react-toastify'
+'use client';
+import { ChevronLeft, ImagePlus } from 'lucide-react';
+import Input from '../ui/Input';
+import Button from '../ui/Button';
+import axiosInstance from '@/libs/axios';
+import { useRef, useState } from 'react';
+import Image from 'next/image';
+import { useParams } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 type Props = {
-  onBack: () => void
-}
+  onBack: () => void;
+};
 
 export default function QuestPlayForm({ onBack }: Props) {
-  const params = useParams()
-  const questId = params?.id as string
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
+  const params = useParams();
+  const questId = params?.id as string;
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
 
-  const [previewImage, setPreviewImage] = useState<string | null>(null)
-  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageClick = () => {
-    fileInputRef.current?.click()
-  }
+    fileInputRef.current?.click();
+  };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-      setImageFile(file)
-      const reader = new FileReader()
+      setImageFile(file);
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setPreviewImage(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+        setPreviewImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!imageFile) {
-      alert('이미지를 업로드해주세요.')
-      return
+      alert('이미지를 업로드해주세요.');
+      return;
     }
 
-    const formData = new FormData()
-    formData.append('imageFile', imageFile)
+    const formData = new FormData();
+    formData.append('imageFile', imageFile);
 
     const requestPayload = {
-      questId,
+
+      questId: Number(questId),
       title,
       description,
-      answer: '뭐라도 넣어야 하나',
-    }
+      answer: '',
+    };
+
 
     formData.append(
       'request',
       new Blob([JSON.stringify(requestPayload)], {
         type: 'application/json',
       })
-    )
+    );
 
     try {
-      const res = await axiosInstance.post(
-        `/quests/${questId}/memberQuest`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      )
-      console.log(res.data)
-      toast.success('퀘스트가 성공적으로 등록되었습니다.')
+
+      await axiosInstance.post(`/quests/${questId}/memberQuest`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      toast.success('퀘스트 참여가 완료되었습니다.');
+      onBack();
     } catch (error) {
-      console.error('업로드 실패:', error)
+      console.error('업로드 실패:', error);
     }
-  }
+  };
 
   return (
     <div className="w-full border border-[var(--gray-200)] rounded-[10px] p-4">
@@ -141,5 +140,5 @@ export default function QuestPlayForm({ onBack }: Props) {
         </div>
       </form>
     </div>
-  )
+  );
 }

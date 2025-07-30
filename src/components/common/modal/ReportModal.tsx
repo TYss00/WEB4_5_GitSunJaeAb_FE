@@ -51,12 +51,21 @@ export default function ReportModal({
     }
 
     try {
-      await axiosInstance.post(url, body);
-      toast.success('신고가 접수되었습니다.');
+      const res = await axiosInstance.post(url, body);
+      const code = res.data?.code;
+
+      if (code === '4099') {
+        toast.info('이미 신고한 콘텐츠입니다.');
+      } else if (code === '2000') {
+        toast.success('신고가 접수되었습니다.');
+      } else {
+        toast.error('알 수 없는 응답입니다.');
+      }
+
       onClose();
     } catch (err) {
-      console.error(err);
       toast.error('신고 처리 중 오류가 발생했습니다.');
+      console.error('❌ 신고 실패:', err);
     }
   };
 
