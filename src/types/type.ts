@@ -2,10 +2,8 @@ import React, { ReactNode } from 'react';
 import { DashboardShareMapCardProps } from './share';
 
 export type HeaderProps = {
-
-  isAdmin?: boolean
-}
-
+  isAdmin?: boolean;
+};
 
 export type CategoryAddCardProps = {
   type?: 'category' | 'marker';
@@ -37,7 +35,6 @@ export type QuestCardProps = {
   author: string;
   deadLine: string;
 };
-
 
 export type ShareMapCardProps = {
   id?: number;
@@ -79,6 +76,7 @@ export type MarkerEditProps = {
 };
 
 export type MarkerDetailProps = {
+  id: number;
   title: string;
   description: string;
   location: { lat: number; lng: number };
@@ -241,39 +239,38 @@ export type QuestInfo = {
 };
 
 export type SubmissionInfo = {
-  title: string
-  description: string
-  imageUrl: string
-  nickname: string
-  submittedAt: string
-  recognized: boolean
-}
+  title: string;
+  description: string;
+  imageUrl: string;
+  nickname: string;
+  submittedAt: string;
+  recognized: boolean;
+};
 
 export type RankingInfo = {
-  rank: number
-  memberName: string
-  profileImageUrl: string
-}
+  rank: number;
+  memberName: string;
+  profileImageUrl: string;
+};
 
 export type QuestDetailData = {
-  quest: QuestInfo
-  submission: SubmissionInfo[]
-  comments: CommentInfo[]
-}
+  quest: QuestInfo;
+  submission: SubmissionInfo[];
+  comments: CommentInfo[];
+};
 export type QuestDetailPlayProps = {
-  submissionInfo: SubmissionInfo[]
-  rankingInfo: RankingInfo[]
-}
+  submissionInfo: SubmissionInfo[];
+  rankingInfo: RankingInfo[];
+};
 
 export type RoadmapWriteProps = {
-  categories: CategoryInfo[]
-}
+  categories: CategoryInfo[];
+};
 
 export type RoadmapDetailProps = {
-  roadmap: RoadmapInfo
-  comments: CommentInfo[]
-}
-
+  roadmap: RoadmapInfo;
+  comments: CommentInfo[];
+};
 
 export type MarkerData = {
   name?: string;

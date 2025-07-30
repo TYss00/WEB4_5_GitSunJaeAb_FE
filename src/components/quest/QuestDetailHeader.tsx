@@ -1,5 +1,5 @@
-'use client'
-import { useRouter } from 'next/navigation'
+'use client';
+import { useRouter } from 'next/navigation';
 import {
   ChevronLeft,
   Eye,
@@ -7,24 +7,30 @@ import {
   X,
   Lightbulb,
   CalendarDays,
-} from 'lucide-react'
-import { useState } from 'react'
-import { QuestInfo } from '@/types/type'
-import Image from 'next/image'
-import { differenceInDays } from 'date-fns'
+  Siren,
+} from 'lucide-react';
+import { useState } from 'react';
+import { QuestInfo } from '@/types/type';
+import Image from 'next/image';
+import { differenceInDays } from 'date-fns';
+import ReportModal from '../common/modal/ReportModal';
 
 export default function QuestDetailHeader({
   questInfo,
+  questId,
 }: {
-  questInfo: QuestInfo
+  questInfo: QuestInfo;
+  questId: number;
 }) {
-  const router = useRouter()
-  const [isHintOpen, setIsHintOpen] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
+  const router = useRouter();
+  const [isHintOpen, setIsHintOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
 
-  const deadline = new Date(questInfo.deadline.slice(0, 10))
-  const today = new Date()
-  const remainingDays = differenceInDays(deadline, today)
+  const deadline = new Date(questInfo.deadline.slice(0, 10));
+  const today = new Date();
+  const remainingDays = differenceInDays(deadline, today);
   return (
     <div className="w-[1100px] m-auto">
       {/* 뒤로가기 */}
@@ -70,10 +76,29 @@ export default function QuestDetailHeader({
               {questInfo.viewCount}
             </span>
           </div>
-          {/* 메뉴버튼 */}
-          <button className="cursor-pointer">
-            <MoreVertical size={18} />
-          </button>
+          <div className="relative">
+            {/* 메뉴버튼 */}
+            <button
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+              className="cursor-pointer"
+            >
+              <MoreVertical size={18} />
+            </button>
+            {isMenuOpen && (
+              <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded shadow z-50 flex flex-col w-max">
+                <div
+                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2 text-red-500"
+                  onClick={() => {
+                    setIsReportOpen(true);
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <Siren size={16} />
+                  <span>신고하기</span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <p className="text-[18px] mt-4">{questInfo.description}</p>
@@ -124,6 +149,15 @@ export default function QuestDetailHeader({
           </button>
         )}
       </div>
+
+      {isReportOpen && (
+        <ReportModal
+          reportType="quest"
+          targetId={Number(questId)}
+          onClose={() => setIsReportOpen(false)}
+        />
+      )}
+
       {/* 힌트 내용 */}
       {isHintOpen && (
         <div className="mt-3 bg-[var(--gray-40)]/80 border-l-2 border-[var(--primary-300)] p-3 text-sm text-[var(--gray-700)]">
@@ -131,5 +165,5 @@ export default function QuestDetailHeader({
         </div>
       )}
     </div>
-  )
+  );
 }

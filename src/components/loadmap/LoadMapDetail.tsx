@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 import {
   Heart,
   Siren,
@@ -10,31 +10,31 @@ import {
   ChevronLeft,
   ChevronsRight,
   ChevronsLeft,
-} from 'lucide-react'
-import Button from '../ui/Button'
-import ReportModal from '../common/modal/ReportModal'
-import Comment from '../comment/Comment'
-import Toggle from '../ui/Toggle'
-import LayerDetail from '../ui/layer/LayerDetail'
-import MarkerDetail from '../ui/layer/MarkerDetail'
-import useSidebar from '@/utils/useSidebar'
-import { useParams, useRouter } from 'next/navigation'
-import { BookmarksInfo, HashtagProps, RoadmapDetailProps } from '@/types/type'
-import RoadMapGoogleDetail from './RoadMapGoogleDetail'
-import axiosInstance from '@/libs/axios'
-import Image from 'next/image'
+} from 'lucide-react';
+import Button from '../ui/Button';
+import ReportModal from '../common/modal/ReportModal';
+import Comment from '../comment/Comment';
+import Toggle from '../ui/Toggle';
+import LayerDetail from '../ui/layer/LayerDetail';
+import MarkerDetail from '../ui/layer/MarkerDetail';
+import useSidebar from '@/utils/useSidebar';
+import { useParams, useRouter } from 'next/navigation';
+import { BookmarksInfo, HashtagProps, RoadmapDetailProps } from '@/types/type';
+import RoadMapGoogleDetail from './RoadMapGoogleDetail';
+import axiosInstance from '@/libs/axios';
+import Image from 'next/image';
 
 export default function Loadmapdetail() {
-  const [loading, setLoading] = useState(true)
-  const [data, setData] = useState<RoadmapDetailProps>()
-  const router = useRouter()
-  const [isReportOpen, setIsReportOpen] = useState(false)
-  const { isOpen, toggle, close } = useSidebar()
-  const params = useParams()
-  const roadmapId = params?.id as string
-  const [selectedLayerId, setSelectedLayerId] = useState<number | 'all'>('all')
-  const [isBookmarked, setIsBookmarked] = useState(false)
-  const [bookmarkerId, setBookmarkerId] = useState<number | null>(null)
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<RoadmapDetailProps>();
+  const router = useRouter();
+  const [isReportOpen, setIsReportOpen] = useState(false);
+  const { isOpen, toggle, close } = useSidebar();
+  const params = useParams();
+  const roadmapId = params?.id as string;
+  const [selectedLayerId, setSelectedLayerId] = useState<number | 'all'>('all');
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [bookmarkerId, setBookmarkerId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -43,69 +43,69 @@ export default function Loadmapdetail() {
           axiosInstance.get(`/roadmaps/${roadmapId}`),
           axiosInstance.get(`/comments/roadmaps?roadmapId=${roadmapId}`),
           axiosInstance.get(`/bookmarks/bookmarkedRoadmaps`),
-        ])
-        const bookmarks = bookmarksRes.data.roadmaps
+        ]);
+        const bookmarks = bookmarksRes.data.roadmaps;
 
         const matched = bookmarks.some(
           (item: BookmarksInfo) => String(item.id) === roadmapId
-        )
+        );
         if (matched) {
           const bookmarkId = bookmarks.filter(
             (item: BookmarksInfo) => String(item.id) === roadmapId
-          )[0].bookmarkId
-          setBookmarkerId(bookmarkId)
+          )[0].bookmarkId;
+          setBookmarkerId(bookmarkId);
         }
-        setIsBookmarked(matched)
+        setIsBookmarked(matched);
 
         setData({
           roadmap: roadmapRes.data.roadmap,
           comments: commentsRes.data.comments,
-        })
+        });
       } catch (e) {
-        console.error('데이터 요청 실패:', e)
+        console.error('데이터 요청 실패:', e);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchAll()
-  }, [roadmapId])
+    fetchAll();
+  }, [roadmapId]);
 
-  if (loading) return <div>로딩 중...</div>
-  if (!data) return <div>데이터 없음</div>
+  if (loading) return <div>로딩 중...</div>;
+  if (!data) return <div>데이터 없음</div>;
 
   const toggleBookmark = async () => {
     try {
       if (!isBookmarked) {
-        const res = await axiosInstance.post(`/bookmarks/${roadmapId}`)
-        const bookmarkId = await res.data.bookmarkId
-        setIsBookmarked(true)
-        setBookmarkerId(bookmarkId)
+        const res = await axiosInstance.post(`/bookmarks/${roadmapId}`);
+        const bookmarkId = await res.data.bookmarkId;
+        setIsBookmarked(true);
+        setBookmarkerId(bookmarkId);
       } else {
-        const res = await axiosInstance.delete(`/bookmarks/${bookmarkerId}`)
-        console.log(res)
-        setIsBookmarked(false)
-        setBookmarkerId(null)
+        const res = await axiosInstance.delete(`/bookmarks/${bookmarkerId}`);
+        console.log(res);
+        setIsBookmarked(false);
+        setBookmarkerId(null);
       }
     } catch (error) {
-      console.error('북마크 처리 오류', error)
+      console.error('북마크 처리 오류', error);
     }
-  }
+  };
 
-  const { roadmap: roadMapInfo, comments: commentsInfo } = data
-  const defaultCenter = { lat: 37.5665, lng: 126.978 }
+  const { roadmap: roadMapInfo, comments: commentsInfo } = data;
+  const defaultCenter = { lat: 37.5665, lng: 126.978 };
 
   const handleZzim = async () => {
     try {
       const promises = roadMapInfo.layers.map((item) =>
         axiosInstance.post(`/layers/member?layerId=${item.layer.id}`)
-      )
-      await Promise.all(promises)
-      console.log('일괄 찜 완료')
+      );
+      await Promise.all(promises);
+      console.log('일괄 찜 완료');
     } catch (err) {
-      console.log('레이어 일괄 찜 오류', err)
+      console.log('레이어 일괄 찜 오류', err);
     }
-  }
+  };
 
   // 선택된 레이어의 마커만 추출
   const filteredMarkers =
@@ -113,13 +113,13 @@ export default function Loadmapdetail() {
       ? roadMapInfo.layers.flatMap((item) => item.markers)
       : roadMapInfo.layers
           .filter((item) => item.layer.id === selectedLayerId)
-          .flatMap((item) => item.markers)
+          .flatMap((item) => item.markers);
 
   // 중심 좌표 계산
   const center =
     filteredMarkers.length > 0
       ? { lat: filteredMarkers[0].lat, lng: filteredMarkers[0].lng }
-      : defaultCenter
+      : defaultCenter;
   return (
     <>
       <section className="relative w-full h-screen overflow-hidden">
@@ -140,8 +140,8 @@ export default function Loadmapdetail() {
               <select
                 className="w-full h-[40px] text-sm bg-white border-none rounded-[3px] px-3 appearance-none focus:outline-none"
                 onChange={(e) => {
-                  const value = e.target.value
-                  setSelectedLayerId(value === 'all' ? 'all' : parseInt(value))
+                  const value = e.target.value;
+                  setSelectedLayerId(value === 'all' ? 'all' : parseInt(value));
                 }}
               >
                 <option value="all">전체</option>
@@ -150,7 +150,7 @@ export default function Loadmapdetail() {
                     <option key={item.layer.id} value={item.layer.id}>
                       {item.layer.name}
                     </option>
-                  )
+                  );
                 })}
               </select>
 
@@ -247,7 +247,7 @@ export default function Loadmapdetail() {
                     >
                       #{tag.name}
                     </span>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -294,6 +294,7 @@ export default function Loadmapdetail() {
                     {item.markers?.map((marker) => (
                       <MarkerDetail
                         key={marker.id}
+                        id={marker.id}
                         title={marker.name}
                         description={marker.description}
                         location={{ lat: marker.lat, lng: marker.lng }}
@@ -301,7 +302,7 @@ export default function Loadmapdetail() {
                       />
                     ))}
                   </LayerDetail>
-                )
+                );
               })}
             </div>
 
@@ -312,7 +313,13 @@ export default function Loadmapdetail() {
           </div>
         </div>
       </section>
-      {isReportOpen && <ReportModal onClose={() => setIsReportOpen(false)} />}
+      {isReportOpen && (
+        <ReportModal
+          reportType="map"
+          targetId={Number(roadmapId)}
+          onClose={() => setIsReportOpen(false)}
+        />
+      )}
     </>
-  )
+  );
 }
