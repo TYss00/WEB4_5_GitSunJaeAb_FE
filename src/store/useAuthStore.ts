@@ -54,7 +54,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
 
     set({ accessToken: token });
-    return await get().fetchUser();
+
+    const user = await get().fetchUser();
+
+    // fetchUser 실패 시 로그아웃 처리 + 리다이렉트
+    if (!user) {
+      get().logout();
+
+      if (typeof window !== 'undefined') {
+        window.location.href = '/landing';
+      }
+
+      return null;
+    }
+
+    return user;
   },
 
   isLoggedIn: () => !!get().accessToken,
