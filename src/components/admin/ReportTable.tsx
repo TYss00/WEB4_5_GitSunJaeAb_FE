@@ -24,6 +24,9 @@ export default function ReportTable() {
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const [pendingDeleteReport, setPendingDeleteReport] =
     useState<DisplayReport | null>(null);
+  const [deletedReportIds, setDeletedReportIds] = useState<Set<number>>(
+    new Set()
+  );
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -126,8 +129,15 @@ export default function ReportTable() {
       const res = await axiosInstance.delete(deleteUrl);
       if (res.status !== 200) throw new Error('삭제 실패');
 
+      await axiosInstance.get(`/reports/admin/${pendingDeleteReport.id}`);
+
       toast.success('게시글이 삭제되었습니다.');
-      setReports((prev) => prev.filter((r) => r.id !== pendingDeleteReport.id));
+      setReports((prev) =>
+        prev.map((r) =>
+          r.id === pendingDeleteReport.id ? { ...r, status: '완료' } : r
+        )
+      );
+      setDeletedReportIds((prev) => new Set(prev).add(pendingDeleteReport.id));
     } catch (err) {
       console.error(err);
       toast.error('삭제 중 오류가 발생했습니다.');
@@ -319,10 +329,14 @@ export default function ReportTable() {
                   </td>
                   <td className="py-2 align-top text-[13px] text-center text-[var(--red)]">
                     <button
-                      className="underline cursor-pointer"
+                      className="underline cursor-pointer disabled:text-[var(--gray-300)] disabled:cursor-default"
                       onClick={() => handleDeleteClick(report)}
+                      disabled={
+                        deletedReportIds.has(report.id) ||
+                        report.status === '완료'
+                      }
                     >
-                      삭제
+                      {report.status === '완료' ? '완료' : '삭제'}
                     </button>
                   </td>
                 </tr>

@@ -13,7 +13,8 @@ type DeleteType =
   | 'account'
   | 'notice'
   | 'marker'
-  | 'category';
+  | 'category'
+  | 'layer';
 
 const deleteMessages: Record<
   DeleteType,
@@ -42,6 +43,10 @@ const deleteMessages: Record<
   category: {
     title: '카테고리를 삭제하시겠습니까?',
     description: '삭제된 카테고리는 복구할 수 없습니다.',
+  },
+  layer: {
+    title: '찜한 레이어를 삭제하시겠습니까?',
+    description: '삭제된 레이어는 복구할 수 없습니다.',
   },
 };
 

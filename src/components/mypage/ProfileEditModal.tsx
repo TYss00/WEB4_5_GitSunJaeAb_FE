@@ -12,12 +12,14 @@ import axiosInstance from '@/libs/axios';
 import { useProfileStore } from '@/store/profileStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import { toast } from 'react-toastify';
+import ConfirmModal from '../common/modal/ConfirmModal';
 
 export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
   const [activeTab, setActiveTab] = useState('프로필');
   const [isSaving, setIsSaving] = useState(false);
   const fetchMember = useProfileStore((state) => state.fetchMember);
   const user = useAuthStore((state) => state.user);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const handleClose = () => {
     useProfileEditStore.getState().reset();
@@ -25,9 +27,6 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
   };
 
   const handleWithdraw = async () => {
-    const confirmed = window.confirm('정말로 회원탈퇴 하시겠습니까?');
-    if (!confirmed) return;
-
     try {
       await axiosInstance.delete('/members/withdraw');
       toast.success('회원탈퇴가 완료되었습니다.');
@@ -175,7 +174,7 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
               {activeTab === '프로필' && (
                 <button
                   className="text-sm text-[var(--gray-200)] underline underline-offset-2 cursor-pointer h-[40px] flex items-center"
-                  onClick={handleWithdraw}
+                  onClick={() => setIsConfirmOpen(true)}
                 >
                   회원탈퇴
                 </button>
@@ -183,6 +182,12 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
             </div>
           </div>
         )}
+        <ConfirmModal
+          isOpen={isConfirmOpen}
+          onClose={() => setIsConfirmOpen(false)}
+          onDelete={handleWithdraw}
+          confirmType="account"
+        />
       </div>
     </div>
   );
