@@ -47,7 +47,7 @@ export default function QuestDetailPlay({
   // 판정 후 submission 갱신
   const updateRecognizedStatus = (id: number, isRecognized: boolean) => {
     setSubmissions((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, recognized: isRecognized } : s))
+      prev.map((s) => (s.id === id ? { ...s, isRecognized } : s))
     );
   };
 
