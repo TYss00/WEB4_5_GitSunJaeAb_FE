@@ -41,7 +41,7 @@ export default function MypageCard({
     if (typeof url === 'string' && /^https?:\/\/|^\/.*/.test(url.trim())) {
       return url.trim();
     }
-    return '/map.png';
+    return '/assets/defaultProfile.png';
   };
 
   return (

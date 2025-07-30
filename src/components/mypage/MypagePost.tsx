@@ -248,7 +248,9 @@ export default function MypagePost({
                     title={item.data.title}
                     date={item.data.createdAt?.split('T')[0] || ''}
                     type="공유"
-                    mapImageUrl={item.data.thumbnail || '/map.png'}
+                    mapImageUrl={
+                      item.data.thumbnail || '/assets/defaultProfile.png'
+                    }
                     isLiked={item.data.isLiked}
                     onToggleLike={() => toggleLike(item.data.id)}
                     author={
@@ -270,7 +272,9 @@ export default function MypagePost({
                     title={item.data.title}
                     date={item.data.submitAt?.split('T')[0] || ''}
                     type="퀘스트"
-                    mapImageUrl={item.data.imageUrl || '/map.png'}
+                    mapImageUrl={
+                      item.data.imageUrl || '/assets/defaultProfile.png'
+                    }
                     isLiked={false}
                     onToggleLike={() => {}}
                     author={
@@ -304,7 +308,9 @@ export default function MypagePost({
                     title={item.data.title}
                     date={item.data.createdAt?.split('T')[0] || ''}
                     type={mapType(item.data)}
-                    mapImageUrl={item.data.thumbnail || '/map.png'}
+                    mapImageUrl={
+                      item.data.thumbnail || '/assets/defaultProfile.png'
+                    }
                     isLiked={item.data.isLiked}
                     onToggleLike={() => toggleLike(item.data.id)}
                   />
@@ -315,7 +321,9 @@ export default function MypagePost({
                     title={item.data.title}
                     date={item.data.createdAt?.split('T')[0] || ''}
                     type="퀘스트"
-                    mapImageUrl={item.data.questImage || '/map.png'}
+                    mapImageUrl={
+                      item.data.questImage || '/assets/defaultProfile.png'
+                    }
                     isLiked={false}
                   />
                 )
@@ -327,7 +335,7 @@ export default function MypagePost({
                   title={card.title}
                   date={card.createdAt?.split('T')[0] || ''}
                   type={mapType(card)}
-                  mapImageUrl={card.thumbnail || '/map.png'}
+                  mapImageUrl={card.thumbnail || '/assets/defaultProfile.png'}
                   isLiked={card.isLiked}
                   onToggleLike={() => toggleLike(card.id)}
                   {...(activeTab === '좋아요글' && card.member
