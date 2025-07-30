@@ -8,7 +8,7 @@ import LayerEdit from '../ui/layer/LayerEdit'
 import useLayerAdd from '@/hooks/useLayerAdd'
 import { useEffect, useState } from 'react'
 import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
-import { CategoryInfo, MyZzimLayersInfo } from '@/types/type'
+import { MyZzimLayersInfo } from '@/types/type'
 import useHashtags from '@/hooks/useHashtags'
 import RoadMapGoogleWrite from './RoadMapGoogleWrite'
 import axiosInstance from '@/libs/axios'
@@ -17,7 +17,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import { reverseGeocode } from '@/libs/geocode'
 
-export default function LoadMapWrite() {
+export default function RoadMapEdit() {
   const { layers, setLayers, newLayerName, setNewLayerName, handleAddLayer } =
     useLayerAdd()
   const {
@@ -43,16 +43,6 @@ export default function LoadMapWrite() {
   } = useHashtags()
 
   useEffect(() => {
-    const getCategories = async () => {
-      try {
-        const res = await axiosInstance.get(`/categories`)
-        const categories = await res.data
-        setCategories(categories.categories)
-      } catch (err) {
-        console.error('카테고리 조회 오류', err)
-      }
-    }
-
     const getMyZzimLayers = async () => {
       try {
         const res = await axiosInstance.get(`/layers/member`)
@@ -62,7 +52,6 @@ export default function LoadMapWrite() {
         console.log('회원 찜 레이어 조회 오류', err)
       }
     }
-    getCategories()
     getMyZzimLayers()
   }, [])
 
@@ -81,7 +70,6 @@ export default function LoadMapWrite() {
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
-  const [categories, setCategories] = useState<CategoryInfo[]>([])
   const [categoryId, setCategoryId] = useState<number | null>(null)
   const [thumbnail, setThumbnail] = useState<File | null>(null)
   const [isPublic, setIsPublic] = useState(true)
@@ -184,7 +172,7 @@ export default function LoadMapWrite() {
             name: layerName,
             description: '',
             layerSeq: i + 1,
-            Zzimed: false,
+            layerTime: null,
           }
         )
 
@@ -273,11 +261,11 @@ export default function LoadMapWrite() {
               <option value="" disabled hidden>
                 카테고리를 선택해주세요.
               </option>
-              {categories.map((category) => (
+              {/* {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
                 </option>
-              ))}
+              ))} */}
             </select>
 
             <ChevronDown
@@ -302,15 +290,14 @@ export default function LoadMapWrite() {
         <label className="text-lg text-black">썸네일 이미지</label>
         <label
           htmlFor="thumbnail"
-          className="relative flex justify-center items-center w-full h-[300px] bg-gray-100 rounded-[5px] cursor-pointer"
+          className="flex justify-center items-center w-full h-[300px] bg-gray-100 rounded-[5px] cursor-pointer"
         >
           {thumbnail ? (
             // 썸네일이 있을 경우: 이미지 미리보기
             <Image
               src={URL.createObjectURL(thumbnail)}
               alt="썸네일 미리보기"
-              fill
-              className="object-cover"
+              className="object-cover w-full h-full"
             />
           ) : (
             // 썸네일 없을 경우: 기본 업로드 아이콘
