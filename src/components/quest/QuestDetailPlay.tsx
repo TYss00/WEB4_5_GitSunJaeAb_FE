@@ -15,7 +15,7 @@ type SubmissionRaw = {
   imageUrl: string;
   nickname: string;
   submittedAt: string;
-  recognized: boolean;
+  isRecognized: boolean;
 };
 
 type MemberQuest = {
@@ -30,8 +30,10 @@ type MemberQuest = {
 
 export default function QuestDetailPlay({
   submissionInfo,
+  questAuthorId,
 }: {
   submissionInfo: SubmissionInfo[];
+  questAuthorId: number;
 }) {
   const [submissions, setSubmissions] = useState(submissionInfo);
 
@@ -45,7 +47,7 @@ export default function QuestDetailPlay({
   // 판정 후 submission 갱신
   const updateRecognizedStatus = (id: number, isRecognized: boolean) => {
     setSubmissions((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, recognized: isRecognized } : s))
+      prev.map((s) => (s.id === id ? { ...s, isRecognized } : s))
     );
   };
 
@@ -78,6 +80,7 @@ export default function QuestDetailPlay({
     <>
       {selectedSubmission ? (
         <QuestPlayView
+          questAuthorId={questAuthorId}
           submission={selectedSubmission}
           onBack={() => setSelectedSubmission(null)}
           onJudge={updateRecognizedStatus}

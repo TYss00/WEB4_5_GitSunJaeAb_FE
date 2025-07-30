@@ -11,11 +11,13 @@ import Image from 'next/image';
 export default function QuestDeatilRanking() {
   const [isOpen, setIsOpen] = useState(false);
   const params = useParams();
-  const questId = params?.id as string;
+  const questId = typeof params?.id === 'string' ? params.id : null;
 
   const [ranking, setRanking] = useState<RankingInfo[]>([]);
 
   useEffect(() => {
+    if (!questId) return;
+
     const fetch = async () => {
       try {
         const ranking = await axiosInstance.get(

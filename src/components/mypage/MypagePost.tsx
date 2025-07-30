@@ -41,7 +41,11 @@ export default function MypagePost({
           }));
 
           setCards(mapped);
-          setQuests(questRes.data.quests || []);
+          setQuests(
+            (questRes.data.quests || []).filter(
+              (q: MemberQuest) => q.deletedAt === null
+            )
+          );
         } else if (activeTab === '좋아요글') {
           const res = await axiosInstance.get('/bookmarks/bookmarkedRoadmaps');
           const mapped = res.data.roadmaps
@@ -58,14 +62,14 @@ export default function MypagePost({
             axiosInstance.get('/roadmaps/shared/participated'),
           ]);
 
-          const quests = (questRes.data.memberQuests || []).map(
-            (q: MemberQuest) => ({
+          const quests = (questRes.data.memberQuests || [])
+            .filter((q: MemberQuest) => q.deletedAt === null) // 삭제되지 않은 항목만 필터링
+            .map((q: MemberQuest) => ({
               type: '퀘스트' as const,
               id: q.id,
               date: q.submitAt,
               data: q,
-            })
-          );
+            }));
 
           const sharedRoadmaps = (sharedMapRes.data.roadmaps || []).map(
             (r: RoadmapResponse) => ({
@@ -244,7 +248,9 @@ export default function MypagePost({
                     title={item.data.title}
                     date={item.data.createdAt?.split('T')[0] || ''}
                     type="공유"
-                    mapImageUrl={item.data.thumbnail || '/map.png'}
+                    mapImageUrl={
+                      item.data.thumbnail || '/assets/defaultProfile.png'
+                    }
                     isLiked={item.data.isLiked}
                     onToggleLike={() => toggleLike(item.data.id)}
                     author={
@@ -266,7 +272,9 @@ export default function MypagePost({
                     title={item.data.title}
                     date={item.data.submitAt?.split('T')[0] || ''}
                     type="퀘스트"
-                    mapImageUrl={item.data.imageUrl || '/map.png'}
+                    mapImageUrl={
+                      item.data.imageUrl || '/assets/defaultProfile.png'
+                    }
                     isLiked={false}
                     onToggleLike={() => {}}
                     author={
@@ -300,7 +308,9 @@ export default function MypagePost({
                     title={item.data.title}
                     date={item.data.createdAt?.split('T')[0] || ''}
                     type={mapType(item.data)}
-                    mapImageUrl={item.data.thumbnail || '/map.png'}
+                    mapImageUrl={
+                      item.data.thumbnail || '/assets/defaultProfile.png'
+                    }
                     isLiked={item.data.isLiked}
                     onToggleLike={() => toggleLike(item.data.id)}
                   />
@@ -311,7 +321,9 @@ export default function MypagePost({
                     title={item.data.title}
                     date={item.data.createdAt?.split('T')[0] || ''}
                     type="퀘스트"
-                    mapImageUrl={item.data.questImage || '/map.png'}
+                    mapImageUrl={
+                      item.data.questImage || '/assets/defaultProfile.png'
+                    }
                     isLiked={false}
                   />
                 )
@@ -323,7 +335,7 @@ export default function MypagePost({
                   title={card.title}
                   date={card.createdAt?.split('T')[0] || ''}
                   type={mapType(card)}
-                  mapImageUrl={card.thumbnail || '/map.png'}
+                  mapImageUrl={card.thumbnail || '/assets/defaultProfile.png'}
                   isLiked={card.isLiked}
                   onToggleLike={() => toggleLike(card.id)}
                   {...(activeTab === '좋아요글' && card.member

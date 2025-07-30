@@ -259,8 +259,9 @@ export type SubmissionInfo = {
   imageUrl: string
   nickname: string
   submittedAt: string
-  recognized: boolean
+  isRecognized: boolean
   id: number | null
+  memberId?: number | null
 }
 
 export type RankingInfo = {

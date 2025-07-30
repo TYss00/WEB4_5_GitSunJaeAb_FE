@@ -1,6 +1,12 @@
 import { AuthState } from '@/types/authType';
 import { create } from 'zustand';
 import { useProfileStore } from './profileStore';
+import { AxiosError } from 'axios';
+
+interface ErrorResponse {
+  code?: string;
+  message?: string;
+}
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   accessToken: null,
@@ -30,7 +36,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       return user;
     } catch (err) {
-      console.warn(err);
+      // console.warn(err);
+      // get().logout();
+      // return null;
+      const axiosError = err as AxiosError<ErrorResponse>;
+
+      // accessToken 만료일 뿐이면 axios 인터셉터가 재요청 처리하므로 logout 금지
+      const errorCode = axiosError?.response?.data?.code;
+      if (errorCode === '2199') {
+        return null; // 인터셉터가 토큰 재발급 → 재시도 중일 수 있음
+      }
+
+      // console.warn('fetchUser 실패. 로그아웃 처리:', err);
       get().logout();
       return null;
     }

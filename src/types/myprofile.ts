@@ -144,6 +144,7 @@ export type MemberQuest = {
     nickname: string;
     profileImage: string | null;
   };
+  deletedAt: string | null;
 };
 
 export type ParticipatedItem = {
