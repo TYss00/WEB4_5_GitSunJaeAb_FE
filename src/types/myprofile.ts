@@ -129,6 +129,7 @@ export type CommentItem = {
 
 export type MemberQuest = {
   id: number;
+  quest: number;
   title: string;
   questImage: string;
   description: string;
