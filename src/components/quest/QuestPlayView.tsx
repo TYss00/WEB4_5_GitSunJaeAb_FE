@@ -21,13 +21,20 @@ export default function QuestPlayView({ submission, onBack }: Props) {
       {/* 작성자 정보 */}
       <div className="mt-3 flex items-center gap-2.5">
         {/* 프로필이미지 */}
-        <div className="bg-gray-500 rounded-full size-9.5"></div>
+        <div className="relative bg-gray-500 rounded-full size-9.5">
+          <Image
+            src={submission.profileImage}
+            alt="프로필 이미지"
+            fill
+            className="object-fill"
+          />
+        </div>
 
         {/* 이름+작성일 */}
         <div>
           <p className="text-[15px] font-medium">{submission.nickname}</p>
           <p className="text-xs text-[var(--gray-200)]">
-            {submission.submittedAt.slice(0,10)}
+            {submission.submittedAt.slice(0, 10)}
           </p>
         </div>
       </div>
