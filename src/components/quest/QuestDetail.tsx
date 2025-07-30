@@ -24,7 +24,6 @@ export default function QuestDetail() {
           submission: questRes.data.submission,
           comments: commentsRes.data.comments,
         });
-        console.log(questRes.data.quest);
       } catch (err) {
         console.error('데이터 요청 실패', err);
       }
