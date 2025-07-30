@@ -1,21 +1,20 @@
-'use client'
+'use client';
 
-import { ChevronDown, Plus } from 'lucide-react'
-import Button from '../ui/Button'
-import Input from '../ui/Input'
-import Toggle from '../ui/Toggle'
-import LayerEdit from '../ui/layer/LayerEdit'
-import useLayerAdd from '@/hooks/useLayerAdd'
-import { useEffect, useState } from 'react'
-import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
-import { LayerInfo, RoadmapWriteProps } from '@/types/type'
-import useHashtags from '@/hooks/useHashtags'
-import RoadMapGoogleWrite from './RoadMapGoogleWrite'
-import axiosInstance from '@/libs/axios'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { toast } from 'react-toastify'
-
+import { ChevronDown, Plus } from 'lucide-react';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
+import Toggle from '../ui/Toggle';
+import LayerEdit from '../ui/layer/LayerEdit';
+import useLayerAdd from '@/hooks/useLayerAdd';
+import { useEffect, useState } from 'react';
+import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd';
+import { LayerInfo, RoadmapWriteProps } from '@/types/type';
+import useHashtags from '@/hooks/useHashtags';
+import RoadMapGoogleWrite from './RoadMapGoogleWrite';
+import axiosInstance from '@/libs/axios';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
   const { layers, setLayers, newLayerName, setNewLayerName, handleAddLayer } =
@@ -153,7 +152,14 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
         }
       }
 
-      toast.success('로드맵이 성공적으로 생성되었습니다.');
+      // toast.success('로드맵이 성공적으로 생성되었습니다.');
+      // 업적 메시지 토스트 띄우기
+      const message = roadmap.message ?? '';
+      if (message.includes('업적')) {
+        toast.success(message);
+      } else {
+        toast.success('로드맵이 성공적으로 생성되었습니다.');
+      }
     } catch (error) {
       console.error('로드맵 생성 실패', error);
       toast.error('로드맵 생성 중 오류가 발생했습니다.');
