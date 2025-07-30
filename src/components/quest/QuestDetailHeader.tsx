@@ -11,7 +11,6 @@ import {
   PencilLine,
   Trash2,
   Siren,
-  MoreVertical,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { QuestInfo } from '@/types/type';
@@ -162,30 +161,6 @@ export default function QuestDetailHeader({
                   setIsMenuOpen(false);
                 }}
               />
-            )}
-          </div>
-
-          <div className="relative">
-            {/* 메뉴버튼 */}
-            <button
-              onClick={() => setIsMenuOpen((prev) => !prev)}
-              className="cursor-pointer"
-            >
-              <MoreVertical size={18} />
-            </button>
-            {isMenuOpen && (
-              <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded shadow z-50 flex flex-col w-max">
-                <div
-                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2 text-red-500"
-                  onClick={() => {
-                    setIsReportOpen(true);
-                    setIsMenuOpen(false);
-                  }}
-                >
-                  <Siren size={16} />
-                  <span>신고하기</span>
-                </div>
-              </div>
             )}
           </div>
         </div>
