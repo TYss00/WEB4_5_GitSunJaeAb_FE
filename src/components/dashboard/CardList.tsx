@@ -167,7 +167,7 @@ export default function CardList({ type }: CardListProps) {
                   category={roadmap.category?.name ?? '카테고리 없음'}
                   title={roadmap.title}
                   description={roadmap.description ?? ''}
-                  hashtags={roadmap.hashtags?.map((h) => h.name) ?? []}
+                  hashtags={roadmap.hashtags?.map((h) => h.name).sort() ?? []}
                   mapImageUrl={roadmap.thumbnail ?? '/map.png'}
                   profileImgUrl={
                     roadmap.member?.profileImage ?? '/assets/defaultProfile.png'
