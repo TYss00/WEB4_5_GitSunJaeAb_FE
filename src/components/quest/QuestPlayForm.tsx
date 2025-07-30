@@ -51,8 +51,10 @@ export default function QuestPlayForm({ onBack }: Props) {
     formData.append('imageFile', imageFile)
 
     const requestPayload = {
+      questId,
       title,
       description,
+      answer: '뭐라도 넣어야 하나',
     }
 
     formData.append(
@@ -63,11 +65,16 @@ export default function QuestPlayForm({ onBack }: Props) {
     )
 
     try {
-      await axiosInstance.post(`/quests/${questId}/memberQuest`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      })
+      const res = await axiosInstance.post(
+        `/quests/${questId}/memberQuest`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      )
+      console.log(res.data)
       toast.success('퀘스트가 성공적으로 등록되었습니다.')
     } catch (error) {
       console.error('업로드 실패:', error)

@@ -52,6 +52,7 @@ export default function QuestDetail() {
           <div className="w-1/2">
             {/* 참여 + 랭킹*/}
             <QuestDetailPlay
+              questInfo={questInfo}
               submissionInfo={submissionInfo}
             />
           </div>

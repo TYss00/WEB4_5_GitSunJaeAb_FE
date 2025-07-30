@@ -3,12 +3,14 @@ import { useState } from 'react'
 import QuestPlayList from './QuestPlayList'
 import QuestPlayView from './QuestPlayView'
 import QuestPlayForm from './QuestPlayForm'
-import { SubmissionInfo } from '@/types/type'
+import { QuestInfo, SubmissionInfo } from '@/types/type'
 
 export default function QuestDetailPlay({
   submissionInfo,
+  questInfo,
 }: {
   submissionInfo: SubmissionInfo[]
+  questInfo: QuestInfo
 }) {
   // 퀘스트리스트 -> 상세
   const [selectedSubmission, setSelectedSubmission] =
@@ -21,6 +23,7 @@ export default function QuestDetailPlay({
     <>
       {selectedSubmission ? (
         <QuestPlayView
+          questInfo={questInfo}
           submission={selectedSubmission}
           onBack={() => setSelectedSubmission(null)}
         />

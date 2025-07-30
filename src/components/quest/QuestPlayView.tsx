@@ -1,13 +1,21 @@
-import { SubmissionInfo } from '@/types/type'
-import { ChevronLeft } from 'lucide-react'
+import { useAuthStore } from '@/store/useAuthStore'
+import { QuestInfo, SubmissionInfo } from '@/types/type'
+import { ChevronLeft, CircleCheck, CircleX } from 'lucide-react'
 import Image from 'next/image'
 
 type Props = {
+  questInfo: QuestInfo
   submission: SubmissionInfo
   onBack: () => void
 }
 
-export default function QuestPlayView({ submission, onBack }: Props) {
+export default function QuestPlayView({
+  questInfo,
+  submission,
+  onBack,
+}: Props) {
+  const currentUserId = useAuthStore((state) => state.user?.id)
+
   return (
     <div className="w-full border border-[var(--gray-200)] rounded-[10px] p-4">
       {/* 뒤로가기버튼 */}
@@ -34,7 +42,7 @@ export default function QuestPlayView({ submission, onBack }: Props) {
         <div>
           <p className="text-[15px] font-medium">{submission.nickname}</p>
           <p className="text-xs text-[var(--gray-200)]">
-            {submission.submittedAt.slice(0, 10)}
+            {submission.submittedAt?.slice(0, 10)}
           </p>
         </div>
       </div>
@@ -50,6 +58,14 @@ export default function QuestPlayView({ submission, onBack }: Props) {
           />
         </div>
       </div>
+      {currentUserId === questInfo.member.id && (
+        <>
+          <div className="flex gap-[10px] mt-4">
+            <CircleCheck size={30} color="green" />
+            <CircleX size={30} color="red" />
+          </div>
+        </>
+      )}
     </div>
   )
 }

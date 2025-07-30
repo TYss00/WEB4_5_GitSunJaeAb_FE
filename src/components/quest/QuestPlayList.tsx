@@ -104,7 +104,7 @@ export default function QuestPlayList({
                 <div>
                   <p className="font-medium text-sm">{item.nickname}</p>
                   <p className="text-[13px] text-[var(--gray-200)]">
-                    {item.submittedAt.slice(0,10)}
+                    {item.submittedAt?.slice(0, 10)}
                   </p>
                 </div>
               </div>
