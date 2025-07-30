@@ -2,9 +2,8 @@
 
 import { QuestCardProps } from '@/types/type';
 import { truncateText } from '@/utils/truncateText';
-import { Heart, CalendarDays } from 'lucide-react';
+import { CalendarDays } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 
 export default function QuestCard({
   id,
@@ -12,15 +11,10 @@ export default function QuestCard({
   mapImageUrl,
   title,
   description,
-  hashtags,
   profileImgUrl,
   author,
   deadLine,
 }: QuestCardProps) {
-  const [isLiked, setIsLiked] = useState(false);
-  const likeHandler = () => {
-    setIsLiked((prev) => !prev);
-  };
   const labelText = isInProgress ? '진행중' : '마감';
   const labelColor = isInProgress ? 'var(--primary-300)' : 'var(--gray-200)';
 
@@ -58,26 +52,8 @@ export default function QuestCard({
         >
           <div className="flex justify-between w-full">
             <span className="text-[20px] font-semibold">{truncatedTitle}</span>
-            <button onClick={likeHandler}>
-              <Heart
-                size={20}
-                fill={isLiked ? 'red' : 'none'}
-                color="black"
-                strokeWidth={isLiked ? 0 : 2}
-              />
-            </button>
           </div>
           <span className="text-[16px]">{truncatedDescription}</span>
-          <div className="flex gap-[10px] flex-wrap">
-            {hashtags.slice(0, 3).map((tag, idx) => (
-              <span
-                key={idx}
-                className="text-[11px] text-[var(--primary-300)] font-semibold"
-              >
-                #{tag}
-              </span>
-            ))}
-          </div>
           <div className="flex justify-between w-full ">
             <div className="flex items-center gap-[5px]">
               <span

@@ -12,10 +12,12 @@ import { toast } from 'react-toastify';
 export default function ShareMapDashboard() {
   const [shareMaps, setShareMaps] = useState<DashboardShareMapCardProps[]>([]);
   const [hotMaps, setHotMaps] = useState<DashboardShareMapCardProps[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoading(true);
         const res = await axiosInstance.get('/roadmaps/shared');
         const raw: RawRoadmap[] = res.data.roadmaps;
 
@@ -63,6 +65,8 @@ export default function ShareMapDashboard() {
       } catch (error) {
         console.error(error);
         toast.error('공유지도 데이터를 불러오는데 실패했습니다.');
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -75,8 +79,8 @@ export default function ShareMapDashboard() {
         title="공유지도"
         subtitle="여러 유저들과 협업하여 지도를 만들어요"
       />
-      <EventBox type="sharemap" data={hotMaps} />
-      <ShareMapCardList data={shareMaps} />
+      <EventBox type="sharemap" data={hotMaps} isLoading={isLoading} />
+      <ShareMapCardList data={shareMaps} isLoading={isLoading} />
       <WriteButton type="sharemap" />
     </>
   );

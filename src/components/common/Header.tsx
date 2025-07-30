@@ -9,10 +9,10 @@ import Notification from '../notification/Notification';
 import { usePathname } from 'next/navigation';
 import { HeaderProps } from '@/types/type';
 import UserModal from './modal/UserModal';
-import { useAuthStore } from '@/store/useAuthStore';
 import defaultProfile from '../../../public/assets/defaultProfile.png';
 import Image from 'next/image';
 import { useNotifications } from '@/libs/notification';
+import { useProfile } from '@/hooks/useProfile';
 
 export default function Header({ isAdmin = false }: HeaderProps) {
   const pathname = usePathname();
@@ -29,7 +29,7 @@ export default function Header({ isAdmin = false }: HeaderProps) {
   const { data: notifications = [] } = useNotifications();
   const hasUnread = notifications.some((n) => !n.isRead);
 
-  const user = useAuthStore((state) => state.user);
+  const { data: user, isLoading } = useProfile();
   const profileImage = user?.profileImage ?? defaultProfile;
 
   useClickOut(searchRef, () => setIsSearchOpen(false));
@@ -54,6 +54,8 @@ export default function Header({ isAdmin = false }: HeaderProps) {
   ];
 
   const navItems = isAdmin ? adminNavItems : userNavItems;
+
+  if (isLoading) return null;
 
   return (
     <>

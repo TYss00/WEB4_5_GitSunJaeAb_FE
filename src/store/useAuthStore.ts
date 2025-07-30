@@ -18,6 +18,24 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     set({ user });
   },
 
+  fetchUser: async () => {
+    try {
+      const mod = await import('@/libs/auth');
+      const user = await mod.getUser(); // API 요청
+      set({ user });
+
+      // 프로필 상태도 함께 불러오기
+      const profileMod = await import('./profileStore');
+      profileMod.useProfileStore.getState().fetchMember();
+
+      return user;
+    } catch (err) {
+      console.warn(err);
+      get().logout();
+      return null;
+    }
+  },
+
   logout: () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('accessToken');
@@ -30,26 +48,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     if (typeof window === 'undefined') return;
 
     const token = localStorage.getItem('accessToken');
-
     if (!token) {
       get().logout();
       return;
     }
 
     set({ accessToken: token });
-
-    try {
-      // accessToken이 유효하면 정상 응답
-      const mod = await import('@/libs/auth');
-      const user = await mod.getUser();
-      set({ user });
-      return user;
-    } catch (error) {
-      // accessToken이 만료되어 있으면 자동 로그아웃 또는 refresh 로직
-      console.warn('initUser 중 getUser 실패:', error);
-      get().logout();
-      return null;
-    }
+    return await get().fetchUser();
   },
 
   isLoggedIn: () => !!get().accessToken,
