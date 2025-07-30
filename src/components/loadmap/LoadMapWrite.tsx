@@ -8,13 +8,14 @@ import LayerEdit from '../ui/layer/LayerEdit'
 import useLayerAdd from '@/hooks/useLayerAdd'
 import { useEffect, useState } from 'react'
 import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
-import { LayerInfo, RoadmapWriteProps } from '@/types/type'
+import { MyZzimLayersInfo, RoadmapWriteProps } from '@/types/type'
 import useHashtags from '@/hooks/useHashtags'
 import RoadMapGoogleWrite from './RoadMapGoogleWrite'
 import axiosInstance from '@/libs/axios'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
+import { reverseGeocode } from '@/libs/geocode'
 
 export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
   const { layers, setLayers, newLayerName, setNewLayerName, handleAddLayer } =
@@ -23,6 +24,7 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
     selectedLayer,
     setSelectedLayer,
     layerMarkers,
+    setLayerMarkers,
     addMarkerByLatLng,
     deleteMarker,
     addMarkerByAddress,
@@ -71,11 +73,60 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
   const [categoryId, setCategoryId] = useState<number | null>(null)
   const [thumbnail, setThumbnail] = useState<File | null>(null)
   const [isPublic, setIsPublic] = useState(true)
-  const [myZzimLayers, setMyZzimLayers] = useState([])
+  const [myZzimLayers, setMyZzimLayers] = useState<MyZzimLayersInfo[]>([])
   const router = useRouter()
 
   const handleIsPublic = (value: boolean) => {
     setIsPublic(value)
+  }
+
+  //레이어 fork
+  const handleZzimLayerSelect = async (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedName = e.target.value
+    const selectedZzimLayer = myZzimLayers.find((l) => l.name === selectedName)
+
+    if (!selectedZzimLayer) return
+
+    // 이미 같은 이름의 레이어가 존재하면 중복 추가 방지
+    if (layers.includes(selectedName)) {
+      toast.warn('이미 추가된 레이어입니다.')
+      return
+    }
+
+    // 1. layers에 추가
+    setLayers((prev) => [...prev, selectedName])
+
+    // 2. 마커에 주소 변환 추가
+    try {
+      const markerWithAddressPromises = selectedZzimLayer.markers.map(
+        async (m) => {
+          const address = await reverseGeocode(m.lat, m.lng)
+          return {
+            id: m.id,
+            name: m.name || '',
+            description: '',
+            lat: m.lat,
+            lng: m.lng,
+            address, // 변환된 주소
+            color: '#000000',
+            customImageId: null,
+          }
+        }
+      )
+
+      const markersWithAddress = await Promise.all(markerWithAddressPromises)
+
+      // 3. layerMarkers에 반영
+      setLayerMarkers((prev) => ({
+        ...prev,
+        [selectedName]: markersWithAddress,
+      }))
+    } catch (err) {
+      console.error('주소 변환 중 오류 발생:', err)
+      toast.error('주소 변환 중 오류가 발생했습니다.')
+    }
   }
 
   const handleSubmit = async () => {
@@ -345,11 +396,12 @@ export default function LoadMapWrite({ categories }: RoadmapWriteProps) {
           </div>
 
           <div className="relative mb-3">
-            <select className="w-full h-[40px] text-sm border border-[#E4E4E4] rounded px-3 appearance-none">
-              <option value="" disabled hidden>
-                레이어 선택
-              </option>
-              {myZzimLayers?.map((layer: LayerInfo) => (
+            <select
+              onChange={handleZzimLayerSelect}
+              className="w-full h-[40px] text-sm border border-[#E4E4E4] rounded px-3 appearance-none"
+            >
+              <option value="">레이어 선택</option>
+              {myZzimLayers?.map((layer: MyZzimLayersInfo) => (
                 <option key={layer.id} value={layer.name}>
                   {layer.name}
                 </option>

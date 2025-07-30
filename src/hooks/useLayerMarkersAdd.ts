@@ -72,7 +72,6 @@ export default function useLayerMarkers(layers: string[]) {
         setLayerMarkers((prev) => {
           const prevMarkers = prev[layer] || []
 
-          // ✅ 수동 마커 조건: 주소가 비어있고 위도/경도가 0인 마커 삭제
           const filtered = prevMarkers.filter(
             (m) => !(m.lat === 0 && m.lng === 0)
           )
@@ -149,6 +148,7 @@ export default function useLayerMarkers(layers: string[]) {
     layerMarkers,
 
     /* actions */
+    setLayerMarkers,
     addMarkerByLatLng,
     addMarkerByAddress,
     addManualMarker,
