@@ -1,7 +1,6 @@
 'use client';
 
 import { ShareMapCardUIProps } from '@/types/share';
-
 import { useRouter } from 'next/navigation';
 
 export default function ShareMapCard({

@@ -75,17 +75,22 @@ export default function CardList({ type }: CardListProps) {
   }, [type, sort]);
 
   useEffect(() => {
-    if (type === 'roadmap') {
-      const uniqueCategories = Array.from(
-        new Set(
-          roadmaps
-            .map((r) => r.category?.name)
-            .filter((name): name is string => !!name)
-        )
-      );
-      setCategories(uniqueCategories);
-    }
-  }, [type, roadmaps]);
+    const fetchCategories = async () => {
+      if (type === 'roadmap') {
+        try {
+          const res = await axiosInstance.get('/categories');
+          const categoryNames = res.data.categories.map(
+            (c: { name: string }) => c.name
+          );
+          setCategories(categoryNames);
+        } catch (err) {
+          console.error('카테고리 불러오기 실패:', err);
+        }
+      }
+    };
+
+    fetchCategories();
+  }, [type]);
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedFilter(e.target.value);
@@ -154,6 +159,7 @@ export default function CardList({ type }: CardListProps) {
           </button>
         </div>
       </div>
+
       <div className="grid grid-cols-3 gap-[31px]">
         {isLoading
           ? Array.from({ length: 3 }).map((_, idx) => (

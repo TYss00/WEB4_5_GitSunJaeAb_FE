@@ -266,7 +266,7 @@ export default function MypagePost({
                 ) : (
                   <MypageCard
                     key={`quest-${item.id}`}
-                    id={item.data.id}
+                    id={item.data.quest}
                     title={item.data.title}
                     date={item.data.submitAt?.split('T')[0] || ''}
                     type="퀘스트"
@@ -315,7 +315,7 @@ export default function MypagePost({
                     title={item.data.title}
                     date={item.data.createdAt?.split('T')[0] || ''}
                     type="퀘스트"
-                    mapImageUrl={item.data.imageUrl || '/map.png'}
+                    mapImageUrl={item.data.questImage || '/map.png'}
                     isLiked={false}
                   />
                 )

@@ -12,7 +12,9 @@ import { toast } from 'react-toastify';
 export default function ShareMapDashboard() {
   const [shareMaps, setShareMaps] = useState<DashboardShareMapCardProps[]>([]);
   const [hotMaps, setHotMaps] = useState<DashboardShareMapCardProps[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('전체');
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -73,6 +75,23 @@ export default function ShareMapDashboard() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axiosInstance.get('/categories');
+        const names = res.data.categories.map(
+          (c: { id: number; name: string }) => c.name
+        );
+        setCategories(['전체', ...names]);
+      } catch (error) {
+        console.error('카테고리 조회 실패:', error);
+        toast.error('카테고리를 불러오지 못했습니다.');
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <>
       <Banner
@@ -80,7 +99,13 @@ export default function ShareMapDashboard() {
         subtitle="여러 유저들과 협업하여 지도를 만들어요"
       />
       <EventBox type="sharemap" data={hotMaps} isLoading={isLoading} />
-      <ShareMapCardList data={shareMaps} isLoading={isLoading} />
+      <ShareMapCardList
+        data={shareMaps}
+        isLoading={isLoading}
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+      />
       <WriteButton type="sharemap" />
     </>
   );

@@ -92,19 +92,20 @@ export default function QuestPlayList({
                   backgroundRepeat: 'no-repeat',
                 }}
               >
+                {/* 대기중인거 나중에 오답으로해줘야해 빨간색 */}
                 <span
                   className={`absolute bottom-1.5 left-1.5 text-white rounded-[10px] px-2.5 py-1 ${
                     item.recognized === true
                       ? 'bg-[var(--primary-200)]'
                       : item.recognized === false
-                      ? 'bg-[var(--red)]'
+                      ? 'bg-[var(--gray-300)]'
                       : 'bg-[var(--gray-300)]'
                   }`}
                 >
                   {item.recognized === true
                     ? '정답'
                     : item.recognized === false
-                    ? '오답'
+                    ? '대기'
                     : '대기'}
                 </span>
               </div>

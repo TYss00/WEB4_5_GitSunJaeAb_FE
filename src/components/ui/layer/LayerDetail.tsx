@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { ChevronDown, ChevronUp, Download, Layers } from 'lucide-react'
 import { LayerDetailProps } from '@/types/type'
 import axiosInstance from '@/libs/axios'
+import { toast } from 'react-toastify'
 
 export default function LayerDetail({
   title,
@@ -15,11 +16,10 @@ export default function LayerDetail({
 
   const handleZzim = async () => {
     try {
-      const res = await axiosInstance.post(`/layers/member?layerId=${id}`)
-      const zzim = await res.data
-      console.log(zzim)
-    } catch (err) {
-      console.log('레이어 찜 추가 오류', err)
+      await axiosInstance.post(`/layers/member?layerId=${id}`)
+      toast.success('레이어 찜 완료!')
+    } catch{
+      toast.error('레이어 찜 오류')
     }
   }
   return (

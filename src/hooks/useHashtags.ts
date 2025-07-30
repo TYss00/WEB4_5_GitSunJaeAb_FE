@@ -26,6 +26,7 @@ export default function useHashtags() {
   )
 
   return {
+    setHashtags,
     hashtagInput,
     setHashtagInput,
     hashtags,

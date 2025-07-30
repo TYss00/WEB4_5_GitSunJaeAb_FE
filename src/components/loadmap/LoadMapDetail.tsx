@@ -1,5 +1,4 @@
-'use client';
-
+'use client'
 
 import { useEffect, useRef, useState } from 'react'
 import {
@@ -22,12 +21,15 @@ import LayerDetail from '../ui/layer/LayerDetail'
 import MarkerDetail from '../ui/layer/MarkerDetail'
 import useSidebar from '@/utils/useSidebar'
 import { useParams, useRouter } from 'next/navigation'
-import { BookmarksInfo, HashtagProps, RoadmapDetailProps } from '@/types/type'
+import { HashtagProps, RoadmapDetailProps } from '@/types/type'
 import RoadMapGoogleDetail from './RoadMapGoogleDetail'
 import axiosInstance from '@/libs/axios'
 import Image from 'next/image'
 import { useAuthStore } from '@/store/useAuthStore'
 import ConfirmModal from '../common/modal/ConfirmModal'
+import { useBookmarkStore } from '@/store/useBookmarkStore'
+import LoadingSpinner from '../common/LoadingSpener'
+import { toast } from 'react-toastify'
 
 export default function Loadmapdetail() {
   const currentUserId = useAuthStore((state) => state.user?.id)
@@ -42,44 +44,36 @@ export default function Loadmapdetail() {
   const params = useParams()
   const roadmapId = params?.id as string
   const [selectedLayerId, setSelectedLayerId] = useState<number | 'all'>('all')
-  const [isBookmarked, setIsBookmarked] = useState(false)
-  const [bookmarkerId, setBookmarkerId] = useState<number | null>(null)
+
+  const { isBookmarked, likeCount, initBookmark, toggleBookmark } =
+    useBookmarkStore()
 
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [roadmapRes, commentsRes, bookmarksRes] = await Promise.all([
+        const [roadmapRes, commentsRes] = await Promise.all([
           axiosInstance.get(`/roadmaps/${roadmapId}`),
           axiosInstance.get(`/comments/roadmaps?roadmapId=${roadmapId}`),
-          axiosInstance.get(`/bookmarks/bookmarkedRoadmaps`),
-        ]);
-        const bookmarks = bookmarksRes.data.roadmaps;
-
-        const matched = bookmarks.some(
-          (item: BookmarksInfo) => String(item.id) === roadmapId
-        );
-        if (matched) {
-          const bookmarkId = bookmarks.filter(
-            (item: BookmarksInfo) => String(item.id) === roadmapId
-          )[0].bookmarkId;
-          setBookmarkerId(bookmarkId);
-        }
-        setIsBookmarked(matched);
+        ])
 
         setData({
           roadmap: roadmapRes.data.roadmap,
           comments: commentsRes.data.comments,
-        });
+        })
       } catch (e) {
-        console.error('데이터 요청 실패:', e);
+        console.error('데이터 요청 실패:', e)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchAll();
-  }, [roadmapId]);
-
+    fetchAll()
+  }, [roadmapId])
+  useEffect(() => {
+    if (roadmapId && data?.roadmap) {
+      initBookmark(String(roadmapId), data.roadmap.likeCount)
+    }
+  }, [roadmapId, initBookmark, data])
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -97,42 +91,24 @@ export default function Loadmapdetail() {
     }
   }, [])
 
-  if (loading) return <div>로딩 중...</div>
+  if (loading) return <LoadingSpinner />
   if (!data) return <div>데이터 없음</div>
 
+  const { roadmap: roadMapInfo, comments: commentsInfo } = data
 
-  const toggleBookmark = async () => {
-    try {
-      if (!isBookmarked) {
-        const res = await axiosInstance.post(`/bookmarks/${roadmapId}`);
-        const bookmarkId = await res.data.bookmarkId;
-        setIsBookmarked(true);
-        setBookmarkerId(bookmarkId);
-      } else {
-        const res = await axiosInstance.delete(`/bookmarks/${bookmarkerId}`);
-        console.log(res);
-        setIsBookmarked(false);
-        setBookmarkerId(null);
-      }
-    } catch (error) {
-      console.error('북마크 처리 오류', error);
-    }
-  };
-
-  const { roadmap: roadMapInfo, comments: commentsInfo } = data;
-  const defaultCenter = { lat: 37.5665, lng: 126.978 };
+  const defaultCenter = { lat: 37.5665, lng: 126.978 }
 
   const handleZzim = async () => {
     try {
       const promises = roadMapInfo.layers.map((item) =>
         axiosInstance.post(`/layers/member?layerId=${item.layer.id}`)
-      );
-      await Promise.all(promises);
-      console.log('일괄 찜 완료');
-    } catch (err) {
-      console.log('레이어 일괄 찜 오류', err);
+      )
+      await Promise.all(promises)
+      toast.success('레이어 일괄 찜 완료!')
+    } catch {
+      toast.error('레이어 일괄 찜 오류')
     }
-  };
+  }
 
   // 선택된 레이어의 마커만 추출
   const filteredMarkers =
@@ -140,7 +116,7 @@ export default function Loadmapdetail() {
       ? roadMapInfo.layers.flatMap((item) => item.markers)
       : roadMapInfo.layers
           .filter((item) => item.layer.id === selectedLayerId)
-          .flatMap((item) => item.markers);
+          .flatMap((item) => item.markers)
 
   // 중심 좌표 계산
   const center =
@@ -180,8 +156,8 @@ export default function Loadmapdetail() {
               <select
                 className="w-full h-[40px] text-sm bg-white border-none rounded-[3px] px-3 appearance-none focus:outline-none"
                 onChange={(e) => {
-                  const value = e.target.value;
-                  setSelectedLayerId(value === 'all' ? 'all' : parseInt(value));
+                  const value = e.target.value
+                  setSelectedLayerId(value === 'all' ? 'all' : parseInt(value))
                 }}
               >
                 <option value="all">전체</option>
@@ -190,7 +166,7 @@ export default function Loadmapdetail() {
                     <option key={item.layer.id} value={item.layer.id}>
                       {item.layer.name}
                     </option>
-                  );
+                  )
                 })}
               </select>
 
@@ -239,14 +215,13 @@ export default function Loadmapdetail() {
               <div className="flex gap-4 text-gray-700 text-sm items-center">
                 <span className="flex items-center gap-1">
                   <Heart
+                    size={18}
+                    onClick={toggleBookmark}
+                    className="cursor-pointer"
                     fill={isBookmarked ? 'red' : 'none'}
                     color={isBookmarked ? 'red' : 'black'}
-                    size={16}
-                    strokeWidth={3}
-                    className="cursor-pointer"
-                    onClick={toggleBookmark}
                   />
-                  {roadMapInfo.likeCount}
+                  {likeCount}
                 </span>
                 <span className="flex items-center gap-1">
                   <Eye size={16} strokeWidth={3} /> {roadMapInfo.viewCount}
@@ -266,7 +241,7 @@ export default function Loadmapdetail() {
                             onClick={() => {
                               setIsMenuOpen(false)
                               router.push(
-                                `/dashbord/sharemap/detail/${roadmapId}/edit`
+                                `/dashbord/roadmap/detail/${roadmapId}/edit`
                               )
                             }}
                             className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2"
@@ -324,7 +299,7 @@ export default function Loadmapdetail() {
                     >
                       #{tag.name}
                     </span>
-                  );
+                  )
                 })}
               </div>
             </div>
@@ -373,7 +348,7 @@ export default function Loadmapdetail() {
                       />
                     ))}
                   </LayerDetail>
-                );
+                )
               })}
             </div>
 
@@ -389,7 +364,7 @@ export default function Loadmapdetail() {
           reportType="map"
           targetId={Number(roadmapId)}
           onClose={() => setIsReportOpen(false)}
-       />
+        />
       )}
       {isDeleteOpen && (
         <ConfirmModal
@@ -397,9 +372,8 @@ export default function Loadmapdetail() {
           onClose={() => setIsDeleteOpen(false)}
           onDelete={handleDelete}
           confirmType="post"
-
         />
       )}
     </>
-  );
+  )
 }

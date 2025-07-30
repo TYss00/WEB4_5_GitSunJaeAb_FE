@@ -19,6 +19,7 @@ export default function QuestEdit() {
   const [description, setDescription] = useState('')
   const [hint, setHint] = useState('')
   const isActive = true
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     const fetchQuest = async () => {
@@ -60,6 +61,8 @@ export default function QuestEdit() {
   }
 
   const handleSubmit = async () => {
+    if (isSubmitting) return
+    setIsSubmitting(true)
     try {
       const formData = new FormData()
       let imageFile = fileInputRef.current?.files?.[0]
@@ -101,6 +104,8 @@ export default function QuestEdit() {
     } catch (err) {
       console.error('퀘스트 등록 실패', err)
       toast.error('퀘스트 등록 실패')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 

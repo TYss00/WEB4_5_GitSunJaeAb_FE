@@ -18,6 +18,7 @@ export default function QuestWrite() {
   const [description, setDescription] = useState('');
   const [hint, setHint] = useState('');
   const isActive = true;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleContentClick = () => {
     fileInputRef.current?.click();
@@ -39,6 +40,8 @@ export default function QuestWrite() {
   };
 
   const handleSubmit = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
       const formData = new FormData();
       const imageFile = fileInputRef.current?.files?.[0];
@@ -78,9 +81,12 @@ export default function QuestWrite() {
       }
 
       handleCancel();
+      window.location.href = '/dashbord/quest';
     } catch (err) {
       console.error('퀘스트 등록 실패', err);
       toast.error('퀘스트 등록 실패');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
