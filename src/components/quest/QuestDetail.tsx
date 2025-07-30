@@ -80,6 +80,7 @@ export default function QuestDetail() {
             }
           }
         )
+
         setData({
           quest: questRes.data.quest,
           submission: submissionWithId,
