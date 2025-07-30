@@ -139,7 +139,7 @@ export default function EventBox({
                   title={roadmap.title}
                   description={roadmap.description ?? ''}
                   hashtags={roadmap.hashtags?.map((h) => h.name) ?? []}
-                  mapImageUrl={roadmap.thumbnail ?? '/default-thumbnail.png'}
+                  mapImageUrl={roadmap.thumbnail ?? '/map.png'}
                   profileImgUrl={
                     roadmap.member?.profileImage ?? '/assets/defaultProfile.png'
                   }

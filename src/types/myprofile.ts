@@ -62,6 +62,11 @@ export type Layer = {
     id: number;
     title: string;
   } | null;
+  forkHistories: {
+    forkedRoadmap: {
+      title: string;
+    };
+  }[];
 };
 
 export type LayerWithTitle = Layer & {

@@ -57,6 +57,7 @@ export default function MypageLayer({
         <tr>
           <th className="py-3 px-4">작성자</th>
           <th className="py-3 px-4">레이어명</th>
+          <th className="py-3 px-4">가져온 게시글</th>
           <th className="py-3 px-4">적용된 게시글</th>
           <th className="py-3 px-4">삭제</th>
         </tr>
@@ -77,12 +78,15 @@ export default function MypageLayer({
               <td className="py-3 px-4">
                 <MypageLayerSkeleton className="h-4 w-12" />
               </td>
+              <td className="py-3 px-4">
+                <MypageLayerSkeleton className="h-4 w-12" />
+              </td>
             </tr>
           ))
         ) : filteredLayers.length === 0 ? (
           <tr>
             <td
-              colSpan={4}
+              colSpan={5}
               className="text-center py-10 text-[var(--gray-300)] font-medium"
             >
               찜한 레이어가 없습니다.
@@ -99,6 +103,13 @@ export default function MypageLayer({
               <td className="py-3 px-4">
                 {layer.roadmap?.title ?? '제목 없음'}
               </td>
+              <td className="py-3 px-10">
+                {layer.forkHistories?.length
+                  ? layer.forkHistories[layer.forkHistories.length - 1]
+                      .forkedRoadmap?.title ?? '제목 없음'
+                  : '없음'}
+              </td>
+
               <td className="py-3 px-4">
                 <button
                   onClick={() => handleDelete(layer.id)}
