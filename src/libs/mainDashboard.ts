@@ -42,13 +42,26 @@ export const getTrendingQuests = async (): Promise<TrendingQuest[]> => {
     '/quests?isActive=true'
   );
 
-  const activeQuests = res.data.quests
-    .slice() // 원본 복사
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    ) // 최신순 정렬
-    .slice(0, 6); // 상위 6개만
+  const quests = res.data.quests;
 
-  return activeQuests;
+  const detailedQuests = await Promise.all(
+    quests.map(async (quest) => {
+      try {
+        const detailRes = await axiosInstance.get(`/quests/${quest.id}/detail`);
+        const viewCount = detailRes.data.quest.viewCount ?? 0;
+        return {
+          ...quest,
+          viewCount,
+        };
+      } catch (err) {
+        console.error(`퀘스트 ${quest.id} 상세 조회 실패`, err);
+        return {
+          ...quest,
+          viewCount: 0,
+        };
+      }
+    })
+  );
+
+  return detailedQuests.sort((a, b) => b.viewCount - a.viewCount).slice(0, 6);
 };

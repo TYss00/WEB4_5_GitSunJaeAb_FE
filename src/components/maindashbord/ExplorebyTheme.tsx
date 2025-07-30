@@ -4,11 +4,17 @@ import Image from 'next/image';
 import Button from '../ui/Button';
 import mainImg from '../../../public/assets/mainImg.jpg';
 import Link from 'next/link';
+import { LandingCategories } from '@/types/type';
 
-export default function ExplorebyTheme() {
+export default function ExplorebyTheme({
+  category,
+}: {
+  category: LandingCategories | null;
+}) {
+  if (!category) return null;
   return (
     <section className="w-[1100px] mx-auto flex items-center justify-between py-20">
-      <div>
+      <div className="w-[500px]">
         <h2 className="text-[var(--primary-300)] text-3xl font-semibold mb-2">
           Explore by Theme
         </h2>
@@ -17,14 +23,10 @@ export default function ExplorebyTheme() {
         </p>
 
         <p className="text-xl text-[var(--primary-300)] font-semibold mb-2">
-          등산
+          {category.name}
         </p>
-        <p className="text-base text-[var(--gray-300)] mb-5 leading-[30px]">
-          걷고, 오르고, 나만의 길을 남겨보세요
-          <br />
-          풍경 좋은 능선도, 조용한 오솔길도 모두 이 지도에 이어집니다
-          <br />
-          당신의 경험이 누군가의 다음 여정이 될 수 있어요
+        <p className="text-base text-[var(--gray-300)] mb-5 leading-[30px] line-clamp-3 whitespace-pre-line">
+          {category.description || '이 카테고리에 대한 설명이 없습니다.'}
         </p>
         <Link href="/dashbord/roadmap">
           <Button
@@ -43,8 +45,8 @@ export default function ExplorebyTheme() {
         }}
       >
         <Image
-          src={mainImg}
-          alt="main banner"
+          src={category.categoryImage || mainImg}
+          alt={`${category.name} 이미지`}
           fill
           priority
           sizes="100"

@@ -7,7 +7,11 @@ import SkeletonCategoryCard from './SkeletonCategoryCard';
 import defaultCategoryImg from '../../../public/assets/defaultCategory.avif';
 import { getRoadmapCount } from '@/libs/mainDashboard';
 
-export default function HotNow() {
+export default function HotNow({
+  onCategorySelect,
+}: {
+  onCategorySelect: (category: LandingCategories) => void;
+}) {
   // 인기 카테고리 조회
   const {
     data: categories,
@@ -67,6 +71,7 @@ export default function HotNow() {
               return (
                 <div
                   key={cat.id}
+                  onClick={() => onCategorySelect(cat)}
                   className="w-[200px] h-[200px] rounded-xl overflow-hidden"
                 >
                   <div
