@@ -89,7 +89,7 @@ export default function ShareMapJoin() {
   return (
     <section className="relative w-full h-screen overflow-hidden">
       {/* 지도 영역 */}
-      <GoogleMapWrapper />
+      <GoogleMapWrapper mapRef={mapRef} />
 
       {/* 지도 위 UI 요소들 */}
       <div className="absolute top-2 left-[160px] flex items-center gap-3 px-4 py-2 z-20">
@@ -197,7 +197,9 @@ export default function ShareMapJoin() {
             </div>
             <div className="flex gap-[5px] items-center mb-5">
               <Image
-                src={roadmap?.member.profileImage || '/assets/useProfile.png'}
+                src={
+                  roadmap?.member.profileImage || '/assets/defaultProfile.png'
+                }
                 alt="작성자 프로필"
                 width={25}
                 height={25}
@@ -238,6 +240,7 @@ export default function ShareMapJoin() {
                   title={layer.name}
                   layer={layer}
                   mapRef={mapRef}
+                  onSelect={() => setSelectedLayerId(layer.layerTempId)}
                 />
               ))}
             </div>

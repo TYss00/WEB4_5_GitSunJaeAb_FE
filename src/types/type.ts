@@ -101,6 +101,7 @@ export type ShareLayerEditProps = {
   title: string;
   isTextArea?: boolean;
   defaultOpen?: boolean;
+  onSelect?: () => void;
 };
 
 export type ToggleProps = {

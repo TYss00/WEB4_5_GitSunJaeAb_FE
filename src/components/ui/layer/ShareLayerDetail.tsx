@@ -8,11 +8,13 @@ import { MarkerWithAddress } from '@/types/share';
 interface ShareLayerDetailProps {
   name: string;
   markers: MarkerWithAddress[];
+  onMarkerClick?: (lat: number, lng: number) => void;
 }
 
 export default function ShareLayerDetail({
   name,
   markers,
+  onMarkerClick,
 }: ShareLayerDetailProps) {
   const [isOpen, setIsOpen] = useState(true);
 
@@ -54,7 +56,11 @@ export default function ShareLayerDetail({
       >
         <div className="p-[10px] max-h-[633px] overflow-y-auto rounded-b-[5px] flex flex-col gap-[15px]">
           {markers.map((marker) => (
-            <ShareMarkerDetail key={marker.markerTempId} marker={marker} />
+            <ShareMarkerDetail
+              key={marker.markerTempId}
+              marker={marker}
+              onClick={() => onMarkerClick?.(marker.lat, marker.lng)}
+            />
           ))}
         </div>
       </div>
