@@ -11,6 +11,7 @@ export type User = {
   updatedAt?: string | null;
   deletedAt?: string | null;
   loginCount: number;
+  provider: string | null;
 };
 
 export type SignupFormData = {
@@ -25,8 +26,9 @@ export type AuthState = {
   user: User | null;
   loading: boolean;
   setAccessToken: (token: string) => void;
-  setUser: (user: User) => void;
+  setUser: (user: User | null) => void;
   logout: () => void;
   initUser: () => Promise<User | null | undefined>;
   isLoggedIn: () => boolean;
+  fetchUser: () => Promise<User | null>;
 };
