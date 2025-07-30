@@ -15,7 +15,7 @@ type SubmissionRaw = {
   imageUrl: string;
   nickname: string;
   submittedAt: string;
-  recognized: boolean;
+  isRecognized: boolean;
 };
 
 type MemberQuest = {
