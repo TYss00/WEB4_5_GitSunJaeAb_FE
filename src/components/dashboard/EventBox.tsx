@@ -146,6 +146,8 @@ export default function EventBox({
                   author={roadmap.member?.nickname ?? '알 수 없음'}
                   viewCount={roadmap.viewCount ?? 0}
                   shareCount={roadmap.citationCount ?? 0}
+                  isBookmarked={roadmap.isBookmarked ?? false}
+                  bookmarkId={roadmap.bookmarkId ?? null}
                 />
               ))
             : null}

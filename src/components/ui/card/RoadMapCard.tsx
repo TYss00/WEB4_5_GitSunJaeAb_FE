@@ -77,7 +77,9 @@ export default function RoadMapCard({
       </div>
       <div className="flex flex-col gap-[5px] justify-center w-full h-21/40 px-[15px] py-[5px] bg-white">
         <div className="flex justify-between w-full">
-          <span className="text-[20px] font-semibold">{truncatedTitle}</span>
+          <span className="text-[20px] font-semibold line-clamp-1">
+            {truncatedTitle}
+          </span>
           <button onClick={likeHandler}>
             <Heart
               size={20}
@@ -87,9 +89,11 @@ export default function RoadMapCard({
             />
           </button>
         </div>
-        <span className="text-[16px]">{truncatedDescription}</span>
-        <div className="flex gap-[10px] flex-wrap">
-          {hashtags.slice(0, 3).map((tag, idx) => (
+        <span className="text-[16px] line-clamp-2 min-h-[40px]">
+          {truncatedDescription}
+        </span>
+        <div className="flex gap-[10px] flex-wrap min-h-[20px]">
+          {hashtags.slice(0, 5).map((tag, idx) => (
             <span
               key={idx}
               className="text-[11px] text-[var(--primary-300)] font-semibold"
@@ -98,6 +102,7 @@ export default function RoadMapCard({
             </span>
           ))}
         </div>
+
         <div className="flex justify-between w-full ">
           <div className="flex items-center gap-[5px]">
             <span
