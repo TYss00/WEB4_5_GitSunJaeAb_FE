@@ -22,6 +22,7 @@ import { GoogleMap, MarkerF } from '@react-google-maps/api';
 import axiosInstance from '@/libs/axios';
 import { RoadmapDetailResponse } from '@/types/share';
 import Image from 'next/image';
+import { useBookmarkStore } from '@/store/useBookmarkStore';
 
 export default function ShareClickDetail() {
   const router = useRouter();
@@ -34,6 +35,8 @@ export default function ShareClickDetail() {
   const [selectedLayerId, setSelectedLayerId] = useState<'all' | number>('all');
   const isParticipationClosed =
     roadmap && new Date(roadmap.participationEnd) < new Date();
+  const { isBookmarked, likeCount, initBookmark, toggleBookmark } =
+    useBookmarkStore();
 
   useEffect(() => {
     const fetchRoadmap = async () => {
@@ -47,6 +50,12 @@ export default function ShareClickDetail() {
 
     if (id) fetchRoadmap();
   }, [id]);
+
+  useEffect(() => {
+    if (roadmap && id) {
+      initBookmark(String(id), roadmap.likeCount);
+    }
+  }, [id, roadmap, initBookmark]);
 
   if (!roadmap) return <div className="text-center py-20">로딩 중...</div>;
 
@@ -169,8 +178,14 @@ export default function ShareClickDetail() {
 
             <div className="flex items-center gap-4 text-[15px] text-[var(--black)]">
               <div className="flex items-center gap-1">
-                <Heart size={18} />
-                <span>{roadmap.likeCount}</span>
+                <Heart
+                  size={18}
+                  onClick={toggleBookmark}
+                  className="cursor-pointer"
+                  fill={isBookmarked ? 'red' : 'none'}
+                  color={isBookmarked ? 'red' : 'black'}
+                />
+                <span>{likeCount}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Eye size={18} />
