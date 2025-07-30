@@ -1,50 +1,53 @@
-'use client';
+'use client'
 
-import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
-import axiosInstance from '@/libs/axios';
-import { ChevronLeft, ImagePlus } from 'lucide-react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
-import { toast } from 'react-toastify';
+import Button from '@/components/ui/Button'
+import Input from '@/components/ui/Input'
+import axiosInstance from '@/libs/axios'
+import { ChevronLeft, ImagePlus } from 'lucide-react'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useRef, useState } from 'react'
+import { toast } from 'react-toastify'
 
 export default function QuestWrite() {
-  const router = useRouter();
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [deadline, setDeadline] = useState('');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [hint, setHint] = useState('');
-  const isActive = true;
+  const router = useRouter()
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [previewImage, setPreviewImage] = useState<string | null>(null)
+  const [deadline, setDeadline] = useState('')
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [hint, setHint] = useState('')
+  const isActive = true
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleContentClick = () => {
-    fileInputRef.current?.click();
-  };
+    fileInputRef.current?.click()
+  }
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onloadend = () => {
-        setPreviewImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+        setPreviewImage(reader.result as string)
+      }
+      reader.readAsDataURL(file)
     }
-  };
+  }
 
   const handleCancel = () => {
-    router.back();
-  };
+    router.back()
+  }
 
   const handleSubmit = async () => {
+    if (isSubmitting) return
+    setIsSubmitting(true)
     try {
-      const formData = new FormData();
-      const imageFile = fileInputRef.current?.files?.[0];
+      const formData = new FormData()
+      const imageFile = fileInputRef.current?.files?.[0]
       if (!imageFile) {
-        toast('이미지를 선택해주세요');
-        return;
+        toast('이미지를 선택해주세요')
+        return
       }
 
       const requestData = {
@@ -53,36 +56,38 @@ export default function QuestWrite() {
         hint,
         deadline: deadline + 'T23:59:59+09:00',
         isActive,
-      };
+      }
 
       const RequestBlob = new Blob([JSON.stringify(requestData)], {
         type: 'application/json',
-      });
+      })
 
-      formData.append('questRequest', RequestBlob);
-      formData.append('imageFile', imageFile);
+      formData.append('questRequest', RequestBlob)
+      formData.append('imageFile', imageFile)
 
       const res = await axiosInstance.post('/quests', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      });
+      })
       // toast.success('퀘스트가 성공적으로 등록되었습니다.')
       const message =
-        typeof res.data?.message === 'string' ? res.data.message : '';
+        typeof res.data?.message === 'string' ? res.data.message : ''
 
       if (message.includes('업적')) {
-        toast.success(message); // "탐험의 시작 업적을 달성했어요!" 같은 메시지
+        toast.success(message) // "탐험의 시작 업적을 달성했어요!" 같은 메시지
       } else {
-        toast.success('퀘스트가 성공적으로 등록되었습니다.');
+        toast.success('퀘스트가 성공적으로 등록되었습니다.')
       }
 
-      handleCancel();
+      handleCancel()
     } catch (err) {
-      console.error('퀘스트 등록 실패', err);
-      toast.error('퀘스트 등록 실패');
+      console.error('퀘스트 등록 실패', err)
+      toast.error('퀘스트 등록 실패')
+    } finally {
+      setIsSubmitting(false)
     }
-  };
+  }
 
   return (
     <div className="max-w-xl w-full h-[760px] mx-auto mt-10 p-6 bg-white rounded-xl border border-gray-200 shadow-sm overflow-y-scroll">
@@ -188,5 +193,5 @@ export default function QuestWrite() {
         </Button>
       </div>
     </div>
-  );
+  )
 }

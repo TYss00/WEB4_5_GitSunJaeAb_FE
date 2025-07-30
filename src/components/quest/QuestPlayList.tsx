@@ -1,27 +1,27 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import Button from '../ui/Button';
-import QuestDeatilRanking from './QuestDeatilRanking';
-import { SubmissionInfo } from '@/types/type';
-import { useAuthStore } from '@/store/useAuthStore';
+import { useState } from 'react'
+import Button from '../ui/Button'
+import QuestDeatilRanking from './QuestDeatilRanking'
+import { SubmissionInfo } from '@/types/type'
+import { useAuthStore } from '@/store/useAuthStore'
 
 type Props = {
-  submission: SubmissionInfo[];
-  onSelect: (answer: SubmissionInfo) => void;
-  onFormOpen: () => void;
-};
+  submission: SubmissionInfo[]
+  onSelect: (answer: SubmissionInfo) => void
+  onFormOpen: () => void
+}
 
 export default function QuestPlayList({
   submission,
   onSelect,
   onFormOpen,
 }: Props) {
-  const [activeTab, setActiveTab] = useState('전체');
-  const tabs = ['전체', '정답', '오답'];
+  const [activeTab, setActiveTab] = useState('전체')
+  const tabs = ['전체', '정답', '오답']
 
-  const { user } = useAuthStore();
-  const hasParticipated = submission.some((s) => s.nickname === user?.nickname);
+  const { user } = useAuthStore()
+  const hasParticipated = submission.some((s) => s.nickname === user?.nickname)
 
   const filtered =
     activeTab === '전체'
@@ -29,15 +29,15 @@ export default function QuestPlayList({
       : submission.filter((item) => {
           switch (activeTab) {
             case '정답':
-              return item.recognized === true;
+              return item.recognized === true
             case '오답':
-              return item.recognized === false;
+              return item.recognized === false
             case '대기':
-              return item.recognized === null;
+              return item.recognized === null
             default:
-              return true;
+              return true
           }
-        });
+        })
 
   return (
     <div className="w-full border border-[var(--gray-200)] rounded-[10px] p-4">
@@ -132,5 +132,5 @@ export default function QuestPlayList({
         </>
       )}
     </div>
-  );
+  )
 }
