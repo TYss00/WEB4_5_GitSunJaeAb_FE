@@ -26,25 +26,43 @@ export default function SearchResultSection() {
       try {
         setIsLoading(true);
 
-        const [roadmapRes, questRes] = await Promise.all([
-          axiosInstance.get<{ roadmaps: RoadmapItem[] }>('/roadmaps'),
+        const [personalRes, sharedRes, questRes] = await Promise.all([
+          axiosInstance.get<{ roadmaps: RoadmapItem[] }>('/roadmaps/personal'),
+          axiosInstance.get<{ roadmaps: RoadmapItem[] }>('/roadmaps/shared'),
           axiosInstance.get<{ quests: QuestItem[] }>('/quests'),
         ]);
 
-        const allRoadmaps = roadmapRes.data.roadmaps;
-
-        const matchedRoadmaps = allRoadmaps.filter((r) => {
-          return (
-            r.title.includes(query) ||
-            r.hashtags?.some((h) => h.name.includes(query))
+        const matchedPersonal = personalRes.data.roadmaps
+          .filter((r) => {
+            return (
+              r.title.includes(query) ||
+              r.hashtags?.some((h) => h.name.includes(query))
+            );
+          })
+          .map(
+            (r): RoadMapCardProps => ({
+              id: r.id,
+              title: r.title,
+              mapImageUrl: r.thumbnail ?? '/map.png',
+              category: r.category.name,
+              description: r.description,
+              hashtags: r.hashtags.map((h) => `#${h.name}`),
+              profileImgUrl:
+                r.member.profileImage ?? '/assets/defaultProfile.png',
+              author: r.member.nickname,
+              viewCount: r.viewCount,
+              shareCount: r.citationCount,
+            })
           );
-        });
 
-        const personal: RoadMapCardProps[] = [];
-
-        const shared: ShareMapCardProps[] = await Promise.all(
-          matchedRoadmaps
-            .filter((r) => r.roadmapType === 'SHARED')
+        const matchedShared: ShareMapCardProps[] = await Promise.all(
+          sharedRes.data.roadmaps
+            .filter((r) => {
+              return (
+                r.title.includes(query) ||
+                r.hashtags?.some((h) => h.name.includes(query))
+              );
+            })
             .map(async (r) => {
               const common = {
                 id: r.id,
@@ -81,42 +99,24 @@ export default function SearchResultSection() {
               }
             })
         );
-
-        matchedRoadmaps.forEach((r) => {
-          if (r.roadmapType === 'PERSONAL') {
-            personal.push({
-              id: r.id,
-              title: r.title,
-              mapImageUrl: r.thumbnail ?? '/map.png',
-              category: r.category.name,
-              description: r.description,
-              hashtags: r.hashtags.map((h) => `#${h.name}`),
-              profileImgUrl:
-                r.member.profileImage ?? '/assets/defaultProfile.png',
-              author: r.member.nickname,
-              viewCount: r.viewCount,
-              shareCount: r.citationCount,
-            });
-          }
-        });
-
         const matchedQuests = questRes.data.quests
           .filter((q) => q.title.includes(query))
-          .map((q) => ({
-            id: q.id,
-            isInProgress: q.isActive,
-            mapImageUrl: q.questImage ?? '/map.png',
-            title: q.title,
-            description: q.description,
-            hashtags: [],
-            profileImgUrl:
-              q.member.profileImage ?? '/assets/defaultProfile.png',
-            author: q.member.nickname,
-            deadLine: q.createdAt.slice(0, 10).replace(/-/g, '.'),
-          }));
+          .map(
+            (q): QuestCardProps => ({
+              id: q.id,
+              isInProgress: q.isActive,
+              mapImageUrl: q.questImage ?? '/map.png',
+              title: q.title,
+              description: q.description,
+              profileImgUrl:
+                q.member.profileImage ?? '/assets/defaultProfile.png',
+              author: q.member.nickname,
+              deadLine: q.createdAt.slice(0, 10).replace(/-/g, '.'),
+            })
+          );
 
-        setRoadmaps(personal);
-        setSharemaps(shared);
+        setRoadmaps(matchedPersonal);
+        setSharemaps(matchedShared);
         setQuests(matchedQuests);
       } catch (err) {
         console.error('검색 결과 불러오기 실패:', err);
