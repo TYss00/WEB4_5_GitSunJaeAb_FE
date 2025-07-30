@@ -38,6 +38,9 @@ axiosInstance.interceptors.response.use(
     const newAccessToken = response.data?.data?.accessToken;
     if (newAccessToken) {
       applyTokensToState(newAccessToken);
+      axiosInstance.defaults.headers.common[
+        'Authorization'
+      ] = `Bearer ${newAccessToken}`;
     }
     return response;
   },
@@ -75,13 +78,20 @@ axiosInstance.interceptors.response.use(
 
         // 상태 및 localStorage에 저장
         applyTokensToState(accessToken);
-        processQueue(accessToken);
+
+        await new Promise((resolve) => setTimeout(resolve, 0));
 
         // 실패했던 요청 재시도
         originalRequest.headers = {
           ...originalRequest.headers,
           Authorization: `Bearer ${accessToken}`,
         };
+
+        axiosInstance.defaults.headers.common[
+          'Authorization'
+        ] = `Bearer ${accessToken}`;
+
+        processQueue(accessToken);
 
         return axiosInstance(originalRequest);
       } catch (err) {
