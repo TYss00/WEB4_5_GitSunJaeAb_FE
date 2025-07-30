@@ -30,8 +30,10 @@ type MemberQuest = {
 
 export default function QuestDetailPlay({
   submissionInfo,
+  questAuthorId,
 }: {
   submissionInfo: SubmissionInfo[];
+  questAuthorId: number;
 }) {
   const [submissions, setSubmissions] = useState(submissionInfo);
 
@@ -78,6 +80,7 @@ export default function QuestDetailPlay({
     <>
       {selectedSubmission ? (
         <QuestPlayView
+          questAuthorId={questAuthorId}
           submission={selectedSubmission}
           onBack={() => setSelectedSubmission(null)}
           onJudge={updateRecognizedStatus}

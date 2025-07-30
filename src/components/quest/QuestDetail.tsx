@@ -24,6 +24,7 @@ type MemberQuest = {
   description: string;
   imageUrl: string;
   member: {
+    id: number;
     nickname: string;
   };
 };
@@ -51,32 +52,13 @@ export default function QuestDetail() {
               const imageMatch = mq.imageUrl === submission.imageUrl;
               const nicknameMatch = mq.member.nickname === submission.nickname;
 
-              const allMatch =
-                titleMatch && descMatch && imageMatch && nicknameMatch;
-
-              if (!allMatch) {
-                console.warn('❌ 매칭 실패:', {
-                  submission,
-                  candidate: mq,
-                  titleMatch,
-                  descMatch,
-                  imageMatch,
-                  nicknameMatch,
-                });
-              }
-
-              return allMatch;
+              return titleMatch && descMatch && imageMatch && nicknameMatch;
             });
-
-            if (!matched) {
-              console.warn('⚠️ 최종적으로 매칭된 memberQuest가 없습니다.', {
-                submission,
-              });
-            }
 
             return {
               ...submission,
               id: matched?.id ?? null,
+              memberId: matched?.member?.id ?? null,
             };
           }
         );
@@ -111,7 +93,10 @@ export default function QuestDetail() {
           </div>
           <div className="w-1/2">
             {/* 참여 + 랭킹*/}
-            <QuestDetailPlay submissionInfo={submissionInfo} />
+            <QuestDetailPlay
+              questAuthorId={questInfo.member.id}
+              submissionInfo={submissionInfo}
+            />
           </div>
         </div>
       </div>

@@ -249,6 +249,7 @@ export type SubmissionInfo = {
   submittedAt: string;
   recognized: boolean;
   id: number | null;
+  memberId?: number | null;
 };
 
 export type RankingInfo = {
