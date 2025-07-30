@@ -6,7 +6,27 @@ import QuestDetailHeader from './QuestDetailHeader';
 import QuestDetailPlay from './QuestDetailPlay';
 import { useEffect, useState } from 'react';
 import axiosInstance from '@/libs/axios';
-import { QuestDetailData } from '@/types/type';
+import { QuestDetailData, SubmissionInfo } from '@/types/type';
+
+type SubmissionRaw = {
+  title: string;
+  description: string;
+  profileImage: string;
+  imageUrl: string;
+  nickname: string;
+  submittedAt: string;
+  recognized: boolean;
+};
+
+type MemberQuest = {
+  id: number;
+  title: string;
+  description: string;
+  imageUrl: string;
+  member: {
+    nickname: string;
+  };
+};
 
 export default function QuestDetail() {
   const params = useParams();
@@ -15,13 +35,33 @@ export default function QuestDetail() {
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [questRes, commentsRes] = await Promise.all([
+        const [questRes, commentsRes, memberQuestRes] = await Promise.all([
           axiosInstance.get(`/quests/${questId}/detail`),
           axiosInstance.get(`/comments/quests?questId=${questId}`),
+          axiosInstance.get(`/quests/${questId}/memberQuest`),
         ]);
+        const rawSubmissions: SubmissionRaw[] = questRes.data.submission;
+        const memberQuests: MemberQuest[] = memberQuestRes.data.memberQuests;
+
+        const submissionWithId: SubmissionInfo[] = rawSubmissions.map(
+          (submission) => {
+            const matched = memberQuests.find(
+              (mq) =>
+                mq.title === submission.title &&
+                mq.description === submission.description &&
+                mq.imageUrl === submission.imageUrl &&
+                mq.member.nickname === submission.nickname
+            );
+
+            return {
+              ...submission,
+              id: matched?.id ?? null, // ✅ id가 없을 경우 null 처리
+            };
+          }
+        );
         setData({
           quest: questRes.data.quest,
-          submission: questRes.data.submission,
+          submission: submissionWithId,
           comments: commentsRes.data.comments,
         });
         console.log(questRes.data.quest);
