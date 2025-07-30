@@ -45,17 +45,38 @@ export default function QuestDetail() {
 
         const submissionWithId: SubmissionInfo[] = rawSubmissions.map(
           (submission) => {
-            const matched = memberQuests.find(
-              (mq) =>
-                mq.title === submission.title &&
-                mq.description === submission.description &&
-                mq.imageUrl === submission.imageUrl &&
-                mq.member.nickname === submission.nickname
-            );
+            const matched = memberQuests.find((mq) => {
+              const titleMatch = mq.title === submission.title;
+              const descMatch = mq.description === submission.description;
+              const imageMatch = mq.imageUrl === submission.imageUrl;
+              const nicknameMatch = mq.member.nickname === submission.nickname;
+
+              const allMatch =
+                titleMatch && descMatch && imageMatch && nicknameMatch;
+
+              if (!allMatch) {
+                console.warn('❌ 매칭 실패:', {
+                  submission,
+                  candidate: mq,
+                  titleMatch,
+                  descMatch,
+                  imageMatch,
+                  nicknameMatch,
+                });
+              }
+
+              return allMatch;
+            });
+
+            if (!matched) {
+              console.warn('⚠️ 최종적으로 매칭된 memberQuest가 없습니다.', {
+                submission,
+              });
+            }
 
             return {
               ...submission,
-              id: matched?.id ?? null, // ✅ id가 없을 경우 null 처리
+              id: matched?.id ?? null,
             };
           }
         );
