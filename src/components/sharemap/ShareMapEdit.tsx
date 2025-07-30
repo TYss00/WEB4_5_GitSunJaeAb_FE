@@ -13,15 +13,11 @@ import { geocodeAddress } from '@/libs/geocode';
 import axiosInstance from '@/libs/axios';
 import { CategoryInfo } from '@/types/type';
 
-interface ShareMapEditProps {
-  categories: CategoryInfo[];
-}
-
 export interface AddressData {
   address: string;
 }
 
-export default function ShareMapEdit({ categories }: ShareMapEditProps) {
+export default function ShareMapEdit() {
   const { id } = useParams();
   const router = useRouter();
 
@@ -33,6 +29,7 @@ export default function ShareMapEdit({ categories }: ShareMapEditProps) {
   const [description, setDescription] = useState('');
   const [region, setRegion] = useState('');
   const [categoryId, setCategoryId] = useState<number | null>(null);
+  const [categories, setCategories] = useState<CategoryInfo[]>([]);
   const [thumbnail, setThumbnail] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [endDate, setEndDate] = useState('');
@@ -74,6 +71,24 @@ export default function ShareMapEdit({ categories }: ShareMapEditProps) {
 
     if (id) fetchRoadmap();
   }, [id]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axiosInstance.get('/categories');
+        const data = res.data;
+        if (Array.isArray(data.categories)) {
+          setCategories(data.categories);
+        } else {
+          console.error('카테고리 데이터 형식 오류:', data);
+        }
+      } catch (err) {
+        console.error('카테고리 로딩 실패:', err);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleComplete = async (data: AddressData) => {
     const fullAddress = data.address;

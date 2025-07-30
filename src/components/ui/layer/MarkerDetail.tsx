@@ -1,33 +1,34 @@
-'use client'
+'use client';
 
-import ReportModal from '@/components/common/modal/ReportModal'
-import { reverseGeocode } from '@/libs/geocode'
-import { MarkerDetailProps } from '@/types/type'
-import { MapPin, Siren } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import ReportModal from '@/components/common/modal/ReportModal';
+import { reverseGeocode } from '@/libs/geocode';
+import { MarkerDetailProps } from '@/types/type';
+import { MapPin, Siren } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function MarkerDetail({
+  id,
   title,
   description,
   location,
   isTextArea,
 }: MarkerDetailProps) {
-  const [isReportOpen, setIsReportOpen] = useState(false)
-  const [address, setAddress] = useState<string | null>(null)
+  const [isReportOpen, setIsReportOpen] = useState(false);
+  const [address, setAddress] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchAddress = async () => {
       try {
-        const result = await reverseGeocode(location.lat, location.lng)
-        setAddress(result)
+        const result = await reverseGeocode(location.lat, location.lng);
+        setAddress(result);
       } catch (err) {
-        setAddress('주소 변환 실패')
-        console.error(err)
+        setAddress('주소 변환 실패');
+        console.error(err);
       }
-    }
+    };
 
-    fetchAddress()
-  }, [location.lat, location.lng])
+    fetchAddress();
+  }, [location.lat, location.lng]);
   return (
     <>
       <div className="flex flex-col justify-between px-[15px] py-[13px] w-full rounded-[5px] border border-[var(--primary-100)] bg-[var(--white)]">
@@ -58,7 +59,13 @@ export default function MarkerDetail({
         )}
       </div>
 
-      {isReportOpen && <ReportModal onClose={() => setIsReportOpen(false)} />}
+      {isReportOpen && (
+        <ReportModal
+          reportType="marker"
+          targetId={id}
+          onClose={() => setIsReportOpen(false)}
+        />
+      )}
     </>
-  )
+  );
 }

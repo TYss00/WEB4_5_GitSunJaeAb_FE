@@ -5,6 +5,7 @@ export type HeaderProps = {
   isAdmin?: boolean
 }
 
+
 export type CategoryAddCardProps = {
   type?: 'category' | 'marker'
   onClick?: () => void
@@ -77,11 +78,13 @@ export type MarkerEditProps = {
 }
 
 export type MarkerDetailProps = {
-  title: string
-  description: string
-  location: { lat: number; lng: number }
-  isTextArea?: boolean
-}
+  id: number;
+  title: string;
+  description: string;
+  location: { lat: number; lng: number };
+  isTextArea?: boolean;
+};
+
 
 export type LayerEditProps = {
   title: string
@@ -248,25 +251,26 @@ export type SubmissionInfo = {
   recognized: boolean
 }
 
+
 export type RankingInfo = {
-  rank: number
-  memberName: string
-  profileImageUrl: string
-}
+  rank: number;
+  memberName: string;
+  profileImageUrl: string;
+};
 
 export type QuestDetailData = {
-  quest: QuestInfo
-  submission: SubmissionInfo[]
-  comments: CommentInfo[]
-}
+  quest: QuestInfo;
+  submission: SubmissionInfo[];
+  comments: CommentInfo[];
+};
 export type QuestDetailPlayProps = {
-  submissionInfo: SubmissionInfo[]
-  rankingInfo: RankingInfo[]
-}
+  submissionInfo: SubmissionInfo[];
+  rankingInfo: RankingInfo[];
+};
 
 export type RoadmapWriteProps = {
-  categories: CategoryInfo[]
-}
+  categories: CategoryInfo[];
+};
 
 export type RoadmapDetailProps = {
   roadmap: RoadmapInfo
@@ -316,6 +320,7 @@ export type MyZzimLayersInfo = {
     lng: number
   }[]
 }
+
 
 export type MarkerData = {
   name?: string
