@@ -157,7 +157,10 @@ export default function QuestDetailHeader({
               <Siren
                 size={18}
                 className="cursor-pointer text-red-500"
-                onClick={() => setIsReportOpen(true)}
+                onClick={() => {
+                  setIsReportOpen(true);
+                  setIsMenuOpen(false);
+                }}
               />
             )}
           </div>
