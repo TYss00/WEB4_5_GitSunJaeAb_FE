@@ -39,6 +39,7 @@ export type QuestCardProps = {
 export type ShareMapCardProps = {
   id?: number;
   isEvent?: boolean;
+  category?: string;
   title: string;
   mapImageUrl: string;
   participants: number;

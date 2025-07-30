@@ -75,7 +75,7 @@ export interface DashboardCardListProps {
 }
 
 export interface ShareMapCardUIProps {
-  id: number;
+  id?: number;
   title: string;
   mapImageUrl: string;
   category: string;

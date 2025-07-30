@@ -1,6 +1,7 @@
 import QuestCard from '@/components/ui/card/QuestCard';
 import RoadMapCard from '@/components/ui/card/RoadMapCard';
 import ShareMapCard from '@/components/ui/card/ShareMapCard';
+import { SearchCategoryGroupProps } from '@/types/search';
 import {
   QuestCardProps,
   RoadMapCardProps,
@@ -8,13 +9,6 @@ import {
 } from '@/types/type';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-
-type SearchCategoryGroupProps = {
-  title: string;
-  cardType: 'sharemap' | 'roadmap' | 'quest';
-  items: ShareMapCardProps[] | RoadMapCardProps[] | QuestCardProps[];
-  query: string;
-};
 
 export default function SearchCategoryGroup({
   title,
@@ -72,7 +66,11 @@ export default function SearchCategoryGroup({
                 );
               case 'sharemap':
                 return (
-                  <ShareMapCard key={idx} {...(item as ShareMapCardProps)} />
+                  <ShareMapCard
+                    category={''}
+                    key={idx}
+                    {...(item as ShareMapCardProps)}
+                  />
                 );
               case 'quest':
                 return <QuestCard key={idx} {...(item as QuestCardProps)} />;
