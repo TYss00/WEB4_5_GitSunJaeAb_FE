@@ -24,6 +24,7 @@ import useShareStore from '@/store/useShareStore';
 import { RoadmapDetailResponse } from '@/types/share';
 import axiosInstance from '@/libs/axios';
 import Image from 'next/image';
+import { useBookmarkStore } from '@/store/useBookmarkStore';
 
 export default function ShareMapJoin() {
   const router = useRouter();
@@ -53,6 +54,8 @@ export default function ShareMapJoin() {
   const leaveRoom = useShareStore((state) => state.liveblocks.leaveRoom);
   const setRoadmapId = useShareStore((state) => state.setRoadmapId);
   const mapRef = useRef<google.maps.Map | null>(null);
+  const { isBookmarked, likeCount, initBookmark, toggleBookmark } =
+    useBookmarkStore();
 
   useEffect(() => {
     if (!id) return;
@@ -75,6 +78,12 @@ export default function ShareMapJoin() {
       leaveRoom();
     };
   }, [id, enterRoom, leaveRoom, setRoadmapId]);
+
+  useEffect(() => {
+    if (id && roadmap) {
+      initBookmark(String(id), roadmap.likeCount);
+    }
+  }, [id, roadmap, initBookmark]);
 
   if (!roadmap) return <div className="text-center py-20">로딩 중...</div>;
 
@@ -170,8 +179,14 @@ export default function ShareMapJoin() {
             </div>
             <div className="flex items-center gap-4 text-[15px] text-[var(--black)]">
               <div className="flex items-center gap-1">
-                <Heart size={18} />
-                <span>{roadmap?.likeCount}</span>
+                <Heart
+                  size={18}
+                  onClick={toggleBookmark}
+                  className="cursor-pointer"
+                  fill={isBookmarked ? 'red' : 'none'}
+                  color={isBookmarked ? 'red' : 'black'}
+                />
+                <span>{likeCount}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Eye size={18} />
@@ -261,7 +276,13 @@ export default function ShareMapJoin() {
       </div>
 
       {/* 신고 모달 */}
-      {isReportOpen && <ReportModal onClose={() => setIsReportOpen(false)} />}
+      {isReportOpen && (
+        <ReportModal
+          reportType="map"
+          targetId={Number(id)}
+          onClose={() => setIsReportOpen(false)}
+        />
+      )}
     </section>
   );
 }

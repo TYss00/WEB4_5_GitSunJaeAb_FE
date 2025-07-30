@@ -25,6 +25,8 @@ import { useAuthStore } from '@/store/useAuthStore';
 import ConfirmModal from '../common/modal/ConfirmModal';
 import { CommentInfo } from '@/types/type';
 import Comment from '../comment/Comment';
+import { useBookmarkStore } from '@/store/useBookmarkStore';
+import LoadingSpinner from '../common/LoadingSpener';
 
 const containerStyle = {
   width: '100%',
@@ -47,6 +49,8 @@ export default function ShareMapDetail() {
 
   const mapRef = useRef<google.maps.Map | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const { isBookmarked, likeCount, initBookmark, toggleBookmark } =
+    useBookmarkStore();
 
   useEffect(() => {
     const fetchRoadmap = async () => {
@@ -101,7 +105,18 @@ export default function ShareMapDetail() {
     };
   }, []);
 
-  if (!roadmap) return <div className="text-center py-20">로딩 중...</div>;
+  useEffect(() => {
+    if (id && roadmap) {
+      initBookmark(String(id), roadmap.likeCount);
+    }
+  }, [id, initBookmark, roadmap]);
+
+  if (!roadmap)
+    return (
+      <div className="text-center py-20">
+        <LoadingSpinner />
+      </div>
+    );
 
   function getShortAddress(fullAddress: string): string {
     const parts = fullAddress.split(' ');
@@ -148,8 +163,14 @@ export default function ShareMapDetail() {
           </div>
           <div className="flex items-center gap-4 text-[15px] text-[var(--black)]">
             <div className="flex items-center gap-1">
-              <Heart size={18} />
-              <span>{roadmap.likeCount}</span>
+              <Heart
+                size={18}
+                onClick={toggleBookmark}
+                className="cursor-pointer"
+                fill={isBookmarked ? 'red' : 'none'}
+                color={isBookmarked ? 'red' : 'black'}
+              />
+              <span>{likeCount}</span>
             </div>
             <div className="flex items-center gap-1">
               <Eye size={18} />
@@ -281,7 +302,13 @@ export default function ShareMapDetail() {
           </section>
         </div>
       </main>
-      {isReportOpen && <ReportModal onClose={() => setIsReportOpen(false)} />}
+      {isReportOpen && (
+        <ReportModal
+          reportType="map"
+          targetId={Number(id)}
+          onClose={() => setIsReportOpen(false)}
+        />
+      )}
       {isDeleteOpen && (
         <ConfirmModal
           isOpen={isDeleteOpen}

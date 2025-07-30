@@ -1,5 +1,7 @@
+
 'use client'
 import { useParams, useRouter } from 'next/navigation'
+
 import {
   ChevronLeft,
   Eye,
@@ -20,11 +22,15 @@ import { useAuthStore } from '@/store/useAuthStore'
 import ReportModal from '../common/modal/ReportModal'
 import ConfirmModal from '../common/modal/ConfirmModal'
 
+
 export default function QuestDetailHeader({
   questInfo,
+  questId,
 }: {
-  questInfo: QuestInfo
+  questInfo: QuestInfo;
+  questId: number;
 }) {
+
   const { id } = useParams()
   const currentUserId = useAuthStore((state) => state.user?.id)
 
@@ -68,6 +74,7 @@ export default function QuestDetailHeader({
       setIsDeleteOpen(false)
     }
   }
+
   return (
     <>
       <div className="w-[1100px] m-auto">
@@ -156,6 +163,31 @@ export default function QuestDetailHeader({
               />
             )}
           </div>
+
+          <div className="relative">
+            {/* 메뉴버튼 */}
+            <button
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+              className="cursor-pointer"
+            >
+              <MoreVertical size={18} />
+            </button>
+            {isMenuOpen && (
+              <div className="absolute right-0 top-full mt-2 bg-white border border-gray-200 rounded shadow z-50 flex flex-col w-max">
+                <div
+                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2 text-red-500"
+                  onClick={() => {
+                    setIsReportOpen(true);
+                    setIsMenuOpen(false);
+                  }}
+                >
+                  <Siren size={16} />
+                  <span>신고하기</span>
+                </div>
+              </div>
+            )}
+          </div>
+
         </div>
         <p className="text-[18px] mt-4">{questInfo.description}</p>
         {/* 작성자 */}
@@ -214,7 +246,13 @@ export default function QuestDetailHeader({
           </div>
         )}
       </div>
-      {isReportOpen && <ReportModal onClose={() => setIsReportOpen(false)} />}
+      {isReportOpen && (
+        <ReportModal
+          reportType="quest"
+          targetId={Number(questId)}
+          onClose={() => setIsReportOpen(false)}
+        />
+      )}
       {isDeleteOpen && (
         <ConfirmModal
           isOpen={isDeleteOpen}

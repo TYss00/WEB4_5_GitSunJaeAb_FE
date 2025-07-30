@@ -1,11 +1,10 @@
-'use client'
+'use client';
 
-import { CommentInfo } from '@/types/type'
-import CommentCount from './CommentCount'
-import CommentForm from './CommentForm'
-import CommentList from './CommentList'
-import { useState } from 'react'
-
+import { CommentInfo } from '@/types/type';
+import CommentCount from './CommentCount';
+import CommentForm from './CommentForm';
+import CommentList from './CommentList';
+import { useState } from 'react';
 
 type Props = {
   commentsInfo: CommentInfo[];
@@ -33,7 +32,17 @@ export default function Comment({ commentsInfo, variant = 'sharemap' }: Props) {
     >
       <div>
         <CommentCount count={comments?.length ?? 0} />
-        <CommentList comments={comments ?? []} />
+        <CommentList
+          comments={comments}
+          onDelete={(id) =>
+            setComments((prev) => prev.filter((c) => c.id !== id))
+          }
+          onUpdate={(updated) =>
+            setComments((prev) =>
+              prev.map((c) => (c.id === updated.id ? updated : c))
+            )
+          }
+        />
       </div>
       <CommentForm variant={variant} onAddComment={handleAddComment} />
     </div>
