@@ -28,6 +28,7 @@ import Image from 'next/image'
 import { useAuthStore } from '@/store/useAuthStore'
 import ConfirmModal from '../common/modal/ConfirmModal'
 import { useBookmarkStore } from '@/store/useBookmarkStore'
+import LoadingSpinner from '../common/LoadingSpener'
 
 export default function Loadmapdetail() {
   const currentUserId = useAuthStore((state) => state.user?.id)
@@ -89,7 +90,7 @@ export default function Loadmapdetail() {
     }
   }, [])
 
-  if (loading) return <div>로딩 중...</div>
+  if (loading) return <LoadingSpinner />
   if (!data) return <div>데이터 없음</div>
 
   const { roadmap: roadMapInfo, comments: commentsInfo } = data
