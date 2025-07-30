@@ -93,6 +93,21 @@ export default function EventBox({
           Hot
         </h2>
         <div className="mx-auto mt-[19px] mb-[31px] w-[136px] h-[2px] bg-[#005C54] rounded-full" />
+        {type === 'sharemap' && (
+          <p className="text-center text-[#616161] text-[20px] mb-[20px] font-semibold">
+            가장 많이 조회된 공유 지도들을 이곳에서 만나보세요!
+          </p>
+        )}
+        {type === 'quest' && (
+          <p className="text-center text-[#616161] text-[20px] mb-[20px] font-semibold">
+            가장 많이 조회된 퀘스트들입니다! 지금 도전해보세요!
+          </p>
+        )}
+        {type === 'roadmap' && (
+          <p className="text-center text-[#616161] text-[20px] mb-[20px] font-semibold">
+            조회수가 높은 인기 로드맵들을 이곳에서 확인해보세요!
+          </p>
+        )}
         <div className="flex gap-[18px] justify-center">
           {finalIsLoading
             ? Array.from({ length: 3 }).map((_, idx) =>
