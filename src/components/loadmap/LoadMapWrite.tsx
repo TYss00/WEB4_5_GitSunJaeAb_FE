@@ -184,13 +184,17 @@ export default function LoadMapWrite() {
         }
       )
       const roadmap = await roadmapRes.data
-      console.log(roadmap)
+
       const roadMapId = roadmap.roadmapId
-      console.log(roadMapId)
 
       //2. 레이어 생성 및 마커 생성
       for (let i = 0; i < layers.length; i++) {
         const layerName = layers[i]
+
+        //찜한 레이어인지 확인
+        const matchedZzimLayer = myZzimLayers.find((l) => l.name === layerName)
+        const originalLayerId = matchedZzimLayer?.id ?? null
+        console.log(originalLayerId)
 
         const layerRes = await axiosInstance.post(
           `/layers?targetRoadmapId=${roadMapId}`,
@@ -198,14 +202,12 @@ export default function LoadMapWrite() {
             name: layerName,
             description: '',
             layerSeq: i + 1,
-            originalLayerId: null,
+            originalLayerId: originalLayerId,
             roadmapId: roadMapId,
-            Zzimed: false,
+            zzimed: false,
           }
         )
-
-        const layerId = layerRes.data.layer.id
-        console.log('생성된 레이어:', layerRes.data.layer.id)
+        const layerId = await layerRes.data.layer.id
 
         //3. 해당 레이어에 속한 마커들 추출
         const markers = layerMarkers[layerName] || []
@@ -226,8 +228,7 @@ export default function LoadMapWrite() {
             layerId: layerId,
           }
 
-          const markerRes = await axiosInstance.post('/markers', markerReqBody)
-          console.log('마커 생성 응답:', markerRes.data)
+          await axiosInstance.post('/markers', markerReqBody)
         }
       }
       // 업적 메시지 토스트 띄우기
@@ -434,7 +435,7 @@ export default function LoadMapWrite() {
               onChange={handleZzimLayerSelect}
               className="w-full h-[40px] text-sm border border-[#E4E4E4] rounded px-3 appearance-none"
             >
-              <option value="">레이어 선택</option>
+              <option value="">찜한 레이어 선택</option>
               {myZzimLayers?.map((layer: MyZzimLayersInfo) => (
                 <option key={layer.id} value={layer.name}>
                   {layer.name}
