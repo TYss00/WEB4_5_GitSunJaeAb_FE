@@ -27,6 +27,7 @@ export default function ShareMapAdd() {
   const [categories, setCategories] = useState<CategoryInfo[]>([]);
   const [thumbnail, setThumbnail] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isComposing, setIsComposing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const isPublic = true;
 
@@ -136,9 +137,7 @@ export default function ShareMapAdd() {
 
       router.push('/dashbord/sharemap');
       router.refresh();
-      // 작성 완료 되었을때 메시지에 업적있으면
-      // 업적o 업적 관련 토스트메시지 보여지도록
-      // 업적x 공유지도 생성 토스트 메시지
+
       const message = res.data?.message ?? '';
       if (message.includes('업적')) {
         toast.success(message);
@@ -299,8 +298,10 @@ export default function ShareMapAdd() {
               className="h-[40px]"
               value={tagInput}
               onChange={(e) => setTagInput(e.target.value)}
+              onCompositionStart={() => setIsComposing(true)}
+              onCompositionEnd={() => setIsComposing(false)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
+                if (e.key === 'Enter' && !isComposing) {
                   e.preventDefault();
                   handleAddTag();
                 }
