@@ -34,6 +34,8 @@ export default function Loadmapdetail() {
   const roadmapId = params?.id as string
   const [selectedLayerId, setSelectedLayerId] = useState<number | 'all'>('all')
   const [isBookmarked, setIsBookmarked] = useState(false)
+  const [bookmarkerId, setBookmarkerId] = useState<number | null>(null)
+
   useEffect(() => {
     const fetchAll = async () => {
       try {
@@ -47,8 +49,13 @@ export default function Loadmapdetail() {
         const matched = bookmarks.some(
           (item: BookmarksInfo) => String(item.id) === roadmapId
         )
+        if (matched) {
+          const bookmarkId = bookmarks.filter(
+            (item: BookmarksInfo) => String(item.id) === roadmapId
+          )[0].bookmarkId
+          setBookmarkerId(bookmarkId)
+        }
         setIsBookmarked(matched)
-        console.log('matched', matched)
 
         setData({
           roadmap: roadmapRes.data.roadmap,
@@ -70,8 +77,15 @@ export default function Loadmapdetail() {
   const toggleBookmark = async () => {
     try {
       if (!isBookmarked) {
-        await axiosInstance.post(`/bookmarks/${roadmapId}`)
+        const res = await axiosInstance.post(`/bookmarks/${roadmapId}`)
+        const bookmarkId = await res.data.bookmarkId
         setIsBookmarked(true)
+        setBookmarkerId(bookmarkId)
+      } else {
+        const res = await axiosInstance.delete(`/bookmarks/${bookmarkerId}`)
+        console.log(res)
+        setIsBookmarked(false)
+        setBookmarkerId(null)
       }
     } catch (error) {
       console.error('북마크 처리 오류', error)
@@ -215,10 +229,10 @@ export default function Loadmapdetail() {
               <div className="relative  w-full h-[300px] bg-gray-100 rounded-[5px] mb-2 overflow-hidden">
                 {/* 기본 썸네일 이미지 제작 시 교체 예정 */}
                 <Image
-                  src={roadMapInfo.thumbnail ?? '/next.svg'}
+                  src={roadMapInfo.thumbnail ?? '/assets/MAPICK.png'}
                   alt="썸네일 이미지"
                   fill
-                  className="object-cover"
+                  className="object-fill"
                 />
               </div>
               <p className="text-[16px] text-black mb-2">

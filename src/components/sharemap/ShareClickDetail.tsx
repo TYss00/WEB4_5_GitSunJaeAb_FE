@@ -5,7 +5,6 @@ import {
   Heart,
   Siren,
   Eye,
-  Download,
   ChevronDown,
   ChevronsRight,
   ChevronsLeft,
@@ -212,7 +211,6 @@ export default function ShareClickDetail() {
           <div className="border-t border-[var(--gray-50)] space-y-[15px] mt-4">
             <div className="flex items-center justify-between mt-4 mb-4 mr-3">
               <h3 className="text-xl text-black">레이어 및 마커</h3>
-              <Download size={20} className="cursor-pointer text-[#000]" />
             </div>
 
             {/* 여기서 layers 배열을 기반으로 동적 렌더링 */}
@@ -232,6 +230,11 @@ export default function ShareClickDetail() {
                   markerSeq: m.markerSeq,
                   layerTempId: m.layerId,
                 }))}
+                onMarkerClick={(lat, lng) => {
+                  if (mapRef.current) {
+                    mapRef.current.panTo({ lat, lng });
+                  }
+                }}
               />
             ))}
           </div>
@@ -241,6 +244,7 @@ export default function ShareClickDetail() {
             <Button
               buttonStyle="white"
               className="w-[114px] h-[40px] text-[18px] font-semibold cursor-pointer"
+              onClick={() => router.back()}
             >
               나가기
             </Button>
