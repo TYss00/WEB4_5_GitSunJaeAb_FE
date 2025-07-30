@@ -339,7 +339,7 @@ export type MarkerData = {
   description?: string
   color?: string
   customImageId?: string | null
-  id: number | null
+  id: number
   lat: number
   lng: number
   address: string

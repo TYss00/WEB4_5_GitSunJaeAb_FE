@@ -7,7 +7,7 @@ import Toggle from '../ui/Toggle'
 import useLayerAdd from '@/hooks/useLayerAdd'
 import { useEffect, useState } from 'react'
 import useLayerMarkersAdd from '@/hooks/useLayerMarkersAdd'
-import { CategoryInfo, MyZzimLayersInfo } from '@/types/type'
+import { CategoryInfo, LayerMarkers, MyZzimLayersInfo } from '@/types/type'
 import useHashtags from '@/hooks/useHashtags'
 import RoadMapGoogleWrite from './RoadMapGoogleWrite'
 import axiosInstance from '@/libs/axios'
@@ -128,8 +128,6 @@ export default function RoadMapEdit() {
         const res = await axiosInstance.get(`/roadmaps/${roadmapId}`)
         const roadmapInfo: RoadmapResponse = res.data.roadmap
 
-        console.log(roadmapInfo)
-
         setCategoryId(roadmapInfo.category.id)
         setTitle(roadmapInfo.title)
         setDescription(roadmapInfo.description)
@@ -149,7 +147,7 @@ export default function RoadMapEdit() {
           const layerId = item.layer.id
 
           acc[layerName] = item.markers.map((marker) => ({
-            id: marker.id,
+            id: marker.id ?? null,
             name: marker.name,
             description: marker.description,
             lat: marker.lat,
@@ -162,7 +160,7 @@ export default function RoadMapEdit() {
           return acc
         }, {})
 
-        setLayerMarkers(markersByLayer)
+        setLayerMarkers(markersByLayer as unknown as LayerMarkers)
       } catch (err) {
         console.error('로드맵 조회 실패', err)
       }
@@ -173,7 +171,7 @@ export default function RoadMapEdit() {
         const MyZzimLayers = await res.data
         setMyZzimLayers(MyZzimLayers.layers)
       } catch (err) {
-        console.log('회원 찜 레이어 조회 오류', err)
+        console.error('회원 찜 레이어 조회 오류', err)
       }
     }
     getCategories()
