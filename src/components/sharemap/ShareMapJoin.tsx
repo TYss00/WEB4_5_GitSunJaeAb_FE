@@ -193,7 +193,11 @@ export default function ShareMapJoin() {
                 <span>{roadmap?.viewCount}</span>
               </div>
               <button onClick={() => setIsReportOpen(true)}>
-                <Siren className="cursor-pointer" size={18} />
+                <Siren
+                  size={18}
+                  className="cursor-pointer text-red-500"
+                  onClick={() => setIsReportOpen(true)}
+                />
               </button>
             </div>
           </div>
