@@ -6,6 +6,7 @@ import Script from 'next/script';
 import ReportDetailSkeleton from './ReportDetailSkeleton';
 import { ReportModal } from '@/types/admin';
 import { toast } from 'react-toastify';
+import ConfirmModal from '../common/modal/ConfirmModal';
 
 export default function ReportDetailModal({
   isOpen,
@@ -25,6 +26,7 @@ export default function ReportDetailModal({
   } | null>(null);
 
   const mapRef = useRef<HTMLDivElement | null>(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
@@ -109,11 +111,12 @@ export default function ReportDetailModal({
     }
   }, [data, loading, isOpen]);
 
-  const handleDeleteMarker = async () => {
-    if (!data?.markerId) return;
+  const handleClickDeleteMarker = () => {
+    setIsConfirmOpen(true);
+  };
 
-    const confirmDelete = confirm('정말로 이 마커를 삭제하시겠습니까?');
-    if (!confirmDelete) return;
+  const handleDeleteConfirmed = async () => {
+    if (!data?.markerId) return;
 
     try {
       await axiosInstance.delete(`/markers/${data.markerId}`);
@@ -122,6 +125,8 @@ export default function ReportDetailModal({
     } catch (err) {
       console.error('마커 삭제 실패:', err);
       toast.error('마커 삭제에 실패했습니다.');
+    } finally {
+      setIsConfirmOpen(false);
     }
   };
 
@@ -209,7 +214,7 @@ export default function ReportDetailModal({
 
                 {contentType === '마커' && data?.markerId && (
                   <button
-                    onClick={handleDeleteMarker}
+                    onClick={handleClickDeleteMarker}
                     title="마커 제거"
                     className="group flex items-center gap-1 text-am text-[var(--red)] hover:text-red-600 transition-colors cursor-pointer"
                   >
@@ -227,6 +232,12 @@ export default function ReportDetailModal({
               </div>
             </>
           )}
+          <ConfirmModal
+            isOpen={isConfirmOpen}
+            onClose={() => setIsConfirmOpen(false)}
+            onDelete={handleDeleteConfirmed}
+            confirmType="marker"
+          />
         </div>
       </div>
     </>

@@ -7,6 +7,7 @@ import ReportDetailModal from './ReportDetailModal';
 import axiosInstance from '@/libs/axios';
 import LoadingSpener from '../common/LoadingSpener';
 import { toast } from 'react-toastify';
+import ConfirmModal from '../common/modal/ConfirmModal';
 
 const TABS = ['전체', '대기중', '완료'];
 
@@ -20,6 +21,12 @@ export default function ReportTable() {
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [pendingDeleteReport, setPendingDeleteReport] =
+    useState<DisplayReport | null>(null);
+  const [deletedReportIds, setDeletedReportIds] = useState<Set<number>>(
+    new Set()
+  );
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -75,8 +82,6 @@ export default function ReportTable() {
   }, []);
 
   const handleStatusUpdate = async (reportId: number) => {
-    const confirmUpdate = confirm('해당 신고 상태를 완료로 변경하시겠습니까?');
-    if (!confirmUpdate) return;
     try {
       await axiosInstance.get(`/reports/admin/${reportId}`, {});
 
@@ -101,8 +106,14 @@ export default function ReportTable() {
       return selectedTypes.includes(r.contentType);
     });
 
-  const handleDelete = async (report: DisplayReport) => {
-    const { contentType, roadmap, quest } = report;
+  const handleDeleteClick = (report: DisplayReport) => {
+    setPendingDeleteReport(report);
+    setIsConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDeleteReport) return;
+    const { contentType, roadmap, quest } = pendingDeleteReport;
     let deleteUrl = '';
 
     if (contentType === '지도' && roadmap !== null) {
@@ -114,18 +125,25 @@ export default function ReportTable() {
       return;
     }
 
-    const confirmDelete = confirm('정말 삭제하시겠습니까?');
-    if (!confirmDelete) return;
-
     try {
       const res = await axiosInstance.delete(deleteUrl);
       if (res.status !== 200) throw new Error('삭제 실패');
 
+      await axiosInstance.get(`/reports/admin/${pendingDeleteReport.id}`);
+
       toast.success('게시글이 삭제되었습니다.');
-      setReports((prev) => prev.filter((r) => r.id !== report.id));
+      setReports((prev) =>
+        prev.map((r) =>
+          r.id === pendingDeleteReport.id ? { ...r, status: '완료' } : r
+        )
+      );
+      setDeletedReportIds((prev) => new Set(prev).add(pendingDeleteReport.id));
     } catch (err) {
       console.error(err);
       toast.error('삭제 중 오류가 발생했습니다.');
+    } finally {
+      setIsConfirmOpen(false);
+      setPendingDeleteReport(null);
     }
   };
 
@@ -311,10 +329,14 @@ export default function ReportTable() {
                   </td>
                   <td className="py-2 align-top text-[13px] text-center text-[var(--red)]">
                     <button
-                      className="underline cursor-pointer"
-                      onClick={() => handleDelete(report)}
+                      className="underline cursor-pointer disabled:text-[var(--gray-300)] disabled:cursor-default"
+                      onClick={() => handleDeleteClick(report)}
+                      disabled={
+                        deletedReportIds.has(report.id) ||
+                        report.status === '완료'
+                      }
                     >
-                      삭제
+                      {report.status === '완료' ? '완료' : '삭제'}
                     </button>
                   </td>
                 </tr>
@@ -329,6 +351,17 @@ export default function ReportTable() {
           reportId={selectedReport?.id ?? null}
           contentType={selectedReport?.contentType ?? null}
         />
+        {pendingDeleteReport && (
+          <ConfirmModal
+            isOpen={isConfirmOpen}
+            onClose={() => {
+              setIsConfirmOpen(false);
+              setPendingDeleteReport(null);
+            }}
+            onDelete={confirmDelete}
+            confirmType="post"
+          />
+        )}
       </div>
     </div>
   );

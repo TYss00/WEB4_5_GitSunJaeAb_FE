@@ -9,6 +9,7 @@ import axiosInstance from '@/libs/axios';
 import SearchInputs from '../ui/SearchInputs';
 import LoadingSpener from '../common/LoadingSpener';
 import { toast } from 'react-toastify';
+import ConfirmModal from '../common/modal/ConfirmModal';
 
 const TABS = ['전체 사용자', '관리자', '블랙 리스트'];
 
@@ -19,6 +20,8 @@ export default function UserManagement() {
   const [members, setMembers] = useState<User[]>([]);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -105,19 +108,25 @@ export default function UserManagement() {
     }
   };
 
-  const deleteMember = async (id: number) => {
-    const confirmDelete = confirm('정말로 이 사용자를 삭제하시겠습니까?');
-    if (!confirmDelete) return;
+  const requestDeleteMember = async () => {
+    if (deleteTargetId === null) return;
 
     try {
-      await axiosInstance.delete(`/members/${id}`);
-
-      setMembers((prev) => prev.filter((user) => user.id !== id));
+      await axiosInstance.delete(`/members/${deleteTargetId}`);
+      setMembers((prev) => prev.filter((user) => user.id !== deleteTargetId));
       toast.success('사용자가 성공적으로 삭제되었습니다.');
     } catch (err) {
       console.error('회원 삭제 실패:', err);
       toast.error('회원 삭제 중 오류가 발생했습니다.');
+    } finally {
+      setIsConfirmOpen(false);
+      setDeleteTargetId(null);
     }
+  };
+
+  const deleteMember = (id: number) => {
+    setDeleteTargetId(id);
+    setIsConfirmOpen(true);
   };
 
   if (isLoading) {
@@ -176,14 +185,14 @@ export default function UserManagement() {
             <colgroup>
               <col style={{ width: '12%' }} />
               <col style={{ width: '12%' }} />
-              <col style={{ width: '20%' }} />
+              <col style={{ width: '25%' }} />
               {selectedTab === '전체 사용자' && (
                 <>
                   <col style={{ width: '10%' }} />
                   <col style={{ width: '14%' }} />
-                  <col style={{ width: '11%' }} />
+                  <col style={{ width: '12%' }} />
+                  <col style={{ width: '15%' }} />
                   <col style={{ width: '14%' }} />
-                  <col style={{ width: '13%' }} />
                 </>
               )}
               {selectedTab === '관리자' && (
@@ -255,6 +264,12 @@ export default function UserManagement() {
               ))}
             </tbody>
           </table>
+          <ConfirmModal
+            isOpen={isConfirmOpen}
+            onClose={() => setIsConfirmOpen(false)}
+            onDelete={requestDeleteMember}
+            confirmType="account"
+          />
         </div>
       </div>
     </div>

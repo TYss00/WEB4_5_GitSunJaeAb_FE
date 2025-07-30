@@ -24,6 +24,8 @@ export type RoadMapCardProps = {
   viewCount: number;
   shareCount: number;
   className?: string;
+  isBookmarked?: boolean;
+  bookmarkId?: number | null;
 };
 
 export type QuestCardProps = {
@@ -32,7 +34,6 @@ export type QuestCardProps = {
   mapImageUrl: string;
   title: string;
   description: string;
-  hashtags: string[];
   profileImgUrl: string;
   author: string;
   deadLine: string;
@@ -341,4 +342,18 @@ export type SearchInputProps = {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   className?: string;
+};
+
+export type QuestSummary = {
+  id: number;
+  createdAt: string;
+  title: string;
+  questImage: string;
+  description: string;
+  deadline: string;
+  isActive: boolean;
+  member: {
+    nickname: string;
+    profileImage: string | null;
+  };
 };

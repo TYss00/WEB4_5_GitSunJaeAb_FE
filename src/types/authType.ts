@@ -3,6 +3,7 @@ export type User = {
   name: string;
   nickname: string;
   email: string;
+  provider?: string;
   loginType: string;
   role: string;
   profileImage?: string | null;

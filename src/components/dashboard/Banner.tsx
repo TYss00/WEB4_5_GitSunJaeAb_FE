@@ -8,10 +8,16 @@ type BannerProps = {
 };
 
 export default function Banner({ title, subtitle }: BannerProps) {
+  const getImagePath = () => {
+    if (title === '퀘스트') return '/assets/landingQuestImg.jpg';
+    if (title === '로드맵') return '/markermap.jpg';
+    return '/assets/SharedMap.jpg';
+  };
+
   return (
     <section className="relative w-full h-[460px]">
       <Image
-        src="/assets/SharedMap.jpg"
+        src={getImagePath()}
         alt={`${title} 배너`}
         fill
         priority
