@@ -1,27 +1,27 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Button from '../ui/Button'
-import QuestDeatilRanking from './QuestDeatilRanking'
-import { SubmissionInfo } from '@/types/type'
-import { useAuthStore } from '@/store/useAuthStore'
+import { useState } from 'react';
+import Button from '../ui/Button';
+import QuestDeatilRanking from './QuestDeatilRanking';
+import { SubmissionInfo } from '@/types/type';
+import { useAuthStore } from '@/store/useAuthStore';
 
 type Props = {
-  submission: SubmissionInfo[]
-  onSelect: (answer: SubmissionInfo) => void
-  onFormOpen: () => void
-}
+  submission: SubmissionInfo[];
+  onSelect: (answer: SubmissionInfo) => void;
+  onFormOpen: () => void;
+};
 
 export default function QuestPlayList({
   submission,
   onSelect,
   onFormOpen,
 }: Props) {
-  const [activeTab, setActiveTab] = useState('전체')
-  const tabs = ['전체', '정답', '오답']
+  const [activeTab, setActiveTab] = useState('전체');
+  const tabs = ['전체', '정답', '오답'];
 
-  const { user } = useAuthStore()
-  const hasParticipated = submission.some((s) => s.nickname === user?.nickname)
+  const { user } = useAuthStore();
+  const hasParticipated = submission.some((s) => s.nickname === user?.nickname);
 
   const filtered =
     activeTab === '전체'
@@ -29,15 +29,15 @@ export default function QuestPlayList({
       : submission.filter((item) => {
           switch (activeTab) {
             case '정답':
-              return item.recognized === true
+              return item.recognized === true;
             case '오답':
-              return item.recognized === false
+              return item.recognized === false;
             case '대기':
-              return item.recognized === null
+              return item.recognized === null;
             default:
-              return true
+              return true;
           }
-        })
+        });
 
   return (
     <div className="w-full border border-[var(--gray-200)] rounded-[10px] p-4">
@@ -92,19 +92,20 @@ export default function QuestPlayList({
                   backgroundRepeat: 'no-repeat',
                 }}
               >
+                {/* 대기중인거 나중에 오답으로해줘야해 빨간색 */}
                 <span
                   className={`absolute bottom-1.5 left-1.5 text-white rounded-[10px] px-2.5 py-1 ${
                     item.recognized === true
                       ? 'bg-[var(--primary-200)]'
                       : item.recognized === false
-                      ? 'bg-[var(--red)]'
+                      ? 'bg-[var(--gray-300)]'
                       : 'bg-[var(--gray-300)]'
                   }`}
                 >
                   {item.recognized === true
                     ? '정답'
                     : item.recognized === false
-                    ? '오답'
+                    ? '대기'
                     : '대기'}
                 </span>
               </div>
@@ -132,5 +133,5 @@ export default function QuestPlayList({
         </>
       )}
     </div>
-  )
+  );
 }

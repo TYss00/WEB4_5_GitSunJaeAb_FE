@@ -192,6 +192,10 @@ export default function RoadMapEdit() {
   }
 
   const handleRoadmapUpdate = async () => {
+    if (!categoryId) {
+      toast.warn('카테고리를 선택해주세요.')
+      return
+    }
     try {
       const formData = new FormData()
 
