@@ -17,7 +17,6 @@ import {
 import Button from '../ui/Button'
 import ReportModal from '../common/modal/ReportModal'
 import Comment from '../comment/Comment'
-import Toggle from '../ui/Toggle'
 import LayerDetail from '../ui/layer/LayerDetail'
 import MarkerDetail from '../ui/layer/MarkerDetail'
 import useSidebar from '@/utils/useSidebar'
@@ -341,12 +340,6 @@ export default function Loadmapdetail() {
               <span className="text-[15px] font-medium">
                 {roadMapInfo.member.nickname}
               </span>
-            </div>
-
-            {/* 토글 */}
-            <div className="space-y-3 border-t border-gray-300 pt-6 mb-6">
-              <Toggle label="경로" />
-              <Toggle label="애니메이션" />
             </div>
 
             {/* 레이어 */}

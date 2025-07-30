@@ -240,6 +240,7 @@ export type QuestInfo = {
 export type SubmissionInfo = {
   title: string
   description: string
+  profileImage: string
   imageUrl: string
   nickname: string
   submittedAt: string

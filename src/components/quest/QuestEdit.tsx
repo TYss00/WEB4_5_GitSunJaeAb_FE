@@ -31,7 +31,7 @@ export default function QuestEdit() {
         setTitle(data.title)
         setDescription(data.description)
         setHint(data.hint ?? '')
-        setDeadline(data.deadline)
+        setDeadline(data.deadline.slice(0, 10))
         setPreviewImage(data.questImage ?? null)
       } catch (err) {
         console.error('데이터 불러오기 실패', err)
@@ -90,11 +90,12 @@ export default function QuestEdit() {
       formData.append('questRequest', RequestBlob)
       formData.append('imageFile', imageFile)
 
-      await axiosInstance.put(`/quests/${id}`, formData, {
+      const res = await axiosInstance.put(`/quests/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
+      console.log(res.data)
       toast.success('퀘스트가 성공적으로 등록되었습니다.')
       handleCancel()
     } catch (err) {
