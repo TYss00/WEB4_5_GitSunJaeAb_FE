@@ -113,15 +113,18 @@ export default function ReportTable() {
 
   const confirmDelete = async () => {
     if (!pendingDeleteReport) return;
-    const { contentType, roadmap, quest } = pendingDeleteReport;
+
+    const { contentType, roadmap, quest, marker } = pendingDeleteReport;
     let deleteUrl = '';
 
     if (contentType === '지도' && roadmap !== null) {
       deleteUrl = `/roadmaps/${roadmap}`;
     } else if (contentType === '퀘스트' && quest !== null) {
       deleteUrl = `/quests/${quest}`;
+    } else if (contentType === '마커' && marker !== null) {
+      deleteUrl = `/markers/${marker}`;
     } else {
-      toast.error('삭제할 게시글 ID가 없습니다.');
+      toast.error('삭제할 항목의 ID가 없습니다.');
       return;
     }
 
@@ -359,7 +362,9 @@ export default function ReportTable() {
               setPendingDeleteReport(null);
             }}
             onDelete={confirmDelete}
-            confirmType="post"
+            confirmType={
+              pendingDeleteReport?.contentType === '마커' ? 'marker' : 'post'
+            }
           />
         )}
       </div>
