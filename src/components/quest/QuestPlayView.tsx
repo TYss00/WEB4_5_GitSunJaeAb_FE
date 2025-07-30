@@ -1,46 +1,34 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { SubmissionInfo } from '@/types/type';
 import { ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
 import Button from '../ui/Button';
 import axiosInstance from '@/libs/axios';
 import { toast } from 'react-toastify';
-
 type Props = {
   submission: SubmissionInfo;
   onBack: () => void;
+  onJudge: (id: number, isRecognized: boolean) => void;
 };
-
-export default function QuestPlayView({ submission, onBack }: Props) {
-  const params = useParams();
-  const questId = params?.id as string;
-  const [memberQuestId, setMemberQuestId] = useState<number | null>(null);
-
-  // memberQuestId 가져오기
-  useEffect(() => {
-    const fetchMemberQuestId = async () => {
-      try {
-        const res = await axiosInstance.get(`/quests/${questId}/memberQuest`);
-        setMemberQuestId(res.data.memberQuests.id);
-      } catch (err) {
-        console.error('memberQuestId 조회 실패', err);
-      }
-    };
-    fetchMemberQuestId();
-  }, [questId]);
-
+export default function QuestPlayView({ submission, onBack, onJudge }: Props) {
   const handleJudge = async (isRecognized: boolean) => {
-    if (memberQuestId === null) return toast.error('memberQuestId 없음');
+    if (!submission.id) {
+      toast.error('memberQuestId가 없습니다.');
+      return;
+    }
 
     try {
       await axiosInstance.put('/quests/memberQuest/judge', {
-        memberQuestId,
+        memberQuestId: submission.id,
         isRecognized,
       });
       toast.success(isRecognized ? '정답 처리 완료' : '오답 처리 완료');
+
+      // 업뎃요청
+      onJudge(submission.id, isRecognized);
+      // 리스트로 돌아가도록
+      onBack();
     } catch (err) {
       console.error('판정 실패', err);
       toast.error('판정 처리 중 오류 발생');

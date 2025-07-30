@@ -248,6 +248,7 @@ export type SubmissionInfo = {
   nickname: string;
   submittedAt: string;
   recognized: boolean;
+  id: number | null;
 };
 
 export type RankingInfo = {

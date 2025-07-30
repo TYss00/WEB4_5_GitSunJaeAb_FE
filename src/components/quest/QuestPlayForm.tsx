@@ -70,10 +70,10 @@ export default function QuestPlayForm({ onBack }: Props) {
           'Content-Type': 'multipart/form-data',
         },
       });
-      toast.success('퀘스트를 성공적으로 참여하였습니다.');
+      toast.success('퀘스트 참여가 완료되었습니다.');
       onBack();
     } catch (error) {
-      console.error('❌ 업로드 실패:', error);
+      console.error('업로드 실패:', error);
     }
   };
 
