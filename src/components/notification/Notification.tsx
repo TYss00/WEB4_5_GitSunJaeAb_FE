@@ -59,7 +59,7 @@ export default function Notification({
     switch (noti.notificationType) {
       case 'COMMENT':
         if (noti.relatedQuestId) {
-          router.push(`/dashbord/quests/detail/${noti.relatedQuestId}`);
+          router.push(`/dashbord/quest/detail/${noti.relatedQuestId}`);
         } else if (noti.relatedRoadmap?.id) {
           router.push(`${roadmapRoute}/${noti.relatedRoadmap.id}`);
         }
@@ -74,7 +74,7 @@ export default function Notification({
         break;
       case 'QUEST':
       case 'QUEST_DEADLINE':
-        router.push(`/dashbord/quests/detail/${noti.relatedQuestId}`);
+        router.push(`/dashbord/quest/detail/${noti.relatedQuestId}`);
         break;
       case 'ANNOUNCEMENT':
       case 'ETC':
