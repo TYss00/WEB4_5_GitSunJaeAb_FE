@@ -36,9 +36,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       return user;
     } catch (err) {
-      // console.warn(err);
-      // get().logout();
-      // return null;
       const axiosError = err as AxiosError<ErrorResponse>;
 
       // accessToken 만료일 뿐이면 axios 인터셉터가 재요청 처리하므로 logout 금지
