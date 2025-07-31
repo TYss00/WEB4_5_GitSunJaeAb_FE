@@ -76,6 +76,9 @@ export default function QuestPlayView({
       {/* 내용 + 이미지 */}
       <div className="mt-2">
         <h2 className="text-[18px] font-medium mb-2">{submission.title}</h2>
+        <h2 className="text-[18px] font-medium mb-2">
+          {submission.description}
+        </h2>
         <div className="relative h-[200px] bg-gray-300 rounded-lg">
           <Image
             src={submission.imageUrl || '/assets/defaultImage.png'}
