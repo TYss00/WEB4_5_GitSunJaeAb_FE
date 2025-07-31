@@ -142,7 +142,7 @@ export default function EventBox({
                     q.member.profileImage ?? '/assets/defaultProfile.png'
                   }
                   author={q.member.nickname}
-                  deadLine={q.createdAt?.split('T')[0]}
+                  deadLine={q.deadline?.split('T')[0]}
                 />
               ))
             : type === 'roadmap'
