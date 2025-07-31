@@ -185,7 +185,7 @@ export default function LoadMapWrite() {
       )
       const roadmap = await roadmapRes.data
 
-      const roadMapId = roadmap.roadmapId
+      const roadMapId = await roadmap.roadmapId
 
       //2. 레이어 생성 및 마커 생성
       for (let i = 0; i < layers.length; i++) {
