@@ -19,7 +19,7 @@ export default function RequireGuest({
     }
 
     if (!loading && accessToken && user) {
-      if (user.loginCount === 1) {
+      if (user.role != 'ROLE_ADMIN' && user.loginCount === 1) {
         router.push('/categories');
       } else if (user.role === 'ROLE_ADMIN') {
         router.push('/admin/report');
