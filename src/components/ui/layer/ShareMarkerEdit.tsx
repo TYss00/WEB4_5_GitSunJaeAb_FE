@@ -97,8 +97,6 @@ export default function ShareMarkerEdit({
             size={24}
             color="var(--primary-100)"
             onClick={() => {
-              console.log('클릭 마커:', marker);
-              console.log('맵ref:', mapRef.current);
               if (marker) {
                 mapRef.current?.panTo({ lat: marker.lat, lng: marker.lng });
               }

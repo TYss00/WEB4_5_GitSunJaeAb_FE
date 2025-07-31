@@ -1,12 +1,12 @@
-'use client'
+'use client';
 
-import { RoadMapCardProps } from '@/types/type'
-import { truncateText } from '@/utils/truncateText'
-import { Heart, Eye, Share2 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import axiosInstance from '@/libs/axios'
-import { toast } from 'react-toastify'
+import { RoadMapCardProps } from '@/types/type';
+import { truncateText } from '@/utils/truncateText';
+import { Heart, Eye, Share2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import axiosInstance from '@/libs/axios';
+import { toast } from 'react-toastify';
 
 export default function RoadMapCard({
   id,
@@ -23,43 +23,43 @@ export default function RoadMapCard({
   isBookmarked,
   bookmarkId,
 }: RoadMapCardProps) {
-  const [isLiked, setIsLiked] = useState(isBookmarked ?? false)
+  const [isLiked, setIsLiked] = useState(isBookmarked ?? false);
   const [currentBookmarkId, setCurrentBookmarkId] = useState<number | null>(
     bookmarkId ?? null
-  )
+  );
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const truncatedTitle = truncateText(title, 16)
-  const truncatedDescription = truncateText(description, 22)
+  const truncatedTitle = truncateText(title, 16);
+  const truncatedDescription = truncateText(description, 22);
 
   const handleClick = () => {
-    router.push(`/dashbord/roadmap/detail/${id}/preview`)
-  }
+    router.push(`/dashbord/roadmap/detail/${id}/preview`);
+  };
 
   const likeHandler = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation()
+    e.stopPropagation();
 
     try {
       if (!isLiked) {
-        const res = await axiosInstance.post(`/bookmarks/${id}`)
+        const res = await axiosInstance.post(`/bookmarks/${id}`);
         if (res.data.bookmarkId) {
-          setCurrentBookmarkId(res.data.bookmarkId)
-          toast.success('좋아요를 누르셨습니다.')
-          setIsLiked(true)
+          setCurrentBookmarkId(res.data.bookmarkId);
+          toast.success('좋아요를 누르셨습니다.');
+          setIsLiked(true);
         }
       } else {
         if (currentBookmarkId !== null) {
-          await axiosInstance.delete(`/bookmarks/${currentBookmarkId}`)
-          setCurrentBookmarkId(null)
-          toast.success('좋아요를 취소하셨습니다.')
-          setIsLiked(false)
+          await axiosInstance.delete(`/bookmarks/${currentBookmarkId}`);
+          setCurrentBookmarkId(null);
+          toast.success('좋아요를 취소하셨습니다.');
+          setIsLiked(false);
         }
       }
     } catch (err) {
-      console.error('북마크 처리 실패:', err)
+      console.error('북마크 처리 실패:', err);
     }
-  }
+  };
 
   return (
     <div
@@ -80,7 +80,7 @@ export default function RoadMapCard({
           <span className="text-[20px] font-semibold line-clamp-1">
             {truncatedTitle}
           </span>
-          <button onClick={likeHandler}>
+          <button className="cursor-pointer" onClick={likeHandler}>
             <Heart
               size={20}
               fill={isLiked ? 'red' : 'none'}
@@ -127,5 +127,5 @@ export default function RoadMapCard({
         </div>
       </div>
     </div>
-  )
+  );
 }

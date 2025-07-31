@@ -40,7 +40,6 @@ export default function CommentForm({
 
     try {
       const res = await axiosInstance.post(url, body);
-      console.log(res);
 
       // 업적 토스트 or 등록 토스트
       const message = res.data?.message ?? '';
@@ -53,8 +52,8 @@ export default function CommentForm({
 
       onAddComment(res.data.comment);
       setContent('');
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
-      console.log('댓글 등록 실패', err);
       toast.error('댓글 등록 오류');
     }
   };

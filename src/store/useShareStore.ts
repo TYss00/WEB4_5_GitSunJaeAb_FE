@@ -12,25 +12,24 @@ import {
 } from '@/types/share';
 import { useAuthStore } from './useAuthStore';
 import axiosInstance from '@/libs/axios';
+import { toast } from 'react-toastify';
 
 // 로그 전송 함수들 (실제 전송은 주석 처리)
 async function sendMarkerLog(log: MarkerLogEntry) {
-  console.log('마커 로그 전송:', log);
   try {
     await axiosInstance.post('/markers/sync', log);
-    console.log('✅ 마커 로그 전송 성공');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.error('❌ 마커 로그 전송 실패:', error);
+    toast.error('마커 로그 전송 실패:');
   }
 }
 
 async function sendLayerLog(log: LayerLogEntry) {
-  console.log('레이어 로그 전송:', log);
   try {
     await axiosInstance.post('/layers/sync', log);
-    console.log('✅ 레이어 로그 전송 성공');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    console.error('❌ 레이어 로그 전송 실패:', error);
+    toast.error('레이어 로그 전송 실패:');
   }
 }
 

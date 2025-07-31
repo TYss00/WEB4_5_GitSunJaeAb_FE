@@ -101,7 +101,7 @@ export default function ShareMapAdd() {
 
   const handleSubmit = async () => {
     if (!title || !description || !categoryId) {
-      console.log('필수 값을 입력해주세요.');
+      toast.success('필수 값을 입력해주세요.');
       return;
     }
 
@@ -132,8 +132,6 @@ export default function ShareMapAdd() {
       const res = await axiosInstance.post('/roadmaps/shared', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-
-      console.log('작성 완료:', res);
 
       router.push('/dashbord/sharemap');
       router.refresh();
