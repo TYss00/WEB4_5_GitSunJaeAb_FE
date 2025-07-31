@@ -5,22 +5,14 @@ export async function geocodeAddress(address: string) {
     address
   )}&key=${apiKey}`;
 
-  console.log('지오코딩 요청 URL:', url); // 요청 URL 확인용
-
   const response = await fetch(url);
   const data = await response.json();
-
-  console.log('지오코딩 응답:', data); // 응답 내용 확인용
 
   if (data.status !== 'OK') throw new Error('주소 변환 실패');
 
   const { lat, lng } = data.results[0].geometry.location;
 
   const fullAddress = data.results[0].formatted_address;
-
-  console.log('위도:', lat);
-  console.log('경도:', lng);
-  console.log('시:', fullAddress);
 
   return { lat, lng, address: fullAddress };
 }
