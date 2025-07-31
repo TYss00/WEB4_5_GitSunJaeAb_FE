@@ -71,8 +71,8 @@ export default function MypageLayer({
         <thead className="text-[var(--black)] text-base font-medium">
           <tr>
             <th className="py-3 px-4">레어이명</th>
-            <th className="py-3 px-4">가져온 게시글</th>
-            <th className="py-3 px-4">적용된 게시글</th>
+            {/* <th className="py-3 px-4">가져온 게시글</th>
+            <th className="py-3 px-4">적용된 게시글</th> */}
             <th className="py-3 px-4">찜</th>
           </tr>
         </thead>
@@ -116,7 +116,7 @@ export default function MypageLayer({
                 className="border-t border-b border-[#606060] text-sm"
               >
                 <td className="py-3 px-4">{layer.name}</td>
-                <td className="py-3 px-4">
+                {/* <td className="py-3 px-4">
                   {layer.roadmap?.title ?? '제목 없음'}
                 </td>
                 <td className="py-3 px-10">
@@ -124,7 +124,7 @@ export default function MypageLayer({
                     ? layer.forkHistories[layer.forkHistories.length - 1]
                         .forkedRoadmap?.title ?? '제목 없음'
                     : '없음'}
-                </td>
+                </td> */}
 
                 <td className="py-3 px-4">
                   <button
