@@ -7,26 +7,7 @@ import { SubmissionInfo } from '@/types/type';
 import axiosInstance from '@/libs/axios';
 import { useParams } from 'next/navigation';
 import { mergeSubmissionWithId } from '@/libs/mergeSubmission';
-
-type SubmissionRaw = {
-  title: string;
-  description: string;
-  profileImage: string;
-  imageUrl: string;
-  nickname: string;
-  submittedAt: string;
-  isRecognized: boolean;
-};
-
-type MemberQuest = {
-  id: number;
-  title: string;
-  description: string;
-  imageUrl: string;
-  member: {
-    nickname: string;
-  };
-};
+import { MemberQuest, SubmissionRaw } from '@/types/quest';
 
 export default function QuestDetailPlay({
   submissionInfo,

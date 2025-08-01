@@ -3,10 +3,7 @@
 import { useRouter } from 'next/navigation';
 import RecentSearchList from './RecentSearchList';
 import SearchInput from './SearchInput';
-
-type SearchModalProps = {
-  onClose: () => void;
-};
+import { SearchModalProps } from '@/types/search';
 
 export default function SearchModal({ onClose }: SearchModalProps) {
   const router = useRouter();

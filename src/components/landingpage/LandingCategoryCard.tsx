@@ -4,18 +4,13 @@ import Image from 'next/image';
 import defaultCategoryImg from '../../../public/assets/defaultCategory.avif';
 import { useEffect, useRef, useState } from 'react';
 import { FastAverageColor } from 'fast-average-color';
-
-type Props = {
-  image: string | null;
-  name: string;
-  description: string;
-};
+import { LandingCategoryCardProps } from '@/types/type';
 
 export default function LandingCategoryCard({
   image,
   name,
   description,
-}: Props) {
+}: LandingCategoryCardProps) {
   const imgRef = useRef<HTMLImageElement | null>(null);
   const [bgColor, setBgColor] = useState<string>('#5E4431');
 

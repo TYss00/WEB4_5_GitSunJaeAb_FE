@@ -3,30 +3,30 @@
 import { useState } from 'react';
 import Button from '../ui/Button';
 import QuestDeatilRanking from './QuestDeatilRanking';
-import { SubmissionInfo } from '@/types/type';
 import { useAuthStore } from '@/store/useAuthStore';
-
-type Props = {
-  submission: SubmissionInfo[];
-  onSelect: (answer: SubmissionInfo) => void;
-  onFormOpen: () => void;
-};
+import { QuestPlayListProps } from '@/types/quest';
 
 export default function QuestPlayList({
   submission,
   onSelect,
   onFormOpen,
-}: Props) {
+}: QuestPlayListProps) {
   const [activeTab, setActiveTab] = useState('전체');
   const tabs = ['전체', '정답', '오답', '대기'];
 
   const { user } = useAuthStore();
   const hasParticipated = submission.some((s) => s.nickname === user?.nickname);
 
+  const sortedSubmissions = [...submission].sort(
+    (a, b) =>
+      new Date(b.createdAt ?? b.submittedAt).getTime() -
+      new Date(a.createdAt ?? a.submittedAt).getTime()
+  );
+
   const filtered =
     activeTab === '전체'
-      ? submission
-      : submission.filter((item) => {
+      ? sortedSubmissions
+      : sortedSubmissions.filter((item) => {
           switch (activeTab) {
             case '정답':
               return item.isRecognized === true;
@@ -40,7 +40,7 @@ export default function QuestPlayList({
         });
 
   return (
-    <div className="w-full border border-[var(--gray-200)] rounded-[10px] p-4">
+    <div className="w-full h-full border border-[var(--gray-200)] rounded-[10px] p-4">
       <div className="w-full flex justify-between">
         {/* 탭메뉴 */}
         <ul className="flex gap-4 mb-4">
@@ -76,56 +76,57 @@ export default function QuestPlayList({
         <QuestDeatilRanking />
       ) : (
         <>
-          {/* 리스트 */}
-          {filtered.map((item) => (
-            <div
-              onClick={() => onSelect(item)}
-              key={item.submittedAt}
-              className="flex gap-3 mb-4 cursor-pointer"
-            >
+          <div className="max-h-[460px] overflow-y-auto">
+            {/* 리스트 */}
+            {filtered.map((item) => (
               <div
-                className="bg-gray-600 relative w-[160px] h-[100px] rounded-[10px]"
-                style={{
-                  backgroundImage: `url(${item.imageUrl})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  backgroundRepeat: 'no-repeat',
-                }}
+                onClick={() => onSelect(item)}
+                key={item.submittedAt}
+                className="flex gap-3 mb-4 cursor-pointer"
               >
-                {/* 대기중인거 나중에 오답으로해줘야해 빨간색 */}
-                <span
-                  className={`absolute bottom-1.5 left-1.5 text-white rounded-[10px] px-2.5 py-1 ${
-                    item.isRecognized === true
-                      ? 'bg-[var(--primary-200)]'
-                      : item.isRecognized === false
-                      ? 'bg-[var(--red)]'
-                      : 'bg-[var(--gray-300)]'
-                  }`}
+                <div
+                  className="bg-gray-600 relative w-[160px] h-[100px] rounded-[10px]"
+                  style={{
+                    backgroundImage: `url(${item.imageUrl})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                  }}
                 >
-                  {item.isRecognized === true
-                    ? '정답'
-                    : item.isRecognized === false
-                    ? '오답'
-                    : '대기'}
-                </span>
-              </div>
-              <div className="py-2.5 flex flex-col justify-between">
-                <h4 className="text-[18px] font-medium">{item.title}</h4>
-                <div>
-                  <p className="font-medium text-sm">{item.nickname}</p>
-                  <p className="text-[13px] text-[var(--gray-200)]">
-                    {item.submittedAt.slice(0, 10)}
-                  </p>
+                  <span
+                    className={`absolute bottom-1.5 left-1.5 text-white rounded-[10px] px-2.5 py-1 ${
+                      item.isRecognized === true
+                        ? 'bg-[var(--primary-200)]'
+                        : item.isRecognized === false
+                        ? 'bg-[var(--red)]'
+                        : 'bg-[var(--gray-300)]'
+                    }`}
+                  >
+                    {item.isRecognized === true
+                      ? '정답'
+                      : item.isRecognized === false
+                      ? '오답'
+                      : '대기'}
+                  </span>
+                </div>
+                <div className="py-2.5 flex flex-col justify-between">
+                  <h4 className="text-[18px] font-medium">{item.title}</h4>
+                  <div>
+                    <p className="font-medium text-sm">{item.nickname}</p>
+                    <p className="text-[13px] text-[var(--gray-200)]">
+                      {item.createdAt!.slice(0, 10)}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
 
           {!hasParticipated && (
             <Button
               onClick={onFormOpen}
               buttonStyle="green"
-              className="w-full text-[15px] h-[38px] cursor-pointer"
+              className="w-full text-[15px] h-[38px] cursor-pointer mt-3"
             >
               참여하기
             </Button>

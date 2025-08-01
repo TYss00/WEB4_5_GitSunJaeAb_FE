@@ -5,11 +5,7 @@ import CommentCount from './CommentCount';
 import CommentForm from './CommentForm';
 import CommentList from './CommentList';
 import { useState } from 'react';
-
-type Props = {
-  commentsInfo: CommentInfo[];
-  variant?: 'roadmap' | 'sharemap' | 'quest';
-};
+import { CommentProps } from '@/types/comment';
 
 const paddingMap = {
   roadmap: 'px-0',
@@ -17,7 +13,10 @@ const paddingMap = {
   quest: 'px-4',
 };
 
-export default function Comment({ commentsInfo, variant = 'sharemap' }: Props) {
+export default function Comment({
+  commentsInfo,
+  variant = 'sharemap',
+}: CommentProps) {
   const paddingClass = paddingMap[variant];
   const [comments, setComments] = useState<CommentInfo[]>(commentsInfo);
 
