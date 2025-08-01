@@ -1,28 +1,12 @@
-import { SubmissionInfo } from '@/types/type';
-
-type SubmissionRaw = {
-  title: string;
-  description: string;
-  profileImage: string;
-  imageUrl: string;
-  nickname: string;
-  submittedAt: string;
-  isRecognized: boolean;
-};
-
-type MemberQuest = {
-  id: number;
-  title: string;
-  description: string;
-  imageUrl: string;
-  member: {
-    nickname: string;
-  };
-};
+import {
+  mergeSubmissionWithIdMemberQuest,
+  mergeSubmissionWithIdSubmissionRaw,
+  SubmissionInfo,
+} from '@/types/type';
 
 export const mergeSubmissionWithId = (
-  rawSubmissions: SubmissionRaw[],
-  memberQuests: MemberQuest[]
+  rawSubmissions: mergeSubmissionWithIdSubmissionRaw[],
+  memberQuests: mergeSubmissionWithIdMemberQuest[]
 ): SubmissionInfo[] => {
   return rawSubmissions.map((submission) => {
     const matched = memberQuests.find((mq) => {

@@ -7,12 +7,9 @@ import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { QuestPlayFormProps } from '@/types/quest';
 
-type Props = {
-  onBack: () => void;
-};
-
-export default function QuestPlayForm({ onBack }: Props) {
+export default function QuestPlayForm({ onBack }: QuestPlayFormProps) {
   const params = useParams();
   const questId = params?.id as string;
   const [title, setTitle] = useState('');

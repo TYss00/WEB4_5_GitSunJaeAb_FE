@@ -1,8 +1,8 @@
-type Props = {
-  repeat?: number;
-};
+import { SkeletonCategoryCardProps } from '@/types/type';
 
-export default function SkeletonCategoryCard({ repeat = 5 }: Props) {
+export default function SkeletonCategoryCard({
+  repeat = 5,
+}: SkeletonCategoryCardProps) {
   return (
     <>
       {Array(repeat)

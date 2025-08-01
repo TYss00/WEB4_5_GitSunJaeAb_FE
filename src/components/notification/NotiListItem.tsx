@@ -3,12 +3,7 @@
 import Image from 'next/image';
 import notiImg from '../../../public/assets/notiImg.svg';
 import defaultProfileImg from '../../../public/assets/defaultProfile.png';
-import { AppNotification } from '@/types/notiType';
-
-type NotiListItemProps = {
-  noti: AppNotification;
-  onClick: (noti: AppNotification) => void;
-};
+import { NotiListItemProps } from '@/types/notiType';
 
 export default function NotiListItem({ noti, onClick }: NotiListItemProps) {
   return (

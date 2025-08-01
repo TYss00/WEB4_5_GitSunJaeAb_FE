@@ -95,3 +95,11 @@ export type SearchInputProps = {
   searchValue?: string;
   onSearchComplete?: () => void;
 };
+
+export type SearchModalProps = {
+  onClose: () => void;
+};
+
+export type Hashtags = {
+  name: string;
+};

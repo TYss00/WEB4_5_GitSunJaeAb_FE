@@ -3,14 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import Button from '../ui/Button';
 import { useRouter } from 'next/navigation';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-type Props = {
-  title: string;
-  description: string;
-  imageSrc: string;
-  reverse?: boolean;
-  className?: string;
-};
+import { ScrollStepProps } from '@/types/type';
 
 export default function ScrollStep({
   title,
@@ -18,7 +11,7 @@ export default function ScrollStep({
   imageSrc,
   reverse,
   className,
-}: Props) {
+}: ScrollStepProps) {
   const router = useRouter();
   return (
     <div

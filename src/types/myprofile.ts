@@ -153,3 +153,10 @@ export type ParticipatedItem = {
   date: string;
   data: MemberQuest | RoadmapResponse;
 };
+
+export type AchievementState = {
+  allAchievements: Achievement[];
+  achievedIds: number[];
+  setAchievements: (achievements: Achievement[]) => void;
+  setAchievedIds: (ids: number[]) => void;
+};

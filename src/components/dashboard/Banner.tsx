@@ -1,11 +1,7 @@
 'use client';
 
+import { BannerProps } from '@/types/type';
 import Image from 'next/image';
-
-type BannerProps = {
-  title: string;
-  subtitle: string;
-};
 
 export default function Banner({ title, subtitle }: BannerProps) {
   const getImagePath = () => {
