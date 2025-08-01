@@ -1,5 +1,6 @@
 'use client';
 
+import LoadingSpinner from '@/components/common/LoadingSpener';
 import { useLoadScript } from '@react-google-maps/api';
 import { ReactNode } from 'react';
 
@@ -13,7 +14,7 @@ export default function Layout({ children }: LayoutProps) {
   });
 
   if (!isLoaded) {
-    return <div>지도 불러오는 중...</div>;
+    return <LoadingSpinner />;
   }
 
   return <>{children}</>;
