@@ -51,9 +51,13 @@ export default function QuestCard({
           }}
         >
           <div className="flex justify-between w-full">
-            <span className="text-[20px] font-semibold">{truncatedTitle}</span>
+            <span className="text-[20px] font-semibold line-clamp-1">
+              {truncatedTitle}
+            </span>
           </div>
-          <span className="text-[16px]">{truncatedDescription}</span>
+          <span className="text-[16px] line-clamp-1">
+            {truncatedDescription}
+          </span>
           <div className="flex justify-between w-full ">
             <div className="flex items-center gap-[5px]">
               <span
@@ -65,7 +69,7 @@ export default function QuestCard({
                   backgroundRepeat: 'no-repeat',
                 }}
               />
-              <span className="text-[10px] text-[var(--gray-200)]">
+              <span className="text-[10px] text-[var(--gray-200)] line-clamp-1">
                 {author}
               </span>
             </div>
