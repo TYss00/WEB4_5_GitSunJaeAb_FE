@@ -47,7 +47,7 @@ export default function MypageCard({
   return (
     <div
       onClick={handleClick}
-      className="w-full h-[227px] 2xl:h-[300px] bg-white overflow-hidden rounded-lg shadow-sm cursor-pointer transition-all duration-300 ease-in-out 
+      className="w-full h-[227px] 2xl:h-[300px] bg-white overflow-hidden rounded-[10px] shadow-sm cursor-pointer transition-all duration-300 ease-in-out 
              hover:shadow-lg hover:-translate-y-1"
     >
       <div className="relative w-full h-2/3">
@@ -71,7 +71,9 @@ export default function MypageCard({
       {/* 텍스트 제목,날짜,하트 */}
       <div className="p-3 pl-4 2xl:p-5 flex flex-col h-1/3">
         <div className="flex items-start justify-between">
-          <p className="text-base text-[var(--black)] pt-1">{title}</p>
+          <p className="text-base text-[var(--black)] pt-1 line-clamp-1">
+            {title}
+          </p>
           {type !== '퀘스트' && (
             <button
               onClick={(e) => {
@@ -107,9 +109,13 @@ export default function MypageCard({
                     }}
                   />
                 )}
-                <p className="text-sm text-[var(--gray-200)]">{author}</p>
+                <p className="text-sm text-[var(--gray-200)] line-clamp-1">
+                  {author}
+                </p>
               </div>
-              <p className="text-sm text-[var(--gray-200)] pr-1">{date}</p>
+              <p className="text-sm text-[var(--gray-200)] pr-1 line-clamp-1">
+                {date}
+              </p>
             </>
           ) : (
             <p className="text-sm text-[var(--gray-200)] pr-1 ml-auto">

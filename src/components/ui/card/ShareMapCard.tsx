@@ -29,7 +29,7 @@ export default function ShareMapCard({
         <div className="flex flex-col gap-[10px] justify-start m-[20px]">
           <div className="flex items-center justify-between">
             <span
-              className="text-[16px] font-semibold"
+              className="text-[16px] font-semibold line-clamp-1"
               style={{ color: labelColor }}
             >
               {labelText}
@@ -41,7 +41,7 @@ export default function ShareMapCard({
               {category}
             </span>
           </div>
-          <span className="font-semibold leading-tight text-[clamp(10px,1vw,16px)] overflow-hidden text-ellipsis break-words max-h-[3em]">
+          <span className="font-semibold leading-tight text-[clamp(10px,1vw,16px)] overflow-hidden text-ellipsis break-words max-h-[3em] line-clamp-1">
             {title}
           </span>
         </div>

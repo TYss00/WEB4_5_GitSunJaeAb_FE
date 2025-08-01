@@ -92,7 +92,7 @@ export default function RoadMapCard({
         <span className="text-[16px] line-clamp-2 min-h-[40px]">
           {truncatedDescription}
         </span>
-        <div className="flex gap-[10px] flex-wrap min-h-[20px]">
+        <div className="flex gap-[10px] flex-wrap min-h-[20px] line-clamp-1">
           {hashtags.slice(0, 5).map((tag, idx) => (
             <span
               key={idx}
@@ -114,7 +114,9 @@ export default function RoadMapCard({
                 backgroundRepeat: 'no-repeat',
               }}
             />
-            <span className="text-[10px] text-[var(--gray-200)]">{author}</span>
+            <span className="text-[10px] text-[var(--gray-200)] line-clamp-1">
+              {author}
+            </span>
           </div>
           <div className="flex gap-[10px]">
             <span className="flex text-[10px] text-[var(--gray-200)] gap-[5px]">
