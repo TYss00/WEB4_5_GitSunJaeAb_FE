@@ -1,17 +1,31 @@
 import { SignupFormData, User } from '@/types/authType';
 import axiosInstance from './axios';
 import { useAuthStore } from '@/store/useAuthStore';
-
-interface CustomError extends Error {
-  code?: string;
-}
+import { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
 export const signupUser = async (formData: SignupFormData) => {
   const { data } = await axiosInstance.post('/auth/signup', formData);
-  // http 200이어도 내부 code가 4091, 4092, 5000이면 에러
-  if (['4091', '4092', '5000'].includes(data.code)) {
-    const error: CustomError = new Error(data.message);
-    error.code = data.code;
+  // 성공 코드가 아닌 경우 예외 던지기
+  // 회원 가입 성공 2001
+  const isError = !['2001'].includes(data.code);
+  if (isError) {
+    const error = new AxiosError<{ code?: string; message?: string }>(
+      data.message,
+      undefined,
+      {
+        headers: {},
+      } as InternalAxiosRequestConfig,
+      undefined,
+      {
+        data,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {
+          headers: {},
+        } as InternalAxiosRequestConfig,
+      }
+    );
     throw error;
   }
   return data;
@@ -28,6 +42,28 @@ export const loginUser = async ({
     email,
     password,
   });
+  // 2002 가 로그인 성공
+  // 성공 코드가 아닌 경우 예외 던지기
+  if (data.code !== '2002') {
+    const error = new AxiosError<{ code?: string; message?: string }>(
+      data.message,
+      undefined,
+      {
+        headers: {},
+      } as InternalAxiosRequestConfig,
+      undefined,
+      {
+        data,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {
+          headers: {},
+        } as InternalAxiosRequestConfig,
+      }
+    );
+    throw error;
+  }
   return data;
 };
 
