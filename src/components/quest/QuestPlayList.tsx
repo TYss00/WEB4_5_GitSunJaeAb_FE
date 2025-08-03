@@ -131,7 +131,11 @@ export default function QuestPlayList({
                     <div>
                       <p className="font-medium text-sm">{item.nickname}</p>
                       <p className="text-[13px] text-[var(--gray-200)]">
-                        {item.createdAt!.slice(0, 10)}
+                        {item.createdAt ?? item.submittedAt
+                          ? new Date(item.createdAt ?? item.submittedAt)
+                              .toISOString()
+                              .slice(0, 10)
+                          : ''}
                       </p>
                     </div>
                   </div>
