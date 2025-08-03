@@ -53,7 +53,7 @@ export default function MarkerDetail({
           </span>
         </div>
         {isTextArea && (
-          <div className="p-[5px] mt-[20px] border border-[var(--primary-100)] rounded-[5px] h-[100px] overflow-scroll scrollbar-hide">
+          <div className="mt-[20px] text-[14px] text-black overflow-scroll scrollbar-none max-h-[120px] whitespace-pre-wrap">
             {description}
           </div>
         )}

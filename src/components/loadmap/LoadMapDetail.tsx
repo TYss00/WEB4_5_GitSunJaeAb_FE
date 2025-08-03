@@ -291,7 +291,7 @@ export default function Loadmapdetail() {
               <p className="text-[16px] text-black mb-2">
                 {roadMapInfo.description}
               </p>
-              <div className="flex gap-2 text-sm text-[#005C54] mb-3">
+              <div className="flex flex-wrap max-w-full gap-2 text-sm text-[#005C54] mb-3">
                 {roadMapInfo.hashtags.map((tag: HashtagProps) => {
                   return (
                     <span
@@ -355,7 +355,7 @@ export default function Loadmapdetail() {
 
             {/* 공용 컴포넌트 댓글 */}
             <div className="mt-8 border-t border-gray-300 pt-4">
-              <Comment variant="roadmap" commentsInfo={commentsInfo} />
+              <Comment variant="roadmap" author={roadMapInfo.member.id} commentsInfo={commentsInfo} />
             </div>
           </div>
         </div>

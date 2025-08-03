@@ -1,8 +1,9 @@
-import { CommentInfo } from '@/types/type';
-import CommentItem from './CommentItem';
-import { CommentListProps } from '@/types/comment';
+import { CommentInfo } from '@/types/type'
+import CommentItem from './CommentItem'
+import { CommentListProps } from '@/types/comment'
 
 export default function CommentList({
+  author,
   comments,
   onDelete,
   onUpdate,
@@ -13,12 +14,13 @@ export default function CommentList({
         return (
           <CommentItem
             key={comment.id}
+            author={author}
             commentInfo={comment}
             onDelete={onDelete}
             onUpdate={onUpdate}
           />
-        );
+        )
       })}
     </ul>
-  );
+  )
 }
