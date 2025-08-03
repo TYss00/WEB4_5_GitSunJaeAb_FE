@@ -37,17 +37,16 @@
 
 # 4. 사용한 기술
 ## 언어 및 라이브러리
-### 언어
+### 언어 및 프레임워크
 | React | TypeScript | Next |
 |:-----:|:----------:|:----:|
-| <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/React_Logo_SVG.svg/250px-React_Logo_SVG.svg.png" alt="React" width="100"> | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Typescript.svg/250px-Typescript.svg.png" alt="TypeScript" width="100"> | <img src="https://miro.medium.com/v2/resize:fit:1200/0*exXLyexwiMZ7Nwsg.png" alt="TypeScript" width="100"> 
+| <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/React_Logo_SVG.svg/250px-React_Logo_SVG.svg.png" alt="React" width="100"> | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Typescript.svg/250px-Typescript.svg.png" alt="TypeScript" width="100"> | <img src="https://miro.medium.com/v2/resize:fit:1200/0*exXLyexwiMZ7Nwsg.png" alt="Next" width="100"> 
 <br/>
 
-### 라이브러리
-| Tailwindcss | Axios | Zustand |
-|:-----------:|:-----:|:-------:|
-| <img src="https://velog.velcdn.com/images/js43o/post/3ab8d087-c4f4-46b5-8f65-6d5e1736b58e/image.png" alt="Tailwindcss" width="100"> | <img src="https://blog.kakaocdn.net/dn/BtYd5/btsy6i6iR6d/MaQMnt5wPhrGervuQS6ba1/img.png" alt="Axios" width="100"> | <img src="https://velog.velcdn.com/images/jwhong135/post/50f0132e-c4c7-4bb9-ad29-d1fde4635fad/image.png" alt="Zustand" width="100"> |
-
+### 라이브러리 및 API
+| Tailwindcss | Axios | Zustand | Liveblocks | Googlemap |
+|:-----------:|:-----:|:-------:|:----------:|:---------:|
+| <img src="https://velog.velcdn.com/images/js43o/post/3ab8d087-c4f4-46b5-8f65-6d5e1736b58e/image.png" alt="Tailwindcss" width="100"> | <img src="https://blog.kakaocdn.net/dn/BtYd5/btsy6i6iR6d/MaQMnt5wPhrGervuQS6ba1/img.png" alt="Axios" width="100"> | <img src="https://velog.velcdn.com/images/jwhong135/post/50f0132e-c4c7-4bb9-ad29-d1fde4635fad/image.png" alt="Zustand" width="100"> | <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGTjLDMUZa9zBmqsjL7pNzmdsWqAcGtSqFNA&s" alt="Liveblocks" width="100"> | <img src="https://api.eremedia.com/wp-content/uploads/2020/10/google-maps-1797882_1920.png" alt="Googlemap" width="100"> |
 
 <br/>
 
