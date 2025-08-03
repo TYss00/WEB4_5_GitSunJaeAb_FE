@@ -263,6 +263,7 @@ export type SubmissionInfo = {
   id: number | null;
   memberId?: number | null;
   createdAt?: string;
+  isActive?: boolean;
 };
 
 export type RankingInfo = {

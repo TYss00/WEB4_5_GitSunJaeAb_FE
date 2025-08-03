@@ -7,6 +7,7 @@ import { EllipsisVertical, PencilLine, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
 import ConfirmModal from '../common/modal/ConfirmModal';
+import { toast } from 'react-toastify';
 
 export default function CommentItem({
   commentInfo,
@@ -38,7 +39,7 @@ export default function CommentItem({
       setIsEditing(false);
     } catch (error) {
       console.error('댓글 수정 실패:', error);
-      alert('댓글 수정에 실패했습니다.');
+      toast.error('댓글 수정에 실패했습니다.');
     }
   };
 
@@ -48,7 +49,7 @@ export default function CommentItem({
       onDelete?.(commentInfo.id);
     } catch (error) {
       console.error('댓글 삭제 실패:', error);
-      alert('삭제 권한이 없거나 실패했습니다.');
+      toast.error('삭제 권한이 없거나 실패했습니다.');
     } finally {
       setIsDeleteOpen(false);
     }

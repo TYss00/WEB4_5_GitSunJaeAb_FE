@@ -128,6 +128,7 @@ export default function ShareMapDetail() {
   const handleDelete = async () => {
     try {
       await axiosInstance.delete(`/roadmaps/${id}`);
+      toast.success('삭제가 완료되었습니다.');
       router.push('/dashbord/sharemap');
       router.refresh();
     } catch (error) {

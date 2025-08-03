@@ -44,7 +44,7 @@ export default function QuestPlayForm({ onBack }: QuestPlayFormProps) {
     setIsSubmitting(true);
 
     if (!imageFile) {
-      alert('이미지를 업로드해주세요.');
+      toast.error('이미지를 업로드해주세요.');
       setIsSubmitting(false);
       return;
     }
