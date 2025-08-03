@@ -45,8 +45,11 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
     try {
       if (activeTab === '프로필') {
         const formData = new FormData();
-        if (nickname === user?.nickname) {
-          toast.error('이미 사용 중인 닉네임입니다.');
+        const isNicknameChanged = nickname !== user?.nickname;
+        const isProfileImageChanged = profileImage instanceof File;
+
+        if (!isNicknameChanged && !isProfileImageChanged) {
+          toast.error('변경된 내용이 없습니다.');
           setIsSaving(false);
           return;
         }
@@ -55,7 +58,7 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
           'member',
           new Blob([JSON.stringify({ nickname })], { type: 'application/json' })
         );
-        if (profileImage instanceof File) {
+        if (isProfileImageChanged) {
           formData.append('imageFile', profileImage);
         }
 
