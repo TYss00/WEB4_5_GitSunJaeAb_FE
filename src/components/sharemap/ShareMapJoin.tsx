@@ -20,7 +20,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import GoogleMapWrapper from './GoogleMapWrapper';
 import ShareLayerEdit from '../ui/layer/ShareLayerEdit';
-import useShareStore from '@/store/useShareStore';
+import { getShareStoreByRoomId } from '@/store/useShareStore';
 import { RoadmapDetailResponse } from '@/types/share';
 import axiosInstance from '@/libs/axios';
 import Image from 'next/image';
@@ -35,6 +35,7 @@ export default function ShareMapJoin() {
   const { isOpen, toggle, close } = useSidebar();
   const [roadmap, setRoadmap] = useState<RoadmapDetailResponse | null>(null);
 
+  const useShareStore = getShareStoreByRoomId(`sharemap-room-${id}`);
   const addLayer = useShareStore((state) => state.addLayer);
   const selectedLayerId = useShareStore((state) => state.selectedLayerId);
   const setSelectedLayerId = useShareStore((state) => state.setSelectedLayerId);
@@ -98,7 +99,7 @@ export default function ShareMapJoin() {
   return (
     <section className="relative w-full h-screen overflow-hidden">
       {/* 지도 영역 */}
-      <GoogleMapWrapper mapRef={mapRef} />
+      <GoogleMapWrapper mapRef={mapRef} roadmapId={Number(id)} />
 
       {/* 지도 위 UI 요소들 */}
       <div className="absolute top-2 left-[160px] flex items-center gap-3 px-4 py-2 z-20">
@@ -115,10 +116,10 @@ export default function ShareMapJoin() {
         <div className="relative w-[140px]">
           <select
             className="w-full h-[34px] text-sm bg-white border-none rounded pl-3 appearance-none"
-            value={selectedLayerId ?? ''}
+            value={selectedLayerId === null ? 'all' : selectedLayerId}
             onChange={(e) => {
               const value = e.target.value;
-              setSelectedLayerId(value === 'all' ? 'all' : Number(value));
+              setSelectedLayerId(value === 'all' ? null : Number(value));
             }}
           >
             <option value="all">전체 레이어</option>
@@ -255,6 +256,7 @@ export default function ShareMapJoin() {
             <div className="space-y-3">
               {layers.map((layer) => (
                 <ShareLayerEdit
+                  roadmapId={Number(id)}
                   key={layer.layerTempId}
                   title={layer.name}
                   layer={layer}

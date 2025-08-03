@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import axiosInstance from '@/libs/axios';
 import { RankingInfo } from '@/types/type';
 import Image from 'next/image';
+import QuestDetailRankingSkeleton from './skeleton/QuestDetailRankingSkeleton';
 
 export default function QuestDeatilRanking() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,22 +15,34 @@ export default function QuestDeatilRanking() {
   const questId = typeof params?.id === 'string' ? params.id : null;
 
   const [ranking, setRanking] = useState<RankingInfo[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!questId) return;
 
     const fetch = async () => {
       try {
-        const ranking = await axiosInstance.get(
+        setIsLoading(true);
+        const res = await axiosInstance.get(
           `/quests/${questId}/correctRanking`
         );
-        setRanking(ranking.data);
+        setRanking(res.data);
       } catch (err) {
         console.error('랭킹 데이터 불러오기 실패', err);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetch();
   }, [questId]);
+
+  if (isLoading) {
+    return <QuestDetailRankingSkeleton />;
+  }
+
+  if (ranking.length === 0) {
+    return <p className="text-center py-4 text-gray-500">랭킹이 없습니다.</p>;
+  }
 
   const top3 = ranking.slice(0, 3);
   const rest = ranking.slice(3);
@@ -125,14 +138,16 @@ export default function QuestDeatilRanking() {
         </div>
       )}
 
-      {/* 전체보기 버튼 */}
-      <Button
-        buttonStyle="green"
-        className="w-full text-[15px] h-[38px] cursor-pointer"
-        onClick={() => setIsOpen((prev) => !prev)}
-      >
-        {isOpen ? '닫기' : '전체 랭킹 보기'}
-      </Button>
+      {/* 전체보기 버튼 (랭킹이 3명 이상일 때만) */}
+      {ranking.length >= 3 && (
+        <Button
+          buttonStyle="green"
+          className="w-full text-[15px] h-[38px] cursor-pointer"
+          onClick={() => setIsOpen((prev) => !prev)}
+        >
+          {isOpen ? '닫기' : '전체 랭킹 보기'}
+        </Button>
+      )}
     </>
   );
 }

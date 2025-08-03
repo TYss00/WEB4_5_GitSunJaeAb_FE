@@ -6,6 +6,7 @@ import { useQueries, useQuery } from '@tanstack/react-query';
 import SkeletonCategoryCard from './SkeletonCategoryCard';
 import defaultCategoryImg from '../../../public/assets/defaultCategory.avif';
 import { getRoadmapCount } from '@/libs/mainDashboard';
+import { toast } from 'react-toastify';
 
 export default function HotNow({
   onCategorySelect,
@@ -52,7 +53,7 @@ export default function HotNow({
 
   // 에러 콘솔
   if (isError || !categories) {
-    console.log('인기 카테고리 불러오는 중 에러');
+    toast.error('인기 카테고리 불러오는 중 에러');
   }
 
   // 클릭 시 로드맵으로 이동 연결?

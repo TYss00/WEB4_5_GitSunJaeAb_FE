@@ -1,20 +1,5 @@
+import { ConfirmModalProps, DeleteType } from '@/types/type';
 import { AlertTriangle, X } from 'lucide-react';
-
-type ConfirmModalProps = {
-  isOpen: boolean;
-  onClose: () => void;
-  onDelete: () => void;
-  confirmType: DeleteType;
-};
-
-type DeleteType =
-  | 'post'
-  | 'comment'
-  | 'account'
-  | 'notice'
-  | 'marker'
-  | 'category'
-  | 'layer';
 
 const deleteMessages: Record<
   DeleteType,

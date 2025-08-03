@@ -7,27 +7,7 @@ import QuestDetailPlay from './QuestDetailPlay'
 import { useEffect, useState } from 'react'
 import axiosInstance from '@/libs/axios'
 import { QuestDetailData, SubmissionInfo } from '@/types/type'
-
-type SubmissionRaw = {
-  title: string
-  description: string
-  profileImage: string
-  imageUrl: string
-  nickname: string
-  submittedAt: string
-  isRecognized: boolean
-}
-
-type MemberQuest = {
-  id: number
-  title: string
-  description: string
-  imageUrl: string
-  member: {
-    id: number
-    nickname: string
-  }
-}
+import { MemberQuest, SubmissionRaw } from '@/types/quest'
 
 export default function QuestDetail() {
   const params = useParams()
@@ -60,6 +40,7 @@ export default function QuestDetail() {
               id: matched?.id ?? null,
               isRecognized: submission.isRecognized,
               memberId: matched?.member?.id ?? null,
+              createdAt: matched?.createdAt ?? submission.submittedAt,
             }
           }
         )
@@ -84,23 +65,21 @@ export default function QuestDetail() {
   } = data
   return (
     <>
-      {/* 퀘스트 정보 */}
       <QuestDetailHeader questInfo={questInfo} questId={Number(questId)} />
       <div className="mt-[30px] mx-auto w-[1100px] pb-[50px]">
-        <div className="flex w-full">
-          <div className="w-1/2">
-            {/* 댓글 */}
+        <div className="flex w-full gap-4">
+          <div className="w-1/2 h-[577px] pr-2">
             <Comment
               variant="quest"
               author={questInfo.member.id}
               commentsInfo={commentsInfo}
             />
           </div>
-          <div className="w-1/2">
-            {/* 참여 + 랭킹*/}
+          <div className="w-1/2 h-[577px] pl-2">
             <QuestDetailPlay
               questAuthorId={questInfo.member.id}
               submissionInfo={submissionInfo}
+              questIsActive={questInfo.isActive}
             />
           </div>
         </div>

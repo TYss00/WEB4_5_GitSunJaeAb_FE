@@ -7,12 +7,9 @@ import { useRef, useState } from 'react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { QuestPlayFormProps } from '@/types/quest';
 
-type Props = {
-  onBack: () => void;
-};
-
-export default function QuestPlayForm({ onBack }: Props) {
+export default function QuestPlayForm({ onBack }: QuestPlayFormProps) {
   const params = useParams();
   const questId = params?.id as string;
   const [title, setTitle] = useState('');
@@ -47,7 +44,7 @@ export default function QuestPlayForm({ onBack }: Props) {
     setIsSubmitting(true);
 
     if (!imageFile) {
-      alert('이미지를 업로드해주세요.');
+      toast.error('이미지를 업로드해주세요.');
       setIsSubmitting(false);
       return;
     }

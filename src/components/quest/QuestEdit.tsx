@@ -1,81 +1,79 @@
-'use client'
+'use client';
 
-import Button from '@/components/ui/Button'
-import Input from '@/components/ui/Input'
-import axiosInstance from '@/libs/axios'
-import { ChevronLeft, ImagePlus } from 'lucide-react'
-import Image from 'next/image'
-import { useParams, useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
-import { toast } from 'react-toastify'
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import axiosInstance from '@/libs/axios';
+import { ChevronLeft, ImagePlus } from 'lucide-react';
+import Image from 'next/image';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export default function QuestEdit() {
-  const { id } = useParams()
-  const router = useRouter()
-  const fileInputRef = useRef<HTMLInputElement | null>(null)
-  const [previewImage, setPreviewImage] = useState<string | null>(null)
-  const [deadline, setDeadline] = useState('')
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [hint, setHint] = useState('')
-  const isActive = true
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { id } = useParams();
+  const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [deadline, setDeadline] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [hint, setHint] = useState('');
+  const isActive = true;
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchQuest = async () => {
       try {
-        const res = await axiosInstance.get(`/quests/${id}`)
-        const data = res.data.quest
+        const res = await axiosInstance.get(`/quests/${id}`);
+        const data = res.data.quest;
 
-        console.log('불러온 데이터', data)
-
-        setTitle(data.title)
-        setDescription(data.description)
-        setHint(data.hint ?? '')
-        setDeadline(data.deadline.slice(0, 10))
-        setPreviewImage(data.questImage ?? null)
+        setTitle(data.title);
+        setDescription(data.description);
+        setHint(data.hint ?? '');
+        setDeadline(data.deadline.slice(0, 10));
+        setPreviewImage(data.questImage ?? null);
       } catch (err) {
-        console.error('데이터 불러오기 실패', err)
+        console.error('데이터 불러오기 실패', err);
       }
-    }
-    if (id) fetchQuest()
-  }, [id])
+    };
+    if (id) fetchQuest();
+  }, [id]);
 
   const handleContentClick = () => {
-    fileInputRef.current?.click()
-  }
+    fileInputRef.current?.click();
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
+    const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader()
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setPreviewImage(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+        setPreviewImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const handleCancel = () => {
-    router.back()
-  }
+    router.back();
+  };
 
   const handleSubmit = async () => {
-    if (isSubmitting) return
-    setIsSubmitting(true)
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
-      const formData = new FormData()
-      let imageFile = fileInputRef.current?.files?.[0]
+      const formData = new FormData();
+      let imageFile = fileInputRef.current?.files?.[0];
       if (!imageFile && previewImage) {
-        const response = await fetch(previewImage)
-        const blob = await response.blob()
-        const filename = previewImage.split('/').pop() || 'quest.jpg'
-        imageFile = new File([blob], filename, { type: blob.type })
+        const response = await fetch(previewImage);
+        const blob = await response.blob();
+        const filename = previewImage.split('/').pop() || 'quest.jpg';
+        imageFile = new File([blob], filename, { type: blob.type });
       }
 
       if (!imageFile) {
-        toast('이미지를 선택해주세요')
-        return
+        toast('이미지를 선택해주세요');
+        return;
       }
 
       const requestData = {
@@ -84,30 +82,29 @@ export default function QuestEdit() {
         hint,
         deadline: deadline + 'T23:59:59+09:00',
         isActive,
-      }
+      };
 
       const RequestBlob = new Blob([JSON.stringify(requestData)], {
         type: 'application/json',
-      })
+      });
 
-      formData.append('questRequest', RequestBlob)
-      formData.append('imageFile', imageFile)
+      formData.append('questRequest', RequestBlob);
+      formData.append('imageFile', imageFile);
 
-      const res = await axiosInstance.put(`/quests/${id}`, formData, {
+      await axiosInstance.put(`/quests/${id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      })
-      console.log(res.data)
-      toast.success('퀘스트가 성공적으로 등록되었습니다.')
-      handleCancel()
+      });
+      toast.success('퀘스트가 성공적으로 등록되었습니다.');
+      handleCancel();
     } catch (err) {
-      console.error('퀘스트 등록 실패', err)
-      toast.error('퀘스트 등록 실패')
+      console.error('퀘스트 등록 실패', err);
+      toast.error('퀘스트 등록 실패');
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <div className="max-w-xl w-full h-[760px] mx-auto mt-10 p-6 bg-white rounded-xl border border-gray-200 shadow-sm overflow-y-scroll">
@@ -214,5 +211,5 @@ export default function QuestEdit() {
         </Button>
       </div>
     </div>
-  )
+  );
 }

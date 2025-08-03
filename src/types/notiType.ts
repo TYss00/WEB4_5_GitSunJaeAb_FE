@@ -51,3 +51,8 @@ export type AppNotification = {
   relatedQuestId?: number;
   relatedCommentId?: number;
 };
+
+export type NotiListItemProps = {
+  noti: AppNotification;
+  onClick: (noti: AppNotification) => void;
+};

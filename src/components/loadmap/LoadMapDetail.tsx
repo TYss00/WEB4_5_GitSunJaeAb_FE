@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react';
 import {
   Heart,
   Siren,
@@ -13,40 +13,40 @@ import {
   Ellipsis,
   PencilLine,
   Trash2,
-} from 'lucide-react'
-import Button from '../ui/Button'
-import ReportModal from '../common/modal/ReportModal'
-import Comment from '../comment/Comment'
-import LayerDetail from '../ui/layer/LayerDetail'
-import MarkerDetail from '../ui/layer/MarkerDetail'
-import useSidebar from '@/utils/useSidebar'
-import { useParams, useRouter } from 'next/navigation'
-import { HashtagProps, RoadmapDetailProps } from '@/types/type'
-import RoadMapGoogleDetail from './RoadMapGoogleDetail'
-import axiosInstance from '@/libs/axios'
-import Image from 'next/image'
-import { useAuthStore } from '@/store/useAuthStore'
-import ConfirmModal from '../common/modal/ConfirmModal'
-import { useBookmarkStore } from '@/store/useBookmarkStore'
-import LoadingSpinner from '../common/LoadingSpener'
-import { toast } from 'react-toastify'
+} from 'lucide-react';
+import Button from '../ui/Button';
+import ReportModal from '../common/modal/ReportModal';
+import Comment from '../comment/Comment';
+import LayerDetail from '../ui/layer/LayerDetail';
+import MarkerDetail from '../ui/layer/MarkerDetail';
+import useSidebar from '@/utils/useSidebar';
+import { useParams, useRouter } from 'next/navigation';
+import { HashtagProps, RoadmapDetailProps } from '@/types/type';
+import RoadMapGoogleDetail from './RoadMapGoogleDetail';
+import axiosInstance from '@/libs/axios';
+import Image from 'next/image';
+import { useAuthStore } from '@/store/useAuthStore';
+import ConfirmModal from '../common/modal/ConfirmModal';
+import { useBookmarkStore } from '@/store/useBookmarkStore';
+import LoadingSpinner from '../common/LoadingSpener';
+import { toast } from 'react-toastify';
 
 export default function Loadmapdetail() {
-  const currentUserId = useAuthStore((state) => state.user?.id)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [data, setData] = useState<RoadmapDetailProps>()
-  const router = useRouter()
-  const [isReportOpen, setIsReportOpen] = useState(false)
-  const { isOpen, toggle, close } = useSidebar()
-  const params = useParams()
-  const roadmapId = params?.id as string
-  const [selectedLayerId, setSelectedLayerId] = useState<number | 'all'>('all')
+  const currentUserId = useAuthStore((state) => state.user?.id);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<RoadmapDetailProps>();
+  const router = useRouter();
+  const [isReportOpen, setIsReportOpen] = useState(false);
+  const { isOpen, toggle, close } = useSidebar();
+  const params = useParams();
+  const roadmapId = params?.id as string;
+  const [selectedLayerId, setSelectedLayerId] = useState<number | 'all'>('all');
 
   const { isBookmarked, likeCount, initBookmark, toggleBookmark } =
-    useBookmarkStore()
+    useBookmarkStore();
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -54,26 +54,26 @@ export default function Loadmapdetail() {
         const [roadmapRes, commentsRes] = await Promise.all([
           axiosInstance.get(`/roadmaps/${roadmapId}`),
           axiosInstance.get(`/comments/roadmaps?roadmapId=${roadmapId}`),
-        ])
+        ]);
 
         setData({
           roadmap: roadmapRes.data.roadmap,
           comments: commentsRes.data.comments,
-        })
+        });
       } catch (e) {
-        console.error('데이터 요청 실패:', e)
+        console.error('데이터 요청 실패:', e);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchAll()
-  }, [roadmapId])
+    fetchAll();
+  }, [roadmapId]);
   useEffect(() => {
     if (roadmapId && data?.roadmap) {
-      initBookmark(String(roadmapId), data.roadmap.likeCount)
+      initBookmark(String(roadmapId), data.roadmap.likeCount);
     }
-  }, [roadmapId, initBookmark, data])
+  }, [roadmapId, initBookmark, data]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -81,34 +81,34 @@ export default function Loadmapdetail() {
         dropdownRef.current &&
         !dropdownRef.current.contains(e.target as Node)
       ) {
-        setIsMenuOpen(false)
+        setIsMenuOpen(false);
       }
-    }
+    };
 
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
-  if (loading) return <LoadingSpinner />
-  if (!data) return <div>데이터 없음</div>
+  if (loading) return <LoadingSpinner />;
+  if (!data) return <div>데이터 없음</div>;
 
-  const { roadmap: roadMapInfo, comments: commentsInfo } = data
+  const { roadmap: roadMapInfo, comments: commentsInfo } = data;
 
-  const defaultCenter = { lat: 37.5665, lng: 126.978 }
+  const defaultCenter = { lat: 37.5665, lng: 126.978 };
 
   const handleZzim = async () => {
     try {
       const promises = roadMapInfo.layers.map((item) =>
         axiosInstance.post(`/layers/member?layerId=${item.layer.id}`)
-      )
-      await Promise.all(promises)
-      toast.success('레이어 일괄 찜 완료!')
+      );
+      await Promise.all(promises);
+      toast.success('레이어 일괄 찜 완료!');
     } catch {
-      toast.error('레이어 일괄 찜 오류')
+      toast.error('레이어 일괄 찜 오류');
     }
-  }
+  };
 
   // 선택된 레이어의 마커만 추출
   const filteredMarkers =
@@ -116,25 +116,26 @@ export default function Loadmapdetail() {
       ? roadMapInfo.layers.flatMap((item) => item.markers)
       : roadMapInfo.layers
           .filter((item) => item.layer.id === selectedLayerId)
-          .flatMap((item) => item.markers)
+          .flatMap((item) => item.markers);
 
   // 중심 좌표 계산
   const center =
     filteredMarkers.length > 0
       ? { lat: filteredMarkers[0].lat, lng: filteredMarkers[0].lng }
-      : defaultCenter
+      : defaultCenter;
 
   const handleDelete = async () => {
     try {
-      await axiosInstance.delete(`/roadmaps/${roadmapId}`)
-      router.push('/dashbord/roadmap')
+      await axiosInstance.delete(`/roadmaps/${roadmapId}`);
+      toast.success('삭제가 완료되었습니다.');
+      router.push('/dashbord/roadmap');
     } catch (error) {
-      console.error('삭제 실패: ', error)
-      alert('삭제 권한이 없거나 실패했습니다.')
+      console.error('삭제 실패: ', error);
+      toast.error('삭제 권한이 없거나 실패했습니다.');
     } finally {
-      setIsDeleteOpen(false)
+      setIsDeleteOpen(false);
     }
-  }
+  };
 
   return (
     <>
@@ -156,8 +157,8 @@ export default function Loadmapdetail() {
               <select
                 className="w-full h-[40px] text-sm bg-white border-none rounded-[3px] px-3 appearance-none focus:outline-none"
                 onChange={(e) => {
-                  const value = e.target.value
-                  setSelectedLayerId(value === 'all' ? 'all' : parseInt(value))
+                  const value = e.target.value;
+                  setSelectedLayerId(value === 'all' ? 'all' : parseInt(value));
                 }}
               >
                 <option value="all">전체</option>
@@ -166,7 +167,7 @@ export default function Loadmapdetail() {
                     <option key={item.layer.id} value={item.layer.id}>
                       {item.layer.name}
                     </option>
-                  )
+                  );
                 })}
               </select>
 
@@ -239,10 +240,10 @@ export default function Loadmapdetail() {
                         <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow z-50">
                           <button
                             onClick={() => {
-                              setIsMenuOpen(false)
+                              setIsMenuOpen(false);
                               router.push(
                                 `/dashbord/roadmap/detail/${roadmapId}/edit`
-                              )
+                              );
                             }}
                             className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2"
                           >
@@ -252,8 +253,8 @@ export default function Loadmapdetail() {
                           <div className="border-t border-gray-200 mx-2" />
                           <button
                             onClick={() => {
-                              setIsMenuOpen(false)
-                              setIsDeleteOpen(true)
+                              setIsMenuOpen(false);
+                              setIsDeleteOpen(true);
                             }}
                             className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2 text-red-500"
                           >
@@ -299,7 +300,7 @@ export default function Loadmapdetail() {
                     >
                       #{tag.name}
                     </span>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -348,7 +349,7 @@ export default function Loadmapdetail() {
                       />
                     ))}
                   </LayerDetail>
-                )
+                );
               })}
             </div>
 
@@ -375,5 +376,5 @@ export default function Loadmapdetail() {
         />
       )}
     </>
-  )
+  );
 }

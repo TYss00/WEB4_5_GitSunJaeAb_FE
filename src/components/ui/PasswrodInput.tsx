@@ -3,15 +3,7 @@
 import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import Input from '../ui/Input';
-
-type Props = {
-  label?: string;
-  placeholder?: string;
-  className?: string;
-  name?: string;
-  value?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-};
+import { PasswordInputProps } from '@/types/type';
 
 export default function PasswordInput({
   label = '비밀번호',
@@ -20,7 +12,7 @@ export default function PasswordInput({
   name = 'password',
   value,
   onChange,
-}: Props) {
+}: PasswordInputProps) {
   const [visible, setVisible] = useState(false);
   const toggle = () => setVisible((prev) => !prev);
 

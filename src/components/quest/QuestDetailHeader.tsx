@@ -20,6 +20,7 @@ import axiosInstance from '@/libs/axios';
 import { useAuthStore } from '@/store/useAuthStore';
 import ReportModal from '../common/modal/ReportModal';
 import ConfirmModal from '../common/modal/ConfirmModal';
+import { toast } from 'react-toastify';
 
 export default function QuestDetailHeader({
   questInfo,
@@ -63,10 +64,11 @@ export default function QuestDetailHeader({
   const handleDelete = async () => {
     try {
       await axiosInstance.delete(`/quests/${id}`);
+      toast.success('삭제가 완료되었습니다.');
       router.push('/dashbord/quest');
     } catch (error) {
       console.error('삭제 실패: ', error);
-      alert('삭제 권한이 없거나 실패했습니다.');
+      toast.error('삭제 권한이 없거나 실패했습니다.');
     } finally {
       setIsDeleteOpen(false);
     }

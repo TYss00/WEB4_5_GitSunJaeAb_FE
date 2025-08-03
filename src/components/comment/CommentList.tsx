@@ -1,16 +1,15 @@
-import { CommentInfo } from '@/types/type';
-import CommentItem from './CommentItem';
+import { CommentInfo } from '@/types/type'
+import CommentItem from './CommentItem'
+import { CommentListProps } from '@/types/comment'
 
-type Props = {
-  author?:number
-  comments: CommentInfo[];
-  onDelete?: (id: number) => void;
-  onUpdate?: (updated: CommentInfo) => void;
-};
-
-export default function CommentList({ author, comments, onDelete, onUpdate }: Props) {
+export default function CommentList({
+  author,
+  comments,
+  onDelete,
+  onUpdate,
+}: CommentListProps) {
   return (
-    <ul className="divide-y divide-[var(--gray-100)] max-h-[240px] overflow-y-auto">
+    <ul className="divide-y divide-[var(--gray-100)] max-h-[480px] overflow-y-auto">
       {comments.map((comment: CommentInfo) => {
         return (
           <CommentItem
@@ -20,8 +19,8 @@ export default function CommentList({ author, comments, onDelete, onUpdate }: Pr
             onDelete={onDelete}
             onUpdate={onUpdate}
           />
-        );
+        )
       })}
     </ul>
-  );
+  )
 }

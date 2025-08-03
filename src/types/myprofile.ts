@@ -145,6 +145,7 @@ export type MemberQuest = {
     profileImage: string | null;
   };
   deletedAt: string | null;
+  viewCount?: number;
 };
 
 export type ParticipatedItem = {
@@ -152,4 +153,11 @@ export type ParticipatedItem = {
   id: number;
   date: string;
   data: MemberQuest | RoadmapResponse;
+};
+
+export type AchievementState = {
+  allAchievements: Achievement[];
+  achievedIds: number[];
+  setAchievements: (achievements: Achievement[]) => void;
+  setAchievedIds: (ids: number[]) => void;
 };

@@ -5,12 +5,9 @@ import { useAuthStore } from '@/store/useAuthStore';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { LogOut, UserRound } from 'lucide-react';
+import { UserModalProps } from '@/types/type';
 
-type Props = {
-  onClose: () => void;
-  isAdmin?: boolean;
-};
-export default function UserModal({ onClose, isAdmin }: Props) {
+export default function UserModal({ onClose, isAdmin }: UserModalProps) {
   const router = useRouter();
   const logout = useAuthStore((state) => state.logout);
   const queryClient = useQueryClient();

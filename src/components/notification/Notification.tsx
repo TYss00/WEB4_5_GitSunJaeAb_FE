@@ -59,22 +59,21 @@ export default function Notification({
     switch (noti.notificationType) {
       case 'COMMENT':
         if (noti.relatedQuestId) {
-          router.push(`/dashbord/quests/detail/${noti.relatedQuestId}`);
+          router.push(`/dashbord/quest/detail/${noti.relatedQuestId}`);
         } else if (noti.relatedRoadmap?.id) {
-          router.push(`${roadmapRoute}/${noti.relatedRoadmap.id}`);
+          router.push(`${roadmapRoute}/${noti.relatedRoadmap.id}/preview`);
         }
-        console.log(`${roadmapRoute}/${noti.relatedRoadmap!.id}`);
         break;
       case 'ZZIM':
       case 'FORK':
       case 'BOOKMARK':
         if (noti.relatedRoadmap?.id) {
-          router.push(`${roadmapRoute}/${noti.relatedRoadmap.id}`);
+          router.push(`${roadmapRoute}/${noti.relatedRoadmap.id}/preview`);
         }
         break;
       case 'QUEST':
       case 'QUEST_DEADLINE':
-        router.push(`/dashbord/quests/detail/${noti.relatedQuestId}`);
+        router.push(`/dashbord/quest/detail/${noti.relatedQuestId}`);
         break;
       case 'ANNOUNCEMENT':
       case 'ETC':

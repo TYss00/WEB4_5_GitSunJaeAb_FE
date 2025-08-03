@@ -19,10 +19,12 @@ export default function RequireGuest({
     }
 
     if (!loading && accessToken && user) {
-      if (user.role === 'ROLE_ADMIN') {
-        router.replace('/admin/report');
+      if (user.role != 'ROLE_ADMIN' && user.loginCount === 1) {
+        router.push('/categories');
+      } else if (user.role === 'ROLE_ADMIN') {
+        router.push('/admin/report');
       } else {
-        router.replace('/dashbord');
+        router.push('/dashbord');
       }
     }
   }, [accessToken, loading, user, router, initUser]);

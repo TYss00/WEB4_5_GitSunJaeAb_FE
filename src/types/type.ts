@@ -1,417 +1,492 @@
-import React, { ReactNode } from 'react'
-import { DashboardShareMapCardProps } from './share'
+import React, { ReactNode } from 'react';
+import { DashboardShareMapCardProps } from './share';
 
 export type HeaderProps = {
-  isAdmin?: boolean
-}
+  isAdmin?: boolean;
+};
 
 export type CategoryAddCardProps = {
-  type?: 'category' | 'marker'
-  onClick?: () => void
-}
+  type?: 'category' | 'marker';
+  onClick?: () => void;
+};
 
 export type RoadMapCardProps = {
-  id?: number
-  category: string
-  mapImageUrl: string
-  title: string
-  description: string
-  hashtags: string[]
-  profileImgUrl: string
-  author: string
-  viewCount: number
-  shareCount: number
-  className?: string
-  isBookmarked?: boolean
-  bookmarkId?: number | null
-}
+  id?: number;
+  category: string;
+  mapImageUrl: string;
+  title: string;
+  description: string;
+  hashtags: string[];
+  profileImgUrl: string;
+  author: string;
+  viewCount: number;
+  shareCount: number;
+  className?: string;
+  isBookmarked?: boolean;
+  bookmarkId?: number | null;
+};
 
 export type QuestCardProps = {
-  id?: number
-  isInProgress?: boolean
-  mapImageUrl: string
-  title: string
-  description: string
-  profileImgUrl: string
-  author: string
-  deadLine: string
-}
+  id?: number;
+  isInProgress?: boolean;
+  mapImageUrl: string;
+  title: string;
+  description: string;
+  profileImgUrl: string;
+  author: string;
+  deadLine: string;
+};
 
 export type ShareMapCardProps = {
-  id?: number
-  isEvent?: boolean
-  category?: string
-  title: string
-  mapImageUrl: string
-  participants: number
-  className?: string
-}
+  id?: number;
+  isEvent?: boolean;
+  category?: string;
+  title: string;
+  mapImageUrl: string;
+  participants: number;
+  className?: string;
+};
 
 export type CardListProps = {
-  type?: 'roadmap' | 'sharemap' | 'quest'
-  hotMaps?: DashboardShareMapCardProps[]
-}
+  type?: 'roadmap' | 'sharemap' | 'quest';
+  hotMaps?: DashboardShareMapCardProps[];
+};
 
 export type ButtonProps = {
-  children: React.ReactNode
-  style?: string | undefined
-  buttonStyle?: 'green' | 'white' | 'withIcon' | 'smGreen'
-  fullWidth?: boolean
-  icon?: React.ReactNode
-  className?: string
-  onClick?: () => void
-  disabled?: boolean
-  type?: 'button' | 'submit' | 'reset'
-}
+  children: React.ReactNode;
+  style?: string | undefined;
+  buttonStyle?: 'green' | 'white' | 'withIcon' | 'smGreen';
+  fullWidth?: boolean;
+  icon?: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  type?: 'button' | 'submit' | 'reset';
+};
 
 export type MarkerEditProps = {
-  id: number
-  isTextArea?: boolean
-  onDelete: () => void
-  address?: string
-  name?: string
-  description?: string
-  onAddByAddress?: (address: string) => void
-  onChangeName?: (id: number, name: string) => void
-  onChangeDescription?: (id: number, description: string) => void
-}
+  id: number;
+  isTextArea?: boolean;
+  onDelete: () => void;
+  address?: string;
+  name?: string;
+  description?: string;
+  onAddByAddress?: (address: string) => void;
+  onChangeName?: (id: number, name: string) => void;
+  onChangeDescription?: (id: number, description: string) => void;
+};
 
 export type MarkerUpdateProps = {
-  id: number
-  isTextArea?: boolean
-  onDelete: () => void
-  address?: string
-  name?: string
-  description?: string
-  onAddByAddress?: (address: string) => void
-  onChangeName?: (id: number, name: string) => void
-  onChangeDescription?: (id: number, description: string) => void
-}
+  id: number;
+  isTextArea?: boolean;
+  onDelete: () => void;
+  address?: string;
+  name?: string;
+  description?: string;
+  onAddByAddress?: (address: string) => void;
+  onChangeName?: (id: number, name: string) => void;
+  onChangeDescription?: (id: number, description: string) => void;
+};
 
 export type MarkerDetailProps = {
-  id: number
-  title: string
-  description: string
-  location: { lat: number; lng: number }
-  isTextArea?: boolean
-}
+  id: number;
+  title: string;
+  description: string;
+  location: { lat: number; lng: number };
+  isTextArea?: boolean;
+};
 
 export type LayerEditProps = {
-  title: string
-  defaultOpen?: boolean
-  markers?: MarkerData[]
-  onDelete: () => void
-  deleteMarker: (layer: string, markerId: number) => void
-  addMarkerByAddress: (layer: string, address: string) => void
-}
+  title: string;
+  defaultOpen?: boolean;
+  markers?: MarkerData[];
+  onDelete: () => void;
+  deleteMarker: (layer: string, markerId: number) => void;
+  addMarkerByAddress: (layer: string, address: string) => void;
+};
 export type LayerDetailProps = {
-  title: string
-  id: number
-  children: ReactNode
-  defaultOpen?: boolean
-}
+  title: string;
+  id: number;
+  children: ReactNode;
+  defaultOpen?: boolean;
+};
 
 export type ShareLayerEditProps = {
-  title: string
-  isTextArea?: boolean
-  defaultOpen?: boolean
-  onSelect?: () => void
-}
+  title: string;
+  isTextArea?: boolean;
+  defaultOpen?: boolean;
+  onSelect?: () => void;
+};
 
 export type ToggleProps = {
-  label: '공개' | '경로' | '애니메이션'
-  onChange?: (isActive: boolean) => void
-}
+  label: '공개' | '경로' | '애니메이션';
+  onChange?: (isActive: boolean) => void;
+};
 
 export type SearchItemProps = {
-  term: string
-  date: string
-  onRemove: () => void
-}
+  term: string;
+  date: string;
+  onRemove: () => void;
+};
 
 export type HashtagProps = {
-  id: number
-  name: string
-  createdAt?: string | null
-}
+  id: number;
+  name: string;
+  createdAt?: string | null;
+};
 
 export type Member = {
-  id: number
-  name: string
-  nickname: string
-  email: string
-  profileImage: string | null
-}
+  id: number;
+  name: string;
+  nickname: string;
+  email: string;
+  profileImage: string | null;
+};
 
 export type LayerInfo = {
-  id: number
-  name: string
-  description: string | null
-  layerSeq: number
-  layerTime: string
-  createdAt: string
-  member: Member
-  roadmap: number
-}
+  id: number;
+  name: string;
+  description: string | null;
+  layerSeq: number;
+  layerTime: string;
+  createdAt: string;
+  member: Member;
+  roadmap: number;
+};
 
 export type CommentInfo = {
-  id: number
-  content: string
-  roadmapId: number
-  member: Member
-  questId: number | null
-  createdAt: string
-}
+  id: number;
+  content: string;
+  roadmapId: number;
+  member: Member;
+  questId: number | null;
+  createdAt: string;
+};
 export type RoadmapInfo = {
-  title: string
+  title: string;
   category: {
-    id: number
-    name: string
-  }
-  description: string
-  thumbnail: string
-  member: Member
+    id: number;
+    name: string;
+  };
+  description: string;
+  thumbnail: string;
+  member: Member;
   hashtags: {
-    id: number
-    name: string
-  }[]
+    id: number;
+    name: string;
+  }[];
 
-  likeCount: number
-  viewCount: number
+  likeCount: number;
+  viewCount: number;
   layers: {
     layer: {
-      id: number
-      name: string
-      description: string
-      layerSeq: number
-    }
+      id: number;
+      name: string;
+      description: string;
+      layerSeq: number;
+    };
     markers: {
-      id: number
-      name: string
-      description: string
-      address: string
-      lat: number
-      lng: number
-      color: string
+      id: number;
+      name: string;
+      description: string;
+      address: string;
+      lat: number;
+      lng: number;
+      color: string;
       customImage: {
-        id: number
-        name: string
-        markerImage: string
-      }
-      markerSeq: number
-      layerId: number
-    }[]
-  }[]
+        id: number;
+        name: string;
+        markerImage: string;
+      };
+      markerSeq: number;
+      layerId: number;
+    }[];
+  }[];
 
-  isPublic: true
-  isAnimated: true
-}
+  isPublic: true;
+  isAnimated: true;
+};
 
 export type BookmarksInfo = {
-  id: number
-  roadmap: number
-  member: number
-  bookmarkId: number
-}
+  id: number;
+  roadmap: number;
+  member: number;
+  bookmarkId: number;
+};
 
 export type CategoryInfo = {
-  id: number
-  name: string
-  categoryImage: null | string
-  description: string
-  createdAt: string
-}
+  id: number;
+  name: string;
+  categoryImage: null | string;
+  description: string;
+  createdAt: string;
+};
 
 export type MarkerInfo = {
-  id: number
-  name: string
-  description: string
-  lat: number
-  lng: number
-  color: string
-  imageUrl: string
-  markerSeq: number
-  layer: number
-  member: Member
-}
+  id: number;
+  name: string;
+  description: string;
+  lat: number;
+  lng: number;
+  color: string;
+  imageUrl: string;
+  markerSeq: number;
+  layer: number;
+  member: Member;
+};
 
 export type QuestInfo = {
-  id: number
-  title: string
-  questImage: string
-  description: string
-  hint: string
-  deadline: string
-  createdAt: string
-  completedAt: string
-  updatedAt: string
-  deletedAt: string
-  member: Member
-  viewCount: number
-  isActive: true
-}
+  id: number;
+  title: string;
+  questImage: string;
+  description: string;
+  hint: string;
+  deadline: string;
+  createdAt: string;
+  completedAt: string;
+  updatedAt: string;
+  deletedAt: string;
+  member: Member;
+  viewCount: number;
+  isActive: true;
+};
 
 export type SubmissionInfo = {
-  questId?: string
-  title: string
-  description: string
-  profileImage: string
-  imageUrl: string
-  nickname: string
-  submittedAt: string
-  isRecognized: boolean
-  id: number | null
-  memberId?: number | null
-}
+  questId?: string;
+  title: string;
+  description: string;
+  profileImage: string;
+  imageUrl: string;
+  nickname: string;
+  submittedAt: string;
+  isRecognized: boolean;
+  id: number | null;
+  memberId?: number | null;
+  createdAt?: string;
+  isActive?: boolean;
+};
 
 export type RankingInfo = {
-  rank: number
-  memberProfileImageUrl: string
-  memberName: string
-  profileImageUrl: string
-}
+  rank: number;
+  memberProfileImageUrl: string;
+  memberName: string;
+  profileImageUrl: string;
+};
 
 export type QuestDetailData = {
-  quest: QuestInfo
-  submission: SubmissionInfo[]
-  comments: CommentInfo[]
-}
+  quest: QuestInfo;
+  submission: SubmissionInfo[];
+  comments: CommentInfo[];
+};
 export type QuestDetailPlayProps = {
-  submissionInfo: SubmissionInfo[]
-  rankingInfo: RankingInfo[]
-}
+  submissionInfo: SubmissionInfo[];
+  rankingInfo: RankingInfo[];
+};
 
 export type RoadmapWriteProps = {
-  categories: CategoryInfo[]
-}
+  categories: CategoryInfo[];
+};
 
 export type RoadmapDetailProps = {
-  roadmap: RoadmapInfo
-  comments: CommentInfo[]
-}
+  roadmap: RoadmapInfo;
+  comments: CommentInfo[];
+};
 
 export type MyZzimLayersInfo = {
-  id: number
-  name: string
-  description: string
-  layerSeq: number
-  createdAt: string
-  updatedAt: string
-  deletedAt: string
+  id: number;
+  name: string;
+  description: string;
+  layerSeq: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
   member: {
-    id: number
-    name: string
-    nickname: string
-    email: string
-    profileImage: string
-    role: string
-  }
+    id: number;
+    name: string;
+    nickname: string;
+    email: string;
+    profileImage: string;
+    role: string;
+  };
   roadmap: {
-    id: number
-    categoryId: number
-    title: string
-    memberId: number
-    mapType: string
-  }
+    id: number;
+    categoryId: number;
+    title: string;
+    memberId: number;
+    mapType: string;
+  };
   forkHistories: {
-    forkedLayerId: number
-    forkedLayerName: string
+    forkedLayerId: number;
+    forkedLayerName: string;
     forkedRoadmap: {
-      id: number
-      categoryId: number
-      title: string
-      memberId: number
-      mapType: string
-    }
-    forkedAt: string
-  }
+      id: number;
+      categoryId: number;
+      title: string;
+      memberId: number;
+      mapType: string;
+    };
+    forkedAt: string;
+  };
 
   markers: {
-    id: number
-    name: string
-    lat: number
-    lng: number
-  }[]
-}
+    id: number;
+    name: string;
+    lat: number;
+    lng: number;
+  }[];
+};
 
 export type MarkerData = {
-  name?: string
-  description?: string
-  color?: string
-  customImageId?: string | null
-  id: number
-  lat: number
-  lng: number
-  address: string
-}
+  name?: string;
+  description?: string;
+  color?: string;
+  customImageId?: string | null;
+  id: number;
+  lat: number;
+  lng: number;
+  address: string;
+};
 export type LayerMarkers = {
-  [layerName: string]: MarkerData[]
-}
+  [layerName: string]: MarkerData[];
+};
 
 export type MapProps = {
-  center?: google.maps.LatLngLiteral
-  selectedLayer: string
-  layerMarkers: LayerMarkers
-  onMapClick: (lat: number, lng: number) => void
-  onMarkerDelete: (layer: string, id: number) => void
-}
+  center?: google.maps.LatLngLiteral;
+  selectedLayer: string;
+  layerMarkers: LayerMarkers;
+  onMapClick: (lat: number, lng: number) => void;
+  onMarkerDelete: (layer: string, id: number) => void;
+};
 
 export type CategorySetting = {
-  id: number
-  name: string
-}
+  id: number;
+  name: string;
+};
 
 export type Marker = {
-  id: number
-  name: string
-  description: string
-  lat: number
-  lng: number
-  color: string
-  imageUrl: string
-  markerSeq: number
-  layer: number
+  id: number;
+  name: string;
+  description: string;
+  lat: number;
+  lng: number;
+  color: string;
+  imageUrl: string;
+  markerSeq: number;
+  layer: number;
   member?: {
-    id: number
-    name: string
-    nickname: string
-    email: string
-    profileImage: string
-  }
-}
+    id: number;
+    name: string;
+    nickname: string;
+    email: string;
+    profileImage: string;
+  };
+};
 
 export type LandingCategories = {
-  id: number
-  name: string
-  description: string
-  categoryImage: string | null
-  createdAt: string
-}
+  id: number;
+  name: string;
+  description: string;
+  categoryImage: string | null;
+  createdAt: string;
+};
 
 export type LandingCategoryResponse = {
-  code: string
-  message: string
-  timestamp: string
-  categories: LandingCategories[]
-}
+  code: string;
+  message: string;
+  timestamp: string;
+  categories: LandingCategories[];
+};
 
 export type SearchInputProps = {
-  value: string
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  placeholder?: string
-  className?: string
-}
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  className?: string;
+};
 
 export type QuestSummary = {
-  id: number
-  createdAt: string
-  title: string
-  questImage: string
-  description: string
-  deadline: string
-  isActive: boolean
+  id: number;
+  createdAt: string;
+  title: string;
+  questImage: string;
+  description: string;
+  deadline: string;
+  isActive: boolean;
   member: {
-    nickname: string
-    profileImage: string | null
-  }
-}
+    nickname: string;
+    profileImage: string | null;
+  };
+};
+
+export type ConfirmModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  onDelete: () => void;
+  confirmType: DeleteType;
+};
+
+export type DeleteType =
+  | 'post'
+  | 'comment'
+  | 'account'
+  | 'notice'
+  | 'marker'
+  | 'category'
+  | 'layer';
+
+export type UserModalProps = {
+  onClose: () => void;
+  isAdmin?: boolean;
+};
+
+export type BannerProps = {
+  title: string;
+  subtitle: string;
+};
+
+export type LandingCategoryCardProps = {
+  image: string | null;
+  name: string;
+  description: string;
+};
+
+export type ScrollStepProps = {
+  title: string;
+  description: string;
+  imageSrc: string;
+  reverse?: boolean;
+  className?: string;
+};
+
+export type SkeletonCategoryCardProps = {
+  repeat?: number;
+};
+
+export type PasswordInputProps = {
+  label?: string;
+  placeholder?: string;
+  className?: string;
+  name?: string;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+export type mergeSubmissionWithIdSubmissionRaw = {
+  title: string;
+  description: string;
+  profileImage: string;
+  imageUrl: string;
+  nickname: string;
+  submittedAt: string;
+  isRecognized: boolean;
+};
+
+export type mergeSubmissionWithIdMemberQuest = {
+  id: number;
+  title: string;
+  description: string;
+  imageUrl: string;
+  member: {
+    nickname: string;
+  };
+};

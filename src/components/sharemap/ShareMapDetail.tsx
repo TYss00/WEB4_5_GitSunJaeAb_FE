@@ -25,6 +25,7 @@ import { CommentInfo } from '@/types/type'
 import Comment from '../comment/Comment'
 import { useBookmarkStore } from '@/store/useBookmarkStore'
 import LoadingSpinner from '../common/LoadingSpener'
+import { toast } from 'react-toastify'
 
 const containerStyle = {
   width: '100%',
@@ -127,10 +128,12 @@ export default function ShareMapDetail() {
   const handleDelete = async () => {
     try {
       await axiosInstance.delete(`/roadmaps/${id}`)
+      toast.success('삭제가 완료되었습니다.')
       router.push('/dashbord/sharemap')
+      router.refresh()
     } catch (error) {
       console.error('삭제 실패: ', error)
-      alert('삭제 권한이 없거나 실패했습니다.')
+      toast.error('삭제 권한이 없거나 실패했습니다.')
     } finally {
       setIsDeleteOpen(false)
     }
