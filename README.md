@@ -1,6 +1,6 @@
 4기 (5회차) FE / 4차 최종 프로젝트 / Git선~을 제압해~ 팀의 FE 리포지토리입니다
 # 0. 시작하기
-<img width="1024" height="1024" alt="defaultProfile" src="https://github.com/user-attachments/assets/c88a3890-4f3e-4883-bf4b-ec746e4d7e55" />
+<img width="500" height="500" alt="defaultProfile" src="https://github.com/user-attachments/assets/e870b2c0-2d6a-42b0-9497-348c6b42c95a" />
 [MAPICK](https://mapick.vercel.app/)
 
 <br/>
