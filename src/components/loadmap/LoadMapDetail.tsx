@@ -354,7 +354,7 @@ export default function Loadmapdetail() {
 
             {/* 공용 컴포넌트 댓글 */}
             <div className="mt-8 border-t border-gray-300 pt-4">
-              <Comment variant="roadmap" commentsInfo={commentsInfo} />
+              <Comment variant="roadmap" author={roadMapInfo.member.id} commentsInfo={commentsInfo} />
             </div>
           </div>
         </div>
