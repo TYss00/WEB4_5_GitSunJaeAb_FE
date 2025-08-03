@@ -4,33 +4,38 @@ import { useState } from 'react';
 import { ChevronDown, ChevronUp, Layers, Plus, Trash2 } from 'lucide-react';
 import ShareMarkerEdit from './ShareMarkerEdit';
 import { ShareLayerEditProps } from '@/types/type';
-import useShareStore from '@/store/useShareStore';
 import { Layer } from '@/types/share';
+import { getShareStoreByRoomId } from '@/store/useShareStore'; // ✅ 추가
 
 export default function ShareLayerEdit({
+  roadmapId, // ✅ props로 받기
   layer,
   isTextArea = true,
   defaultOpen = true,
   mapRef,
   onSelect,
 }: ShareLayerEditProps & {
+  roadmapId: number; // ✅ 명시
   mapRef: React.RefObject<google.maps.Map | null>;
   layer: Layer;
 }) {
+  const useShareStore = getShareStoreByRoomId(`sharemap-room-${roadmapId}`); // ✅ store 분기
+
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [markerUIs, setMarkerUIs] = useState([{ id: 1 }]);
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(layer.name);
 
+  const removeMarker = useShareStore((state) => state.removeMarker); // ✅ store 사용
+  const markers = useShareStore((state) => state.markers);
+  const removeLayer = useShareStore((state) => state.removeLayer);
+  const renameLayer = useShareStore((state) => state.renameLayer);
+
+  const layerId = layer.layerTempId;
+
   const addMarker = () => {
     setMarkerUIs((prev) => [...prev, { id: Date.now() }]);
   };
-
-  const removeMarker = useShareStore((state) => state.removeMarker);
-  const markers = useShareStore((state) => state.markers);
-  const layerId = layer.layerTempId;
-  const removeLayer = useShareStore((state) => state.removeLayer);
-  const renameLayer = useShareStore((state) => state.renameLayer);
 
   const handleRename = () => {
     renameLayer(layer.layerTempId, name.trim() || '레이어');
@@ -51,9 +56,7 @@ export default function ShareLayerEdit({
         }`}
         onClick={() => {
           setIsOpen((prev) => !prev);
-          if (!isOpen && onSelect) {
-            onSelect();
-          }
+          if (!isOpen && onSelect) onSelect();
         }}
       >
         <div className="flex gap-[10px] items-center">
@@ -72,11 +75,7 @@ export default function ShareLayerEdit({
                 className="text-[18px] bg-transparent border-b border-[var(--primary-300)] focus:outline-none"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                onBlur={() => {
-                  setTimeout(() => {
-                    handleRename();
-                  }, 100);
-                }}
+                onBlur={() => setTimeout(handleRename, 100)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleRename();
                 }}
@@ -119,6 +118,7 @@ export default function ShareLayerEdit({
           {layerMarkers.map((marker) => (
             <ShareMarkerEdit
               key={marker.markerTempId}
+              roadmapId={roadmapId}
               isTextArea={isTextArea}
               mapRef={mapRef}
               marker={marker}
@@ -129,6 +129,7 @@ export default function ShareLayerEdit({
           {markerUIs.map((marker) => (
             <ShareMarkerEdit
               key={marker.id}
+              roadmapId={roadmapId}
               isTextArea={isTextArea}
               mapRef={mapRef}
               onDelete={() =>

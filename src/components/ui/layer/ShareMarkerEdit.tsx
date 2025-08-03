@@ -5,7 +5,7 @@ import { MapPin, Trash2 } from 'lucide-react';
 import Button from '../Button';
 import DaumPostcodeEmbed from 'react-daum-postcode';
 import { geocodeAddress } from '@/libs/geocode';
-import useShareStore from '@/store/useShareStore';
+import { getShareStoreByRoomId } from '@/store/useShareStore'; // ✅ 변경된 부분
 import { MarkerWithAddress } from '@/types/share';
 
 export interface AddressData {
@@ -13,6 +13,7 @@ export interface AddressData {
 }
 
 interface ShareMarkerEditProps {
+  roadmapId: number; // ✅ 추가
   marker?: MarkerWithAddress;
   isTextArea?: boolean;
   onDelete: () => void;
@@ -20,11 +21,14 @@ interface ShareMarkerEditProps {
 }
 
 export default function ShareMarkerEdit({
+  roadmapId, // ✅ 추가
   marker,
   isTextArea,
   onDelete,
   mapRef,
 }: ShareMarkerEditProps) {
+  const useShareStore = getShareStoreByRoomId(`sharemap-room-${roadmapId}`); // ✅ getShareStoreByRoomId 사용
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [address, setAddress] = useState(
     marker?.address || '주소를 입력해주세요.'
@@ -40,6 +44,7 @@ export default function ShareMarkerEdit({
 
   const addMarker = useShareStore((state) => state.addMarker);
   const selectedLayerId = useShareStore((state) => state.selectedLayerId);
+  const updateMarker = useShareStore((state) => state.updateMarker);
 
   const handleComplete = async (data: AddressData) => {
     const fullAddress = data.address;
@@ -50,7 +55,6 @@ export default function ShareMarkerEdit({
       const coords = await geocodeAddress(fullAddress);
       if (!coords) return;
 
-      // 지도 중심 이동
       mapRef.current?.panTo({ lat: coords.lat, lng: coords.lng });
 
       addMarker({
@@ -69,7 +73,6 @@ export default function ShareMarkerEdit({
       console.error('지오코딩 실패:', err);
     }
   };
-  const updateMarker = useShareStore((state) => state.updateMarker);
 
   const handleNameSave = () => {
     setIsEditingName(false);
@@ -83,6 +86,7 @@ export default function ShareMarkerEdit({
       handleNameSave();
     }
   };
+
   const handleDescriptionBlur = () => {
     if (marker?.markerTempId) {
       updateMarker(marker.markerTempId, { description });
