@@ -26,7 +26,7 @@ export default function QuestDeatilRanking() {
         const res = await axiosInstance.get(
           `/quests/${questId}/correctRanking`
         );
-        setRanking(res.data);
+        setRanking(res.data.reverse());
       } catch (err) {
         console.error('랭킹 데이터 불러오기 실패', err);
       } finally {
@@ -63,6 +63,7 @@ export default function QuestDeatilRanking() {
                 alt="프로필 이미지"
                 width={80}
                 height={80}
+                className="w-full h-full object-cover rounded-full"
               />
             </div>
             <h4 className="pt-1">{top3[1].memberName}</h4>
@@ -82,6 +83,7 @@ export default function QuestDeatilRanking() {
                   alt="프로필 이미지"
                   width={100}
                   height={100}
+                  className="w-full h-full object-cover rounded-full"
                 />
               </div>
               <Crown
@@ -106,6 +108,7 @@ export default function QuestDeatilRanking() {
                 alt="프로필 이미지"
                 width={80}
                 height={80}
+                className="w-full h-full object-cover rounded-full"
               />
             </div>
             <h4 className="pt-1">{top3[2].memberName}</h4>
@@ -116,12 +119,12 @@ export default function QuestDeatilRanking() {
       {/* 4등 이하 영역 */}
       {isOpen && (
         <div className="mt-4.5 transition-all duration-300 ease-in-out">
-          {rest.map((ranker) => (
+          {rest.map((ranker, index) => (
             <div
               key={ranker.rank}
               className="flex gap-4 items-center border border-[var(--gray-50)] px-4 py-2 bg-[var(--gray-40)] rounded-[8px] mb-4"
             >
-              <p className="font-medium text-[15px]">{ranker.rank}</p>
+              <p className="font-medium text-[15px]">{index + 4}</p>
               <div className="bg-gray-800 rounded-full size-10 overflow-hidden">
                 <Image
                   src={
