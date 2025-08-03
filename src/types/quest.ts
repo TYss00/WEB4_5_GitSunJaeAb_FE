@@ -28,6 +28,7 @@ export type QuestPlayListProps = {
   onSelect: (answer: SubmissionInfo) => void;
   onFormOpen: () => void;
   questIsActive: boolean;
+  questAuthorId: number;
 };
 
 export type QuestPlayViewProps = {
