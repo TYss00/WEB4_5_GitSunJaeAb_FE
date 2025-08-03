@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import axiosInstance from '@/libs/axios';
 import { RankingInfo } from '@/types/type';
 import Image from 'next/image';
+import QuestDetailRankingSkeleton from './skeleton/QuestDetailRankingSkeleton';
 
 export default function QuestDeatilRanking() {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,29 +15,37 @@ export default function QuestDeatilRanking() {
   const questId = typeof params?.id === 'string' ? params.id : null;
 
   const [ranking, setRanking] = useState<RankingInfo[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!questId) return;
 
     const fetch = async () => {
       try {
-        const ranking = await axiosInstance.get(
+        setIsLoading(true);
+        const res = await axiosInstance.get(
           `/quests/${questId}/correctRanking`
         );
-        setRanking(ranking.data);
+        setRanking(res.data);
       } catch (err) {
         console.error('랭킹 데이터 불러오기 실패', err);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetch();
   }, [questId]);
 
-  const top3 = ranking.slice(0, 3);
-  const rest = ranking.slice(3);
+  if (isLoading) {
+    return <QuestDetailRankingSkeleton />;
+  }
 
   if (ranking.length === 0) {
     return <p className="text-center py-4 text-gray-500">랭킹이 없습니다.</p>;
   }
+
+  const top3 = ranking.slice(0, 3);
+  const rest = ranking.slice(3);
 
   return (
     <>
