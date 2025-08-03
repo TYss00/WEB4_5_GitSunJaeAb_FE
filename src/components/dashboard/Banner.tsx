@@ -6,7 +6,7 @@ import Image from 'next/image';
 export default function Banner({ title, subtitle }: BannerProps) {
   const getImagePath = () => {
     if (title === '퀘스트') return '/assets/landingQuestImg.jpg';
-    if (title === '로드맵') return '/markermap.jpg';
+    if (title === '로드맵') return '/assets/roadmapImg.jpg';
     return '/assets/SharedMap.jpg';
   };
 
