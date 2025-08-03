@@ -78,8 +78,7 @@ export default function CommentItem({
               <h4 className="text-[15px] font-medium">
                 {commentInfo.member.nickname}
               </h4>
-              {(currentUserId === commentInfo.member.id ||
-                currentUserId === author) && (
+              {currentUserId === commentInfo.member.id && (
                 <div className="relative" ref={dropdownRef}>
                   <EllipsisVertical
                     size={16}
@@ -100,6 +99,29 @@ export default function CommentItem({
                         수정하기
                       </div>
                       <div className="border-t border-gray-200 mx-2" />
+                      <div
+                        onClick={() => {
+                          setIsMenuOpen(false)
+                          setIsDeleteOpen(true)
+                        }}
+                        className="w-full text-left px-4 py-2 text-[12px] hover:bg-gray-100 flex items-center gap-2 text-red-500 cursor-pointer"
+                      >
+                        <Trash2 size={16} />
+                        삭제하기
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+              {currentUserId === author && (
+                <div className="relative" ref={dropdownRef}>
+                  <EllipsisVertical
+                    size={16}
+                    className="cursor-pointer"
+                    onClick={() => setIsMenuOpen((prev) => !prev)}
+                  />
+                  {isMenuOpen && (
+                    <div className="absolute top-[130%] right-full -translate-y-1/2 mr-2 w-36 bg-white border border-gray-200 rounded-md shadow z-50">
                       <div
                         onClick={() => {
                           setIsMenuOpen(false)
