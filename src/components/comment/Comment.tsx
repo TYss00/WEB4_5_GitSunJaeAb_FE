@@ -23,7 +23,7 @@ export default function Comment({
 
   //새 댓글 추가 핸들러
   const handleAddComment = (newComment: CommentInfo) => {
-    setComments((prev) => [newComment, ...prev])
+    setComments((prev) => [ ...prev, newComment])
   }
 
   return (
