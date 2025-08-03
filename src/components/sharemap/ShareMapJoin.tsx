@@ -25,6 +25,7 @@ import { RoadmapDetailResponse } from '@/types/share';
 import axiosInstance from '@/libs/axios';
 import Image from 'next/image';
 import { useBookmarkStore } from '@/store/useBookmarkStore';
+import LoadingSpinner from '../common/LoadingSpener';
 
 export default function ShareMapJoin() {
   const router = useRouter();
@@ -86,7 +87,7 @@ export default function ShareMapJoin() {
     }
   }, [id, roadmap, initBookmark]);
 
-  if (!roadmap) return <div className="text-center py-20">로딩 중...</div>;
+  if (!roadmap) return <LoadingSpinner />;
 
   function getShortAddress(fullAddress: string): string {
     const parts = fullAddress.split(' ');

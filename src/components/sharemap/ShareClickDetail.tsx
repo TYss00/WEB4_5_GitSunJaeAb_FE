@@ -23,6 +23,7 @@ import axiosInstance from '@/libs/axios';
 import { RoadmapDetailResponse } from '@/types/share';
 import Image from 'next/image';
 import { useBookmarkStore } from '@/store/useBookmarkStore';
+import LoadingSpinner from '../common/LoadingSpener';
 
 export default function ShareClickDetail() {
   const router = useRouter();
@@ -57,7 +58,7 @@ export default function ShareClickDetail() {
     }
   }, [id, roadmap, initBookmark]);
 
-  if (!roadmap) return <div className="text-center py-20">로딩 중...</div>;
+  if (!roadmap) return <LoadingSpinner />;
 
   function getShortAddress(fullAddress: string): string {
     const parts = fullAddress.split(' ');
