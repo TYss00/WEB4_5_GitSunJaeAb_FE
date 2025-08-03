@@ -12,9 +12,11 @@ import { MemberQuest, SubmissionRaw } from '@/types/quest';
 export default function QuestDetailPlay({
   submissionInfo,
   questAuthorId,
+  questIsActive,
 }: {
   submissionInfo: SubmissionInfo[];
   questAuthorId: number;
+  questIsActive: boolean;
 }) {
   const [submissions, setSubmissions] = useState(submissionInfo);
 
@@ -73,6 +75,7 @@ export default function QuestDetailPlay({
           submission={submissions}
           onSelect={(submission) => setSelectedSubmission(submission)}
           onFormOpen={() => setIsFormOpen(true)}
+          questIsActive={questIsActive}
         />
       )}
     </>

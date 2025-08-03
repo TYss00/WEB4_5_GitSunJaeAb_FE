@@ -145,6 +145,7 @@ export type MemberQuest = {
     profileImage: string | null;
   };
   deletedAt: string | null;
+  viewCount?: number;
 };
 
 export type ParticipatedItem = {

@@ -10,6 +10,7 @@ export default function QuestPlayList({
   submission,
   onSelect,
   onFormOpen,
+  questIsActive,
 }: QuestPlayListProps) {
   const [activeTab, setActiveTab] = useState('전체');
   const tabs = ['전체', '정답', '오답', '대기'];
@@ -22,6 +23,8 @@ export default function QuestPlayList({
       new Date(b.createdAt ?? b.submittedAt).getTime() -
       new Date(a.createdAt ?? a.submittedAt).getTime()
   );
+
+  const canParticipate = !hasParticipated && questIsActive;
 
   const filtered =
     activeTab === '전체'
@@ -38,6 +41,13 @@ export default function QuestPlayList({
               return true;
           }
         });
+
+  const emptyMessage = {
+    전체: '참여한 사람이 없습니다.',
+    정답: '정답자가 없습니다.',
+    오답: '오답자가 없습니다.',
+    대기: '대기 중인 사람이 없습니다.',
+  }[activeTab];
 
   return (
     <div className="w-full h-full border border-[var(--gray-200)] rounded-[10px] p-4">
@@ -76,53 +86,59 @@ export default function QuestPlayList({
         <QuestDeatilRanking />
       ) : (
         <>
-          <div className="max-h-[460px] overflow-y-auto">
+          <div className="h-[460px] overflow-y-auto">
             {/* 리스트 */}
-            {filtered.map((item) => (
-              <div
-                onClick={() => onSelect(item)}
-                key={item.submittedAt}
-                className="flex gap-3 mb-4 cursor-pointer"
-              >
+            {filtered.length === 0 ? (
+              <p className="text-[var(--gray-300)] text-center py-8">
+                {emptyMessage}
+              </p>
+            ) : (
+              filtered.map((item) => (
                 <div
-                  className="bg-gray-600 relative w-[160px] h-[100px] rounded-[10px]"
-                  style={{
-                    backgroundImage: `url(${item.imageUrl})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                  }}
+                  onClick={() => onSelect(item)}
+                  key={item.submittedAt}
+                  className="flex gap-3 mb-4 cursor-pointer"
                 >
-                  <span
-                    className={`absolute bottom-1.5 left-1.5 text-white rounded-[10px] px-2.5 py-1 ${
-                      item.isRecognized === true
-                        ? 'bg-[var(--primary-200)]'
-                        : item.isRecognized === false
-                        ? 'bg-[var(--red)]'
-                        : 'bg-[var(--gray-300)]'
-                    }`}
+                  <div
+                    className="bg-gray-600 relative w-[160px] h-[100px] rounded-[10px]"
+                    style={{
+                      backgroundImage: `url(${item.imageUrl})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat',
+                    }}
                   >
-                    {item.isRecognized === true
-                      ? '정답'
-                      : item.isRecognized === false
-                      ? '오답'
-                      : '대기'}
-                  </span>
-                </div>
-                <div className="py-2.5 flex flex-col justify-between">
-                  <h4 className="text-[18px] font-medium">{item.title}</h4>
-                  <div>
-                    <p className="font-medium text-sm">{item.nickname}</p>
-                    <p className="text-[13px] text-[var(--gray-200)]">
-                      {item.createdAt!.slice(0, 10)}
-                    </p>
+                    <span
+                      className={`absolute bottom-1.5 left-1.5 text-white rounded-[10px] px-2.5 py-1 ${
+                        item.isRecognized === true
+                          ? 'bg-[var(--primary-200)]'
+                          : item.isRecognized === false
+                          ? 'bg-[var(--red)]'
+                          : 'bg-[var(--gray-300)]'
+                      }`}
+                    >
+                      {item.isRecognized === true
+                        ? '정답'
+                        : item.isRecognized === false
+                        ? '오답'
+                        : '대기'}
+                    </span>
+                  </div>
+                  <div className="py-2.5 flex flex-col justify-between">
+                    <h4 className="text-[18px] font-medium">{item.title}</h4>
+                    <div>
+                      <p className="font-medium text-sm">{item.nickname}</p>
+                      <p className="text-[13px] text-[var(--gray-200)]">
+                        {item.createdAt!.slice(0, 10)}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
-          {!hasParticipated && (
+          {canParticipate && (
             <Button
               onClick={onFormOpen}
               buttonStyle="green"

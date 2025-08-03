@@ -8,11 +8,14 @@ import QuestCard from '../ui/card/QuestCard';
 import { CardListProps } from '@/types/type';
 import { RoadmapResponse, MemberQuest } from '@/types/myprofile';
 import SkeletonCard from './skeleton/SkeletonCard';
+import useQuestStore from '@/store/useQuestStore';
 
 export default function CardList({ type }: CardListProps) {
-  const [sort, setSort] = useState<'recent' | 'popular'>('recent');
+  const [sort, setSort] = useState<'recent' | 'deadline' | 'popular'>('recent');
   const [roadmaps, setRoadmaps] = useState<RoadmapResponse[]>([]);
-  const [quests, setQuests] = useState<MemberQuest[]>([]);
+  const quests = useQuestStore((state) => state.quests);
+  const setQuests = useQuestStore((state) => state.setQuests);
+  const refreshTrigger = useQuestStore((state) => state.refreshTrigger);
   const [categories, setCategories] = useState<string[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<string>('전체');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -30,12 +33,11 @@ export default function CardList({ type }: CardListProps) {
               ? [...data].sort(
                   (a, b) => (b.viewCount ?? 0) - (a.viewCount ?? 0)
                 )
-              : [...data].sort((a, b) => {
-                  return (
+              : [...data].sort(
+                  (a, b) =>
                     new Date(b.createdAt ?? '').getTime() -
                     new Date(a.createdAt ?? '').getTime()
-                  );
-                });
+                );
 
           setRoadmaps(sorted);
         } else if (type === 'quest') {
@@ -58,10 +60,18 @@ export default function CardList({ type }: CardListProps) {
             );
             setQuests(sorted);
           } else {
-            const sorted = rawQuests.sort(
-              (a, b) =>
-                new Date(a.deadline).getTime() - new Date(b.deadline).getTime()
-            );
+            const sorted =
+              sort === 'deadline'
+                ? rawQuests.sort(
+                    (a, b) =>
+                      new Date(a.deadline).getTime() -
+                      new Date(b.deadline).getTime()
+                  )
+                : rawQuests.sort(
+                    (a, b) =>
+                      new Date(b.createdAt).getTime() -
+                      new Date(a.createdAt).getTime()
+                  );
             setQuests(sorted);
           }
         }
@@ -71,7 +81,7 @@ export default function CardList({ type }: CardListProps) {
     };
 
     fetchData();
-  }, [type, sort]);
+  }, [type, sort, setQuests, refreshTrigger]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -139,18 +149,28 @@ export default function CardList({ type }: CardListProps) {
           />
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-3">
           <button
             onClick={() => setSort('recent')}
-            className={`px-4 py-2 text-[18px] font-bold ${
+            className={`px-4 py-2 text-[18px] font-bold cursor-pointer ${
               sort === 'recent' ? ' text-[#005C54]' : 'text-[#9F9F9F]'
             }`}
           >
             최신순
           </button>
+          {type === 'quest' && (
+            <button
+              onClick={() => setSort('deadline')}
+              className={`px-4 py-2 text-[18px] font-bold cursor-pointer ${
+                sort === 'deadline' ? ' text-[#005C54]' : 'text-[#9F9F9F]'
+              }`}
+            >
+              마감일순
+            </button>
+          )}
           <button
             onClick={() => setSort('popular')}
-            className={`px-4 py-2 text-[18px] font-bold ${
+            className={`px-4 py-2 text-[18px] font-bold cursor-pointer ${
               sort === 'popular' ? 'text-[#005C54]' : 'text-[#9F9F9F]'
             }`}
           >
@@ -160,12 +180,15 @@ export default function CardList({ type }: CardListProps) {
       </div>
 
       <div className="grid grid-cols-3 gap-[31px]">
-        {isLoading
-          ? Array.from({ length: 3 }).map((_, idx) => (
-              <SkeletonCard key={idx} />
-            ))
-          : type === 'roadmap'
-          ? filteredRoadmaps.map((roadmap) => (
+        {isLoading ? (
+          Array.from({ length: 3 }).map((_, idx) => <SkeletonCard key={idx} />)
+        ) : type === 'roadmap' ? (
+          filteredRoadmaps.length === 0 ? (
+            <p className="col-span-3 text-center text-gray-500">
+              해당 게시물이 없습니다.
+            </p>
+          ) : (
+            filteredRoadmaps.map((roadmap) => (
               <div key={roadmap.id} className="cursor-pointer">
                 <RoadMapCard
                   id={roadmap.id}
@@ -187,24 +210,31 @@ export default function CardList({ type }: CardListProps) {
                 />
               </div>
             ))
-          : filteredQuests.map((quest) => (
-              <div key={quest.id} className="cursor-pointer">
-                <QuestCard
-                  id={quest.id}
-                  isInProgress={
-                    quest.isActive && new Date(quest.deadline) > new Date()
-                  }
-                  mapImageUrl={quest.questImage}
-                  title={quest.title}
-                  description={quest.description}
-                  profileImgUrl={
-                    quest.member.profileImage ?? '/assets/defaultProfile.png'
-                  }
-                  author={quest.member.nickname}
-                  deadLine={quest.deadline?.split('T')[0]}
-                />
-              </div>
-            ))}
+          )
+        ) : filteredQuests.length === 0 ? (
+          <p className="col-span-3 text-center text-gray-500">
+            해당 게시물이 없습니다.
+          </p>
+        ) : (
+          filteredQuests.map((quest) => (
+            <div key={quest.id} className="cursor-pointer">
+              <QuestCard
+                id={quest.id}
+                isInProgress={
+                  quest.isActive && new Date(quest.deadline) > new Date()
+                }
+                mapImageUrl={quest.questImage}
+                title={quest.title}
+                description={quest.description}
+                profileImgUrl={
+                  quest.member.profileImage ?? '/assets/defaultProfile.png'
+                }
+                author={quest.member.nickname}
+                deadLine={quest.deadline?.split('T')[0]}
+              />
+            </div>
+          ))
+        )}
       </div>
     </section>
   );

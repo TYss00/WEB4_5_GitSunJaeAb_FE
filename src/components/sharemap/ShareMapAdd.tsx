@@ -144,7 +144,7 @@ export default function ShareMapAdd() {
       }
     } catch (err) {
       console.error('작성 실패:', err);
-      alert('작성에 실패했습니다.');
+      toast.error('작성에 실패했습니다.');
     }
   };
 

@@ -3,6 +3,7 @@
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import axiosInstance from '@/libs/axios';
+import useQuestStore from '@/store/useQuestStore';
 import { ChevronLeft, ImagePlus } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -19,6 +20,8 @@ export default function QuestWrite() {
   const [hint, setHint] = useState('');
   const isActive = true;
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const addQuest = useQuestStore((state) => state.addQuest);
+  const triggerRefresh = useQuestStore((state) => state.triggerRefresh);
 
   const handleContentClick = () => {
     fileInputRef.current?.click();
@@ -70,18 +73,25 @@ export default function QuestWrite() {
           'Content-Type': 'multipart/form-data',
         },
       });
-      // toast.success('퀘스트가 성공적으로 등록되었습니다.')
+
       const message =
         typeof res.data?.message === 'string' ? res.data.message : '';
 
       if (message.includes('업적')) {
-        toast.success(message); // "탐험의 시작 업적을 달성했어요!" 같은 메시지
+        toast.success(message);
       } else {
         toast.success('퀘스트가 성공적으로 등록되었습니다.');
       }
 
+      const newQuest = res.data.quest || res.data.data;
+
+      if (newQuest && newQuest.id) {
+        addQuest(newQuest);
+      }
+
+      triggerRefresh();
+
       handleCancel();
-      window.location.href = '/dashbord/quest';
     } catch (err) {
       console.error('퀘스트 등록 실패', err);
       toast.error('퀘스트 등록 실패');
@@ -188,9 +198,11 @@ export default function QuestWrite() {
           buttonStyle="smGreen"
           onClick={handleSubmit}
           className="w-[152px] h-[48px]"
-          disabled={!title || !deadline || !previewImage || !description}
+          disabled={
+            isSubmitting || !title || !deadline || !previewImage || !description
+          }
         >
-          등록하기
+          {isSubmitting ? '등록중...' : '등록하기'}
         </Button>
       </div>
     </div>

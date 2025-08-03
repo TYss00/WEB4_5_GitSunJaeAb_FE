@@ -20,12 +20,14 @@ export type MemberQuest = {
     nickname: string;
   };
   createdAt?: string;
+  isActive?: boolean;
 };
 
 export type QuestPlayListProps = {
   submission: SubmissionInfo[];
   onSelect: (answer: SubmissionInfo) => void;
   onFormOpen: () => void;
+  questIsActive: boolean;
 };
 
 export type QuestPlayViewProps = {

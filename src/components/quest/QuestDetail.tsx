@@ -75,6 +75,7 @@ export default function QuestDetail() {
             <QuestDetailPlay
               questAuthorId={questInfo.member.id}
               submissionInfo={submissionInfo}
+              questIsActive={questInfo.isActive}
             />
           </div>
         </div>

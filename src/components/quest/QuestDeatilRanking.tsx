@@ -34,6 +34,10 @@ export default function QuestDeatilRanking() {
   const top3 = ranking.slice(0, 3);
   const rest = ranking.slice(3);
 
+  if (ranking.length === 0) {
+    return <p className="text-center py-4 text-gray-500">랭킹이 없습니다.</p>;
+  }
+
   return (
     <>
       {/* 1~3등 영역 */}
@@ -125,14 +129,16 @@ export default function QuestDeatilRanking() {
         </div>
       )}
 
-      {/* 전체보기 버튼 */}
-      <Button
-        buttonStyle="green"
-        className="w-full text-[15px] h-[38px] cursor-pointer"
-        onClick={() => setIsOpen((prev) => !prev)}
-      >
-        {isOpen ? '닫기' : '전체 랭킹 보기'}
-      </Button>
+      {/* 전체보기 버튼 (랭킹이 3명 이상일 때만) */}
+      {ranking.length >= 3 && (
+        <Button
+          buttonStyle="green"
+          className="w-full text-[15px] h-[38px] cursor-pointer"
+          onClick={() => setIsOpen((prev) => !prev)}
+        >
+          {isOpen ? '닫기' : '전체 랭킹 보기'}
+        </Button>
+      )}
     </>
   );
 }
