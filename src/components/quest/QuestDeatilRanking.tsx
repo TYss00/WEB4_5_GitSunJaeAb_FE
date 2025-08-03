@@ -26,7 +26,7 @@ export default function QuestDeatilRanking() {
         const res = await axiosInstance.get(
           `/quests/${questId}/correctRanking`
         );
-        setRanking(res.data.reverse());
+        setRanking(res.data);
       } catch (err) {
         console.error('랭킹 데이터 불러오기 실패', err);
       } finally {
