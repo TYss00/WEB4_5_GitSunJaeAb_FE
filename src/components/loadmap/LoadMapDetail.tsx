@@ -290,7 +290,7 @@ export default function Loadmapdetail() {
               <p className="text-[16px] text-black mb-2">
                 {roadMapInfo.description}
               </p>
-              <div className="flex gap-2 text-sm text-[#005C54] mb-3">
+              <div className="flex flex-wrap max-w-full gap-2 text-sm text-[#005C54] mb-3">
                 {roadMapInfo.hashtags.map((tag: HashtagProps) => {
                   return (
                     <span
