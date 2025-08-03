@@ -76,6 +76,7 @@ export default function QuestDetailPlay({
           onSelect={(submission) => setSelectedSubmission(submission)}
           onFormOpen={() => setIsFormOpen(true)}
           questIsActive={questIsActive}
+          questAuthorId={questAuthorId}
         />
       )}
     </>

@@ -11,20 +11,22 @@ export default function QuestPlayList({
   onSelect,
   onFormOpen,
   questIsActive,
+  questAuthorId,
 }: QuestPlayListProps) {
   const [activeTab, setActiveTab] = useState('전체');
   const tabs = ['전체', '정답', '오답', '대기'];
 
   const { user } = useAuthStore();
   const hasParticipated = submission.some((s) => s.nickname === user?.nickname);
+  const isAuthor = user?.id === questAuthorId;
+
+  const canParticipate = !hasParticipated && questIsActive && !isAuthor;
 
   const sortedSubmissions = [...submission].sort(
     (a, b) =>
       new Date(b.createdAt ?? b.submittedAt).getTime() -
       new Date(a.createdAt ?? a.submittedAt).getTime()
   );
-
-  const canParticipate = !hasParticipated && questIsActive;
 
   const filtered =
     activeTab === '전체'
