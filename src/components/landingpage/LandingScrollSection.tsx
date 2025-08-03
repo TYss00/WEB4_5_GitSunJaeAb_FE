@@ -109,7 +109,7 @@ export default function LandingScrollSection() {
       <div className="min-h-[5000px] relative">
         <ScrollStep
           className="step-1"
-          imageSrc="/markermap.jpg"
+          imageSrc="/assets/roadmapImg.jpg"
           title="나만의 지도를 간편하게 만들어요!"
           description={`좋아하는 장소만 모아 나만의 테마 지도를 만들어보세요.\n산책로, 카페 리스트, 영화 속 배경지도\n클릭 몇번으로 완성되는 나만의 공간이 생겨요`}
         />
