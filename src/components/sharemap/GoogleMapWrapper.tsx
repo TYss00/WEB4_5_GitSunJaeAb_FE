@@ -69,7 +69,7 @@ export default function GoogleMapWrapper({
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={center}
-        zoom={13}
+        zoom={8}
         onClick={handleClick}
         onLoad={(map) => {
           mapRef.current = map;

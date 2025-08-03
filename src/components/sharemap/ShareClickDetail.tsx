@@ -84,7 +84,7 @@ export default function ShareClickDetail() {
             lat: Number(roadmap.regionLatitude),
             lng: Number(roadmap.regionLongitude),
           }}
-          zoom={14}
+          zoom={8}
           onLoad={(map) => {
             mapRef.current = map;
           }}

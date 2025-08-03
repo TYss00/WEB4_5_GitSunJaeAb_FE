@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
 import {
   Calendar,
   ChevronLeft,
@@ -12,81 +12,81 @@ import {
   PencilLine,
   Trash2,
   Ellipsis,
-} from 'lucide-react'
-import ReportModal from '../common/modal/ReportModal'
-import Link from 'next/link'
-import { useParams, useRouter } from 'next/navigation'
-import axiosInstance from '@/libs/axios'
-import { RoadmapDetailResponse } from '@/types/share'
-import { GoogleMap, MarkerF } from '@react-google-maps/api'
-import { useAuthStore } from '@/store/useAuthStore'
-import ConfirmModal from '../common/modal/ConfirmModal'
-import { CommentInfo } from '@/types/type'
-import Comment from '../comment/Comment'
-import { useBookmarkStore } from '@/store/useBookmarkStore'
-import LoadingSpinner from '../common/LoadingSpener'
-import { toast } from 'react-toastify'
+} from 'lucide-react';
+import ReportModal from '../common/modal/ReportModal';
+import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
+import axiosInstance from '@/libs/axios';
+import { RoadmapDetailResponse } from '@/types/share';
+import { GoogleMap, MarkerF } from '@react-google-maps/api';
+import { useAuthStore } from '@/store/useAuthStore';
+import ConfirmModal from '../common/modal/ConfirmModal';
+import { CommentInfo } from '@/types/type';
+import Comment from '../comment/Comment';
+import { useBookmarkStore } from '@/store/useBookmarkStore';
+import LoadingSpinner from '../common/LoadingSpener';
+import { toast } from 'react-toastify';
 
 const containerStyle = {
   width: '100%',
   height: '500px',
-}
+};
 
 export default function ShareMapDetail() {
-  const { id } = useParams()
+  const { id } = useParams();
 
-  const currentUserId = useAuthStore((state) => state.user?.id)
-  const [roadmap, setRoadmap] = useState<RoadmapDetailResponse | null>(null)
+  const currentUserId = useAuthStore((state) => state.user?.id);
+  const [roadmap, setRoadmap] = useState<RoadmapDetailResponse | null>(null);
   const [editors, setEditors] = useState<
     { memberId: number; nickname: string; profileImage: string }[]
-  >([])
-  const [isReportOpen, setIsReportOpen] = useState(false)
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
-  const [commentsInfo, setCommentsInfo] = useState<CommentInfo[]>([])
-  const router = useRouter()
+  >([]);
+  const [isReportOpen, setIsReportOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [commentsInfo, setCommentsInfo] = useState<CommentInfo[]>([]);
+  const router = useRouter();
 
-  const mapRef = useRef<google.maps.Map | null>(null)
-  const dropdownRef = useRef<HTMLDivElement | null>(null)
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
   const { isBookmarked, likeCount, initBookmark, toggleBookmark } =
-    useBookmarkStore()
+    useBookmarkStore();
 
   useEffect(() => {
     const fetchRoadmap = async () => {
       try {
-        const res = await axiosInstance.get(`/roadmaps/${id}`)
-        setRoadmap(res.data.roadmap)
+        const res = await axiosInstance.get(`/roadmaps/${id}`);
+        setRoadmap(res.data.roadmap);
       } catch (error) {
-        console.error('지도 상세 조회 실패:', error)
+        console.error('지도 상세 조회 실패:', error);
       }
-    }
+    };
 
     const fetchEditors = async () => {
       try {
-        const res = await axiosInstance.get(`/roadmaps/${id}/editors`)
-        setEditors(res.data.editors)
+        const res = await axiosInstance.get(`/roadmaps/${id}/editors`);
+        setEditors(res.data.editors);
       } catch (error) {
-        console.error('참여자 목록 조회 실패:', error)
+        console.error('참여자 목록 조회 실패:', error);
       }
-    }
+    };
 
     const fetchComments = async () => {
       try {
         const res = await axiosInstance.get(
           `/comments/roadmaps?roadmapId=${id}`
-        )
-        setCommentsInfo(res.data.comments)
+        );
+        setCommentsInfo(res.data.comments);
       } catch (error) {
-        console.error('댓글 불러오기 실패:', error)
+        console.error('댓글 불러오기 실패:', error);
       }
-    }
+    };
 
     if (id) {
-      fetchRoadmap()
-      fetchEditors()
-      fetchComments()
+      fetchRoadmap();
+      fetchEditors();
+      fetchComments();
     }
-  }, [id])
+  }, [id]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -94,50 +94,50 @@ export default function ShareMapDetail() {
         dropdownRef.current &&
         !dropdownRef.current.contains(e.target as Node)
       ) {
-        setIsMenuOpen(false)
+        setIsMenuOpen(false);
       }
-    }
+    };
 
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     if (id && roadmap) {
-      initBookmark(String(id), roadmap.likeCount)
+      initBookmark(String(id), roadmap.likeCount);
     }
-  }, [id, initBookmark, roadmap])
+  }, [id, initBookmark, roadmap]);
 
   if (!roadmap)
     return (
       <div className="text-center py-20">
         <LoadingSpinner />
       </div>
-    )
+    );
 
   function getShortAddress(fullAddress: string): string {
-    const parts = fullAddress.split(' ')
+    const parts = fullAddress.split(' ');
     if (parts.length >= 4) {
-      return `${parts[1]} ${parts[2]} ${parts[3]}`
+      return `${parts[1]} ${parts[2]} ${parts[3]}`;
     }
-    return fullAddress
+    return fullAddress;
   }
 
   const handleDelete = async () => {
     try {
-      await axiosInstance.delete(`/roadmaps/${id}`)
-      toast.success('삭제가 완료되었습니다.')
-      router.push('/dashbord/sharemap')
-      router.refresh()
+      await axiosInstance.delete(`/roadmaps/${id}`);
+      toast.success('삭제가 완료되었습니다.');
+      router.push('/dashbord/sharemap');
+      router.refresh();
     } catch (error) {
-      console.error('삭제 실패: ', error)
-      toast.error('삭제 권한이 없거나 실패했습니다.')
+      console.error('삭제 실패: ', error);
+      toast.error('삭제 권한이 없거나 실패했습니다.');
     } finally {
-      setIsDeleteOpen(false)
+      setIsDeleteOpen(false);
     }
-  }
+  };
 
   return (
     <>
@@ -189,8 +189,8 @@ export default function ShareMapDetail() {
                   <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-md shadow z-50">
                     <button
                       onClick={() => {
-                        setIsMenuOpen(false)
-                        router.push(`/dashbord/sharemap/detail/${id}/edit`)
+                        setIsMenuOpen(false);
+                        router.push(`/dashbord/sharemap/detail/${id}/edit`);
                       }}
                       className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2"
                     >
@@ -200,8 +200,8 @@ export default function ShareMapDetail() {
                     <div className="border-t border-gray-200 mx-2" />
                     <button
                       onClick={() => {
-                        setIsMenuOpen(false)
-                        setIsDeleteOpen(true)
+                        setIsMenuOpen(false);
+                        setIsDeleteOpen(true);
                       }}
                       className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center gap-2 text-red-500"
                     >
@@ -252,7 +252,7 @@ export default function ShareMapDetail() {
               scrollwheel: true,
             }}
             onLoad={(map) => {
-              mapRef.current = map
+              mapRef.current = map;
             }}
           >
             {roadmap.layers
@@ -268,7 +268,7 @@ export default function ShareMapDetail() {
 
         <div className="flex gap-6">
           <section className="flex-1">
-            <div className="w-full h-[360px] py-4 rounded-md flex items-center justify-center">
+            <div className="w-full py-4 rounded-md overflow-y-auto">
               <Comment
                 variant="sharemap"
                 author={roadmap.member.id}
@@ -277,7 +277,7 @@ export default function ShareMapDetail() {
             </div>
           </section>
 
-          <section className="w-[428px] border border-[var(--gray-50)] rounded-md p-4 flex flex-col h-[360px]">
+          <section className="w-[428px] border border-[var(--gray-50)] rounded-md p-4 flex flex-col h-[480px]">
             <h2 className="text-[15px] font-semibold mb-4">
               참여자 {editors.length}
             </h2>
@@ -318,5 +318,5 @@ export default function ShareMapDetail() {
         />
       )}
     </>
-  )
+  );
 }

@@ -12,8 +12,8 @@ export default function ShareMapCard({
   participants,
   className,
 }: ShareMapCardUIProps) {
-  const labelText = isEvent ? 'Event' : 'User';
-  const labelColor = isEvent ? 'var(--blue)' : 'var(--primary-300)';
+  const labelText = isEvent ? 'Hot' : 'User';
+  const labelColor = isEvent ? 'var(--red-100)' : 'var(--primary-300)';
   const router = useRouter();
 
   const handleClick = () => {
