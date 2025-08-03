@@ -163,3 +163,24 @@ export interface RoadmapDetailResponse {
   isPublic: boolean;
   isAnimated: boolean;
 }
+
+export type ShareState = {
+  layers: Layer[];
+  addLayer: () => void;
+  removeLayer: (id: number) => void;
+  renameLayer: (id: number, newName: string) => void;
+  layerSeqCounter: number;
+
+  markers: Record<string, MarkerWithAddress>;
+  selectedLayerId: number | null | 'all';
+  setSelectedLayerId: (layerId: number | 'all') => void;
+
+  roadmapId: number | null;
+  setRoadmapId: (id: number) => void; //
+
+  addMarker: (marker: NewMarkerInput) => void;
+  addMarkerDirect: (marker: Marker) => void;
+  updateMarker: (id: number, fields: Partial<MarkerWithAddress>) => void;
+  removeMarker: (id: number) => void;
+  filteredMarkers: () => MarkerWithAddress[];
+};

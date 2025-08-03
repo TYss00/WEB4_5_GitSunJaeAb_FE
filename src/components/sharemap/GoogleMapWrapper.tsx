@@ -1,7 +1,7 @@
 'use client';
 
 import { reverseGeocode } from '@/libs/geocode';
-import useShareStore from '@/store/useShareStore';
+import { getShareStoreByRoomId } from '@/store/useShareStore'; // ✅ 변경
 import { GoogleMap, MarkerF } from '@react-google-maps/api';
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
@@ -18,14 +18,19 @@ const center = {
 
 interface GoogleMapWrapperProps {
   mapRef: React.RefObject<google.maps.Map | null>;
+  roadmapId: number; // ✅ 추가
 }
 
-export default function GoogleMapWrapper({ mapRef }: GoogleMapWrapperProps) {
+export default function GoogleMapWrapper({
+  mapRef,
+  roadmapId,
+}: GoogleMapWrapperProps) {
+  const useShareStore = getShareStoreByRoomId(`sharemap-room-${roadmapId}`); // ✅ store 분기
+
   const addMarker = useShareStore((state) => state.addMarker);
   const selectedLayerId = useShareStore((state) => state.selectedLayerId);
-  const getFilteredMarkers = useShareStore((state) => state.filteredMarkers); // 함수로 가져오기
-
-  const filteredMarkers = getFilteredMarkers(); // 여기서 호출
+  const getFilteredMarkers = useShareStore((state) => state.filteredMarkers);
+  const filteredMarkers = getFilteredMarkers();
 
   const handleClick = useCallback(
     async (e: google.maps.MapMouseEvent) => {
@@ -33,12 +38,8 @@ export default function GoogleMapWrapper({ mapRef }: GoogleMapWrapperProps) {
       const lat = e.latLng.lat();
       const lng = e.latLng.lng();
 
-      if (
-        !selectedLayerId ||
-        selectedLayerId === 'all' ||
-        isNaN(Number(selectedLayerId))
-      ) {
-        toast.error('마커를 추가하려면 먼저 레이어를 선택하세요.');
+      if (!selectedLayerId) {
+        toast.error('레이어를 선택하세요.');
         return;
       }
 
