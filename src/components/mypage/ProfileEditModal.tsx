@@ -45,6 +45,12 @@ export default function ProfileEditModal({ onClose }: { onClose: () => void }) {
     try {
       if (activeTab === '프로필') {
         const formData = new FormData();
+        if (nickname === user?.nickname) {
+          toast.error('이미 사용 중인 닉네임입니다.');
+          setIsSaving(false);
+          return;
+        }
+
         formData.append(
           'member',
           new Blob([JSON.stringify({ nickname })], { type: 'application/json' })
