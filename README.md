@@ -2,7 +2,7 @@
 # 0. 시작하기
 <img width="500" height="500" alt="defaultProfile" src="https://github.com/user-attachments/assets/e870b2c0-2d6a-42b0-9497-348c6b42c95a" />
 <br>
-[MAPICK](https://mapick.vercel.app/)
+[MAPICK] 배포주소 : https://mapick.vercel.app
 
 <br/>
 
@@ -11,9 +11,6 @@
 - MAPICK
 
 ## 프로젝트 설명
-- 
-  
-## 프로젝트 목적
 - 
 
 ## 개발기간
@@ -30,7 +27,14 @@
 <br>
 
 ## 팀원 역할
-
+김태연
+-
+권태훈
+-
+이예빈
+-
+송지은
+-
 <br/>
 <br/>
 
