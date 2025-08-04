@@ -25,6 +25,8 @@
 | [@TYss00](https://github.com/TYss00) | [@KwonTaeHun00](https://github.com/KwonTaeHun00) | [@llyybbb](https://github.com/llyybbb) | [@jieun22222](https://github.com/jieun22222) |
 
 <br>
+## 같이한 백엔드팀
+https://github.com/prgrms-web-devcourse-final-project/WEB5_6_GitSunJaeAb_BE
 
 ## 팀원 역할
 
