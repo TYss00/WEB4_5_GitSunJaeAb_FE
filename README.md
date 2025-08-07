@@ -67,8 +67,16 @@ https://github.com/prgrms-web-devcourse-final-project/WEB5_6_GitSunJaeAb_BE
   - 랭킹시스템
 
 권태훈
->
--
+> 공유 지도
+  - 공유 지도 대시보드
+  - 공유 지도 게시글 상세 페이지
+    - 공유 지도 참여자 목록 조회
+  - 공유 지도 상세 페이지 
+  - 공유 지도 참여 페이지
+    - 레이어 생성
+    - 마커 생성
+> 댓글
+  - 댓글 수정 및 삭제
 
 이예빈
 >
