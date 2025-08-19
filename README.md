@@ -120,7 +120,7 @@
 - Gsap.js를 사용하여 애니메이션을 넣어 표현하였다.
 - 튜토리얼같은 느낌으로 어떤사이트인지 소개한다.
   
-<img src="https://github.com/user-attachments/assets/4f87db85-b27d-47d5-af5e-9e95c3310102" width="100%" alt="랜딩페이지" />
+<img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="랜딩 페이지" />
 미완성
 
 <br><br>
@@ -133,12 +133,13 @@
 
 <img src="https://github.com/user-attachments/assets/ea2eb8a7-993e-440f-956f-d91284ba8c4a" width="100%" alt="로그인" />
 
-<br>
+<br><br>
 
 - 소셜로그인으로도 로그인을 할수있다.
 
 <img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="소셜로그인" />
 
+<br><br>
 <br><br>
 
 ### 3. 대시보드
@@ -149,7 +150,8 @@
 - swiper를 사용하여 자동으로 넘어가거나 넘길수있도록하였다.
 
 <img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="홈 대시보드" />
-<br>
+<br><br>
+<br><br>
 
 #### 3.2. 로드맵 대시보드
 <mark> 로드맵에 마커를찍어 자신이 소개하고싶은분야를 소개하는 공간이다.</mark>
@@ -161,41 +163,42 @@
 > 로드맵 메인대시보드
 
 <img src="https://github.com/user-attachments/assets/64146c90-52cb-4450-b2c5-a7bbc4c22ecf" width="100%" alt="로드맵 대시보드" />
-<br>
+<br><br>
 
 
 > 로드맵 생성
 
 <img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="로드맵 생성" />
 미완성
-<br>
+<br><br>
 
 > 마커 직접찍기
 
 <img src="https://github.com/user-attachments/assets/270188ba-b7e0-4aa0-8c31-4281cd11c618" width="100%" alt="마커직접" />
-<br>
+<br><br>
 
 > 주소로 마커찍기
 
 <img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="주소로마커" />
 미완성
-<br>
+<br><br>
 
 > 로드맵 상세페이지
 
 <img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="로드맵상세페이지" />
 미완성
-<br>
+<br><br>
 
 > 로드맵 수정
 
 <img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="로드맵수정" />
 미완성
-<br>
+<br><br>
 
 > 로드맵 삭제
 
 <img src="https://github.com/user-attachments/assets/e05652c0-9b83-4db1-afa7-2249adbc9a90" width="100%" alt="로드맵삭제" />
+<br><br>
 <br><br>
 
 #### 3.3. 공유지도 대시보드
@@ -207,6 +210,7 @@
 
 <img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="홈 대시보드" />
 미완성
+<br><br>
 <br><br>
 
 #### 3.4. 퀘스트 대시보드
@@ -220,7 +224,7 @@
 <img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="홈 대시보드" />
 미완성
 <br><br>
-
+<br><br>
 
 ### 4. 알림 및 검색
 #### 4.1. 알림
@@ -232,6 +236,7 @@
 
 <img src="https://github.com/user-attachments/assets/c0c2428c-c869-4af3-bb70-5430af42f148" width="100%" alt="알림" />
 <br><br>
+<br><br>
 
 #### 4.2. 검색
 <mark> 게시글들을 검색할수있는 공간이다. </mark>
@@ -242,7 +247,6 @@
 
 <img src="https://github.com/user-attachments/assets/08de3c83-023f-48ab-b7f8-7e84fe2f921e" width="100%" alt="검색" />
 <br><br>
-
 <br><br>
 
 ### 5. 마이페이지
@@ -254,14 +258,14 @@
 - 자신이 쓴 게시글,참여한글등 확인할수있다.
 
 <img src="https://github.com/user-attachments/assets/26eeb730-f646-45dd-aa0f-4b704205c793" width="100%" alt="마이페이지" />
-<br>
+<br><br>
 
 #### 5.1. 소셜로그인시
 
 - 소셜로그인에서는 비밀번호를 변경할수없다.
 
 <img src="https://github.com/user-attachments/assets/4f54158b-837a-49c2-9071-69cea0ed5f85" width="100%" alt="소셜로그인마이페이지" />
-<br>
+<br><br>
 
 #### 5.2. 일반로그인시
 
@@ -281,7 +285,8 @@
 - 삭제를하면 자동으로 완료처리가된다.
 
 <img src="https://github.com/user-attachments/assets/3def8f12-d2e0-4e8b-b3f4-8608fa1259e4" width="100%" alt="신고" />
-<br>
+<br><br>
+<br><br>
 
 #### 6.2. 사용자관리
 
@@ -291,7 +296,8 @@
 - 블랙리스트를 지정,회수할수있다.
   
 <img src="https://github.com/user-attachments/assets/5e63d08b-4c00-4cf5-ab2d-10daaa0ac594" width="100%" alt="사용자 관리" />
-<br>
+<br><br>
+<br><br>
 
 #### 6.3. 카테고리관리
 
@@ -300,19 +306,20 @@
 
 > 생성
 <img src="https://github.com/user-attachments/assets/2c5c5c3e-12b9-4fe1-815b-bea1d0c2f1fb" width="100%" alt="카테고리 생성" />
-<br>
+<br><br>
 
 > 간편수정
 <img src="https://github.com/user-attachments/assets/34b989a4-9cee-471f-85da-aade72f14ac5" width="100%" alt="카테고리 수정" />
-<br>
+<br><br>
 
 > 디테일수정
 <img src="https://github.com/user-attachments/assets/f267600e-3dbe-47b1-9f40-80c501f61c98" width="100%" alt="카테고리 어려운수정" />
-<br>
+<br><br>
 
 > 삭제
 <img src="https://github.com/user-attachments/assets/896b631e-8c94-409b-930f-d46644b3efc7" width="100%" alt="카테고리 삭제" />
-<br>
+<br><br>
+<br><br>
 
 #### 6.4. 공유지도관리
 
@@ -321,7 +328,8 @@
 - 공유지도 진행율은 전체 사용자 / 참여한 사용자 비율이다.
 
 <img src="https://github.com/user-attachments/assets/3a0172e6-fe97-436f-8c6c-432eccdf1e72" width="100%" alt="공유지도 관리" />
-<br>
+<br><br>
+<br><br>
 
 #### 6.5. 관리자공지
 
@@ -332,12 +340,10 @@
   
 > 공지생성
 <img src="https://github.com/user-attachments/assets/c791a265-5c04-4dd6-a843-45a892d12f2e" width="100%" alt="관리자공지생성" />
-<br>
+<br><br>
 
 > 공지확인
 <img src="https://github.com/user-attachments/assets/17c1e5cf-238d-4a96-a202-50c0069a78bc" width="100%" alt="관리자공지확인" />
-<br>
-<br>
 <br><br>
 
 # 4. 사용한 기술
