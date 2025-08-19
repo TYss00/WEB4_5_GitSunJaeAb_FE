@@ -21,7 +21,7 @@
 <br/>
 
 # 2. 팀원 및 팀 소개
-## 팀원소개
+## 프론트팀원소개
 | 김태연(팀장) | 권태훈 | 이예빈 | 송지은 |
 |:------:|:------:|:------:|:------:|
 | <img width="160px" src="https://github.com/user-attachments/assets/ab18c001-6f75-4c10-80e5-2436544fb543" /> | <img src="https://avatars.githubusercontent.com/u/56614716?v=4" width="160px" /> | <img src="https://avatars.githubusercontent.com/u/105144795?v=4" width="160px" /> | <img width="160px" src="https://github.com/user-attachments/assets/1e8272aa-8254-40b3-bd30-a37bbf1db577" /> |
@@ -29,10 +29,10 @@
 
 <br>
 
-## 백엔드팀
+## 백엔드
 - https://github.com/prgrms-web-devcourse-final-project/WEB5_6_GitSunJaeAb_BE
 
-## 팀원소개
+## 백엔드팀원소개
 | 임서현(PO) | 김나단(팀장) | 노선우 | 이초롱 | 채철민 |
 |:------:|:------:|:------:|:------:|:------:|
 | <img width="160px" src="https://avatars.githubusercontent.com/u/132811149?v=4" /> | <img src="https://avatars.githubusercontent.com/u/168330519?v=4" width="160px" /> | <img src="https://avatars.githubusercontent.com/u/152956024?v=4" width="160px" /> | <img width="160px" src="https://avatars.githubusercontent.com/u/132190391?v=4" /> | <img width="160px" src="https://avatars.githubusercontent.com/u/133864111?v=4" /> |
@@ -114,6 +114,32 @@
 <br/>
 
 # 3. 주요기능
+### 1. 홈화면
+
+### 2. 회원
+#### 2.1. 로그인,회원가입
+#### 2.2. 관심분야설정
+
+### 3. 대시보드
+#### 3.1. 홈 대시보드
+
+#### 3.2. 로드맵 대시보드
+
+#### 3.3. 공유지도 대시보드
+
+#### 3.4. 퀘스트 대시보드
+
+
+### 4. 알림 및 검색
+#### 4.1. 알림
+
+#### 4.2. 검색
+
+### 5. 마이페이지
+
+
+### 6. 관리자페이지
+
 
 # 4. 사용한 기술
 ## 언어 및 라이브러리
