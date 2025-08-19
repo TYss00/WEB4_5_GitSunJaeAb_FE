@@ -45,7 +45,7 @@ https://github.com/prgrms-web-devcourse-final-project/WEB5_6_GitSunJaeAb_BE
     - 프로필사진 및 닉네임변경
     - 비밀번호변경
     - 관심분야재설정
-    - 업적
+    - 업적표시
       
 > 관리자페이지
   - 신고
