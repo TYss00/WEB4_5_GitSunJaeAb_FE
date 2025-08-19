@@ -30,7 +30,15 @@
 <br>
 
 ## 백엔드팀
-https://github.com/prgrms-web-devcourse-final-project/WEB5_6_GitSunJaeAb_BE
+- https://github.com/prgrms-web-devcourse-final-project/WEB5_6_GitSunJaeAb_BE
+
+## 팀원소개
+| 임서현(PO) | 김나단(팀장) | 노선우 | 이초롱 | 채철민 |
+|:------:|:------:|:------:|:------:|:------:|
+| <img width="160px" src="https://avatars.githubusercontent.com/u/132811149?v=4" /> | <img src="https://avatars.githubusercontent.com/u/168330519?v=4" width="160px" /> | <img src="https://avatars.githubusercontent.com/u/152956024?v=4" width="160px" /> | <img width="160px" src="https://avatars.githubusercontent.com/u/132190391?v=4" /> | <img width="160px" src="https://avatars.githubusercontent.com/u/133864111?v=4" /> |
+| [@nunLSH](https://github.com/nunLSH) | [@nathan960307](https://github.com/nathan960307) | [@Noopy1](https://github.com/Noopy1) | [@0802222](https://github.com/0802222) | [@moooonbong](https://github.com/moooonbong) |
+
+<br>
 
 <br>
 
