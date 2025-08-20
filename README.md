@@ -390,6 +390,7 @@
 > 공지확인
 <img src="https://github.com/user-attachments/assets/17c1e5cf-238d-4a96-a202-50c0069a78bc" width="100%" alt="관리자공지확인" />
 <br><br>
+
 # 4. 사용한 기술
 ## 언어 및 라이브러리
 ### 언어 및 프레임워크
