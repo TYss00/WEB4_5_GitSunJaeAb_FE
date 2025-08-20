@@ -120,8 +120,7 @@
 - Gsap.js를 사용하여 애니메이션을 넣어 표현하였다.
 - 튜토리얼같은 느낌으로 어떤사이트인지 소개한다.
   
-<img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="랜딩 페이지" />
-미완성
+<img src="https://github.com/user-attachments/assets/0580b7c3-d8da-4b2f-adaa-bdc0b27a76d8" width="100%" alt="랜딩 페이지" />
 
 <br><br>
 
@@ -149,9 +148,10 @@
 - 관심분야소개,인기있는 로드맵,공유지도,퀘스트를 보여준다.
 - swiper를 사용하여 자동으로 넘어가거나 넘길수있도록하였다.
 
-<img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="홈 대시보드" />
+<img src="https://github.com/user-attachments/assets/3e8c0c50-0f2c-4fce-8b69-a1f418133f64" width="100%" alt="홈 대시보드" />
 <br><br>
 <br><br>
+
 
 #### 3.2. 로드맵 대시보드
 <mark> 로드맵에 마커를찍어 자신이 소개하고싶은분야를 소개하는 공간이다.</mark>
