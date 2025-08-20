@@ -115,13 +115,14 @@
 
 # 3. 주요기능
 ### 1. 홈화면
-<mark> 첫화면으로 나오는 사이트 소개를 해주는 로그인전 랜딩페이지입니다.</mark>
+<mark> 로그인전 첫화면으로 나오는 사이트 소개를 해주는 로그인전 랜딩페이지입니다.</mark>
 
 - Gsap.js를 사용하여 애니메이션을 넣어 표현하였다.
 - 튜토리얼같은 느낌으로 어떤사이트인지 소개한다.
   
 <img src="https://github.com/user-attachments/assets/0580b7c3-d8da-4b2f-adaa-bdc0b27a76d8" width="100%" alt="랜딩 페이지" />
 
+<br><br>
 <br><br>
 
 ### 2. 회원
@@ -159,6 +160,7 @@
 - 자신이 추천하는 여행경로,맛집탐방등 여러가지를 지도에 마커를 찍어서 보여주는곳이다.
 - 관심분야별로 볼수있다
 - 최신순,인기순정렬이 가능하다.
+- 인기있는것들을 Hot에서 3개볼수있다.
 
 > 로드맵 메인대시보드
 
@@ -168,32 +170,33 @@
 
 > 로드맵 생성
 
-<img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="로드맵 생성" />
-미완성
+<img src="https://github.com/user-attachments/assets/177f5af1-37b5-44ce-b3fc-e45e0c0edbf7" width="100%" alt="로드맵 생성" />
 <br><br>
+
 
 > 마커 직접찍기
 
 <img src="https://github.com/user-attachments/assets/270188ba-b7e0-4aa0-8c31-4281cd11c618" width="100%" alt="마커직접" />
 <br><br>
 
+
 > 주소로 마커찍기
 
-<img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="주소로마커" />
-미완성
+<img src="https://github.com/user-attachments/assets/56ba3343-9404-4fe8-88e4-de9dde0227bc" width="100%" alt="주소로마커" />
 <br><br>
+
 
 > 로드맵 상세페이지
 
-<img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="로드맵상세페이지" />
-미완성
+<img src="https://github.com/user-attachments/assets/622eb5c1-83bd-4aa4-acc7-abeb4d75c381" width="100%" alt="로드맵상세페이지" />
 <br><br>
+
 
 > 로드맵 수정
 
-<img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="로드맵수정" />
-미완성
+<img src="https://github.com/user-attachments/assets/d0a2e1c2-6714-4b6c-8ac6-edee96f00bab" width="100%" alt="로드맵수정" />
 <br><br>
+
 
 > 로드맵 삭제
 
@@ -208,8 +211,24 @@
 - 마커를 직접찍거나 주소입력으로 마커를 추가할수있다.
 - Liveblocks 사용하여 실시간으로 마커들이 찍힌다.
 
-<img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="홈 대시보드" />
-미완성
+> 공유지도 생성
+<img src="https://github.com/user-attachments/assets/6cd9e232-87c4-46d2-9430-829e79d88e7e" width="100%" alt="공유지도생성" />
+<br><br>
+
+> 공유지도 레이어추가
+<img src="https://github.com/user-attachments/assets/8503cbad-8bf0-4267-89fe-8020f8c85980" width="100%" alt="레이어추가" />
+<br><br>
+
+> 공유지도 참여하기
+<img src="https://github.com/user-attachments/assets/e515305f-3432-45c5-bb91-09a292e261e8" width="100%" alt="공유지도 참여하기" />
+<br><br>
+
+> 공유지도 레이어조회
+<img src="https://github.com/user-attachments/assets/7483c6a8-c63d-4ffd-9a61-f7e744f17801" width="100%" alt="레이어확인" />
+<br><br>
+
+> 공유지도 삭제
+<img src="https://github.com/user-attachments/assets/c15db057-54ca-424c-b0df-e92bebb16636" width="100%" alt="공유지도 삭제" />
 <br><br>
 <br><br>
 
@@ -221,8 +240,24 @@
 - 대기중상태가 기본이고 작성자가 정답 또는 실패처리를 할수있다.
 - 가장 빨리맞춘사람순으로 랭킹에서 순위를 나타낸다.
 
-<img src="https://github.com/user-attachments/assets/dfc7d7b5-f861-408a-ba55-0234a80988bd" width="100%" alt="홈 대시보드" />
-미완성
+> 퀘스트 메인대시보드
+<img src="https://github.com/user-attachments/assets/b44e6057-47a4-4af2-b12d-2f59936f57d4" width="100%" alt="퀘스트 메인대시보드" />
+<br><br>
+
+> 퀘스트 생성
+<img src="https://github.com/user-attachments/assets/383b7798-d605-43eb-ae53-45816e714b5f" width="100%" alt="퀘스트 생성" />
+<br><br>
+
+> 퀘스트 상세페이지
+<img src="https://github.com/user-attachments/assets/48379c25-9ef7-4981-b4da-3f4c9e15d1ff" width="100%" alt="퀘스트 상세페이지" />
+<br><br>
+
+> 퀘스트 정답맞추기
+<img src="https://github.com/user-attachments/assets/68f7b5c0-76c0-4a17-b320-66636a8d811b" width="100%" alt="퀘스트 정답맞추기" />
+<br><br>
+
+> 퀘스트 정답처리
+<img src="https://github.com/user-attachments/assets/be86c384-7f5a-4e2a-9b09-dfb6bb7af931" width="100%" alt="퀘스트 정답처리" />
 <br><br>
 <br><br>
 
@@ -249,6 +284,16 @@
 <br><br>
 <br><br>
 
+#### 4.3. 업적
+<mark> 업적을달성하면 토스트메시지로 업적달성이온다. </mark>
+
+- 해당 업적을 달성하면 토스트메시지가온다.
+- 자신이얻은것은 마이페이지에서 확인이가능하다.
+
+<img src="https://github.com/user-attachments/assets/81fdd64e-e83a-47fe-a201-bb0a64752020" width="100%" alt="업적" />
+<br><br>
+<br><br>
+
 ### 5. 마이페이지
 <mark> 자신의글들과 좋아요,프로필수정등을 할수있는 공간이다. </mark>
 
@@ -265,6 +310,7 @@
 - 소셜로그인에서는 비밀번호를 변경할수없다.
 
 <img src="https://github.com/user-attachments/assets/4f54158b-837a-49c2-9071-69cea0ed5f85" width="100%" alt="소셜로그인마이페이지" />
+<br><br>
 <br><br>
 
 #### 5.2. 일반로그인시
@@ -337,7 +383,6 @@
 - 공지를 생성,삭제를 할수있다.
 - 시스템,이벤트,업데이트,안내사항으로 공지를 나눠서할수있다.
 
-  
 > 공지생성
 <img src="https://github.com/user-attachments/assets/c791a265-5c04-4dd6-a843-45a892d12f2e" width="100%" alt="관리자공지생성" />
 <br><br>
@@ -345,7 +390,6 @@
 > 공지확인
 <img src="https://github.com/user-attachments/assets/17c1e5cf-238d-4a96-a202-50c0069a78bc" width="100%" alt="관리자공지확인" />
 <br><br>
-
 # 4. 사용한 기술
 ## 언어 및 라이브러리
 ### 언어 및 프레임워크
